@@ -1,15 +1,18 @@
 package com.oakinvest.b2g.dto.external.bitcoind;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Blockcount response.
  * Created by straumat on 26/08/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BlockCountResponse {
 
 	/**
 	 * Result field.
 	 */
-	private String result;
+	private int result;
 
 	/**
 	 * Error field.
@@ -26,7 +29,7 @@ public class BlockCountResponse {
 	 *
 	 * @return result
 	 */
-	public final String getResult() {
+	public final int getResult() {
 		return result;
 	}
 
@@ -35,7 +38,7 @@ public class BlockCountResponse {
 	 *
 	 * @param newResult the result to set
 	 */
-	public final void setResult(final String newResult) {
+	public final void setResult(final int newResult) {
 		result = newResult;
 	}
 

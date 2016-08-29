@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,12 +24,12 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Command to get blockcount.
 	 */
-	public static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
+	private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
 
 	/**
 	 * Method parameter.
 	 */
-	public static final String PARAMETER_METHOD = "method";
+	private static final String PARAMETER_METHOD = "method";
 
 	/**
 	 * Logger.
@@ -70,21 +69,19 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	@Override
 	public final BlockCountResponse getBlockCount() {
 		// FIXME Deal with errors like {"result":null,"error":{"code":-28,"message":"Loading block index..."},"id":null}
-		log.info("Calling getBlockCount");
-
 		// Configuring the request.
 		JSONObject request = new JSONObject();
 		try {
 			request.put(PARAMETER_METHOD, COMMAND_GETBLOCKCOUNT);
 		} catch (JSONException e) {
+			log.error("Error while building the request " + e);
 			e.printStackTrace();
 		}
 
-		// Making the call.
+		// Making the call.;
 		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = new HttpEntity<String>(request.toString(), getHeaders());
+		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
+		log.info("Calling getBlockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, BlockCountResponse.class);
 	}
 
