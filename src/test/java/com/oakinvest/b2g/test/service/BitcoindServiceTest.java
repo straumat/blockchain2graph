@@ -44,12 +44,27 @@ public class BitcoindServiceTest {
 	}
 
 	/**
-	 * gestblockhash test.
+	 * getBlockHash test.
 	 */
 	@Test
 	public final void testGestblockhash() {
 		assertEquals("Getblockhash did not give a good answer", GET_BLOCKHASH_BLOCK_HASH, bds.getBlockHash(GET_BLOCKHASH_BLOCK_NUMBER).getResult());
 	}
 
+	/**
+	 * getBlock test.
+	 */
+	@Test
+	public final void testGetBlock() {
+		// TODO To implement.
+	}
+
+	/**
+	 * getRawTransaction test.
+	 */
+	@Test
+	public final void getRawTransaction() {
+		// TODO To implement.
+	}
 
 }

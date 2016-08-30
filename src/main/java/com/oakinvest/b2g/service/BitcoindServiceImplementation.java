@@ -1,7 +1,9 @@
 package com.oakinvest.b2g.service;
 
-import com.oakinvest.b2g.dto.external.bitcoind.BlockCountResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.BlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.GetBlockResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.GetRawTransactionResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.neo4j.ogm.json.JSONException;
 import org.neo4j.ogm.json.JSONObject;
@@ -74,13 +76,10 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private String password;
 
 	/**
-	 * Calling getblockcount on bitcoind server.
-	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"jsonrpc":"1.0","method":"getblockcount","params":[]}' -H 'content-type:text/plain;' -X POST http://5.196.65.205:8332
-	 *
-	 * @return blockcount.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public final BlockCountResponse getBlockCount() {
+	public final GetBlockCountResponse getBlockCount() {
 		// FIXME Deal with errors like {"result":null,"error":{"code":-28,"message":"Loading block index..."},"id":null}
 		// Configuring the request.
 		JSONObject request = new JSONObject();
@@ -95,19 +94,14 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<String>(request.toString(), getHeaders());
 		log.info("Calling getBlockCount with " + request);
-		return restTemplate.postForObject(getURL(), entity, BlockCountResponse.class);
+		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
 	}
 
-
 	/**
-	 * Calling getblockhash on bitcoind server.
-	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblockhash", "params": [1] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
-	 *
-	 * @param blockNumber block number.
-	 * @return blockhash.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public BlockHashResponse getBlockHash(final int blockNumber) {
+	public GetBlockHashResponse getBlockHash(final int blockNumber) {
 		JSONObject request = new JSONObject();
 		try {
 			request.put(PARAMETER_METHOD, COMMAND_GETBLOCKHASH);
@@ -123,10 +117,28 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		// Making the call.
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getBlockHash on block " + blockNumber);
+		log.info("Calling getBlockHash on block " + request);
 		//System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
-		return restTemplate.postForObject(getURL(), entity, BlockHashResponse.class);
+		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final GetBlockResponse getBlock(final String blockHash) {
+		// TODO To implement.
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
+		// TODO To implement.
+		return null;
 	}
 
 	/**

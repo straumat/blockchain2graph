@@ -3,11 +3,11 @@ package com.oakinvest.b2g.dto.external.bitcoind;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Blockcount response.
+ * getblockcount response.
  * Created by straumat on 26/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BlockCountResponse {
+public class GetBlockCountResponse {
 
 	/**
 	 * Result field.
