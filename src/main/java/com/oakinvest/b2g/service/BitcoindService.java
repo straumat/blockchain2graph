@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.dto.external.bitcoind.BlockCountResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.BlockHashResponse;
 
 /**
  * Provides an easy access to bitcoind server data.
@@ -15,5 +16,14 @@ public interface BitcoindService {
 	 * @return blockcount.
 	 */
 	BlockCountResponse getBlockCount();
+
+	/**
+	 * Calling getblockhash on bitcoind server.
+	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblockhash", "params": [1] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
+	 *
+	 * @param blockNumber block number.
+	 * @return blockhash.
+	 */
+	BlockHashResponse getBlockHash(int blockNumber);
 
 }
