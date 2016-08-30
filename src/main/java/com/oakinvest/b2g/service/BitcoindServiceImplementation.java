@@ -92,7 +92,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity<String> entity = new HttpEntity<String>(request.toString(), getHeaders());
+		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getBlockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
 	}
@@ -136,7 +136,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
+	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		// TODO To implement.
 		return null;
 	}

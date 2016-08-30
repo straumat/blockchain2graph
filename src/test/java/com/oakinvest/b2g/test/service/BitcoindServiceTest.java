@@ -40,7 +40,7 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void testGetBlockCount() {
-		assertTrue("Getblockcount failed", bds.getBlockCount().getResult() > 0);
+		assertTrue("Getblockcount failed", bds.getBlockCount().getCount() > 0);
 	}
 
 	/**

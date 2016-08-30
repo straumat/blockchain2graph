@@ -1,80 +1,31 @@
 package com.oakinvest.b2g.dto.external.bitcoind;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * getblockcount response.
  * Created by straumat on 26/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetBlockCountResponse {
+public class GetBlockCountResponse extends BitcoindResponse {
 
 	/**
-	 * Result field.
+	 * Number returned in case of errors.
 	 */
-	private int result;
+	public static final int BLOCK_COUNT_ERROR = -1;
 
 	/**
-	 * Error field.
-	 */
-	private String error;
-
-	/**
-	 * Id field.
-	 */
-	private String id;
-
-	/**
-	 * Getter de la propriété result.
+	 * Returns the number of blocks.
 	 *
-	 * @return result
+	 * @return number of blocks.
 	 */
-	public final int getResult() {
-		return result;
+	public int getCount() {
+		if (NumberUtils.isNumber(getResult())) {
+			return Integer.parseInt(getResult());
+		} else {
+			return BLOCK_COUNT_ERROR;
+		}
 	}
 
-	/**
-	 * Setter de la propriété result.
-	 *
-	 * @param newResult the result to set
-	 */
-	public final void setResult(final int newResult) {
-		result = newResult;
-	}
-
-	/**
-	 * Getter de la propriété error.
-	 *
-	 * @return error
-	 */
-	public final String getError() {
-		return error;
-	}
-
-	/**
-	 * Setter de la propriété error.
-	 *
-	 * @param newError the error to set
-	 */
-	public final void setError(final String newError) {
-		error = newError;
-	}
-
-	/**
-	 * Getter de la propriété id.
-	 *
-	 * @return id
-	 */
-	public final String getId() {
-		return id;
-	}
-
-	/**
-	 * Setter de la propriété id.
-	 *
-	 * @param newId the id to set
-	 */
-	public final void setId(final String newId) {
-		id = newId;
-	}
 }
