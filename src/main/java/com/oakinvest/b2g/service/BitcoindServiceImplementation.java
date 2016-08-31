@@ -1,9 +1,9 @@
 package com.oakinvest.b2g.service;
 
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockCountResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.neo4j.ogm.json.JSONException;
 import org.neo4j.ogm.json.JSONObject;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +36,11 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * Comment to get getblockhash.
 	 */
 	private static final String COMMAND_GETBLOCKHASH = "getblockhash";
+
+	/**
+	 * Comment to get getblock.
+	 */
+	private static final String COMMAND_GETBLOCK = "getblock";
 
 	/**
 	 * Method parameter.
@@ -93,7 +99,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		// Making the call.
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getBlockCount with " + request);
+		log.info("Calling getblockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
 	}
 
@@ -117,10 +123,9 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		// Making the call.
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getBlockHash on block " + request);
+		log.info("Calling getblockHash on block " + request);
 		//System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
 		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
-
 	}
 
 	/**
@@ -128,8 +133,24 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	public final GetBlockResponse getBlock(final String blockHash) {
-		// TODO To implement.
-		return null;
+		JSONObject request = new JSONObject();
+		try {
+			request.put(PARAMETER_METHOD, COMMAND_GETBLOCK);
+			List<String> params = new ArrayList<>();
+			params.add(blockHash);
+			request.put(PARAMETER_PARAMS, params);
+
+		} catch (JSONException e) {
+			log.error("Error while building the request " + e);
+			e.printStackTrace();
+		}
+
+		// Making the call.
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
+		log.info("Calling getblock on block " + request);
+		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
+		return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
 	}
 
 	/**

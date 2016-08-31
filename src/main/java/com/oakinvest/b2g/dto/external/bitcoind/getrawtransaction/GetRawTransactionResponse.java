@@ -1,6 +1,7 @@
-package com.oakinvest.b2g.dto.external.bitcoind;
+package com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
 /**
  * getrawtransaction response.

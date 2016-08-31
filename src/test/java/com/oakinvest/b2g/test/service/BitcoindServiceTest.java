@@ -1,6 +1,8 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.service.BitcoindService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -20,14 +25,30 @@ import static org.junit.Assert.assertTrue;
 public class BitcoindServiceTest {
 
 	/**
-	 * Block hash number used for getblockhash test.
-	 */
-	public static final String GET_BLOCKHASH_BLOCK_HASH = "0000000082b5015589a3fdf2d4baff403e6f0be035a5d9742c1cae6295464449";
-
-	/**
 	 * Block number used for getblockhash test.
 	 */
-	public static final int GET_BLOCKHASH_BLOCK_NUMBER = 3;
+	private static final int BLOCK_NUMBER = 427707;
+
+	/**
+	 * Block hash number used for getblockhash test.
+	 */
+	private static final String BLOCK_HASH = "000000000000000003536b07a8663ea1f10c891ccdb06e3a57c825041551df6a";
+
+	/**
+	 * Numver of transactions in the block.
+	 */
+	private static final int BLOCK_SIZE = 323;
+
+	/**
+	 * Existing transaction in the block.
+	 */
+	private static final String BLOCK_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322";
+
+	/**
+	 * Nnn existing transaction in the block.
+	 */
+	private static final String BLOCK_NON_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8333";
+
 
 	/**
 	 * Bitcoind service.
@@ -40,7 +61,8 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void testGetBlockCount() {
-		assertTrue("Getblockcount failed", bds.getBlockCount().getCount() > 0);
+		GetBlockCountResponse r = bds.getBlockCount();
+		assertTrue("getblockcount failed", r.getCount() > 0);
 	}
 
 	/**
@@ -48,7 +70,8 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void testGestblockhash() {
-		assertEquals("Getblockhash did not give a good answer", GET_BLOCKHASH_BLOCK_HASH, bds.getBlockHash(GET_BLOCKHASH_BLOCK_NUMBER).getResult());
+		GetBlockHashResponse r = bds.getBlockHash(BLOCK_NUMBER);
+		assertEquals("getblockhash did not give the right answer", BLOCK_HASH, r.getResult());
 	}
 
 	/**
@@ -56,7 +79,10 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void testGetBlock() {
-		// TODO To implement.
+		List<String> transactions = bds.getBlock(BLOCK_HASH).getTransactions();
+		assertEquals("getblock doesn't have the good number of transactions", BLOCK_SIZE, transactions.size());
+		assertTrue("get block is missing a transaction", transactions.stream().anyMatch(s -> s.trim().equals(BLOCK_EXISTING_TRANSACTION_HASH)));
+		assertFalse("get block is having a non existing a transaction", transactions.stream().anyMatch(s -> s.trim().equals(BLOCK_NON_EXISTING_TRANSACTION_HASH)));
 	}
 
 	/**

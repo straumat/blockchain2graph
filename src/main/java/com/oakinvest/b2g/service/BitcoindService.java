@@ -1,9 +1,9 @@
 package com.oakinvest.b2g.service;
 
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockCountResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetBlockResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 
 /**
  * Provides an easy access to bitcoind server data.
