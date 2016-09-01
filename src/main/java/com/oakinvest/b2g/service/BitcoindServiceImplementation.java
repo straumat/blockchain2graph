@@ -97,7 +97,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		}
 
 		// Making the call.
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
@@ -121,8 +121,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		}
 
 		// Making the call.
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
+		RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockHash on block " + request);
 		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
@@ -147,7 +146,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		}
 
 		// Making the call.
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblock on block " + request);
 		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
@@ -161,6 +160,18 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		// TODO To implement.
 		return null;
+	}
+
+
+	/**
+	 * Returns a configured restTemplate.
+	 *
+	 * @return configured restTemplate
+	 */
+	private RestTemplate getRestTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
+		return restTemplate;
 	}
 
 	/**
