@@ -14,7 +14,7 @@ public class GetBlockCountResponse extends BitcoindResponse {
 	/**
 	 * Number returned in case of errors.
 	 */
-	public static final int BLOCK_COUNT_ERROR_VALUE = -1;
+	public static final long BLOCK_COUNT_ERROR_VALUE = -1;
 
 	/**
 	 * Result field.
@@ -26,7 +26,7 @@ public class GetBlockCountResponse extends BitcoindResponse {
 	 *
 	 * @return number of blocks.
 	 */
-	public int getCount() {
+	public long getCount() {
 		if (NumberUtils.isNumber(getResult())) {
 			return Integer.parseInt(getResult());
 		} else {

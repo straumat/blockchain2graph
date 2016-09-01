@@ -107,11 +107,11 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GetBlockHashResponse getBlockHash(final int blockNumber) {
+	public GetBlockHashResponse getBlockHash(final long blockNumber) {
 		JSONObject request = new JSONObject();
 		try {
 			request.put(PARAMETER_METHOD, COMMAND_GETBLOCKHASH);
-			List<Integer> params = new ArrayList<>();
+			List<Long> params = new ArrayList<>();
 			params.add(blockNumber);
 			request.put(PARAMETER_PARAMS, params);
 
@@ -122,9 +122,10 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockHash on block " + request);
-		//System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
+		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
 		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
 	}
 

@@ -9,14 +9,14 @@ public abstract class BitcoindResponse {
 	/**
 	 * Error field.
 	 */
-	private String error;
+	private BitcoindResponseError error;
 
 	/**
 	 * Getter de la propriété error.
 	 *
 	 * @return error
 	 */
-	public final String getError() {
+	public final BitcoindResponseError getError() {
 		return error;
 	}
 
@@ -25,7 +25,7 @@ public abstract class BitcoindResponse {
 	 *
 	 * @param newError the error to set
 	 */
-	public final void setError(final String newError) {
+	public final void setError(final BitcoindResponseError newError) {
 		error = newError;
 	}
 

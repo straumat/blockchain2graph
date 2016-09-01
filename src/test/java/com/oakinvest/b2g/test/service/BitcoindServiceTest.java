@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.service.BitcoindService;
@@ -14,6 +15,8 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -49,19 +52,21 @@ public class BitcoindServiceTest {
 	 */
 	private static final String BLOCK_NON_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8333";
 
-
 	/**
 	 * Bitcoind service.
 	 */
 	@Autowired
 	private BitcoindService bds;
 
+	// FIXME Make a test with an invalid value to deal with errors.
+
 	/**
 	 * getBlockCount test.
 	 */
 	@Test
-	public final void testGetBlockCount() {
+	public final void getBlockCountTest() {
 		GetBlockCountResponse r = bds.getBlockCount();
+		assertNull("An error occured", r.getError());
 		assertTrue("getblockcount failed", r.getCount() > 0);
 	}
 
@@ -69,8 +74,9 @@ public class BitcoindServiceTest {
 	 * getBlockHash test.
 	 */
 	@Test
-	public final void testGestblockhash() {
+	public final void gestblockhashTest() {
 		GetBlockHashResponse r = bds.getBlockHash(BLOCK_NUMBER);
+		assertNull("An error occured", r.getError());
 		assertEquals("getblockhash did not give the right answer", BLOCK_HASH, r.getResult());
 	}
 
@@ -78,19 +84,32 @@ public class BitcoindServiceTest {
 	 * getBlock test.
 	 */
 	@Test
-	public final void testGetBlock() {
-		List<String> transactions = bds.getBlock(BLOCK_HASH).getTransactions();
+	public final void getBlockTest() {
+		GetBlockResponse r = bds.getBlock(BLOCK_HASH);
+		List<String> transactions = r.getTransactions();
+		assertNull("An error occured", r.getError());
 		assertEquals("getblock doesn't have the good number of transactions", BLOCK_SIZE, transactions.size());
-		assertTrue("get block is missing a transaction", transactions.stream().anyMatch(s -> s.trim().equals(BLOCK_EXISTING_TRANSACTION_HASH)));
-		assertFalse("get block is having a non existing a transaction", transactions.stream().anyMatch(s -> s.trim().equals(BLOCK_NON_EXISTING_TRANSACTION_HASH)));
+		assertTrue("get block is missing a transaction", transactions.stream().anyMatch(s -> s.equals(BLOCK_EXISTING_TRANSACTION_HASH)));
+		assertFalse("get block is having a non existing a transaction", transactions.stream().anyMatch(s -> s.equals(BLOCK_NON_EXISTING_TRANSACTION_HASH)));
 	}
 
 	/**
-	 * getRawTransaction test.
+	 * getRawTransactionTest test.
 	 */
 	@Test
-	public final void getRawTransaction() {
+	public final void getRawTransactionTest() {
 		// TODO To implement.
+	}
+
+	/**
+	 * Testing error management.
+	 */
+	@Test
+	public final void errorManagementTest() {
+		GetBlockHashResponse r = bds.getBlockHash(1111111111);
+		assertNotNull("No error was raised", r.getError());
+		assertEquals("Error code was not retrieved", -8, r.getError().getCode());
+		assertEquals("Error message was not retrieved", "Block height out of range", r.getError().getMessage());
 	}
 
 }

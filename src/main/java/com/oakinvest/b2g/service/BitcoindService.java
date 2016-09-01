@@ -26,7 +26,7 @@ public interface BitcoindService {
 	 * @param blockNumber block number.
 	 * @return getblockhash response.
 	 */
-	GetBlockHashResponse getBlockHash(int blockNumber);
+	GetBlockHashResponse getBlockHash(long blockNumber);
 
 	/**
 	 * Calling getblock on bitcoind server.
