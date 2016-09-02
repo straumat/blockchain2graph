@@ -45,7 +45,6 @@ public class Application {
 	@PostConstruct
 	public final void initApplication() {
 		log.debug("block2graph initialization...");
-		bitcoindService.getBlockCount();
 	}
 
 }

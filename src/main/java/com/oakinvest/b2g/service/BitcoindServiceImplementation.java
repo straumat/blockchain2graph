@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,14 +32,19 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
 
 	/**
-	 * Comment to get getblockhash.
+	 * Command to get getblockhash.
 	 */
 	private static final String COMMAND_GETBLOCKHASH = "getblockhash";
 
 	/**
-	 * Comment to get getblock.
+	 * Command to get getblock.
 	 */
 	private static final String COMMAND_GETBLOCK = "getblock";
+
+	/**
+	 * Command to get getrawtransaction.
+	 */
+	private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
 
 	/**
 	 * Method parameter.
@@ -86,15 +90,9 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	public final GetBlockCountResponse getBlockCount() {
-		// FIXME Deal with errors like {"result":null,"error":{"code":-28,"message":"Loading block index..."},"id":null}
-		// Configuring the request.
-		JSONObject request = new JSONObject();
-		try {
-			request.put(PARAMETER_METHOD, COMMAND_GETBLOCKCOUNT);
-		} catch (JSONException e) {
-			log.error("Error while building the request " + e);
-			e.printStackTrace();
-		}
+		// Setting parameters
+		List<Object> params = new ArrayList<>();
+		JSONObject request = getRequest(COMMAND_GETBLOCKCOUNT, params);
 
 		// Making the call.
 		RestTemplate restTemplate = getRestTemplate();
@@ -108,23 +106,15 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	public GetBlockHashResponse getBlockHash(final long blockNumber) {
-		JSONObject request = new JSONObject();
-		try {
-			request.put(PARAMETER_METHOD, COMMAND_GETBLOCKHASH);
-			List<Long> params = new ArrayList<>();
-			params.add(blockNumber);
-			request.put(PARAMETER_PARAMS, params);
-
-		} catch (JSONException e) {
-			log.error("Error while building the request " + e);
-			e.printStackTrace();
-		}
+		// Setting parameters
+		List<Object> params = new ArrayList<>();
+		params.add(blockNumber);
+		JSONObject request = getRequest(COMMAND_GETBLOCKHASH, params);
 
 		// Making the call.
 		RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockHash on block " + request);
-		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
 		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
 	}
 
@@ -133,23 +123,15 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	public final GetBlockResponse getBlock(final String blockHash) {
-		JSONObject request = new JSONObject();
-		try {
-			request.put(PARAMETER_METHOD, COMMAND_GETBLOCK);
-			List<String> params = new ArrayList<>();
-			params.add(blockHash);
-			request.put(PARAMETER_PARAMS, params);
-
-		} catch (JSONException e) {
-			log.error("Error while building the request " + e);
-			e.printStackTrace();
-		}
+		// Setting parameters
+		List<Object> params = new ArrayList<>();
+		params.add(blockHash);
+		JSONObject request = getRequest(COMMAND_GETBLOCK, params);
 
 		// Making the call.
 		RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblock on block " + request);
-		System.out.println(restTemplate.exchange(getURL(), HttpMethod.POST, entity, String.class));
 		return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
 	}
 
@@ -158,10 +140,37 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
-		// TODO To implement.
-		return null;
+		// Setting parameters
+		List<Object> params = new ArrayList<>();
+		params.add(transactionHash);
+		params.add(1);
+		JSONObject request = getRequest(COMMAND_GETRAWTRANSACTION, params);
+
+		// Making the call.
+		RestTemplate restTemplate = getRestTemplate();
+		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
+		log.info("Calling getrawtransaction on transaction " + request);
+		return restTemplate.postForObject(getURL(), entity, GetRawTransactionResponse.class);
 	}
 
+	/**
+	 * Util method to build the request.
+	 *
+	 * @param command command t call.
+	 * @param params  parameters.
+	 * @return json query.
+	 */
+	private JSONObject getRequest(final String command, final List<Object> params) {
+		JSONObject request = new JSONObject();
+		try {
+			request.put(PARAMETER_METHOD, command);
+			request.put(PARAMETER_PARAMS, params);
+		} catch (JSONException e) {
+			log.error("Error while building the request " + e);
+			e.printStackTrace();
+		}
+		return request;
+	}
 
 	/**
 	 * Returns a configured restTemplate.

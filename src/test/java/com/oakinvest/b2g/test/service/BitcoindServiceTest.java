@@ -4,6 +4,7 @@ import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.service.BitcoindService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,8 +59,6 @@ public class BitcoindServiceTest {
 	@Autowired
 	private BitcoindService bds;
 
-	// FIXME Make a test with an invalid value to deal with errors.
-
 	/**
 	 * getBlockCount test.
 	 */
@@ -98,7 +97,9 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void getRawTransactionTest() {
-		// TODO To implement.
+		GetRawTransactionResponse r = bds.getRawTransaction(BLOCK_EXISTING_TRANSACTION_HASH);
+		assertEquals("Vin not correct", 3, r.getResult().getVin().size());
+		assertEquals("Vout not correct", 2, r.getResult().getVout().size());
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class BitcoindServiceTest {
 	 */
 	@Test
 	public final void errorManagementTest() {
-		GetBlockHashResponse r = bds.getBlockHash(1111111111);
+		GetBlockHashResponse r = bds.getBlockHash(999999999);
 		assertNotNull("No error was raised", r.getError());
 		assertEquals("Error code was not retrieved", -8, r.getError().getCode());
 		assertEquals("Error message was not retrieved", "Block height out of range", r.getError().getMessage());

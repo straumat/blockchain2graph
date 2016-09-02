@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class GetBlockResult {
 
 	/**
-	 * Transactions
+	 * Transactions.
 	 */
 	private ArrayList<String> tx;
 

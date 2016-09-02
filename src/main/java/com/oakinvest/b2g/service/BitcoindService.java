@@ -21,7 +21,7 @@ public interface BitcoindService {
 
 	/**
 	 * Calling getblockhash on bitcoind server.
-	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblockhash", "params": [1] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
+	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblockhash", "params": [427707] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
 	 *
 	 * @param blockNumber block number.
 	 * @return getblockhash response.
@@ -30,7 +30,7 @@ public interface BitcoindService {
 
 	/**
 	 * Calling getblock on bitcoind server.
-	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblock", "params": ["00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048"] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
+	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getblock", "params": ["000000000000000003536b07a8663ea1f10c891ccdb06e3a57c825041551df6a"] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
 	 *
 	 * @param blockHash block hash.
 	 * @return getblock response.
@@ -39,7 +39,7 @@ public interface BitcoindService {
 
 	/**
 	 * Calling getrawtransaction on bitcoind server.
-	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getrawtransaction", "params": ["540a7e54fd64478554519f1b2d643ecc888c5030631487f9cfc530b71d281309", 1] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
+	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"method": "getrawtransaction", "params": ["5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322", 1] }' -H 'content-type: text/plain;' -X POST http://5.196.65.205:8332
 	 *
 	 * @param transactionHash transaction hash.
 	 * @return getrawtransaction response.

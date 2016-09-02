@@ -10,4 +10,27 @@ import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetRawTransactionResponse extends BitcoindResponse {
 
+	/**
+	 * Result.
+	 */
+	private GetRawTransactionResult result;
+
+	/**
+	 * Getter de la propriété result.
+	 *
+	 * @return result
+	 */
+	public final GetRawTransactionResult getResult() {
+		return result;
+	}
+
+	/**
+	 * Setter de la propriété result.
+	 *
+	 * @param newResult the result to set
+	 */
+	public final void setResult(final GetRawTransactionResult newResult) {
+		result = newResult;
+	}
+
 }
