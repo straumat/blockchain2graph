@@ -66,7 +66,7 @@ public class BitcoindServiceTest {
 	public final void getBlockCountTest() {
 		GetBlockCountResponse r = bds.getBlockCount();
 		assertNull("An error occured", r.getError());
-		assertTrue("getblockcount failed", r.getCount() >= 1);
+		assertTrue("getblockcount failed", r.getResult() >= 1);
 	}
 
 	/**

@@ -8,80 +8,78 @@ import java.util.ArrayList;
  */
 public class GetBlockResult {
 
-
 	/**
-	 * Hash.
+	 * the block hash (same as provided).
 	 */
 	private String hash;
 
 	/**
-	 * Confirmations.
+	 * The number of confirmations, or -1 if the block is not on the main chain.
 	 */
 	private long confirmations;
 
 	/**
-	 * Size.
+	 * The block size.
 	 */
 	private long size;
 
 	/**
-	 * Height.
+	 * The block height or index.
 	 */
 	private long height;
 
 	/**
-	 * Version.
+	 * The block version.
 	 */
 	private long version;
 
 	/**
-	 * Merkelroot.
+	 * The merkle root.
 	 */
 	private String merkleroot;
 
 	/**
-	 * Time.
+	 * The block time in seconds since epoch (Jan 1 1970 GMT).
 	 */
 	private long time;
 
 	/**
-	 * Mediantime.
+	 * The median block time in seconds since epoch (Jan 1 1970 GMT).
 	 */
 	private long mediantime;
 
 	/**
-	 * Nonce.
+	 * The nonce.
 	 */
 	private long nonce;
 
 	/**
-	 * Bits.
+	 * The bits.
 	 */
 	private String bits;
 
 	/**
-	 * Difficulty.
+	 * The difficulty.
 	 */
 	private float difficulty;
 
 	/**
-	 * Chainwork.
+	 * Expected number of hashes required to produce the chain up to this block (in hex).
 	 */
 	private String chainwork;
 
 	/**
-	 * Previous block hash.
+	 * The hash of the previous block.
 	 */
 	private String previousblockhash;
 
 	/**
-	 * Next block hash.
+	 * The hash of the next block.
 	 */
 	private String nextblockhash;
 
-
 	/**
-	 * Transactions.
+	 * The transaction ids.
 	 */
 	private ArrayList<String> tx;
 

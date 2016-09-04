@@ -263,4 +263,5 @@ public class GetRawTransactionResult {
 	public final void setBlocktime(final long newBlocktime) {
 		blocktime = newBlocktime;
 	}
+
 }

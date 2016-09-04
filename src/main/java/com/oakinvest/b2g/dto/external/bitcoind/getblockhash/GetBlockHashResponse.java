@@ -11,7 +11,7 @@ import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 public class GetBlockHashResponse extends BitcoindResponse {
 
 	/**
-	 * Result field.
+	 * the block header hash.
 	 */
 	private String result;
 
