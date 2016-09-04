@@ -24,7 +24,7 @@ public class GetRawTransactionVIn {
 	private GetRawTransactionScriptSig scriptSig;
 
 	/**
-	 * The script sequence number
+	 * The script sequence number.
 	 */
 	private long sequence;
 
@@ -99,4 +99,5 @@ public class GetRawTransactionVIn {
 	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
 	}
+
 }

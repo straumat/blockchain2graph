@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.dto.external.bitcoind.getblock;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * result inside the getblock response.
@@ -228,9 +229,18 @@ public class GetBlockResult {
 	}
 
 	/**
+	 * Returns time as Date.
+	 *
+	 * @return date
+	 */
+	public final Date getTimeAsDate() {
+		return new Date(getTime() * 1000);
+	}
+
+	/**
 	 * Getter de la propriété mediantime.
 	 *
-	 * @return mediantime
+	 * @return mediantime as date
 	 */
 	public final long getMediantime() {
 		return mediantime;
@@ -243,6 +253,15 @@ public class GetBlockResult {
 	 */
 	public final void setMediantime(final long newMediantime) {
 		mediantime = newMediantime;
+	}
+
+	/**
+	 * Returns mediantime as Date.
+	 *
+	 * @return
+	 */
+	public final Date getMediametimeAsDate() {
+		return new Date(getTime() * 1000);
 	}
 
 	/**
