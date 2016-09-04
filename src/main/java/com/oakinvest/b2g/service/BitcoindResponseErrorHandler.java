@@ -21,7 +21,7 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 * @throws IOException in case of I/O errors
 	 */
 	@Override
-	public boolean hasError(final ClientHttpResponse response) throws IOException {
+	public final boolean hasError(final ClientHttpResponse response) throws IOException {
 		HttpStatus statusCode = response.getStatusCode();
 		return (HttpStatus.Series.SUCCESSFUL.equals(statusCode) || HttpStatus.Series.SERVER_ERROR.equals(statusCode));
 	}

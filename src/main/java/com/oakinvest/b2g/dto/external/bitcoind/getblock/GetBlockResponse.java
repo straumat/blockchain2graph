@@ -3,8 +3,6 @@ package com.oakinvest.b2g.dto.external.bitcoind.getblock;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
-import java.util.List;
-
 /**
  * getblock response.
  * Created by straumat on 30/08/16.
@@ -35,12 +33,4 @@ public class GetBlockResponse extends BitcoindResponse {
 		result = newResult;
 	}
 
-	/**
-	 * Returns all the transactions in the block.
-	 *
-	 * @return all the transactions in the block.
-	 */
-	public List<String> getTransactions() {
-		return getResult().getTx();
-	}
 }
