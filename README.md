@@ -1,5 +1,14 @@
-# blockchain2graph
-Extract blockchain data (bitcoin) into a graph database (neo4j)
+# blockchain2graph 
+[![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=master)](https://travis-ci.org/straumat/blockchain2graph)
+blockchain2graph extract data from the bitcoin blockchain into a graph database (neo4j for now).
+
+blockchain2graph only imports data in neo4J, once the data is there you can do anything you want like :  
+
+* Process and query blockchain data with the [neo4j query language](https://neo4j.com/developer/cypher-query-language/).
+* Build web sites that presents information like [Blockchain info](https://blockchain.info/fr).
+* Add meta information to addresses and transactions directly in the nodes.
+
+At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain. To do so, we needed to have a more conveniant way to represent blockchain data than the one offered by bitcoind. Thanks to this tool, we can analyse blockchain data as transactions between nodes and add meta informations on them.
 
 ## Installation.
 
@@ -14,7 +23,7 @@ rpcuser=bitcoinrpc
 rpcpassword=YOUR_BITCOIND_PASSWORD
 server=1
 rest=1
-rpcallowip=IP_ADRESSES_TO_ALLOW
+rpcallowip=IP_ADRESS_TO_ALLOW
 ```
 
 _note that after any change to `bitcond.conf`, you have to restart your server._
