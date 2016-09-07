@@ -1,8 +1,5 @@
-# blockchain2graph 
-[![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=master)](https://travis-ci.org/straumat/blockchain2graph)
-blockchain2graph extract data from the bitcoin blockchain into a graph database (neo4j for now).
-
-blockchain2graph only imports data in neo4J, once the data is there you can do anything you want like :  
+# blockchain2graph [![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=master)](https://travis-ci.org/straumat/blockchain2graph)
+blockchain2graph extract data from the bitcoin blockchain into a graph database (neo4j for now). Once the data is there you can do anything you want like :  
 
 * Process and query blockchain data with the [neo4j query language](https://neo4j.com/developer/cypher-query-language/).
 * Build web sites that presents information like [Blockchain info](https://blockchain.info/fr).
