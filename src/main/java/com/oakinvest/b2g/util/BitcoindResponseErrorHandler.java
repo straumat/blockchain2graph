@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service;
+package com.oakinvest.b2g.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
