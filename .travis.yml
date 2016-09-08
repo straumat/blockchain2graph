@@ -1,9 +1,9 @@
 language: java
-  jdk:
+jdk:
   - oraclejdk8
 sudo: required
-test:
-  post:
+script: 
+    - mvn test
     - mvn jacoco:report
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
