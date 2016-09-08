@@ -1,4 +1,4 @@
-# blockchain2graph [![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=master)](https://travis-ci.org/straumat/blockchain2graph) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Grade)
+# blockchain2graph [![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=master)](https://travis-ci.org/straumat/blockchain2graph) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Coverage)
 blockchain2graph extract data from the bitcoin blockchain into a graph database (neo4j for now). Once the data is there you can do anything you want like :  
 
 * Process and query blockchain data with the [neo4j query language](https://neo4j.com/developer/cypher-query-language/).
@@ -20,10 +20,10 @@ rpcuser=bitcoinrpc
 rpcpassword=YOUR_BITCOIND_PASSWORD
 server=1
 rest=1
-rpcallowip=IP_ADRESS_TO_ALLOW
+rpcallowip=AN_IP_ADRESS_TO_ALLOW
+rpcallowip=ANOTHER_IP_ADRESS_TO_ALLOW
 ```
 
 _note that after any change to `bitcond.conf`, you have to restart your server._
 
 ### Blockchain2graph.
-
