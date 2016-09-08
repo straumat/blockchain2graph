@@ -3,9 +3,8 @@ jdk:
   - oraclejdk8
 sudo: required
 script: 
-    - mvn clean
     - mvn test
-    - mvn jacoco:report
+    - mvn jacoco:report -Djacoco.skip
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
