@@ -7,6 +7,8 @@ blockchain2graph extract data from the bitcoin blockchain into a graph database 
 
 At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain. To do so, we needed to have a more conveniant way to represent blockchain data than the one offered by bitcoind. Thanks to this tool, we can analyse blockchain data as transactions between nodes and add meta informations on them.
 
+If you are using our project, we would be happy to hear from you :)
+
 ## Installation.
 
 ### The bitcoindnode.

@@ -1,9 +1,12 @@
 package com.oakinvest.b2g.service;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.util.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	private BitcoindService bds;
 
 	/**
+	 * Bitcoin blcok repository.
+	 */
+	@Autowired
+	private BitcoinBlockRepository bbr;
+
+	/**
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number
@@ -43,7 +52,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		// Variables
 		boolean success = true;
 		GetBlockHashResponse blockHash;
-		GetBlockResponse block;
+		GetBlockResponse block = new GetBlockResponse();
 		ArrayList<GetRawTransactionResult> transactions = new ArrayList<>();
 
 		// Getting block hash
@@ -78,7 +87,8 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 		// If we have all the informations, then we do the persistance.
 		if (success) {
-
+			BitcoinBlock b = BitcoindToDomainMapper.INSTANCE.BlockResultToBitcoinBlock(block.getResult());
+			bbr.save(b);
 		}
 
 		return success;

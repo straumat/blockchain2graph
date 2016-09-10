@@ -52,14 +52,19 @@
 			<artifactId>spring-boot-starter-data-neo4j</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-embedded-driver</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-			<version>1.0.0.Final</version>
+			<artifactId>mapstruct-jdk8</artifactId>
+			<version>1.1.0.CR1</version>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -129,6 +134,24 @@
 					<configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
 					<failOnViolation>false</failOnViolation>
 					<violationSeverity>warning</violationSeverity>
+				</configuration>
+			</plugin>
+
+			<!-- Compilation (with mapstruct) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.1.0.CR1</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 
