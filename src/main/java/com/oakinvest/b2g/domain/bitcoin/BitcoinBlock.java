@@ -95,6 +95,15 @@ public class BitcoinBlock {
 	@Property(name = "nextblockhash")
 	private String nextblockhash;
 
+//	/**
+//	 * Constructor.
+//	 *
+//	 * @param newHash block Hash
+//	 */
+//	public BitcoinBlock(final String newHash) {
+//		this.hash = newHash;
+//	}
+
 	/**
 	 * For display.
 	 *

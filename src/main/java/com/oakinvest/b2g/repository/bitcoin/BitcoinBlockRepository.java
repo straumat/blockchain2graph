@@ -12,6 +12,13 @@ import org.springframework.stereotype.Repository;
 public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 
 	/**
+	 * Retuns the number of blocks.
+	 *
+	 * @return count
+	 */
+	long count();
+
+	/**
 	 * Find a block by its hash.
 	 *
 	 * @param hash hash

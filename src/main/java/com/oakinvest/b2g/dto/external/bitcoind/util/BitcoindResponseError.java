@@ -51,4 +51,13 @@ public class BitcoindResponseError {
 	public final void setMessage(final String newMessage) {
 		message = newMessage;
 	}
+
+	@Override
+	public String toString() {
+		return "BitcoindResponseError{" +
+				"code=" + code +
+				", message='" + message + '\'' +
+				'}';
+	}
+
 }
