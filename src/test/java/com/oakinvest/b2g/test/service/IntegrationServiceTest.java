@@ -19,6 +19,7 @@ import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 /**
@@ -77,8 +78,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			// assertTrue("Integration " + i + " failed", is.integrateBitcoinBlock(i)); FIXME First transaction problem
-			is.integrateBitcoinBlock(i);
+			assertTrue("Integration " + i + " failed", is.integrateBitcoinBlock(i));
 		}
 
 		// Testing data of block 170.

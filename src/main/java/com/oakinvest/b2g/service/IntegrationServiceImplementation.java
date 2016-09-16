@@ -25,6 +25,16 @@ import java.util.Iterator;
 public class IntegrationServiceImplementation implements IntegrationService {
 
 	/**
+	 * Genesis transaction hash.
+	 */
+	private static final String GENESIS_BLOCK_TRANSACTION_HASH_1 = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098";
+
+	/**
+	 * Genesis transaction hash.
+	 */
+	private static final String GENESIS_BLOCK_TRANSACTION_HASH_2 = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
+
+	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(IntegrationService.class);
@@ -46,7 +56,6 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 */
 	@Autowired
 	private BitcoinAddressRepository bar;
-
 
 	/**
 	 * Integrate a bitcoin block into the database.
@@ -89,12 +98,17 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		if (success) {
 			Iterator<String> it = block.getResult().getTx().iterator();
 			while (it.hasNext() && success) {
-				GetRawTransactionResponse transaction = bds.getRawTransaction(it.next());
-				if (transaction.getError() == null) {
-					transactions.add(transaction.getResult());
-				} else {
-					log.error("Error in calling getRawTransaction " + transaction.getError());
-					success = false;
+				String transactionHash = it.next();
+				// We don't treat the genesis block transaction.
+				//System.out.println(transactionHash + "+" + GENESIS_BLOCK_TRANSACTION_HASH);
+				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
+					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
+					if (transaction.getError() == null) {
+						transactions.add(transaction.getResult());
+					} else {
+						log.error("Error in calling getRawTransaction " + transaction.getError());
+						success = false;
+					}
 				}
 			}
 		}
