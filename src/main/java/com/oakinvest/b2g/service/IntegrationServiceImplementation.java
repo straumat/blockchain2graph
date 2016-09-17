@@ -67,20 +67,20 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	public boolean integrateBitcoinBlock(final long blockHeight) {
 		log.info("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 
-		// Variables
+		// Variables.
 		boolean success = true;
 		GetBlockHashResponse blockHash;
 		GetBlockResponse block = new GetBlockResponse();
 		ArrayList<GetRawTransactionResult> transactions = new ArrayList<>();
 		ArrayList<String> addresses = new ArrayList<>();
 
-		// Getting block hash & the block informations
+		// Getting block hash & the block informations.
 		blockHash = bds.getBlockHash(blockHeight);
 		if (blockHash.getError() != null) {
 			log.error("Error in calling getBlockHash " + blockHash.getError());
 			success = false;
 		} else {
-			// Getting block informations
+			// Getting block informations.
 			block = bds.getBlock(blockHash.getResult());
 			if (block.getError() != null) {
 				log.error("Error in calling getBlock " + block.getError());
@@ -94,13 +94,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			success = false;
 		}
 
-		// Getting all transactions
+		// Getting all transactions.
 		if (success) {
 			Iterator<String> it = block.getResult().getTx().iterator();
 			while (it.hasNext() && success) {
 				String transactionHash = it.next();
 				// We don't treat the genesis block transaction.
-				//System.out.println(transactionHash + "+" + GENESIS_BLOCK_TRANSACTION_HASH);
 				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
 					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
 					if (transaction.getError() == null) {
@@ -113,7 +112,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			}
 		}
 
-		// Getting all bitcoin addresses
+		// Getting all bitcoin addresses.
 		if (success) {
 			Iterator<GetRawTransactionResult> it = transactions.iterator();
 			while (it.hasNext()) {
@@ -121,7 +120,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			}
 		}
 
-		// Persisting data
+		// Persisting data.
 		if (success) {
 			// Saving all bitcoin addresses.
 			Iterator<String> it = addresses.iterator();
@@ -133,7 +132,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			}
 
 			// Saving the block.
-			BitcoinBlock b = BitcoindToDomainMapper.INSTANCE.BlockResultToBitcoinBlock(block.getResult());
+			BitcoinBlock b = BitcoindToDomainMapper.INSTANCE.blockResultToBitcoinBlock(block.getResult());
 			bbr.save(b);
 		}
 

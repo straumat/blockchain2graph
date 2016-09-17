@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.assertj.core.api.Java6Assertions.fail;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -61,7 +62,7 @@ public class IntegrationServiceTest {
 		try {
 			date = dateFormat.parse(formatedDate);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			fail("problem in date " + e);
 		}
 		return date.getTime() / 1000;
 	}
@@ -74,7 +75,6 @@ public class IntegrationServiceTest {
 		// Tests data.
 		final int firstBlockToImport = 0;
 		final int lastBlockToImport = 170;
-		final int expectedAddressesInAllBlocks = 0;
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
@@ -87,7 +87,7 @@ public class IntegrationServiceTest {
 		final long expectedSize = 490;
 		final long expectedVersion = 1;
 		final String expectedMerkleroot = "7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff";
-		final long expectedTime = getDateAsTimestamp("2009-01-12 04:30:25");
+		//final long expectedTime = getDateAsTimestamp("2009-01-12 04:30:25");
 		final long expectedNonce = 1889418792;
 		final String expectedBits = "1d00ffff";
 		final float expectedDifficulty = 1;

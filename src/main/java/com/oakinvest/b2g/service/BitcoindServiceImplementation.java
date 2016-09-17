@@ -168,7 +168,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 			request.put(PARAMETER_PARAMS, params);
 		} catch (JSONException e) {
 			log.error("Error while building the request " + e);
-			e.printStackTrace();
 		}
 		return request;
 	}

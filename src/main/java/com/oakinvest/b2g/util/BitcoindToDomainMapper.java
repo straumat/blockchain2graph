@@ -40,6 +40,6 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "previousblockhash", target = "previousblockhash"),
 			@Mapping(source = "nextblockhash", target = "nextblockhash")
 	})
-	BitcoinBlock BlockResultToBitcoinBlock(GetBlockResult gbr);
+	BitcoinBlock blockResultToBitcoinBlock(GetBlockResult gbr);
 
 }
