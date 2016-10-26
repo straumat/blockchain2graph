@@ -204,8 +204,6 @@ public class IntegrationServiceTest {
 		long numberOfAddresses = bbr.count();
 		is.integrateBitcoinBlock(lastBlockToImport);
 		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
-
-
 	}
 
 }
