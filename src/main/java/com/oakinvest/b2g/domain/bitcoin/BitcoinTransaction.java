@@ -4,6 +4,7 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -87,6 +88,22 @@ public class BitcoinTransaction {
 	 * Outputs.
 	 */
 	private Set<BitcoinTransactionOutput> outputs;
+
+	/**
+	 * Returns the output according to the index.
+	 *
+	 * @param n index
+	 */
+	public final BitcoinTransactionOutput getOutputByIndex(final int n) {
+		Iterator<BitcoinTransactionOutput> it = getOutputs().iterator();
+		while (it.hasNext()) {
+			BitcoinTransactionOutput output = it.next();
+			if (output.getN() == n) {
+				return output;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Getter de la propriété blockHash.

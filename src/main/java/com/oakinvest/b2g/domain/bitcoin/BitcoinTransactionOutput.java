@@ -3,6 +3,8 @@ package com.oakinvest.b2g.domain.bitcoin;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Property;
 
+import java.util.Set;
+
 /**
  * Bitcoin transaction output.
  * Created by straumat on 22/09/16.
@@ -44,6 +46,78 @@ public class BitcoinTransactionOutput {
 	 */
 	@Property(name = "scriptPubKey_hex")
 	private String scriptPubKeyHex;
+
+	/**
+	 * The required sigs.
+	 */
+	@Property(name = "scriptPubKey_hex")
+	private long scriptPubKeyReqSigs;
+
+	/**
+	 * The type, eg 'pubkeyhash'.
+	 */
+	@Property(name = "type")
+	private String scriptPubKeyType;
+
+	/**
+	 * Adresses
+	 */
+	@Property(name = "addresses")
+	private Set<String> addresses;
+
+	/**
+	 * Getter de la propriété scriptPubKeyReqSigs.
+	 *
+	 * @return scriptPubKeyReqSigs
+	 */
+	public final long getScriptPubKeyReqSigs() {
+		return scriptPubKeyReqSigs;
+	}
+
+	/**
+	 * Setter de la propriété scriptPubKeyReqSigs.
+	 *
+	 * @param newScriptPubKeyReqSigs the scriptPubKeyReqSigs to set
+	 */
+	public final void setScriptPubKeyReqSigs(final long newScriptPubKeyReqSigs) {
+		scriptPubKeyReqSigs = newScriptPubKeyReqSigs;
+	}
+
+	/**
+	 * Getter de la propriété scriptPubKeyType.
+	 *
+	 * @return scriptPubKeyType
+	 */
+	public final String getScriptPubKeyType() {
+		return scriptPubKeyType;
+	}
+
+	/**
+	 * Setter de la propriété scriptPubKeyType.
+	 *
+	 * @param newScriptPubKeyType the scriptPubKeyType to set
+	 */
+	public final void setScriptPubKeyType(final String newScriptPubKeyType) {
+		scriptPubKeyType = newScriptPubKeyType;
+	}
+
+	/**
+	 * Getter de la propriété addresses.
+	 *
+	 * @return addresses
+	 */
+	public final Set<String> getAddresses() {
+		return addresses;
+	}
+
+	/**
+	 * Setter de la propriété addresses.
+	 *
+	 * @param newAddresses the addresses to set
+	 */
+	public final void setAddresses(final Set<String> newAddresses) {
+		addresses = newAddresses;
+	}
 
 	/**
 	 * Getter de la propriété id.

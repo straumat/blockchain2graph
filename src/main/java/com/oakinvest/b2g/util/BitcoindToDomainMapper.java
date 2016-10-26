@@ -3,9 +3,11 @@ package com.oakinvest.b2g.util;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -63,7 +65,8 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "blockhash", target = "blockHash"),
 			@Mapping(source = "time", target = "time"),
 			@Mapping(source = "blocktime", target = "blockTime"),
-			@Mapping(source = "vin", target = "inputs")
+			@Mapping(source = "vin", target = "inputs"),
+			@Mapping(source = "vout", target = "outputs")
 	})
 	BitcoinTransaction rawTransactionResultToBitcoinTransaction(GetRawTransactionResult grtr);
 
@@ -81,5 +84,22 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "sequence", target = "sequence")
 	})
 	BitcoinTransactionInput rawTransactionVIn(GetRawTransactionVIn grtvin);
+
+	/**
+	 * Maps a vout.
+	 *
+	 * @param grtvout vout
+	 * @return domain transaction output
+	 */
+	@Mappings({
+			@Mapping(source = "value", target = "value"),
+			@Mapping(source = "n", target = "n"),
+			@Mapping(source = "scriptPubKey.asm", target = "scriptPubKeyAsm"),
+			@Mapping(source = "scriptPubKey.hex", target = "scriptPubKeyHex"),
+			@Mapping(source = "scriptPubKey.reqSigs", target = "scriptPubKeyReqSigs"),
+			@Mapping(source = "scriptPubKey.type", target = "scriptPubKeyType"),
+			@Mapping(source = "scriptPubKey.addresses", target = "addresses")
+	})
+	BitcoinTransactionOutput rawTransactionVout(GetRawTransactionVOut grtvout);
 
 }
