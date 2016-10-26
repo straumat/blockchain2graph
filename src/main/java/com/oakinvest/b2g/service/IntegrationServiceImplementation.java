@@ -66,6 +66,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	private BitcoinAddressRepository bar;
 
 	/**
+	 * Mapper.
+	 */
+	@Autowired
+	private BitcoindToDomainMapper mapper;
+
+	/**
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number
@@ -146,14 +152,14 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			}
 
 			// Saving the block.
-			BitcoinBlock b = BitcoindToDomainMapper.INSTANCE.blockResultToBitcoinBlock(block.getResult());
+			BitcoinBlock b = mapper.blockResultToBitcoinBlock(block.getResult());
 			bbr.save(b);
 
 			// Saving the transactions
 			Iterator<GetRawTransactionResult> itTransactions = transactions.iterator();
 			while (itTransactions.hasNext()) {
 				GetRawTransactionResult t = itTransactions.next();
-				BitcoinTransaction bt = BitcoindToDomainMapper.INSTANCE.rawTransactionResultToBitcoinTransaction(t);
+				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
 				System.out.println("Save " + bt.getTxid());
 				btr.save(bt);
 			}

@@ -11,19 +11,13 @@ import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTran
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
 /**
  * Mapper from bitcoind to domain.
  * Created by straumat on 09/09/16.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BitcoindToDomainMapper {
-
-	/**
-	 * Mapper instance.
-	 */
-	BitcoindToDomainMapper INSTANCE = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * Maps block result to block.
