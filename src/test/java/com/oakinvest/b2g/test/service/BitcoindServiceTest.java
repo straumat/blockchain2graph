@@ -101,9 +101,9 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong size", expectedSize, r.getSize());
 		assertEquals("Wrong version", expectedVersion, r.getVersion());
 		assertEquals("Wrong merkle root", "5a9d9f82baf0b9dd947f8e4b019bb7c8c51ac51ecc22aa935346a3faf32c369d", r.getMerkleroot());
-		assertEquals("getblock doesn't have the good number of transactions", expectedNumberOfTransactions, r.getTx().size());
-		assertTrue("get block is missing a transaction", r.getTx().stream().anyMatch(s -> s.equals(BLOCK_EXISTING_TRANSACTION_HASH)));
-		assertFalse("get block is having a non existing a transaction", r.getTx().stream().anyMatch(s -> s.equals(BLOCK_NON_EXISTING_TRANSACTION_HASH)));
+		assertEquals("Wrong number of transactions", expectedNumberOfTransactions, r.getTx().size());
+		assertTrue("getBlock() is missing a transaction", r.getTx().stream().anyMatch(s -> s.equals(BLOCK_EXISTING_TRANSACTION_HASH)));
+		assertFalse("getBlock() is having a non existing a transaction", r.getTx().stream().anyMatch(s -> s.equals(BLOCK_NON_EXISTING_TRANSACTION_HASH)));
 		assertEquals("Wrong time", expectedTime, r.getTime());
 		assertEquals("Wrong median time", expectedMedianTime, r.getMediantime());
 		assertEquals("Wrong nonce", expectedNonce, r.getNonce());
@@ -222,11 +222,11 @@ public class BitcoindServiceTest {
 		assertEquals("Wring VOut 2 scriptPubKey type", expectedVOut2ScriptPubKeyType, vOut2.getScriptPubKey().getType());
 		assertEquals("Wring VOut 2 scriptPubKey addresses", expectedVOut2ScriptPubKeyAddresses2, vOut2.getScriptPubKey().getAddresses().get(0));
 
-		// Final fields.
-		assertEquals("Wrong blockhash", expectedBlockhash, r.getBlockhash());
+		// Last fields.
+		assertEquals("Wrong block hash", expectedBlockhash, r.getBlockhash());
 		assertTrue("Wrong confirmations", expectedMinimalConfirmations < r.getConfirmations());
 		assertEquals("Wrong time", expectedTime, r.getTime());
-		assertEquals("Wrong blocktime", expectedBlockTime, r.getBlocktime());
+		assertEquals("Wrong block time", expectedBlockTime, r.getBlocktime());
 	}
 
 	/**
