@@ -11,6 +11,7 @@ import java.io.IOException;
  * Created by straumat on 01/09/16.
  */
 public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
+
 	/**
 	 * Indicates whether the given response has any errors.
 	 * Implementations will typically inspect the {@link ClientHttpResponse#getStatusCode() HttpStatus}
@@ -37,4 +38,5 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	public void handleError(final ClientHttpResponse response) throws IOException {
 
 	}
+
 }

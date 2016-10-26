@@ -3,6 +3,7 @@ package com.oakinvest.b2g.test.service;
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
@@ -80,7 +81,7 @@ public class IntegrationServiceTest {
 	 */
 	@Test
 	public final void integrateBitcoinBlockTest() {
-		// Tests data.
+		// Configuration.
 		final int firstBlockToImport = 0;
 		final int lastBlockToImport = 170;
 
@@ -139,7 +140,19 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong block hash", expectedBlockHash, t.getBlockHash());
 		// assertTrue("Wrong transaction time", expectedTransactionTime < t.getTime());  FIXME There is a problem with time between local and IC
 		// assertEquals("Block time is wrong", expectedTime, b.getTime()); FIXME There is a problem with time between local and IC
-		// VIn 1.
+
+		// Vin 1.
+		BitcoinTransactionInput vin1 = t.getInputs().iterator().next();
+		final String vin1Txid = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
+		final long vin1Vout = 0;
+		final String vin1ScriptSigAsm = "304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d09[ALL]";
+		final String vin1ScriptSigHex = "47304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901";
+		final long vin1Sequence = 4294967295L;
+		assertEquals("Wrong vin1 tx id", vin1Txid, vin1.getTxid());
+		assertEquals("Wrong vin1 voud", vin1Vout, vin1.getVout());
+		assertEquals("Wrong vin1 asm", vin1ScriptSigAsm, vin1.getScriptSigAsm());
+		assertEquals("Wrong vin1 hex", vin1ScriptSigHex, vin1.getScriptSigHex());
+		assertEquals("Wrong vin1 sequence", vin1Sequence, vin1.getSequence());
 
 		// VOut 1.
 

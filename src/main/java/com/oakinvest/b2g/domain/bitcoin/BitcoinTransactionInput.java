@@ -25,7 +25,7 @@ public class BitcoinTransactionInput {
 	 * vout.
 	 */
 	@Property(name = "vout")
-	private String vout;
+	private long vout;
 
 	/**
 	 * The script asm.
@@ -43,7 +43,7 @@ public class BitcoinTransactionInput {
 	 * The script sequence number.
 	 */
 	@Property(name = "sequence")
-	private String sequence;
+	private long sequence;
 
 	/**
 	 * Getter de la propriété id.
@@ -86,7 +86,7 @@ public class BitcoinTransactionInput {
 	 *
 	 * @return vout
 	 */
-	public final String getVout() {
+	public final long getVout() {
 		return vout;
 	}
 
@@ -95,7 +95,7 @@ public class BitcoinTransactionInput {
 	 *
 	 * @param newVout the vout to set
 	 */
-	public final void setVout(final String newVout) {
+	public final void setVout(final long newVout) {
 		vout = newVout;
 	}
 
@@ -140,7 +140,7 @@ public class BitcoinTransactionInput {
 	 *
 	 * @return sequence
 	 */
-	public final String getSequence() {
+	public final long getSequence() {
 		return sequence;
 	}
 
@@ -149,7 +149,8 @@ public class BitcoinTransactionInput {
 	 *
 	 * @param newSequence the sequence to set
 	 */
-	public final void setSequence(final String newSequence) {
+	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
 	}
+
 }

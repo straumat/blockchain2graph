@@ -2,8 +2,10 @@ package com.oakinvest.b2g.util;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -60,9 +62,24 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "locktime", target = "lockTime"),
 			@Mapping(source = "blockhash", target = "blockHash"),
 			@Mapping(source = "time", target = "time"),
-			@Mapping(source = "blocktime", target = "blockTime")
-
+			@Mapping(source = "blocktime", target = "blockTime"),
+			@Mapping(source = "vin", target = "inputs")
 	})
 	BitcoinTransaction rawTransactionResultToBitcoinTransaction(GetRawTransactionResult grtr);
+
+	/**
+	 * maprs a vin.
+	 *
+	 * @param grtvin vin
+	 * @return domain transaction input
+	 */
+	@Mappings({
+			@Mapping(source = "txid", target = "txid"),
+			@Mapping(source = "vout", target = "vout"),
+			@Mapping(source = "scriptSig.asm", target = "scriptSigAsm"),
+			@Mapping(source = "scriptSig.hex", target = "scriptSigHex"),
+			@Mapping(source = "sequence", target = "sequence")
+	})
+	BitcoinTransactionInput rawTransactionVIn(GetRawTransactionVIn grtvin);
 
 }
