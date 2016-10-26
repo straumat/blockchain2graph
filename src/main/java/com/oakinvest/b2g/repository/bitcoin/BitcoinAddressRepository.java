@@ -24,6 +24,6 @@ public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress
 	 * @param address address
 	 * @return address
 	 */
-	BitcoinAddress findByAddress(final String address);
+	BitcoinAddress findByAddress(String address);
 
 }

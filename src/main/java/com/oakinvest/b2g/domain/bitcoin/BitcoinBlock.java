@@ -110,7 +110,7 @@ public class BitcoinBlock {
 	 * @return view
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "BitcoinBlock{hash = '" + hash + '\'' + ", height=" + height + '}';
 	}
 

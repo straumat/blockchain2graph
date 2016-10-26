@@ -18,7 +18,7 @@ public class BitcoinTransactionOutput {
 	private Long id;
 
 	/**
-	 * The transaction id (same as provided)
+	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
 	private String txid;
@@ -60,7 +60,7 @@ public class BitcoinTransactionOutput {
 	private String scriptPubKeyType;
 
 	/**
-	 * Adresses
+	 * Adresses.
 	 */
 	@Property(name = "addresses")
 	private Set<String> addresses;

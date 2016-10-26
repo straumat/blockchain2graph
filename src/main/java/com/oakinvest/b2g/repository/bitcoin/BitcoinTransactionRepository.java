@@ -15,6 +15,6 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
 	 * @param txid transaction id
 	 * @return transaction
 	 */
-	BitcoinTransaction findByTxid(final String txid);
+	BitcoinTransaction findByTxid(String txid);
 
 }

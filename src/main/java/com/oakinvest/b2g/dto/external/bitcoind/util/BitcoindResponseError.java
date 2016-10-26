@@ -52,12 +52,14 @@ public class BitcoindResponseError {
 		message = newMessage;
 	}
 
+	/**
+	 * Permet de retourner le message.
+	 *
+	 * @return message
+	 */
 	@Override
-	public String toString() {
-		return "BitcoindResponseError{" +
-				"code=" + code +
-				", message='" + message + '\'' +
-				'}';
+	public final String toString() {
+		return "BitcoindResponseError{" + "code=" + code + ", message='" + message + '\'' + '}';
 	}
 
 }

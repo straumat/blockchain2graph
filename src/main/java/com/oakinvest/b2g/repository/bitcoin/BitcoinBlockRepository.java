@@ -24,6 +24,6 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	 * @param hash hash
 	 * @return corresponding block
 	 */
-	BitcoinBlock findByHash(final String hash);
+	BitcoinBlock findByHash(String hash);
 
 }

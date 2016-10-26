@@ -21,7 +21,7 @@ import org.mapstruct.factory.Mappers;
 public interface BitcoindToDomainMapper {
 
 	/**
-	 * Mapper instance
+	 * Mapper instance.
 	 */
 	BitcoindToDomainMapper INSTANCE = Mappers.getMapper(BitcoindToDomainMapper.class);
 

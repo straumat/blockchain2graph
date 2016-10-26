@@ -106,7 +106,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GetBlockHashResponse getBlockHash(final long blockHeight) {
+	public final GetBlockHashResponse getBlockHash(final long blockHeight) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
 		params.add(blockHeight);

@@ -26,13 +26,13 @@ public class BitcoinTransaction {
 	private String hex;
 
 	/**
-	 * The transaction id (same as provided)
+	 * The transaction id (same as provided)?
 	 */
 	@Property(name = "txid")
 	private String txid;
 
 	/**
-	 * The transaction hash (differs from txid for witness transactions)
+	 * The transaction hash (differs from txid for witness transactions).
 	 */
 	@Property(name = "hash")
 	private String hash;
@@ -74,7 +74,7 @@ public class BitcoinTransaction {
 	private long time;
 
 	/**
-	 * The block time in seconds since epoch (Jan 1 1970 GMT)
+	 * The block time in seconds since epoch (Jan 1 1970 GMT).
 	 */
 	@Property(name = "blocktime")
 	private long blockTime;
@@ -93,6 +93,7 @@ public class BitcoinTransaction {
 	 * Returns the output according to the index.
 	 *
 	 * @param n index
+	 * @return output transaction
 	 */
 	public final BitcoinTransactionOutput getOutputByIndex(final int n) {
 		Iterator<BitcoinTransactionOutput> it = getOutputs().iterator();

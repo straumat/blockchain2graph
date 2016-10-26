@@ -72,7 +72,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * @return true is integrated successfully
 	 */
 	@Override
-	public boolean integrateBitcoinBlock(final long blockHeight) {
+	public final boolean integrateBitcoinBlock(final long blockHeight) {
 		log.info("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 
 		// Variables.

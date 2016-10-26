@@ -16,7 +16,7 @@ public class BitcoinTransactionInput {
 	private Long id;
 
 	/**
-	 * The transaction id (same as provided)
+	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
 	private String txid;

@@ -4,7 +4,6 @@ import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTrans
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Result inside the GetRawTransaction response.
@@ -23,7 +22,7 @@ public class GetRawTransactionResult {
 	private String txid;
 
 	/**
-	 * The transaction hash (differs from txid for witness transactions)
+	 * The transaction hash (differs from txid for witness transactions).
 	 */
 	private String hash;
 
@@ -294,15 +293,6 @@ public class GetRawTransactionResult {
 	}
 
 	/**
-	 * Returns time as a Date
-	 *
-	 * @return time as a Date.
-	 */
-	public final Date getTimeAsDate() {
-		return new Date(getTime() * 1000);
-	}
-
-	/**
 	 * Getter de la propriété blocktime.
 	 *
 	 * @return blocktime
@@ -318,15 +308,6 @@ public class GetRawTransactionResult {
 	 */
 	public final void setBlocktime(final long newBlocktime) {
 		blocktime = newBlocktime;
-	}
-
-	/**
-	 * Returns blocktime as a date.
-	 *
-	 * @return blocktime as a date.
-	 */
-	public final Date getBlocktimeAsDate() {
-		return new Date(getTime() * 1000);
 	}
 
 }
