@@ -23,9 +23,19 @@ public class GetRawTransactionResult {
 	private String txid;
 
 	/**
+	 * The transaction hash (differs from txid for witness transactions)
+	 */
+	private String hash;
+
+	/**
 	 * The transaction size.
 	 */
 	private int size;
+
+	/**
+	 * The virtual transaction size (differs from size for witness transactions).
+	 */
+	private int vsize;
 
 	/**
 	 * The version.
@@ -66,6 +76,42 @@ public class GetRawTransactionResult {
 	 * The block time in seconds since epoch (Jan 1 1970 GMT).
 	 */
 	private long blocktime;
+
+	/**
+	 * Getter de la propriété hash.
+	 *
+	 * @return hash
+	 */
+	public final String getHash() {
+		return hash;
+	}
+
+	/**
+	 * Setter de la propriété hash.
+	 *
+	 * @param newHash the hash to set
+	 */
+	public final void setHash(final String newHash) {
+		hash = newHash;
+	}
+
+	/**
+	 * Getter de la propriété vsize.
+	 *
+	 * @return vsize
+	 */
+	public final int getVsize() {
+		return vsize;
+	}
+
+	/**
+	 * Setter de la propriété vsize.
+	 *
+	 * @param newVsize the vsize to set
+	 */
+	public final void setVsize(final int newVsize) {
+		vsize = newVsize;
+	}
 
 	/**
 	 * Getter de la propriété vin.

@@ -2,12 +2,14 @@ package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.util.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 */
 	@Autowired
 	private BitcoinBlockRepository bbr;
+
+	/**
+	 * Bitcoin transaction repository.
+	 */
+	@Autowired
+	private BitcoinTransactionRepository btr;
 
 	/**
 	 * Bitcoin address repository.
@@ -102,6 +110,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				// We don't treat the genesis block transaction.
 				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
 					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
+
+//					if (transaction.getResult().getVin().size() >= 4) {
+//						System.out.println("=> " + transaction.getResult().getTxid());
+//						System.exit(-1);
+//					}
+
 					if (transaction.getError() == null) {
 						transactions.add(transaction.getResult());
 					} else {
@@ -122,10 +136,10 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 		// Persisting data.
 		if (success) {
-			// Saving all bitcoin addresses.
-			Iterator<String> it = addresses.iterator();
-			while (it.hasNext()) {
-				String address = it.next();
+			// Saving the bitcoin addresses.
+			Iterator<String> itAddresses = addresses.iterator();
+			while (itAddresses.hasNext()) {
+				String address = itAddresses.next();
 				if (bar.findByAddress(address) == null) {
 					bar.save(new BitcoinAddress(address));
 				}
@@ -134,6 +148,16 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			// Saving the block.
 			BitcoinBlock b = BitcoindToDomainMapper.INSTANCE.blockResultToBitcoinBlock(block.getResult());
 			bbr.save(b);
+
+			// Saving the transactions
+			Iterator<GetRawTransactionResult> itTransactions = transactions.iterator();
+			while (itTransactions.hasNext()) {
+				GetRawTransactionResult t = itTransactions.next();
+				BitcoinTransaction bt = BitcoindToDomainMapper.INSTANCE.rawTransactionResultToBitcoinTransaction(t);
+				System.out.println("Save " + bt.getTxid());
+				btr.save(bt);
+			}
+
 		}
 
 		return success;

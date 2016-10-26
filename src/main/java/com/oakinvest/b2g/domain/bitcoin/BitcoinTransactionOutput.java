@@ -1,0 +1,155 @@
+package com.oakinvest.b2g.domain.bitcoin;
+
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Property;
+
+/**
+ * Bitcoin transaction output.
+ * Created by straumat on 22/09/16.
+ */
+public class BitcoinTransactionOutput {
+
+	/**
+	 * ID.
+	 */
+	@GraphId
+	private Long id;
+
+	/**
+	 * The transaction id (same as provided)
+	 */
+	@Property(name = "txid")
+	private String txid;
+
+	/**
+	 * The value in BTC.
+	 */
+	@Property(name = "value")
+	private float value;
+
+	/**
+	 * index.
+	 */
+	@Property(name = "n")
+	private long n;
+
+	/**
+	 * The scriptPubKey asm.
+	 */
+	@Property(name = "scriptPubKey_asm")
+	private String scriptPubKeyAsm;
+
+	/**
+	 * The scriptPubKey hex.
+	 */
+	@Property(name = "scriptPubKey_hex")
+	private String scriptPubKeyHex;
+
+	/**
+	 * Getter de la propriété id.
+	 *
+	 * @return id
+	 */
+	public final Long getId() {
+		return id;
+	}
+
+	/**
+	 * Setter de la propriété id.
+	 *
+	 * @param newId the id to set
+	 */
+	public final void setId(final Long newId) {
+		id = newId;
+	}
+
+	/**
+	 * Getter de la propriété txid.
+	 *
+	 * @return txid
+	 */
+	public final String getTxid() {
+		return txid;
+	}
+
+	/**
+	 * Setter de la propriété txid.
+	 *
+	 * @param newTxid the txid to set
+	 */
+	public final void setTxid(final String newTxid) {
+		txid = newTxid;
+	}
+
+	/**
+	 * Getter de la propriété value.
+	 *
+	 * @return value
+	 */
+	public final float getValue() {
+		return value;
+	}
+
+	/**
+	 * Setter de la propriété value.
+	 *
+	 * @param newValue the value to set
+	 */
+	public final void setValue(final float newValue) {
+		value = newValue;
+	}
+
+	/**
+	 * Getter de la propriété n.
+	 *
+	 * @return n
+	 */
+	public final long getN() {
+		return n;
+	}
+
+	/**
+	 * Setter de la propriété n.
+	 *
+	 * @param newN the n to set
+	 */
+	public final void setN(final long newN) {
+		n = newN;
+	}
+
+	/**
+	 * Getter de la propriété scriptPubKeyAsm.
+	 *
+	 * @return scriptPubKeyAsm
+	 */
+	public final String getScriptPubKeyAsm() {
+		return scriptPubKeyAsm;
+	}
+
+	/**
+	 * Setter de la propriété scriptPubKeyAsm.
+	 *
+	 * @param newScriptPubKeyAsm the scriptPubKeyAsm to set
+	 */
+	public final void setScriptPubKeyAsm(final String newScriptPubKeyAsm) {
+		scriptPubKeyAsm = newScriptPubKeyAsm;
+	}
+
+	/**
+	 * Getter de la propriété scriptPubKeyHex.
+	 *
+	 * @return scriptPubKeyHex
+	 */
+	public final String getScriptPubKeyHex() {
+		return scriptPubKeyHex;
+	}
+
+	/**
+	 * Setter de la propriété scriptPubKeyHex.
+	 *
+	 * @param newScriptPubKeyHex the scriptPubKeyHex to set
+	 */
+	public final void setScriptPubKeyHex(final String newScriptPubKeyHex) {
+		scriptPubKeyHex = newScriptPubKeyHex;
+	}
+}

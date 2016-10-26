@@ -36,7 +36,7 @@ public class BitcoinBlock {
 	private long size;
 
 	/**
-	 * The block version.
+	 * The version.
 	 */
 	@Property(name = "version")
 	private long version;

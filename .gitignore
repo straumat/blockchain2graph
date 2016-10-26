@@ -116,6 +116,4 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
-Supprimerait .idea/
-Supprimerait src/main/java/com/oakinvest/b2g/domain/bitcoin/BitcoinAddress.java
-Supprimerait src/main/java/com/oakinvest/b2g/repository/bitcoin/BitcoinAddressRepository.java
+.idea/

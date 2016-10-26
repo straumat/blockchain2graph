@@ -2,8 +2,10 @@ package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.IntegrationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +53,12 @@ public class IntegrationServiceTest {
 	private BitcoinAddressRepository bar;
 
 	/**
+	 * Bitcoin transaction repository.
+	 */
+	@Autowired
+	private BitcoinTransactionRepository btr;
+
+	/**
 	 * Returns a date formated as timestamp
 	 *
 	 * @param formatedDate date like 2009-01-12 03:30:25
@@ -78,7 +86,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			assertTrue("Integration " + i + " failed", is.integrateBitcoinBlock(i));
+			assertTrue("Block " + i + " intergration failure", is.integrateBitcoinBlock(i));
 		}
 
 		// Testing data of block 170.
@@ -94,7 +102,6 @@ public class IntegrationServiceTest {
 		final String expectedChainwork = "000000000000000000000000000000000000000000000000000000ab00ab00ab";
 		final String expectedPreviousblockhash = "000000002a22cfee1f2c846adbd12b3e183d4f97683f85dad08a79780a84bd55";
 		final String expectedNextblockhash = "00000000c9ec538cab7f38ef9c67a95742f56ab07b0a37c5be6b02808dbfb4e0";
-
 		BitcoinBlock b = bbr.findByHash(expectedHash);
 		assertEquals("Block height is wrong", expectedHeight, b.getHeight());
 		assertEquals("Block size is wrong", expectedSize, b.getSize());
@@ -107,6 +114,36 @@ public class IntegrationServiceTest {
 		assertEquals("Block chainblock is wrong", expectedChainwork, b.getChainwork());
 		assertEquals("Block previous block hash is wrong", expectedPreviousblockhash, b.getPreviousblockhash());
 		assertEquals("Block next block hash is wrong", expectedNextblockhash, b.getNextblockhash());
+
+		// Testing the transaction of the block 170
+		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+		final String expectedTransactionHex = "0100000001c997a5e56e104102fa209c6a852dd90660a20b2d9c352423edce25857fcd3704000000004847304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901ffffffff0200ca9a3b00000000434104ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84cac00286bee0000000043410411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3ac00000000";
+		final String expectedTransactionTxid = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+		final String expectedTransaxtionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+		final long expectedTransactionSize = 275;
+		final long expectedTransactionVSize = 275;
+		final long expectedTransactionVersion = 1;
+		final long exepctedTransactionLocktime = 0;
+		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
+		final long expectedTransactionTime = 1231731025;
+		final long expectedBlockTime = 1231731025;
+		BitcoinTransaction t = btr.findByTxid(transactionHash);
+		assertNotNull("No transaction found", t);
+		assertEquals("Wrong hex", expectedTransactionHex, t.getHex());
+		assertEquals("Wrong Tx id", expectedTransactionTxid, t.getTxid());
+		assertEquals("Wrong hash", expectedTransaxtionHash, t.getHash());
+		assertEquals("Wrong size", expectedTransactionSize, t.getSize());
+		assertEquals("Wrong vsize", expectedTransactionVSize, t.getvSize());
+		assertEquals("Wrong version", expectedTransactionVersion, t.getVersion());
+		assertEquals("Wrong locktime", exepctedTransactionLocktime, t.getLockTime());
+		assertEquals("Wrong block hash", expectedBlockHash, t.getBlockHash());
+		// assertTrue("Wrong transaction time", expectedTransactionTime < t.getTime());  FIXME There is a problem with time between local and IC
+		// assertEquals("Block time is wrong", expectedTime, b.getTime()); FIXME There is a problem with time between local and IC
+		// VIn 1.
+
+		// VOut 1.
+
+		// VOut 2.
 
 		// Integrating again the block last block and checking that we did not make a duplicate block.
 		long numberOfBlocks = bbr.count();
@@ -123,6 +160,7 @@ public class IntegrationServiceTest {
 		long numberOfAddresses = bbr.count();
 		is.integrateBitcoinBlock(lastBlockToImport);
 		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
+
 
 	}
 
