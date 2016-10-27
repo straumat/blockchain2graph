@@ -91,7 +91,8 @@ public class IntegrationServiceTest {
 		final long expectedSize = 490;
 		final long expectedVersion = 1;
 		final String expectedMerkleroot = "7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff";
-		//final long expectedTime = getDateAsTimestamp("2009-01-12 04:30:25");
+		final long expectedTime = 1231731025;
+		final long expectedmedianTime = 1231716245;
 		final long expectedNonce = 1889418792;
 		final String expectedBits = "1d00ffff";
 		final float expectedDifficulty = 1;
@@ -103,7 +104,8 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong Block size ", expectedSize, b.getSize());
 		assertEquals("Wrong Block version ", expectedVersion, b.getVersion());
 		assertEquals("Wrong Block merkel root ", expectedMerkleroot, b.getMerkleRoot());
-		// assertEquals("Block time ", expectedTime, b.getTime()); FIXME There is a problem with time between local and IC
+		assertEquals("Block time ", expectedTime, b.getTime());
+		assertEquals("Block median time ", expectedmedianTime, b.getMedianTime());
 		assertEquals("Wrong Block nonce ", expectedNonce, b.getNonce());
 		assertEquals("Wrong Block difficulty ", expectedDifficulty, b.getDifficulty());
 		assertEquals("Wrong Block bits ", expectedBits, b.getBits());
@@ -122,7 +124,7 @@ public class IntegrationServiceTest {
 		final long exepctedTransactionLocktime = 0;
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedTransactionTime = 1231731025;
-		final long expectedBlockTime = 1231731025;
+		final long expectedTransactionBlockTime = 1231731025;
 		BitcoinTransaction t = btr.findByTxId(transactionHash);
 		assertNotNull("No transaction found", t);
 		assertEquals("Wrong hex", expectedTransactionHex, t.getHex());
@@ -133,8 +135,8 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong version", expectedTransactionVersion, t.getVersion());
 		assertEquals("Wrong locktime", exepctedTransactionLocktime, t.getLockTime());
 		assertEquals("Wrong block hash", expectedBlockHash, t.getBlockHash());
-		// assertTrue("Wrong transaction time", expectedTransactionTime < t.getTime());  FIXME There is a problem with time between local and IC
-		// assertEquals("Block time ", expectedTime, b.getTime()); FIXME There is a problem with time between local and IC
+		assertEquals("Wrong time", expectedTransactionTime, t.getTime());
+		assertEquals("Wrong block time", expectedTransactionBlockTime, t.getBlockTime());
 
 		// Vin 1.
 		BitcoinTransactionInput vin1 = t.getInputs().iterator().next();
