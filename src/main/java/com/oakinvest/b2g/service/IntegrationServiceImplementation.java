@@ -160,7 +160,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			while (itTransactions.hasNext()) {
 				GetRawTransactionResult t = itTransactions.next();
 				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
-				System.out.println("Save " + bt.getTxId());
+				bt.setBlock(b);
 				btr.save(bt);
 			}
 

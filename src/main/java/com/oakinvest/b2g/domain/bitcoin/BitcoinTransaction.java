@@ -3,6 +3,7 @@ package com.oakinvest.b2g.domain.bitcoin;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -31,6 +32,12 @@ public class BitcoinTransaction {
 	 */
 	@Property(name = "txid")
 	private String txId;
+
+	/**
+	 * The block.
+	 */
+	@Relationship(type = "IN_BLOCK", direction = Relationship.INCOMING)
+	private BitcoinBlock block;
 
 	/**
 	 * The transaction hash (differs from txId for witness transactions).
@@ -339,5 +346,23 @@ public class BitcoinTransaction {
 	 */
 	public final void setOutputs(final Set<BitcoinTransactionOutput> newOutputs) {
 		outputs = newOutputs;
+	}
+
+	/**
+	 * Getter de la propriété block.
+	 *
+	 * @return block
+	 */
+	public final BitcoinBlock getBlock() {
+		return block;
+	}
+
+	/**
+	 * Setter de la propriété block.
+	 *
+	 * @param newBlock the block to set
+	 */
+	public final void setBlock(final BitcoinBlock newBlock) {
+		block = newBlock;
 	}
 }

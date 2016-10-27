@@ -3,6 +3,9 @@ package com.oakinvest.b2g.domain.bitcoin;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
+
+import java.util.Set;
 
 /**
  * Bitcoin block.
@@ -22,6 +25,12 @@ public class BitcoinBlock {
 	 */
 	@Property(name = "hash")
 	private String hash;
+
+	/**
+	 * Transactions in the block.
+	 */
+	@Relationship(type = "TRANSACTIONS")
+	private Set<BitcoinTransaction> transactions;
 
 	/**
 	 * Block height.
@@ -357,5 +366,25 @@ public class BitcoinBlock {
 	public final void setNextBlockHash(final String newNextblockhash) {
 		nextBlockHash = newNextblockhash;
 	}
+
+
+	/**
+	 * Getter de la propriété transactions.
+	 *
+	 * @return transactions
+	 */
+	public final Set<BitcoinTransaction> getTransactions() {
+		return transactions;
+	}
+
+	/**
+	 * Setter de la propriété transactions.
+	 *
+	 * @param newTransactions the transactions to set
+	 */
+	public final void setTransactions(final Set<BitcoinTransaction> newTransactions) {
+		transactions = newTransactions;
+	}
+
 
 }
