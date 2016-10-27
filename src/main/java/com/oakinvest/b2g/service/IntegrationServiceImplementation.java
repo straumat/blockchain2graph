@@ -118,7 +118,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
 
 //					if (transaction.getResult().getVin().size() >= 4) {
-//						System.out.println("=> " + transaction.getResult().getTxid());
+//						System.out.println("=> " + transaction.getResult().getTxId());
 //						System.exit(-1);
 //					}
 
@@ -160,7 +160,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			while (itTransactions.hasNext()) {
 				GetRawTransactionResult t = itTransactions.next();
 				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
-				System.out.println("Save " + bt.getTxid());
+				System.out.println("Save " + bt.getTxId());
 				btr.save(bt);
 			}
 

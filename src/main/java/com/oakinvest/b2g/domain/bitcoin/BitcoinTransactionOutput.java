@@ -21,7 +21,7 @@ public class BitcoinTransactionOutput {
 	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
-	private String txid;
+	private String txId;
 
 	/**
 	 * The value in BTC.
@@ -38,19 +38,19 @@ public class BitcoinTransactionOutput {
 	/**
 	 * The scriptPubKey asm.
 	 */
-	@Property(name = "scriptPubKey_asm")
+	@Property(name = "scriptPubKeyAsm")
 	private String scriptPubKeyAsm;
 
 	/**
 	 * The scriptPubKey hex.
 	 */
-	@Property(name = "scriptPubKey_hex")
+	@Property(name = "scriptPubKeyHex")
 	private String scriptPubKeyHex;
 
 	/**
 	 * The required sigs.
 	 */
-	@Property(name = "scriptPubKey_hex")
+	@Property(name = "scriptPubKeyReqSigs")
 	private long scriptPubKeyReqSigs;
 
 	/**
@@ -138,21 +138,21 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété txid.
+	 * Getter de la propriété txId.
 	 *
-	 * @return txid
+	 * @return txId
 	 */
-	public final String getTxid() {
-		return txid;
+	public final String getTxId() {
+		return txId;
 	}
 
 	/**
-	 * Setter de la propriété txid.
+	 * Setter de la propriété txId.
 	 *
-	 * @param newTxid the txid to set
+	 * @param newTxid the txId to set
 	 */
-	public final void setTxid(final String newTxid) {
-		txid = newTxid;
+	public final void setTxId(final String newTxid) {
+		txId = newTxid;
 	}
 
 	/**

@@ -102,14 +102,14 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong Block height", expectedHeight, b.getHeight());
 		assertEquals("Wrong Block size ", expectedSize, b.getSize());
 		assertEquals("Wrong Block version ", expectedVersion, b.getVersion());
-		assertEquals("Wrong Block merkel root ", expectedMerkleroot, b.getMerkleroot());
+		assertEquals("Wrong Block merkel root ", expectedMerkleroot, b.getMerkleRoot());
 		// assertEquals("Block time ", expectedTime, b.getTime()); FIXME There is a problem with time between local and IC
 		assertEquals("Wrong Block nonce ", expectedNonce, b.getNonce());
 		assertEquals("Wrong Block difficulty ", expectedDifficulty, b.getDifficulty());
 		assertEquals("Wrong Block bits ", expectedBits, b.getBits());
-		assertEquals("Wrong Block chainblock ", expectedChainwork, b.getChainwork());
-		assertEquals("Wrong Block previous block hash ", expectedPreviousblockhash, b.getPreviousblockhash());
-		assertEquals("Wrong Block next block hash ", expectedNextblockhash, b.getNextblockhash());
+		assertEquals("Wrong Block chainblock ", expectedChainwork, b.getChainWork());
+		assertEquals("Wrong Block previous block hash ", expectedPreviousblockhash, b.getPreviousBlockHash());
+		assertEquals("Wrong Block next block hash ", expectedNextblockhash, b.getNextBlockHash());
 
 		// Testing the transaction of the block 170
 		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
@@ -123,10 +123,10 @@ public class IntegrationServiceTest {
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedTransactionTime = 1231731025;
 		final long expectedBlockTime = 1231731025;
-		BitcoinTransaction t = btr.findByTxid(transactionHash);
+		BitcoinTransaction t = btr.findByTxId(transactionHash);
 		assertNotNull("No transaction found", t);
 		assertEquals("Wrong hex", expectedTransactionHex, t.getHex());
-		assertEquals("Wrong Tx id", expectedTransactionTxid, t.getTxid());
+		assertEquals("Wrong Tx id", expectedTransactionTxid, t.getTxId());
 		assertEquals("Wrong hash", expectedTransactionHash, t.getHash());
 		assertEquals("Wrong size", expectedTransactionSize, t.getSize());
 		assertEquals("Wrong vsize", expectedTransactionVSize, t.getvSize());
@@ -143,8 +143,8 @@ public class IntegrationServiceTest {
 		final String expectedVin1ScriptSigAsm = "304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d09[ALL]";
 		final String expectedVin1ScriptSigHex = "47304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901";
 		final long expectedVin1Sequence = 4294967295L;
-		assertEquals("Wrong vin1 tx id", expectedVin1Txid, vin1.getTxid());
-		assertEquals("Wrong vin1 voud", expectedVin1Vout, vin1.getVout());
+		assertEquals("Wrong vin1 tx id", expectedVin1Txid, vin1.getTxId());
+		assertEquals("Wrong vin1 voud", expectedVin1Vout, vin1.getvOut());
 		assertEquals("Wrong vin1 asm", expectedVin1ScriptSigAsm, vin1.getScriptSigAsm());
 		assertEquals("Wrong vin1 hex", expectedVin1ScriptSigHex, vin1.getScriptSigHex());
 		assertEquals("Wrong vin1 sequence", expectedVin1Sequence, vin1.getSequence());

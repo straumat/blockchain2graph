@@ -30,15 +30,15 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "size", target = "size"),
 			@Mapping(source = "height", target = "height"),
 			@Mapping(source = "version", target = "version"),
-			@Mapping(source = "merkleroot", target = "merkleroot"),
+			@Mapping(source = "merkleroot", target = "merkleRoot"),
 			@Mapping(source = "time", target = "time"),
-			@Mapping(source = "mediantime", target = "mediantime"),
+			@Mapping(source = "mediantime", target = "medianTime"),
 			@Mapping(source = "nonce", target = "nonce"),
 			@Mapping(source = "bits", target = "bits"),
 			@Mapping(source = "difficulty", target = "difficulty"),
-			@Mapping(source = "chainwork", target = "chainwork"),
-			@Mapping(source = "previousblockhash", target = "previousblockhash"),
-			@Mapping(source = "nextblockhash", target = "nextblockhash")
+			@Mapping(source = "chainwork", target = "chainWork"),
+			@Mapping(source = "previousblockhash", target = "previousBlockHash"),
+			@Mapping(source = "nextblockhash", target = "nextBlockHash")
 	})
 	BitcoinBlock blockResultToBitcoinBlock(GetBlockResult gbr);
 
@@ -50,7 +50,7 @@ public interface BitcoindToDomainMapper {
 	 */
 	@Mappings({
 			@Mapping(source = "hex", target = "hex"),
-			@Mapping(source = "txid", target = "txid"),
+			@Mapping(source = "txid", target = "txId"),
 			@Mapping(source = "hash", target = "hash"),
 			@Mapping(source = "size", target = "size"),
 			@Mapping(source = "vsize", target = "vSize"),
@@ -71,8 +71,8 @@ public interface BitcoindToDomainMapper {
 	 * @return domain transaction input
 	 */
 	@Mappings({
-			@Mapping(source = "txid", target = "txid"),
-			@Mapping(source = "vout", target = "vout"),
+			@Mapping(source = "txid", target = "txId"),
+			@Mapping(source = "vout", target = "vOut"),
 			@Mapping(source = "scriptSig.asm", target = "scriptSigAsm"),
 			@Mapping(source = "scriptSig.hex", target = "scriptSigHex"),
 			@Mapping(source = "sequence", target = "sequence")

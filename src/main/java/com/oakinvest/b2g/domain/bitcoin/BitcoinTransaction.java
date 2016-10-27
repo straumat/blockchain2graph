@@ -21,18 +21,19 @@ public class BitcoinTransaction {
 	private Long id;
 
 	/**
-	 * The serialized, hex-encoded data for 'txid'.
+	 * The serialized, hex-encoded data for 'txId'.
 	 */
+	@Property(name = "hex")
 	private String hex;
 
 	/**
 	 * The transaction id (same as provided)?
 	 */
 	@Property(name = "txid")
-	private String txid;
+	private String txId;
 
 	/**
-	 * The transaction hash (differs from txid for witness transactions).
+	 * The transaction hash (differs from txId for witness transactions).
 	 */
 	@Property(name = "hash")
 	private String hash;
@@ -179,21 +180,21 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété txid.
+	 * Getter de la propriété txId.
 	 *
-	 * @return txid
+	 * @return txId
 	 */
-	public final String getTxid() {
-		return txid;
+	public final String getTxId() {
+		return txId;
 	}
 
 	/**
-	 * Setter de la propriété txid.
+	 * Setter de la propriété txId.
 	 *
-	 * @param newTxid the txid to set
+	 * @param newTxid the txId to set
 	 */
-	public final void setTxid(final String newTxid) {
-		txid = newTxid;
+	public final void setTxId(final String newTxid) {
+		txId = newTxid;
 	}
 
 	/**

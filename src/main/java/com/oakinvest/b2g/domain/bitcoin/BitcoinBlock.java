@@ -45,7 +45,7 @@ public class BitcoinBlock {
 	 * The merkle root.
 	 */
 	@Property(name = "merkleroot")
-	private String merkleroot;
+	private String merkleRoot;
 
 	/**
 	 * The block time.
@@ -57,7 +57,7 @@ public class BitcoinBlock {
 	 * The median block time.
 	 */
 	@Property(name = "mediantime")
-	private long mediantime;
+	private long medianTime;
 
 	/**
 	 * The nonce.
@@ -81,28 +81,20 @@ public class BitcoinBlock {
 	 * Expected number of hashes required to produce the chain up to this block (in hex).
 	 */
 	@Property(name = "chainwork")
-	private String chainwork;
+	private String chainWork;
 
 	/**
 	 * The hash of the previous block.
 	 */
 	@Property(name = "previousblockhash")
-	private String previousblockhash;
+	private String previousBlockHash;
 
 	/**
 	 * The hash of the next block.
 	 */
 	@Property(name = "nextblockhash")
-	private String nextblockhash;
+	private String nextBlockHash;
 
-//	/**
-//	 * Constructor.
-//	 *
-//	 * @param newHash block Hash
-//	 */
-//	public BitcoinBlock(final String newHash) {
-//		this.hash = newHash;
-//	}
 
 	/**
 	 * For display.
@@ -205,21 +197,21 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété merkleroot.
+	 * Getter de la propriété merkleRoot.
 	 *
-	 * @return merkleroot
+	 * @return merkleRoot
 	 */
-	public final String getMerkleroot() {
-		return merkleroot;
+	public final String getMerkleRoot() {
+		return merkleRoot;
 	}
 
 	/**
-	 * Setter de la propriété merkleroot.
+	 * Setter de la propriété merkleRoot.
 	 *
-	 * @param newMerkleroot the merkleroot to set
+	 * @param newMerkleroot the merkleRoot to set
 	 */
-	public final void setMerkleroot(final String newMerkleroot) {
-		merkleroot = newMerkleroot;
+	public final void setMerkleRoot(final String newMerkleroot) {
+		merkleRoot = newMerkleroot;
 	}
 
 	/**
@@ -241,21 +233,21 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété mediantime.
+	 * Getter de la propriété medianTime.
 	 *
-	 * @return mediantime
+	 * @return medianTime
 	 */
-	public final long getMediantime() {
-		return mediantime;
+	public final long getMedianTime() {
+		return medianTime;
 	}
 
 	/**
-	 * Setter de la propriété mediantime.
+	 * Setter de la propriété medianTime.
 	 *
-	 * @param newMediantime the mediantime to set
+	 * @param newMediantime the medianTime to set
 	 */
-	public final void setMediantime(final long newMediantime) {
-		mediantime = newMediantime;
+	public final void setMedianTime(final long newMediantime) {
+		medianTime = newMediantime;
 	}
 
 	/**
@@ -313,57 +305,57 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété chainwork.
+	 * Getter de la propriété chainWork.
 	 *
-	 * @return chainwork
+	 * @return chainWork
 	 */
-	public final String getChainwork() {
-		return chainwork;
+	public final String getChainWork() {
+		return chainWork;
 	}
 
 	/**
-	 * Setter de la propriété chainwork.
+	 * Setter de la propriété chainWork.
 	 *
-	 * @param newChainwork the chainwork to set
+	 * @param newChainwork the chainWork to set
 	 */
-	public final void setChainwork(final String newChainwork) {
-		chainwork = newChainwork;
+	public final void setChainWork(final String newChainwork) {
+		chainWork = newChainwork;
 	}
 
 	/**
-	 * Getter de la propriété previousblockhash.
+	 * Getter de la propriété previousBlockHash.
 	 *
-	 * @return previousblockhash
+	 * @return previousBlockHash
 	 */
-	public final String getPreviousblockhash() {
-		return previousblockhash;
+	public final String getPreviousBlockHash() {
+		return previousBlockHash;
 	}
 
 	/**
-	 * Setter de la propriété previousblockhash.
+	 * Setter de la propriété previousBlockHash.
 	 *
-	 * @param newPreviousblockhash the previousblockhash to set
+	 * @param newPreviousblockhash the previousBlockHash to set
 	 */
-	public final void setPreviousblockhash(final String newPreviousblockhash) {
-		previousblockhash = newPreviousblockhash;
+	public final void setPreviousBlockHash(final String newPreviousblockhash) {
+		previousBlockHash = newPreviousblockhash;
 	}
 
 	/**
-	 * Getter de la propriété nextblockhash.
+	 * Getter de la propriété nextBlockHash.
 	 *
-	 * @return nextblockhash
+	 * @return nextBlockHash
 	 */
-	public final String getNextblockhash() {
-		return nextblockhash;
+	public final String getNextBlockHash() {
+		return nextBlockHash;
 	}
 
 	/**
-	 * Setter de la propriété nextblockhash.
+	 * Setter de la propriété nextBlockHash.
 	 *
-	 * @param newNextblockhash the nextblockhash to set
+	 * @param newNextblockhash the nextBlockHash to set
 	 */
-	public final void setNextblockhash(final String newNextblockhash) {
-		nextblockhash = newNextblockhash;
+	public final void setNextBlockHash(final String newNextblockhash) {
+		nextBlockHash = newNextblockhash;
 	}
 
 }

@@ -19,24 +19,24 @@ public class BitcoinTransactionInput {
 	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
-	private String txid;
+	private String txId;
 
 	/**
-	 * vout.
+	 * vOut.
 	 */
 	@Property(name = "vout")
-	private long vout;
+	private long vOut;
 
 	/**
 	 * The script asm.
 	 */
-	@Property(name = "scriptSig_asm")
+	@Property(name = "scriptSigAsm")
 	private String scriptSigAsm;
 
 	/**
 	 * The script hex.
 	 */
-	@Property(name = "scriptSig_hex")
+	@Property(name = "scriptSigHex")
 	private String scriptSigHex;
 
 	/**
@@ -64,39 +64,39 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété txid.
+	 * Getter de la propriété txId.
 	 *
-	 * @return txid
+	 * @return txId
 	 */
-	public final String getTxid() {
-		return txid;
+	public final String getTxId() {
+		return txId;
 	}
 
 	/**
-	 * Setter de la propriété txid.
+	 * Setter de la propriété txId.
 	 *
-	 * @param newTxid the txid to set
+	 * @param newTxid the txId to set
 	 */
-	public final void setTxid(final String newTxid) {
-		txid = newTxid;
+	public final void setTxId(final String newTxid) {
+		txId = newTxid;
 	}
 
 	/**
-	 * Getter de la propriété vout.
+	 * Getter de la propriété vOut.
 	 *
-	 * @return vout
+	 * @return vOut
 	 */
-	public final long getVout() {
-		return vout;
+	public final long getvOut() {
+		return vOut;
 	}
 
 	/**
-	 * Setter de la propriété vout.
+	 * Setter de la propriété vOut.
 	 *
-	 * @param newVout the vout to set
+	 * @param newVout the vOut to set
 	 */
-	public final void setVout(final long newVout) {
-		vout = newVout;
+	public final void setvOut(final long newVout) {
+		vOut = newVout;
 	}
 
 	/**

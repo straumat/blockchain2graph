@@ -12,9 +12,9 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
 	/**
 	 * Find a block by its id.
 	 *
-	 * @param txid transaction id
+	 * @param txId transaction id
 	 * @return transaction
 	 */
-	BitcoinTransaction findByTxid(String txid);
+	BitcoinTransaction findByTxId(String txId);
 
 }
