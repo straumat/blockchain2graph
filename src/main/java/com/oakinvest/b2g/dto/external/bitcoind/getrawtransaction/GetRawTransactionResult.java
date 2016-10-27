@@ -29,22 +29,22 @@ public class GetRawTransactionResult {
 	/**
 	 * The transaction size.
 	 */
-	private int size;
+	private long size;
 
 	/**
 	 * The virtual transaction size (differs from size for witness transactions).
 	 */
-	private int vsize;
+	private long vsize;
 
 	/**
 	 * The version.
 	 */
-	private int version;
+	private long version;
 
 	/**
 	 * The lock time.
 	 */
-	private int locktime;
+	private long locktime;
 
 	/**
 	 * Vin.
@@ -99,7 +99,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @return vsize
 	 */
-	public final int getVsize() {
+	public final long getVsize() {
 		return vsize;
 	}
 
@@ -108,7 +108,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @param newVsize the vsize to set
 	 */
-	public final void setVsize(final int newVsize) {
+	public final void setVsize(final long newVsize) {
 		vsize = newVsize;
 	}
 
@@ -189,7 +189,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @return size
 	 */
-	public final int getSize() {
+	public final long getSize() {
 		return size;
 	}
 
@@ -198,7 +198,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @param newSize the size to set
 	 */
-	public final void setSize(final int newSize) {
+	public final void setSize(final long newSize) {
 		size = newSize;
 	}
 
@@ -207,7 +207,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @return version
 	 */
-	public final int getVersion() {
+	public final long getVersion() {
 		return version;
 	}
 
@@ -216,7 +216,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @param newVersion the version to set
 	 */
-	public final void setVersion(final int newVersion) {
+	public final void setVersion(final long newVersion) {
 		version = newVersion;
 	}
 
@@ -225,7 +225,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @return locktime
 	 */
-	public final int getLocktime() {
+	public final long getLocktime() {
 		return locktime;
 	}
 
@@ -234,7 +234,7 @@ public class GetRawTransactionResult {
 	 *
 	 * @param newLocktime the locktime to set
 	 */
-	public final void setLocktime(final int newLocktime) {
+	public final void setLocktime(final long newLocktime) {
 		locktime = newLocktime;
 	}
 

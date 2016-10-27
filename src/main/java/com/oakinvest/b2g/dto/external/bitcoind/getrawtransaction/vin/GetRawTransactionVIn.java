@@ -16,7 +16,7 @@ public class GetRawTransactionVIn {
 	/**
 	 * vout.
 	 */
-	private int vout;
+	private long vout;
 
 	/**
 	 * ScriptSig.
@@ -51,7 +51,7 @@ public class GetRawTransactionVIn {
 	 *
 	 * @return vout
 	 */
-	public final int getVout() {
+	public final long getVout() {
 		return vout;
 	}
 
@@ -60,7 +60,7 @@ public class GetRawTransactionVIn {
 	 *
 	 * @param newVout the vout to set
 	 */
-	public final void setVout(final int newVout) {
+	public final void setVout(final long newVout) {
 		vout = newVout;
 	}
 
