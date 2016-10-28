@@ -14,6 +14,7 @@ import com.oakinvest.b2g.util.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * Bitcoind service.
 	 */
 	@Autowired
+	@Qualifier("BitcoindServiceMock")   // FIXME Find a way to not set this in production.
 	private BitcoindService bds;
 
 	/**

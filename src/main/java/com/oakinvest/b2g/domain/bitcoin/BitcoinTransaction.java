@@ -357,4 +357,5 @@ public class BitcoinTransaction {
 	public final void setBlock(final BitcoinBlock newBlock) {
 		block = newBlock;
 	}
+
 }

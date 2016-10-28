@@ -3,12 +3,14 @@ package com.oakinvest.b2g.dto.external.bitcoind.getblockcount;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
+import java.io.Serializable;
+
 /**
  * getblockcount response.
  * Created by straumat on 26/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetBlockCountResponse extends BitcoindResponse {
+public class GetBlockCountResponse extends BitcoindResponse implements Serializable {
 
 	/**
 	 * The current block count.

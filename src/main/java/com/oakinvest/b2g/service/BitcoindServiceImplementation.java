@@ -10,7 +10,9 @@ import org.neo4j.ogm.json.JSONException;
 import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import java.util.List;
  * Created by straumat on 26/08/16.
  */
 @Service
+@Primary
+@Qualifier("BitcoindServiceImplementation")
 public class BitcoindServiceImplementation implements BitcoindService {
 
 	/**

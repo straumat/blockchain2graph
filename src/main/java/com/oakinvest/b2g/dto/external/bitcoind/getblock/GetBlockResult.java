@@ -1,12 +1,13 @@
 package com.oakinvest.b2g.dto.external.bitcoind.getblock;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * result inside the getblock response.
  * Created by straumat on 31/08/16.
  */
-public class GetBlockResult {
+public class GetBlockResult implements Serializable {
 
 	/**
 	 * the block hash (same as provided).

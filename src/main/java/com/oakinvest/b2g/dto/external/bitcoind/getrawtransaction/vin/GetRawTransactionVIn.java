@@ -2,11 +2,13 @@ package com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin;
 
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.scriptsig.GetRawTransactionScriptSig;
 
+import java.io.Serializable;
+
 /**
  * Vin.
  * Created by straumat on 01/09/16.
  */
-public class GetRawTransactionVIn {
+public class GetRawTransactionVIn implements Serializable {
 
 	/**
 	 * The transaction id.

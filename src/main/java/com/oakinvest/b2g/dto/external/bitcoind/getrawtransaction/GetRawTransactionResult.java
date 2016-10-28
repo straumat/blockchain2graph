@@ -3,13 +3,14 @@ package com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Result inside the GetRawTransaction response.
  * Created by straumat on 01/09/16.
  */
-public class GetRawTransactionResult {
+public class GetRawTransactionResult implements Serializable {
 
 	/**
 	 * The serialized, hex-encoded data for 'txid'.

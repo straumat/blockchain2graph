@@ -3,12 +3,14 @@ package com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
+import java.io.Serializable;
+
 /**
  * getrawtransaction response.
  * Created by straumat on 30/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetRawTransactionResponse extends BitcoindResponse {
+public class GetRawTransactionResponse extends BitcoindResponse implements Serializable {
 
 	/**
 	 * Result.

@@ -24,12 +24,6 @@ public class Application {
 	 */
 	private final Logger log = LoggerFactory.getLogger(Application.class);
 
-//	/**
-//	 * Bitcoind service.
-//	 */
-//	@Autowired
-//	private BitcoindService bitcoindService;
-
 	/**
 	 * Application launcher.
 	 *
