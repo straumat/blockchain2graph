@@ -109,7 +109,7 @@ public class BitcoindServiceMock implements BitcoindService {
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblockcount">https://chainquery.com/bitcoin-api/getblockcount</a>
 	 */
 	@Override
-	public GetBlockCountResponse getBlockCount() {
+	public final GetBlockCountResponse getBlockCount() {
 		checkDirectory();
 		GetBlockCountResponse gbcr;
 		File response = new File(getBlockCountDirectory.getPath() + "/response.ser");
@@ -132,7 +132,7 @@ public class BitcoindServiceMock implements BitcoindService {
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblockhash/427707">https://chainquery.com/bitcoin-api/getblockhash</a>
 	 */
 	@Override
-	public GetBlockHashResponse getBlockHash(final long blockHeight) {
+	public final GetBlockHashResponse getBlockHash(final long blockHeight) {
 		checkDirectory();
 		GetBlockHashResponse gbhr;
 		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeight + ".ser");
@@ -155,7 +155,7 @@ public class BitcoindServiceMock implements BitcoindService {
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblock/000000000000000003536b07a8663ea1f10c891ccdb06e3a57c825041551df6a/true">https://chainquery.com/bitcoin-api/getblock</a>
 	 */
 	@Override
-	public GetBlockResponse getBlock(final String blockHash) {
+	public final GetBlockResponse getBlock(final String blockHash) {
 		checkDirectory();
 		GetBlockResponse gbr;
 		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHash + ".ser");
@@ -178,7 +178,7 @@ public class BitcoindServiceMock implements BitcoindService {
 	 * @see <a href="https://chainquery.com/bitcoin-api/getrawtransaction/5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322/1">https://chainquery.com/bitcoin-api/getrawtransaction</a>
 	 */
 	@Override
-	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
+	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		checkDirectory();
 		GetRawTransactionResponse grtr;
 		File response = new File(getRawTransactionDirectory.getPath(), "reponse-" + transactionHash + ".ser");
