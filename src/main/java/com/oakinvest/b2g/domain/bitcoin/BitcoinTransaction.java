@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -104,14 +103,7 @@ public class BitcoinTransaction {
 	 * @return output transaction
 	 */
 	public final BitcoinTransactionOutput getOutputByIndex(final int n) {
-		Iterator<BitcoinTransactionOutput> it = getOutputs().iterator();
-		while (it.hasNext()) {
-			BitcoinTransactionOutput output = it.next();
-			if (output.getN() == n) {
-				return output;
-			}
-		}
-		return null;
+		return getOutputs().stream().filter(o -> o.getN() == n).findAny().get();
 	}
 
 	/**
