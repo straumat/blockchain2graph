@@ -16,7 +16,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * Bitcoind service.
 	 */
 	@Autowired
-	@Qualifier("BitcoindServiceMock")   // FIXME Find a way to not set this in production.
+	@Qualifier("BitcoindServiceImplementation")   // FIXME Find a way to not set this in production.
 	private BitcoindService bds;
 
 	/**
@@ -42,7 +42,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return total block count
 	 */
 	@Override
-	public long getTotalBlockCount() {
+	public final long getTotalBlockCount() {
 		return bds.getBlockCount().getResult();
 	}
 
@@ -52,7 +52,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return block number.
 	 */
 	@Override
-	public long getLastBlockIntegrated() {
+	public final long getLastBlockIntegrated() {
 		return bbr.count();
 	}
 
@@ -62,7 +62,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return last log message.
 	 */
 	@Override
-	public String getLastLogMessage() {
+	public final String getLastLogMessage() {
 		return lastLogMessage;
 	}
 
@@ -72,7 +72,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @param newLogMessage log message
 	 */
 	@Override
-	public void addLogMessage(final String newLogMessage) {
+	public final void addLogMessage(final String newLogMessage) {
 		lastLogMessage = newLogMessage;
 	}
 
@@ -82,7 +82,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return last error message.
 	 */
 	@Override
-	public String getLastErrorMessage() {
+	public final String getLastErrorMessage() {
 		return lastErrorMessage;
 	}
 
@@ -92,7 +92,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @param newErrorMessage error message
 	 */
 	@Override
-	public void addErrorMessage(final String newErrorMessage) {
+	public final void addErrorMessage(final String newErrorMessage) {
 		lastErrorMessage = newErrorMessage;
 	}
 }

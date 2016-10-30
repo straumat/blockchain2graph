@@ -1,0 +1,45 @@
+body {
+	padding-top: 50px;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+	font-family: "Oswald", Helvetica, Arial, sans-serif !important;
+}
+
+.row {
+	background-color: #b2dfdb;
+	padding: 5px;
+}
+
+.header {
+	border-radius: 15px 15px 0 0;
+}
+
+.errorMessage {
+	background-color: #ff8a65;
+}
+
+.logs {
+	font-family: courier, monospace;
+	font-size: 14px;
+	background-color: #000;
+	color: #fff;
+}
+
+.footer {
+	border-radius: 0 0 15px 15px;
+	text-align: right;
+}
+

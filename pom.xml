@@ -21,17 +21,40 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<!-- ================================================================================================================================== -->
 
 	<!-- ================================================================================================================================== -->
 	<!-- Project configuration -->
 	<properties>
+
+		<!-- Java project configuration -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<start-class>com.oakinvest.b2g.Application</start-class>
+
+		<!-- Maven plugin releases -->
+		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+
+		<!-- Java lib releases configuration -->
+		<neo4j.version>2.0.5</neo4j.version>
+		<mapstruct.version>1.1.0.CR1</mapstruct.version>
+
+		<!-- webjars -->
+		<webjars-locator.version>0.32</webjars-locator.version>
+
+		<!-- Javascript lib releases configuration -->
+		<angularjs.version>1.5.8</angularjs.version>
+		<jquery.version>3.1.1</jquery.version>
+		<modernizr.version>2.8.3</modernizr.version>
+		<respond.version>1.4.2</respond.version>
+
+		<!-- CSS lib releases configuration -->
+		<bootstrap.version>3.3.7-1</bootstrap.version>
+
 	</properties>
 	<!-- ================================================================================================================================== -->
 
@@ -39,11 +62,17 @@
 	<!-- Dependencies configuration -->
 	<dependencies>
 
-		<!-- Product dependencies -->
+		<!-- Sprint boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Neo4j -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-neo4j</artifactId>
@@ -51,24 +80,58 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-embedded-driver</artifactId>
-			<version>2.0.5</version>
+			<version>${neo4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-bolt-driver</artifactId>
-			<version>2.0.5</version>
+			<version>${neo4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+
+		<!-- Java utils -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-jdk8</artifactId>
-			<version>1.1.0.CR1</version>
+			<version>${mapstruct.version}</version>
 		</dependency>
 
-		<!-- Test dependencies -->
+		<!-- Webjar locator -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+			<version>${webjars-locator.version}</version>
+		</dependency>
+
+		<!-- Javascript -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angularjs</artifactId>
+			<version>${angularjs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>modernizr</artifactId>
+			<version>${modernizr.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>respond</artifactId>
+			<version>${respond.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${jquery.version}</version>
+		</dependency>
+
+		<!-- CSS -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${bootstrap.version}</version>
+		</dependency>
+
+		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -121,7 +184,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.17</version>
+				<version>${maven-checkstyle-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>process-sources</phase>
@@ -142,15 +205,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>
-							<version>1.1.0.CR1</version>
+							<version>${mapstruct.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -160,9 +223,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
 			</plugin>
 
 		</plugins>
+
 	</build>
 	<!-- ================================================================================================================================== -->
 
@@ -178,7 +245,6 @@
 				<reportSets>
 					<reportSet>
 						<reports>
-							<!-- select non-aggregate reports -->
 							<report>report</report>
 						</reports>
 					</reportSet>
@@ -186,7 +252,6 @@
 			</plugin>
 
 		</plugins>
-
 	</reporting>
 	<!-- ================================================================================================================================== -->
 

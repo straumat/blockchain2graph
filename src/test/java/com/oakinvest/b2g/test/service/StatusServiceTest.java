@@ -23,13 +23,23 @@ import static org.junit.Assert.assertTrue;
 public class StatusServiceTest {
 
 	/**
+	 * Minimum block count.
+	 */
+	private static final int BLOCK_COUNT = 435000;
+
+	/**
+	 * Number of blocks to integrate.
+	 */
+	private static final int NUMBER_OF_BLOCKS_TO_INTEGRATE = 5;
+
+	/**
 	 * Integration service.
 	 */
 	@Autowired
 	private IntegrationService is;
 
 	/**
-	 * Status service
+	 * Status service.
 	 */
 	@Autowired
 	private StatusService ss;
@@ -39,7 +49,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getTotalBlockCountTest() {
-		assertTrue("Wrong total block count", 435000 < ss.getTotalBlockCount());
+		assertTrue("Wrong total block count", BLOCK_COUNT < ss.getTotalBlockCount());
 	}
 
 	/**
@@ -47,16 +57,12 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastBlockIntegratedTest() {
-		// Configuration.
-		final int firstBlockToImport = 0;
-		final int lastBlockToImport = 5;
-
 		// Launching integration.
-		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
+		for (int i = 0; i <= NUMBER_OF_BLOCKS_TO_INTEGRATE; i++) {
 			assertTrue("Block " + i + " integration failure", is.integrateBitcoinBlock(i));
 		}
 
-		assertEquals("Wrong last block integrated", 6, ss.getLastBlockIntegrated());
+		assertEquals("Wrong last block integrated", NUMBER_OF_BLOCKS_TO_INTEGRATE + 1, ss.getLastBlockIntegrated());
 	}
 
 

@@ -46,7 +46,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * Bitcoind service.
 	 */
 	@Autowired
-	@Qualifier("BitcoindServiceMock")   // FIXME Find a way to not set this in production.
+	@Qualifier("BitcoindServiceImplementation")   // FIXME Find a way to not set this in production.
 	private BitcoindService bds;
 
 	/**
