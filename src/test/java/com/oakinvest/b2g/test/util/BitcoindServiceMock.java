@@ -4,7 +4,7 @@ import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.service.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

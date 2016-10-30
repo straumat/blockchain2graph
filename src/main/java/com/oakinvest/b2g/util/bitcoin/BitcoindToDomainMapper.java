@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util;
+package com.oakinvest.b2g.util.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;

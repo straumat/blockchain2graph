@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

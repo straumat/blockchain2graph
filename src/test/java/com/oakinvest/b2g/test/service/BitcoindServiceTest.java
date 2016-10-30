@@ -7,7 +7,7 @@ import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
-import com.oakinvest.b2g.service.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

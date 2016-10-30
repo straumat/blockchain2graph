@@ -10,7 +10,8 @@ import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransacti
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.util.BitcoindToDomainMapper;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

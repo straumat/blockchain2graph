@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util;
+package com.oakinvest.b2g.util.bitcoin;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
