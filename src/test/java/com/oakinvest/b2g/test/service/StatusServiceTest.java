@@ -37,8 +37,6 @@ public class StatusServiceTest {
 	@Test
 	public final void getTotalBlockCountTest() {
 		final long expectedTotalBlockCount = 150;
-
-		assertEquals("Wrong total block count", 0, ss.getTotalBlockCount());
 		ss.setTotalBlockCount(expectedTotalBlockCount);
 		assertEquals("Wrong total block count", expectedTotalBlockCount, ss.getTotalBlockCount());
 	}
@@ -49,8 +47,6 @@ public class StatusServiceTest {
 	@Test
 	public final void getLastBlockIntegratedTest() {
 		final long expectedImportedBlockCount = 140;
-
-		assertEquals("Wrong last block integrated", 0, ss.getImportedBlockCount());
 		ss.setImportedBlockCount(expectedImportedBlockCount);
 		assertEquals("Wrong last block integrated", expectedImportedBlockCount, ss.getImportedBlockCount());
 	}
@@ -61,7 +57,6 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastLogMessageTest() {
-		assertEquals("Wrong last log message at start", "", ss.getLastLogMessage());
 		ss.addLogMessage("Hi !");
 		assertEquals("Wrong last log message after setting it", "Hi !", ss.getLastLogMessage());
 	}
@@ -71,7 +66,6 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
-		assertEquals("Wrong last error message at start", "", ss.getLastErrorMessage());
 		ss.addErrorMessage("Error !");
 		assertEquals("Wrong last error message after setting it", "Error !", ss.getLastErrorMessage());
 	}

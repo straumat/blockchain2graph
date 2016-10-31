@@ -51,6 +51,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	private BitcoindService bds;
 
 	/**
+	 * Status service.
+	 */
+	@Autowired
+	private StatusService ss;
+
+	/**
 	 * Bitcoin blcok repository.
 	 */
 	@Autowired
@@ -83,6 +89,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	@Override
 	public final boolean integrateBitcoinBlock(final long blockHeight) {
 		log.info("Integrating bitcoin block number " + String.format("%09d", blockHeight));
+		ss.addLogMessage("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 
 		// Variables.
 		boolean success = true;
@@ -95,19 +102,22 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		blockHash = bds.getBlockHash(blockHeight);
 		if (blockHash.getError() != null) {
 			log.error("Error in calling getBlockHash " + blockHash.getError());
+			ss.addErrorMessage("Error in calling getBlockHash " + blockHash.getError());
 			success = false;
 		} else {
 			// Getting block informations.
 			block = bds.getBlock(blockHash.getResult());
 			if (block.getError() != null) {
 				log.error("Error in calling getBlock " + block.getError());
+				ss.addErrorMessage("Error in calling getBlock " + block.getError());
 				success = false;
 			}
 		}
 
 		// If the block is already in the datbase, we stop.
 		if (bbr.findByHash(blockHash.getResult()) != null) {
-			log.error("Block " + blockHeight + " alreeady registred");
+			log.error("Block " + blockHeight + " already registred");
+			ss.addErrorMessage("Error in calling getBlock " + block.getError());
 			success = false;
 		}
 
@@ -129,6 +139,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 						transactions.add(transaction.getResult());
 					} else {
 						log.error("Error in calling getRawTransaction " + transaction.getError());
+						ss.addErrorMessage("Error in calling getRawTransaction " + transaction.getError());
 						success = false;
 					}
 				}
@@ -152,6 +163,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				if (bar.findByAddress(address) == null) {
 					bar.save(new BitcoinAddress(address));
 					log.info("Address " + address + " created");
+					ss.addLogMessage("Address " + address + " created");
 				} else {
 					log.info("Address " + address + " already exists");
 				}
@@ -161,6 +173,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			BitcoinBlock b = mapper.blockResultToBitcoinBlock(block.getResult());
 			bbr.save(b);
 			log.info("Block " + b.getHash() + " created");
+			ss.addLogMessage("Block " + b.getHash() + " created");
 
 			// Saving the transactions
 			Iterator<GetRawTransactionResult> itTransactions = transactions.iterator();
@@ -170,11 +183,13 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				bt.setBlock(b);
 				btr.save(bt);
 				log.info("Transaction " + t.getTxid() + " created");
+				ss.addLogMessage("Transaction " + t.getTxid() + " created");
 			}
 
 		}
 
 		log.info("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done");
+		ss.addLogMessage("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done");
 		return success;
 	}
 
