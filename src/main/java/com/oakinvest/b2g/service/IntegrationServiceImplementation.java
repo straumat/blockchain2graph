@@ -151,12 +151,16 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				String address = itAddresses.next();
 				if (bar.findByAddress(address) == null) {
 					bar.save(new BitcoinAddress(address));
+					log.info("Address " + address + " created");
+				} else {
+					log.info("Address " + address + " already exists");
 				}
 			}
 
 			// Saving the block.
 			BitcoinBlock b = mapper.blockResultToBitcoinBlock(block.getResult());
 			bbr.save(b);
+			log.info("Block " + b.getHash() + " created");
 
 			// Saving the transactions
 			Iterator<GetRawTransactionResult> itTransactions = transactions.iterator();
@@ -165,10 +169,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
 				bt.setBlock(b);
 				btr.save(bt);
+				log.info("Transaction " + t.getTxid() + " created");
 			}
 
 		}
 
+		log.info("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done");
 		return success;
 	}
 
