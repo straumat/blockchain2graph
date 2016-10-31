@@ -7,11 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the status service.
@@ -19,18 +17,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StatusServiceTest {
-
-	/**
-	 * Minimum block count.
-	 */
-	private static final int BLOCK_COUNT = 435000;
-
-	/**
-	 * Number of blocks to integrate.
-	 */
-	private static final int NUMBER_OF_BLOCKS_TO_INTEGRATE = 5;
 
 	/**
 	 * Integration service.
@@ -49,20 +36,23 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getTotalBlockCountTest() {
-		assertTrue("Wrong total block count", BLOCK_COUNT < ss.getTotalBlockCount());
+		final long expectedTotalBlockCount = 150;
+
+		assertEquals("Wrong total block count", 0, ss.getTotalBlockCount());
+		ss.setTotalBlockCount(expectedTotalBlockCount);
+		assertEquals("Wrong total block count", expectedTotalBlockCount, ss.getTotalBlockCount());
 	}
 
 	/**
-	 * Test for getLastBlockIntegrated().
+	 * Test for getImportedBlockCount().
 	 */
 	@Test
 	public final void getLastBlockIntegratedTest() {
-		// Launching integration.
-		for (int i = 0; i <= NUMBER_OF_BLOCKS_TO_INTEGRATE; i++) {
-			assertTrue("Block " + i + " integration failure", is.integrateBitcoinBlock(i));
-		}
+		final long expectedImportedBlockCount = 140;
 
-		assertEquals("Wrong last block integrated", NUMBER_OF_BLOCKS_TO_INTEGRATE + 1, ss.getLastBlockIntegrated());
+		assertEquals("Wrong last block integrated", 0, ss.getImportedBlockCount());
+		ss.setImportedBlockCount(expectedImportedBlockCount);
+		assertEquals("Wrong last block integrated", expectedImportedBlockCount, ss.getImportedBlockCount());
 	}
 
 

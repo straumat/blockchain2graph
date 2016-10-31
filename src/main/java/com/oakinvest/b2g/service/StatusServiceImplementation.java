@@ -36,6 +36,15 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	private String lastErrorMessage = "";
 
+	/**
+	 * Total block count.
+	 */
+	private long totalBlockCount = 0;
+
+	/**
+	 * Imported block count.
+	 */
+	private long importedBlockCount = 0;
 
 	/**
 	 * Returns the total nubmer of blocks in the blockchain.
@@ -44,7 +53,17 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final long getTotalBlockCount() {
-		return bds.getBlockCount().getResult();
+		return totalBlockCount;
+	}
+
+	/**
+	 * Set the total nubmer of blocks in the blockchain.
+	 *
+	 * @param newTotalBlockCount new value
+	 */
+	@Override
+	public final void setTotalBlockCount(final long newTotalBlockCount) {
+		totalBlockCount = newTotalBlockCount;
 	}
 
 	/**
@@ -53,8 +72,18 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return block number.
 	 */
 	@Override
-	public final long getLastBlockIntegrated() {
-		return bbr.count();
+	public final long getImportedBlockCount() {
+		return importedBlockCount;
+	}
+
+	/**
+	 * Set the number of the last block imported.
+	 *
+	 * @param newImportedBlockCount new value
+	 */
+	@Override
+	public final void setImportedBlockCount(final long newImportedBlockCount) {
+		importedBlockCount = newImportedBlockCount;
 	}
 
 	/**
