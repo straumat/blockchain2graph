@@ -51,7 +51,6 @@ public class StatusServiceTest {
 		assertEquals("Wrong last block integrated", expectedImportedBlockCount, ss.getImportedBlockCount());
 	}
 
-
 	/**
 	 * Test for getLastLogMessage().
 	 */
