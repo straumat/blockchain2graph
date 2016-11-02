@@ -36,6 +36,8 @@ h6,
 	font-size: 14px;
 	background-color: #000;
 	color: #fff;
+	height: 400px;
+	overflow-y: auto;
 }
 
 .footer {

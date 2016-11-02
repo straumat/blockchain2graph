@@ -7,7 +7,6 @@ import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,7 +19,7 @@ public class IntegrationTask {
 	/**
 	 * Interval beteween calls.
 	 */
-	public static final int INTERVAL_BETWEEN_CALLS = 1000;
+	public static final int BITCOIN_INTERVAL_BETWEEN_CALLS = 1000;
 
 	/**
 	 * Logger.
@@ -54,9 +53,10 @@ public class IntegrationTask {
 	/**
 	 * Import a bitcoin block.
 	 */
-	@Scheduled(fixedDelay = INTERVAL_BETWEEN_CALLS)
+	//@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
 	public final void importNextBitcoinBlock() {
 		final long totalBlockCount = bds.getBlockCount().getResult();
+		ss.setTotalBlockCount(totalBlockCount);
 		final long importedBlockCount = bbr.count();
 
 		// if there is another block to import, let's import it !
@@ -64,9 +64,7 @@ public class IntegrationTask {
 			is.integrateBitcoinBlock(importedBlockCount + 1);
 			// Update status.
 			ss.setImportedBlockCount(bbr.count());
-			ss.setTotalBlockCount(bds.getBlockCount().getResult());
 		}
-
 	}
 
 }

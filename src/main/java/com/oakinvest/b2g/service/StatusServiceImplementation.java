@@ -1,9 +1,7 @@
 package com.oakinvest.b2g.service;
 
-import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.web.StatusHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,17 +12,10 @@ import org.springframework.stereotype.Service;
 public class StatusServiceImplementation implements StatusService {
 
 	/**
-	 * Bitcoind service.
+	 * Status handler.
 	 */
 	@Autowired
-	@Qualifier("BitcoindServiceImplementation")   // FIXME Find a way to not set this in production.
-	private BitcoindService bds;
-
-	/**
-	 * Bitcoin blcok repository.
-	 */
-	@Autowired
-	private BitcoinBlockRepository bbr;
+	private StatusHandler statusHandler;
 
 	/**
 	 * Last log message.
@@ -57,13 +48,14 @@ public class StatusServiceImplementation implements StatusService {
 	}
 
 	/**
-	 * Set the total nubmer of blocks in the blockchain.
+	 * Set the total number of blocks in the blockchain.
 	 *
 	 * @param newTotalBlockCount new value
 	 */
 	@Override
 	public final void setTotalBlockCount(final long newTotalBlockCount) {
 		totalBlockCount = newTotalBlockCount;
+		statusHandler.updateTotalBlockCount(totalBlockCount);
 	}
 
 	/**
@@ -84,6 +76,13 @@ public class StatusServiceImplementation implements StatusService {
 	@Override
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
 		importedBlockCount = newImportedBlockCount;
+		statusHandler.updateImportedBlockCount(importedBlockCount);
+//		if ( importedBlockCount == 20) {
+//			addErrorMessage("[ERROR] 1");
+//		}
+//		if ( importedBlockCount == 40) {
+//			addErrorMessage("[ERROR] 2");
+//		}
 	}
 
 	/**
@@ -104,6 +103,7 @@ public class StatusServiceImplementation implements StatusService {
 	@Override
 	public final void addLogMessage(final String newLogMessage) {
 		lastLogMessage = newLogMessage;
+		statusHandler.updateLog(lastLogMessage);
 	}
 
 	/**
@@ -124,5 +124,6 @@ public class StatusServiceImplementation implements StatusService {
 	@Override
 	public final void addErrorMessage(final String newErrorMessage) {
 		lastErrorMessage = newErrorMessage;
+		statusHandler.updateErrorMessage(newErrorMessage);
 	}
 }

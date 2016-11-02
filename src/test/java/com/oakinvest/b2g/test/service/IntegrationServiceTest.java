@@ -82,7 +82,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			assertTrue("Block " + i + " intergration failure", is.integrateBitcoinBlock(i));
+			assertTrue("Block " + i + " integration failure", is.integrateBitcoinBlock(i));
 		}
 
 		// Testing data of block 170.

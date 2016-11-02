@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 	<!-- Project configuration -->
 	<groupId>com.oakinvest.b2g</groupId>
 	<artifactId>blockchain2graph</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>blockchain2graph</name>
-	<description>Extract blockchain data (bitcoin) into a a graph database (neo4j)</description>
+	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
 	<url>https://github.com/straumat/blockchain2graph</url>
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 	<!-- Spring boot -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -23,9 +23,9 @@
 		<version>1.4.1.RELEASE</version>
 		<relativePath/>
 	</parent>
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 	<!-- Project configuration -->
 	<properties>
 
@@ -38,27 +38,26 @@
 		<!-- Maven plugin releases -->
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+		<jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
 
 		<!-- Java lib releases configuration -->
 		<neo4j.version>2.0.5</neo4j.version>
 		<mapstruct.version>1.1.0.CR1</mapstruct.version>
+		<json-simple.version>1.1.1</json-simple.version>
 
 		<!-- webjars -->
 		<webjars-locator.version>0.32</webjars-locator.version>
 
-		<!-- Javascript lib releases configuration -->
-		<angularjs.version>1.5.8</angularjs.version>
-		<jquery.version>3.1.1</jquery.version>
-		<modernizr.version>2.8.3</modernizr.version>
-		<respond.version>1.4.2</respond.version>
-
 		<!-- CSS lib releases configuration -->
 		<bootstrap.version>3.3.7-1</bootstrap.version>
 
-	</properties>
-	<!-- ================================================================================================================================== -->
+		<!-- Javascript lib releases configuration -->
+		<jquery.version>3.1.1</jquery.version>
 
-	<!-- ================================================================================================================================== -->
+	</properties>
+	<!-- =========================================================================================================== -->
+
+	<!-- =========================================================================================================== -->
 	<!-- Dependencies configuration -->
 	<dependencies>
 
@@ -70,6 +69,21 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<!-- Web developpment -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Neo4j -->
@@ -94,6 +108,11 @@
 			<artifactId>mapstruct-jdk8</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>${json-simple.version}</version>
+		</dependency>
 
 		<!-- Webjar locator -->
 		<dependency>
@@ -103,21 +122,6 @@
 		</dependency>
 
 		<!-- Javascript -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>angularjs</artifactId>
-			<version>${angularjs.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>modernizr</artifactId>
-			<version>${modernizr.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>respond</artifactId>
-			<version>${respond.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery</artifactId>
@@ -139,9 +143,9 @@
 		</dependency>
 
 	</dependencies>
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 	<!-- Build configuration -->
 	<build>
 
@@ -152,7 +156,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.7.201606060606</version>
+				<version>${jacoco-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
@@ -196,7 +200,7 @@
 				<configuration>
 					<consoleOutput>true</consoleOutput>
 					<configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>false</failOnViolation>
 					<violationSeverity>warning</violationSeverity>
 				</configuration>
 			</plugin>
@@ -231,9 +235,9 @@
 		</plugins>
 
 	</build>
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 	<!-- Reporting -->
 	<reporting>
 		<plugins>
@@ -253,6 +257,6 @@
 
 		</plugins>
 	</reporting>
-	<!-- ================================================================================================================================== -->
+	<!-- =========================================================================================================== -->
 
 </project>
