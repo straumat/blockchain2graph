@@ -16,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 /**
@@ -54,7 +54,7 @@ public class IntegrationServiceTest {
 	@Autowired
 	private BitcoinTransactionRepository btr;
 
-/*	*//**
+	/**
 	 * Returns a date formated as timestamp.
 	 *
 	 * @param formatedDate date like 2009-01-12 03:30:25
@@ -75,7 +75,7 @@ public class IntegrationServiceTest {
 	 * integrateBitcoinBlock test.
 	 */
 	@Test
-	public final void integrateBitcoinBlockTest() {
+	public final void integrateBitcoinBlockTest() throws InterruptedException {
 		// Configuration.
 		final int firstBlockToImport = 0;
 		final int lastBlockToImport = 170;
