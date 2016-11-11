@@ -5,6 +5,8 @@ import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountRespon
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,11 @@ public class BitcoindServiceMock implements BitcoindService {
 	 * getRawTransaction directory.
 	 */
 	private static final String SRC_TEST_RESOURCES_BITCOIND_GET_RAW_TRANSACTION = "src/test/resources/bitcoind/getRawTransaction";
+
+	/**
+	 * Logger.
+	 */
+	private final Logger log = LoggerFactory.getLogger(BitcoindServiceMock.class);
 
 	/**
 	 * Bitcoind service.
@@ -207,7 +214,7 @@ public class BitcoindServiceMock implements BitcoindService {
 			out.close();
 			fileOut.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Error : " + e);
 		}
 	}
 
@@ -226,7 +233,7 @@ public class BitcoindServiceMock implements BitcoindService {
 			in.close();
 			fileIn.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Error : " + e);
 		} catch (ClassNotFoundException c) {
 			c.printStackTrace();
 		}

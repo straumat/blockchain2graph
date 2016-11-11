@@ -202,14 +202,12 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * @return requireed headers
 	 */
 	private HttpHeaders getHeaders() {
-		return new HttpHeaders() {
-			{
-				String auth = username + ":" + password;
-				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-				String authHeader = "Basic " + new String(encodedAuth);
-				set("Authorization", authHeader);
-			}
-		};
+		String auth = username + ":" + password;
+		byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+		String authHeader = "Basic " + new String(encodedAuth);
+		HttpHeaders h = new HttpHeaders();
+		h.set("Authorization", authHeader);
+		return h;
 	}
 
 }

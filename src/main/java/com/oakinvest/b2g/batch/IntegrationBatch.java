@@ -64,6 +64,7 @@ public class IntegrationBatch {
 	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
 	public final void importNextBitcoinBlock() {
 		if (enabled) {
+			log.info("Batch being called");
 			final long totalBlockCount = bds.getBlockCount().getResult();
 			ss.setTotalBlockCount(totalBlockCount);
 			final long importedBlockCount = bbr.count();

@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.service.IntegrationService;
 import com.oakinvest.b2g.service.StatusService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,12 +17,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 public class StatusServiceTest {
-
-	/**
-	 * Integration service.
-	 */
-	@Autowired
-	private IntegrationService is;
 
 	/**
 	 * Status service.

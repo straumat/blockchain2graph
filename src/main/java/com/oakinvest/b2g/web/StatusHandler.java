@@ -148,13 +148,4 @@ public class StatusHandler extends TextWebSocketHandler {
 		}
 	}
 
-
-//		if (session != null) {
-//			try {
-//				session.sendMessage(new TextMessage("{\"value\": \"" + count + "\"}"));
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
 }
