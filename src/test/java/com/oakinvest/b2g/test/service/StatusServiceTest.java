@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the status service.
@@ -50,7 +51,7 @@ public class StatusServiceTest {
 	@Test
 	public final void getLastLogMessageTest() {
 		ss.addLogMessage("Hi !");
-		assertEquals("Wrong last log message after setting it", "Hi !", ss.getLastLogMessage());
+		assertTrue("Wrong last log message after setting it", ss.getLastLogMessage().contains("Hi !"));
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class StatusServiceTest {
 	@Test
 	public final void getLastErrorMessageTest() {
 		ss.addErrorMessage("Error !");
-		assertEquals("Wrong last error message after setting it", "Error !", ss.getLastErrorMessage());
+		assertTrue("Wrong last error message after setting it", ss.getLastErrorMessage().contains("Error !"));
 	}
 
 }
