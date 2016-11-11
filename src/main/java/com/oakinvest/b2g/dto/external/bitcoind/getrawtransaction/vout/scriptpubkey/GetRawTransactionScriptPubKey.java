@@ -35,7 +35,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	private ArrayList<String> addresses;
 
 	/**
-	 * Getter de la propriété addresses.
+	 * Getter of addresses.
 	 *
 	 * @return addresses
 	 */
@@ -44,7 +44,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété addresses.
+	 * Setter of addresses.
 	 *
 	 * @param newAddresses the addresses to set
 	 */
@@ -53,7 +53,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété asm.
+	 * Getter of asm.
 	 *
 	 * @return asm
 	 */
@@ -62,7 +62,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété asm.
+	 * Setter of asm.
 	 *
 	 * @param newAsm the asm to set
 	 */
@@ -71,7 +71,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété hex.
+	 * Getter of hex.
 	 *
 	 * @return hex
 	 */
@@ -80,7 +80,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété hex.
+	 * Setter of hex.
 	 *
 	 * @param newHex the hex to set
 	 */
@@ -89,7 +89,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété reqSigs.
+	 * Getter of reqSigs.
 	 *
 	 * @return reqSigs
 	 */
@@ -98,7 +98,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété reqSigs.
+	 * Setter of reqSigs.
 	 *
 	 * @param newReqSigs the reqSigs to set
 	 */
@@ -107,7 +107,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété type.
+	 * Getter of type.
 	 *
 	 * @return type
 	 */
@@ -116,7 +116,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété type.
+	 * Setter of type.
 	 *
 	 * @param newPubkeyhash the type to set
 	 */

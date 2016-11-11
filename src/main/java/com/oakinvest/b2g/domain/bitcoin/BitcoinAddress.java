@@ -55,7 +55,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété inputTransactions.
+	 * Getter of inputTransactions.
 	 *
 	 * @return inputTransactions
 	 */
@@ -64,7 +64,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Setter de la propriété inputTransactions.
+	 * Setter of inputTransactions.
 	 *
 	 * @param newInputTransactions the inputTransactions to set
 	 */
@@ -73,7 +73,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété outputTransactions.
+	 * Getter of outputTransactions.
 	 *
 	 * @return outputTransactions
 	 */
@@ -82,7 +82,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Setter de la propriété outputTransactions.
+	 * Setter of outputTransactions.
 	 *
 	 * @param newOutputTransactions the outputTransactions to set
 	 */
@@ -91,7 +91,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété id.
+	 * Getter of id.
 	 *
 	 * @return id
 	 */
@@ -100,7 +100,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Setter de la propriété id.
+	 * Setter of id.
 	 *
 	 * @param newId the id to set
 	 */
@@ -109,7 +109,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété address.
+	 * Getter of address.
 	 *
 	 * @return address
 	 */
@@ -118,7 +118,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Setter de la propriété address.
+	 * Setter of address.
 	 *
 	 * @param newAddress the address to set
 	 */

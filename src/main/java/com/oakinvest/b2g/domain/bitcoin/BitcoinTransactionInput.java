@@ -65,7 +65,7 @@ public class BitcoinTransactionInput {
 	private long sequence;
 
 	/**
-	 * Getter de la propriété transactionOutput.
+	 * Getter of transactionOutput.
 	 *
 	 * @return transactionOutput
 	 */
@@ -74,7 +74,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété transactionOutput.
+	 * Setter of transactionOutput.
 	 *
 	 * @param newTransactionOutput the transactionOutput to set
 	 */
@@ -83,7 +83,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété id.
+	 * Getter of id.
 	 *
 	 * @return id
 	 */
@@ -92,7 +92,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété id.
+	 * Setter of id.
 	 *
 	 * @param newId the id to set
 	 */
@@ -101,7 +101,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété txId.
+	 * Getter of txId.
 	 *
 	 * @return txId
 	 */
@@ -110,7 +110,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété txId.
+	 * Setter of txId.
 	 *
 	 * @param newTxid the txId to set
 	 */
@@ -119,7 +119,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété coinbase.
+	 * Getter of coinbase.
 	 *
 	 * @return coinbase
 	 */
@@ -128,7 +128,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété coinbase.
+	 * Setter of coinbase.
 	 *
 	 * @param newCoinbase the coinbase to set
 	 */
@@ -137,7 +137,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété vOut.
+	 * Getter of vOut.
 	 *
 	 * @return vOut
 	 */
@@ -146,7 +146,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété vOut.
+	 * Setter of vOut.
 	 *
 	 * @param newVout the vOut to set
 	 */
@@ -155,7 +155,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété scriptSigAsm.
+	 * Getter of scriptSigAsm.
 	 *
 	 * @return scriptSigAsm
 	 */
@@ -164,7 +164,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété scriptSigAsm.
+	 * Setter of scriptSigAsm.
 	 *
 	 * @param newScriptSigAam the scriptSigAsm to set
 	 */
@@ -173,7 +173,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété scriptSigHex.
+	 * Getter of scriptSigHex.
 	 *
 	 * @return scriptSigHex
 	 */
@@ -182,7 +182,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété scriptSigHex.
+	 * Setter of scriptSigHex.
 	 *
 	 * @param newScriptSigHex the scriptSigHex to set
 	 */
@@ -191,7 +191,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété sequence.
+	 * Getter of sequence.
 	 *
 	 * @return sequence
 	 */
@@ -200,7 +200,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété sequence.
+	 * Setter of sequence.
 	 *
 	 * @param newSequence the sequence to set
 	 */
@@ -209,7 +209,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Getter de la propriété transaction.
+	 * Getter of transaction.
 	 *
 	 * @return transaction
 	 */
@@ -218,7 +218,7 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
-	 * Setter de la propriété transaction.
+	 * Setter of transaction.
 	 *
 	 * @param newTransaction the transaction to set
 	 */

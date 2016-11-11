@@ -19,7 +19,7 @@ public class GetRawTransactionScriptSig implements Serializable {
 	private String hex;
 
 	/**
-	 * Getter de la propriété asm.
+	 * Getter of asm.
 	 *
 	 * @return asm
 	 */
@@ -28,7 +28,7 @@ public class GetRawTransactionScriptSig implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété asm.
+	 * Setter of asm.
 	 *
 	 * @param newAsm the asm to set
 	 */
@@ -37,7 +37,7 @@ public class GetRawTransactionScriptSig implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété hex.
+	 * Getter of hex.
 	 *
 	 * @return hex
 	 */
@@ -46,7 +46,7 @@ public class GetRawTransactionScriptSig implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété hex.
+	 * Setter of hex.
 	 *
 	 * @param newHex the hex to set
 	 */

@@ -108,7 +108,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété blockHash.
+	 * Getter of blockHash.
 	 *
 	 * @return blockHash
 	 */
@@ -117,7 +117,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété blockHash.
+	 * Setter of blockHash.
 	 *
 	 * @param newBlockHash the blockHash to set
 	 */
@@ -126,7 +126,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété blockTime.
+	 * Getter of blockTime.
 	 *
 	 * @return blockTime
 	 */
@@ -135,7 +135,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété blockTime.
+	 * Setter of blockTime.
 	 *
 	 * @param newBlockTime the blockTime to set
 	 */
@@ -144,7 +144,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété id.
+	 * Getter of id.
 	 *
 	 * @return id
 	 */
@@ -153,7 +153,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété id.
+	 * Setter of id.
 	 *
 	 * @param newId the id to set
 	 */
@@ -162,7 +162,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété hex.
+	 * Getter of hex.
 	 *
 	 * @return hex
 	 */
@@ -171,7 +171,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété hex.
+	 * Setter of hex.
 	 *
 	 * @param newHex the hex to set
 	 */
@@ -180,7 +180,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété txId.
+	 * Getter of txId.
 	 *
 	 * @return txId
 	 */
@@ -189,7 +189,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété txId.
+	 * Setter of txId.
 	 *
 	 * @param newTxid the txId to set
 	 */
@@ -198,7 +198,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété hash.
+	 * Getter of hash.
 	 *
 	 * @return hash
 	 */
@@ -207,7 +207,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété hash.
+	 * Setter of hash.
 	 *
 	 * @param newHash the hash to set
 	 */
@@ -216,7 +216,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété size.
+	 * Getter of size.
 	 *
 	 * @return size
 	 */
@@ -225,7 +225,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété size.
+	 * Setter of size.
 	 *
 	 * @param newSize the size to set
 	 */
@@ -234,7 +234,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété vSize.
+	 * Getter of vSize.
 	 *
 	 * @return vSize
 	 */
@@ -243,7 +243,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété vSize.
+	 * Setter of vSize.
 	 *
 	 * @param newvSize the vSize to set
 	 */
@@ -252,7 +252,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété version.
+	 * Getter of version.
 	 *
 	 * @return version
 	 */
@@ -261,7 +261,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété version.
+	 * Setter of version.
 	 *
 	 * @param newVersion the version to set
 	 */
@@ -270,7 +270,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété lockTime.
+	 * Getter of lockTime.
 	 *
 	 * @return lockTime
 	 */
@@ -279,7 +279,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété lockTime.
+	 * Setter of lockTime.
 	 *
 	 * @param newLockTime the lockTime to set
 	 */
@@ -288,7 +288,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété time.
+	 * Getter of time.
 	 *
 	 * @return time
 	 */
@@ -297,7 +297,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété time.
+	 * Setter of time.
 	 *
 	 * @param newTime the time to set
 	 */
@@ -306,7 +306,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété inputs.
+	 * Getter of inputs.
 	 *
 	 * @return inputs
 	 */
@@ -315,7 +315,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété inputs.
+	 * Setter of inputs.
 	 *
 	 * @param newInputs the inputs to set
 	 */
@@ -324,7 +324,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété outputs.
+	 * Getter of outputs.
 	 *
 	 * @return outputs
 	 */
@@ -333,7 +333,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété outputs.
+	 * Setter of outputs.
 	 *
 	 * @param newOutputs the outputs to set
 	 */
@@ -342,7 +342,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter de la propriété block.
+	 * Getter of block.
 	 *
 	 * @return block
 	 */
@@ -351,7 +351,7 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Setter de la propriété block.
+	 * Setter of block.
 	 *
 	 * @param newBlock the block to set
 	 */

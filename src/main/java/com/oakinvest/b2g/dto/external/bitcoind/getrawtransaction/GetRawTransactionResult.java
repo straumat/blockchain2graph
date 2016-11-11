@@ -78,7 +78,7 @@ public class GetRawTransactionResult implements Serializable {
 	private long blocktime;
 
 	/**
-	 * Getter de la propriété hash.
+	 * Getter of hash.
 	 *
 	 * @return hash
 	 */
@@ -87,7 +87,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété hash.
+	 * Setter of hash.
 	 *
 	 * @param newHash the hash to set
 	 */
@@ -96,7 +96,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété vsize.
+	 * Getter of vsize.
 	 *
 	 * @return vsize
 	 */
@@ -105,7 +105,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété vsize.
+	 * Setter of vsize.
 	 *
 	 * @param newVsize the vsize to set
 	 */
@@ -114,7 +114,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété vin.
+	 * Getter of vin.
 	 *
 	 * @return vin
 	 */
@@ -123,7 +123,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété vin.
+	 * Setter of vin.
 	 *
 	 * @param newVin the vin to set
 	 */
@@ -132,7 +132,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété vout.
+	 * Getter of vout.
 	 *
 	 * @return vout
 	 */
@@ -141,7 +141,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété vout.
+	 * Setter of vout.
 	 *
 	 * @param newVout the vout to set
 	 */
@@ -150,7 +150,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété hex.
+	 * Getter of hex.
 	 *
 	 * @return hex
 	 */
@@ -159,7 +159,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété hex.
+	 * Setter of hex.
 	 *
 	 * @param newHex the hex to set
 	 */
@@ -168,7 +168,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété txid.
+	 * Getter of txid.
 	 *
 	 * @return txid
 	 */
@@ -177,7 +177,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété txid.
+	 * Setter of txid.
 	 *
 	 * @param newTxid the txid to set
 	 */
@@ -186,7 +186,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété size.
+	 * Getter of size.
 	 *
 	 * @return size
 	 */
@@ -195,7 +195,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété size.
+	 * Setter of size.
 	 *
 	 * @param newSize the size to set
 	 */
@@ -204,7 +204,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété version.
+	 * Getter of version.
 	 *
 	 * @return version
 	 */
@@ -213,7 +213,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété version.
+	 * Setter of version.
 	 *
 	 * @param newVersion the version to set
 	 */
@@ -222,7 +222,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété locktime.
+	 * Getter of locktime.
 	 *
 	 * @return locktime
 	 */
@@ -231,7 +231,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété locktime.
+	 * Setter of locktime.
 	 *
 	 * @param newLocktime the locktime to set
 	 */
@@ -240,7 +240,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété blockhash.
+	 * Getter of blockhash.
 	 *
 	 * @return blockhash
 	 */
@@ -249,7 +249,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété blockhash.
+	 * Setter of blockhash.
 	 *
 	 * @param newBlockhash the blockhash to set
 	 */
@@ -258,7 +258,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété confirmations.
+	 * Getter of confirmations.
 	 *
 	 * @return confirmations
 	 */
@@ -267,7 +267,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété confirmations.
+	 * Setter of confirmations.
 	 *
 	 * @param newConfirmations the confirmations to set
 	 */
@@ -276,7 +276,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété time.
+	 * Getter of time.
 	 *
 	 * @return time
 	 */
@@ -285,7 +285,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété time.
+	 * Setter of time.
 	 *
 	 * @param newTime the time to set
 	 */
@@ -294,7 +294,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété blocktime.
+	 * Getter of blocktime.
 	 *
 	 * @return blocktime
 	 */
@@ -303,7 +303,7 @@ public class GetRawTransactionResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété blocktime.
+	 * Setter of blocktime.
 	 *
 	 * @param newBlocktime the blocktime to set
 	 */

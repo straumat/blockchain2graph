@@ -36,7 +36,7 @@ public class GetRawTransactionVIn implements Serializable {
 	private long sequence;
 
 	/**
-	 * Getter de la propriété txid.
+	 * Getter of txid.
 	 *
 	 * @return txid
 	 */
@@ -45,7 +45,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété txid.
+	 * Setter of txid.
 	 *
 	 * @param newTxid the txid to set
 	 */
@@ -54,7 +54,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété coinbase.
+	 * Getter of coinbase.
 	 *
 	 * @return coinbase
 	 */
@@ -63,7 +63,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété coinbase.
+	 * Setter of coinbase.
 	 *
 	 * @param newCoinbase the coinbase to set
 	 */
@@ -72,7 +72,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété vout.
+	 * Getter of vout.
 	 *
 	 * @return vout
 	 */
@@ -81,7 +81,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété vout.
+	 * Setter of vout.
 	 *
 	 * @param newVout the vout to set
 	 */
@@ -90,7 +90,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété scriptSig.
+	 * Getter of scriptSig.
 	 *
 	 * @return scriptSig
 	 */
@@ -99,7 +99,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété scriptSig.
+	 * Setter of scriptSig.
 	 *
 	 * @param newScriptSig the scriptSig to set
 	 */
@@ -108,7 +108,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété sequence.
+	 * Getter of sequence.
 	 *
 	 * @return sequence
 	 */
@@ -117,7 +117,7 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété sequence.
+	 * Setter of sequence.
 	 *
 	 * @param newSequence the sequence to set
 	 */

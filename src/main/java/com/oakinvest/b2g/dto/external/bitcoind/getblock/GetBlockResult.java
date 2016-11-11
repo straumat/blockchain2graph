@@ -85,7 +85,7 @@ public class GetBlockResult implements Serializable {
 	private ArrayList<String> tx;
 
 	/**
-	 * Getter de la propriété tx.
+	 * Getter of tx.
 	 *
 	 * @return tx
 	 */
@@ -94,7 +94,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété tx.
+	 * Setter of tx.
 	 *
 	 * @param newTx the tx to set
 	 */
@@ -103,7 +103,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété hash.
+	 * Getter of hash.
 	 *
 	 * @return hash
 	 */
@@ -112,7 +112,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété hash.
+	 * Setter of hash.
 	 *
 	 * @param newHash the hash to set
 	 */
@@ -121,7 +121,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété confirmations.
+	 * Getter of confirmations.
 	 *
 	 * @return confirmations
 	 */
@@ -130,7 +130,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété confirmations.
+	 * Setter of confirmations.
 	 *
 	 * @param newConfirmations the confirmations to set
 	 */
@@ -139,7 +139,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété size.
+	 * Getter of size.
 	 *
 	 * @return size
 	 */
@@ -148,7 +148,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété size.
+	 * Setter of size.
 	 *
 	 * @param newSize the size to set
 	 */
@@ -157,7 +157,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété height.
+	 * Getter of height.
 	 *
 	 * @return height
 	 */
@@ -166,7 +166,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété height.
+	 * Setter of height.
 	 *
 	 * @param newHeight the height to set
 	 */
@@ -175,7 +175,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété version.
+	 * Getter of version.
 	 *
 	 * @return version
 	 */
@@ -184,7 +184,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété version.
+	 * Setter of version.
 	 *
 	 * @param newVersion the version to set
 	 */
@@ -193,7 +193,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété merkleroot.
+	 * Getter of merkleroot.
 	 *
 	 * @return merkleroot
 	 */
@@ -202,7 +202,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété merkleroot.
+	 * Setter of merkleroot.
 	 *
 	 * @param newMerkleroot the merkleroot to set
 	 */
@@ -211,7 +211,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété time.
+	 * Getter of time.
 	 *
 	 * @return time
 	 */
@@ -220,7 +220,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété time.
+	 * Setter of time.
 	 *
 	 * @param newTime the time to set
 	 */
@@ -229,7 +229,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété mediantime.
+	 * Getter of mediantime.
 	 *
 	 * @return mediantime as date
 	 */
@@ -238,7 +238,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété mediantime.
+	 * Setter of mediantime.
 	 *
 	 * @param newMediantime the mediantime to set
 	 */
@@ -247,7 +247,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété nonce.
+	 * Getter of nonce.
 	 *
 	 * @return nonce
 	 */
@@ -256,7 +256,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété nonce.
+	 * Setter of nonce.
 	 *
 	 * @param newNonce the nonce to set
 	 */
@@ -265,7 +265,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété bits.
+	 * Getter of bits.
 	 *
 	 * @return bits
 	 */
@@ -274,7 +274,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété bits.
+	 * Setter of bits.
 	 *
 	 * @param newBits the bits to set
 	 */
@@ -283,7 +283,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété difficulty.
+	 * Getter of difficulty.
 	 *
 	 * @return difficulty
 	 */
@@ -292,7 +292,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété difficulty.
+	 * Setter of difficulty.
 	 *
 	 * @param newDifficulty the difficulty to set
 	 */
@@ -301,7 +301,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété chainwork.
+	 * Getter of chainwork.
 	 *
 	 * @return chainwork
 	 */
@@ -310,7 +310,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété chainwork.
+	 * Setter of chainwork.
 	 *
 	 * @param newChainwork the chainwork to set
 	 */
@@ -319,7 +319,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété previousblockhash.
+	 * Getter of previousblockhash.
 	 *
 	 * @return previousblockhash
 	 */
@@ -328,7 +328,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété previousblockhash.
+	 * Setter of previousblockhash.
 	 *
 	 * @param newPreviousblockhash the previousblockhash to set
 	 */
@@ -337,7 +337,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété nextblockhash.
+	 * Getter of nextblockhash.
 	 *
 	 * @return nextblockhash
 	 */
@@ -346,7 +346,7 @@ public class GetBlockResult implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété nextblockhash.
+	 * Setter of nextblockhash.
 	 *
 	 * @param newNextblockhash the nextblockhash to set
 	 */

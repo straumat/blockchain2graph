@@ -18,7 +18,7 @@ public class GetBlockCountResponse extends BitcoindResponse implements Serializa
 	private long result;
 
 	/**
-	 * Getter de la propriété result.
+	 * Getter of result.
 	 *
 	 * @return result
 	 */
@@ -27,7 +27,7 @@ public class GetBlockCountResponse extends BitcoindResponse implements Serializa
 	}
 
 	/**
-	 * Setter de la propriété result.
+	 * Setter of result.
 	 *
 	 * @param newResult the result to set
 	 */

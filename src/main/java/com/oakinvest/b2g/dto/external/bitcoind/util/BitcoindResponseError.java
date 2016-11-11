@@ -17,7 +17,7 @@ public class BitcoindResponseError {
 	private String message;
 
 	/**
-	 * Getter de la propriété code.
+	 * Getter of code.
 	 *
 	 * @return code
 	 */
@@ -26,7 +26,7 @@ public class BitcoindResponseError {
 	}
 
 	/**
-	 * Setter de la propriété code.
+	 * Setter of code.
 	 *
 	 * @param newCode the code to set
 	 */
@@ -35,7 +35,7 @@ public class BitcoindResponseError {
 	}
 
 	/**
-	 * Getter de la propriété message.
+	 * Getter of message.
 	 *
 	 * @return message
 	 */
@@ -44,7 +44,7 @@ public class BitcoindResponseError {
 	}
 
 	/**
-	 * Setter de la propriété message.
+	 * Setter of message.
 	 *
 	 * @param newMessage the message to set
 	 */

@@ -26,7 +26,7 @@ public class GetRawTransactionVOut implements Serializable {
 	private GetRawTransactionScriptPubKey scriptPubKey;
 
 	/**
-	 * Getter de la propriété value.
+	 * Getter of value.
 	 *
 	 * @return value
 	 */
@@ -35,7 +35,7 @@ public class GetRawTransactionVOut implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété value.
+	 * Setter of value.
 	 *
 	 * @param newValue the value to set
 	 */
@@ -44,7 +44,7 @@ public class GetRawTransactionVOut implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété n.
+	 * Getter of n.
 	 *
 	 * @return n
 	 */
@@ -53,7 +53,7 @@ public class GetRawTransactionVOut implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété n.
+	 * Setter of n.
 	 *
 	 * @param newIndex the n to set
 	 */
@@ -62,7 +62,7 @@ public class GetRawTransactionVOut implements Serializable {
 	}
 
 	/**
-	 * Getter de la propriété scriptPubKey.
+	 * Getter of scriptPubKey.
 	 *
 	 * @return scriptPubKey
 	 */
@@ -71,7 +71,7 @@ public class GetRawTransactionVOut implements Serializable {
 	}
 
 	/**
-	 * Setter de la propriété scriptPubKey.
+	 * Setter of scriptPubKey.
 	 *
 	 * @param newScriptPubKey the scriptPubKey to set
 	 */

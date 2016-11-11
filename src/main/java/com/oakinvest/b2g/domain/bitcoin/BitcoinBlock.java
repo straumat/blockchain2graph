@@ -117,7 +117,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété id.
+	 * Getter of id.
 	 *
 	 * @return id
 	 */
@@ -126,7 +126,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété id.
+	 * Setter of id.
 	 *
 	 * @param newId the id to set
 	 */
@@ -135,7 +135,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété hash.
+	 * Getter of hash.
 	 *
 	 * @return hash
 	 */
@@ -144,7 +144,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété hash.
+	 * Setter of hash.
 	 *
 	 * @param newHash the hash to set
 	 */
@@ -153,7 +153,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété height.
+	 * Getter of height.
 	 *
 	 * @return height
 	 */
@@ -162,7 +162,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété height.
+	 * Setter of height.
 	 *
 	 * @param newIndex the height to set
 	 */
@@ -171,7 +171,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété size.
+	 * Getter of size.
 	 *
 	 * @return size
 	 */
@@ -180,7 +180,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété size.
+	 * Setter of size.
 	 *
 	 * @param newSize the size to set
 	 */
@@ -189,7 +189,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété version.
+	 * Getter of version.
 	 *
 	 * @return version
 	 */
@@ -198,7 +198,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété version.
+	 * Setter of version.
 	 *
 	 * @param newVersion the version to set
 	 */
@@ -207,7 +207,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété merkleRoot.
+	 * Getter of merkleRoot.
 	 *
 	 * @return merkleRoot
 	 */
@@ -216,7 +216,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété merkleRoot.
+	 * Setter of merkleRoot.
 	 *
 	 * @param newMerkleroot the merkleRoot to set
 	 */
@@ -225,7 +225,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété time.
+	 * Getter of time.
 	 *
 	 * @return time
 	 */
@@ -234,7 +234,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété time.
+	 * Setter of time.
 	 *
 	 * @param newCreationDate the time to set
 	 */
@@ -243,7 +243,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété medianTime.
+	 * Getter of medianTime.
 	 *
 	 * @return medianTime
 	 */
@@ -252,7 +252,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété medianTime.
+	 * Setter of medianTime.
 	 *
 	 * @param newMediantime the medianTime to set
 	 */
@@ -261,7 +261,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété nonce.
+	 * Getter of nonce.
 	 *
 	 * @return nonce
 	 */
@@ -270,7 +270,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété nonce.
+	 * Setter of nonce.
 	 *
 	 * @param newNonce the nonce to set
 	 */
@@ -279,7 +279,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété bits.
+	 * Getter of bits.
 	 *
 	 * @return bits
 	 */
@@ -288,7 +288,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété bits.
+	 * Setter of bits.
 	 *
 	 * @param newBits the bits to set
 	 */
@@ -297,7 +297,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété difficulty.
+	 * Getter of difficulty.
 	 *
 	 * @return difficulty
 	 */
@@ -306,7 +306,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété difficulty.
+	 * Setter of difficulty.
 	 *
 	 * @param newDifficulty the difficulty to set
 	 */
@@ -315,7 +315,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété chainWork.
+	 * Getter of chainWork.
 	 *
 	 * @return chainWork
 	 */
@@ -324,7 +324,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété chainWork.
+	 * Setter of chainWork.
 	 *
 	 * @param newChainwork the chainWork to set
 	 */
@@ -333,7 +333,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété previousBlockHash.
+	 * Getter of previousBlockHash.
 	 *
 	 * @return previousBlockHash
 	 */
@@ -342,7 +342,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété previousBlockHash.
+	 * Setter of previousBlockHash.
 	 *
 	 * @param newPreviousblockhash the previousBlockHash to set
 	 */
@@ -351,7 +351,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété nextBlockHash.
+	 * Getter of nextBlockHash.
 	 *
 	 * @return nextBlockHash
 	 */
@@ -360,7 +360,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété nextBlockHash.
+	 * Setter of nextBlockHash.
 	 *
 	 * @param newNextblockhash the nextBlockHash to set
 	 */
@@ -370,7 +370,7 @@ public class BitcoinBlock {
 
 
 	/**
-	 * Getter de la propriété transactions.
+	 * Getter of transactions.
 	 *
 	 * @return transactions
 	 */
@@ -379,7 +379,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété transactions.
+	 * Setter of transactions.
 	 *
 	 * @param newTransactions the transactions to set
 	 */

@@ -12,7 +12,7 @@ public abstract class BitcoindResponse {
 	private BitcoindResponseError error;
 
 	/**
-	 * Getter de la propriété error.
+	 * Getter of error.
 	 *
 	 * @return error
 	 */
@@ -21,7 +21,7 @@ public abstract class BitcoindResponse {
 	}
 
 	/**
-	 * Setter de la propriété error.
+	 * Setter of error.
 	 *
 	 * @param newError the error to set
 	 */

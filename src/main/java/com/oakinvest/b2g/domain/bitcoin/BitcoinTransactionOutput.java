@@ -74,7 +74,7 @@ public class BitcoinTransactionOutput {
 	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<BitcoinAddress>();
 
 	/**
-	 * Getter de la propriété transaction.
+	 * Getter of transaction.
 	 *
 	 * @return transaction
 	 */
@@ -83,7 +83,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété transaction.
+	 * Setter of transaction.
 	 *
 	 * @param newTransaction the transaction to set
 	 */
@@ -92,7 +92,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété scriptPubKeyReqSigs.
+	 * Getter of scriptPubKeyReqSigs.
 	 *
 	 * @return scriptPubKeyReqSigs
 	 */
@@ -101,7 +101,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété scriptPubKeyReqSigs.
+	 * Setter of scriptPubKeyReqSigs.
 	 *
 	 * @param newScriptPubKeyReqSigs the scriptPubKeyReqSigs to set
 	 */
@@ -110,7 +110,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété scriptPubKeyType.
+	 * Getter of scriptPubKeyType.
 	 *
 	 * @return scriptPubKeyType
 	 */
@@ -119,7 +119,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété scriptPubKeyType.
+	 * Setter of scriptPubKeyType.
 	 *
 	 * @param newScriptPubKeyType the scriptPubKeyType to set
 	 */
@@ -128,7 +128,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété addresses.
+	 * Getter of addresses.
 	 *
 	 * @return addresses
 	 */
@@ -137,7 +137,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété addresses.
+	 * Setter of addresses.
 	 *
 	 * @param newAddresses the addresses to set
 	 */
@@ -146,7 +146,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété bitcoinAddresses.
+	 * Getter of bitcoinAddresses.
 	 *
 	 * @return bitcoinAddresses
 	 */
@@ -155,7 +155,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété bitcoinAddresses.
+	 * Setter of bitcoinAddresses.
 	 *
 	 * @param newBitcoinAddresses the bitcoinAddresses to set
 	 */
@@ -164,7 +164,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété id.
+	 * Getter of id.
 	 *
 	 * @return id
 	 */
@@ -173,7 +173,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété id.
+	 * Setter of id.
 	 *
 	 * @param newId the id to set
 	 */
@@ -182,7 +182,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété value.
+	 * Getter of value.
 	 *
 	 * @return value
 	 */
@@ -191,7 +191,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété value.
+	 * Setter of value.
 	 *
 	 * @param newValue the value to set
 	 */
@@ -200,7 +200,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété n.
+	 * Getter of n.
 	 *
 	 * @return n
 	 */
@@ -209,7 +209,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété n.
+	 * Setter of n.
 	 *
 	 * @param newN the n to set
 	 */
@@ -218,7 +218,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété scriptPubKeyAsm.
+	 * Getter of scriptPubKeyAsm.
 	 *
 	 * @return scriptPubKeyAsm
 	 */
@@ -227,7 +227,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété scriptPubKeyAsm.
+	 * Setter of scriptPubKeyAsm.
 	 *
 	 * @param newScriptPubKeyAsm the scriptPubKeyAsm to set
 	 */
@@ -236,7 +236,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Getter de la propriété scriptPubKeyHex.
+	 * Getter of scriptPubKeyHex.
 	 *
 	 * @return scriptPubKeyHex
 	 */
@@ -245,7 +245,7 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
-	 * Setter de la propriété scriptPubKeyHex.
+	 * Setter of scriptPubKeyHex.
 	 *
 	 * @param newScriptPubKeyHex the scriptPubKeyHex to set
 	 */

@@ -18,7 +18,7 @@ public class GetRawTransactionResponse extends BitcoindResponse implements Seria
 	private GetRawTransactionResult result;
 
 	/**
-	 * Getter de la propriété result.
+	 * Getter of result.
 	 *
 	 * @return result
 	 */
@@ -27,7 +27,7 @@ public class GetRawTransactionResponse extends BitcoindResponse implements Seria
 	}
 
 	/**
-	 * Setter de la propriété result.
+	 * Setter of result.
 	 *
 	 * @param newResult the result to set
 	 */
