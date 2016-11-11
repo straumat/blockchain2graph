@@ -2,6 +2,7 @@ package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
 /**
  * Bitcoin transaction input.
@@ -16,16 +17,34 @@ public class BitcoinTransactionInput {
 	private Long id;
 
 	/**
+	 * Transaction.
+	 */
+	@Relationship(type = "IN_TRANSACTION")
+	private BitcoinTransaction transaction;
+
+	/**
+	 * Transaction output.
+	 */
+	@Relationship(type = "TRANSACTION_OUTPUT")
+	private BitcoinTransactionOutput transactionOutput;
+
+	/**
 	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
 	private String txId;
 
 	/**
+	 * Coinbase.
+	 */
+	@Property(name = "coinbase")
+	private String coinbase;
+
+	/**
 	 * vOut.
 	 */
 	@Property(name = "vout")
-	private long vOut;
+	private int vOut;
 
 	/**
 	 * The script asm.
@@ -44,6 +63,24 @@ public class BitcoinTransactionInput {
 	 */
 	@Property(name = "sequence")
 	private long sequence;
+
+	/**
+	 * Getter de la propriété transactionOutput.
+	 *
+	 * @return transactionOutput
+	 */
+	public final BitcoinTransactionOutput getTransactionOutput() {
+		return transactionOutput;
+	}
+
+	/**
+	 * Setter de la propriété transactionOutput.
+	 *
+	 * @param newTransactionOutput the transactionOutput to set
+	 */
+	public final void setTransactionOutput(final BitcoinTransactionOutput newTransactionOutput) {
+		transactionOutput = newTransactionOutput;
+	}
 
 	/**
 	 * Getter de la propriété id.
@@ -82,11 +119,29 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
+	 * Getter de la propriété coinbase.
+	 *
+	 * @return coinbase
+	 */
+	public final String getCoinbase() {
+		return coinbase;
+	}
+
+	/**
+	 * Setter de la propriété coinbase.
+	 *
+	 * @param newCoinbase the coinbase to set
+	 */
+	public final void setCoinbase(final String newCoinbase) {
+		coinbase = newCoinbase;
+	}
+
+	/**
 	 * Getter de la propriété vOut.
 	 *
 	 * @return vOut
 	 */
-	public final long getvOut() {
+	public final int getvOut() {
 		return vOut;
 	}
 
@@ -95,7 +150,7 @@ public class BitcoinTransactionInput {
 	 *
 	 * @param newVout the vOut to set
 	 */
-	public final void setvOut(final long newVout) {
+	public final void setvOut(final int newVout) {
 		vOut = newVout;
 	}
 
@@ -153,4 +208,21 @@ public class BitcoinTransactionInput {
 		sequence = newSequence;
 	}
 
+	/**
+	 * Getter de la propriété transaction.
+	 *
+	 * @return transaction
+	 */
+	public final BitcoinTransaction getTransaction() {
+		return transaction;
+	}
+
+	/**
+	 * Setter de la propriété transaction.
+	 *
+	 * @param newTransaction the transaction to set
+	 */
+	public final void setTransaction(final BitcoinTransaction newTransaction) {
+		transaction = newTransaction;
+	}
 }

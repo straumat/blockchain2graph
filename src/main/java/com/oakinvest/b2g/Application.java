@@ -40,7 +40,7 @@ public class Application {
 	 */
 	@PostConstruct
 	public final void initApplication() {
-		log.debug("block2graph starting...");
+		log.debug("block2graph started...");
 	}
 
 }

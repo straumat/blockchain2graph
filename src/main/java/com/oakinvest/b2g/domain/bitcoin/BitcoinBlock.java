@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ public class BitcoinBlock {
 	 * Transactions in the block.
 	 */
 	@Relationship(type = "TRANSACTIONS")
-	private Set<BitcoinTransaction> transactions;
+	private Set<BitcoinTransaction> transactions = new HashSet<BitcoinTransaction>();
 
 	/**
 	 * Block height.

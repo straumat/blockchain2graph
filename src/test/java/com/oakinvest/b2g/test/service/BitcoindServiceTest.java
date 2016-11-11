@@ -44,6 +44,11 @@ public class BitcoindServiceTest {
 	private static final String BLOCK_HASH = "000000000000000003536b07a8663ea1f10c891ccdb06e3a57c825041551df6a";
 
 	/**
+	 * Block hash with coinbase transaction.
+	 */
+	private static final String COINBBASE_TRANSACTION_HASH = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
+
+	/**
 	 * Existing transaction in the block.
 	 */
 	private static final String BLOCK_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322";
@@ -188,6 +193,7 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong VIn 1 asm", expectedVIn1scriptSigAsm, vin1.getScriptSig().getAsm());
 		assertEquals("Wrong VIn 1 hex", expectedVIn1scriptSigHex, vin1.getScriptSig().getHex());
 		assertEquals("Wrong VIn 1 sequence", expectedVIn1Sequence, vin1.getSequence());
+		assertNull("Vin1 coinbase not null", vin1.getCoinbase());
 		// VIn 2
 		GetRawTransactionVIn vin2 = r.getVin().get(1);
 		assertEquals("Wrong VIn 2 Tx ID", expectedVIn2TxID, vin2.getTxid());
@@ -195,6 +201,7 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong VIn 2 asm", expectedVIn2scriptSigAsm, vin2.getScriptSig().getAsm());
 		assertEquals("Wrong VIn 2 hex", expectedVIn2scriptSigHex, vin2.getScriptSig().getHex());
 		assertEquals("Wrong VIn 2 sequence", expectedVIn2Sequence, vin2.getSequence());
+		assertNull("Vin2 coinbase not null", vin1.getCoinbase());
 		// VIn 3
 		GetRawTransactionVIn vin3 = r.getVin().get(2);
 		assertEquals("Wrong VIn 3 Tx ID", expectedVIn3TxID, vin3.getTxid());
@@ -227,6 +234,14 @@ public class BitcoindServiceTest {
 		assertTrue("Wrong confirmations", expectedMinimalConfirmations < r.getConfirmations());
 		assertEquals("Wrong time", expectedTime, r.getTime());
 		assertEquals("Wrong block time", expectedBlockTime, r.getBlocktime());
+
+		// Getrawtransaction for coinbase.
+		GetRawTransactionResult coinbaseTransaction = bds.getRawTransaction(COINBBASE_TRANSACTION_HASH).getResult();
+		assertEquals("Wrong vin transaction count", 1, coinbaseTransaction.getVin().size());
+		final String expectedCoinbase = "04ffff001d0134";
+		final long expectedSequence = 4294967295l;
+		assertEquals("Coinbase not set", expectedCoinbase, coinbaseTransaction.getVin().get(0).getCoinbase());
+		assertEquals("Sequence not set", expectedSequence, coinbaseTransaction.getVin().get(0).getSequence());
 	}
 
 	/**

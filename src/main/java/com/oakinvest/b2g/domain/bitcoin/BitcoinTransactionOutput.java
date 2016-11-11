@@ -2,7 +2,9 @@ package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,10 +20,10 @@ public class BitcoinTransactionOutput {
 	private Long id;
 
 	/**
-	 * The transaction id (same as provided).
+	 * Transaction.
 	 */
-	@Property(name = "txid")
-	private String txId;
+	@Relationship(type = "IN_TRANSACTION")
+	private BitcoinTransaction transaction;
 
 	/**
 	 * The value in BTC.
@@ -33,7 +35,7 @@ public class BitcoinTransactionOutput {
 	 * index.
 	 */
 	@Property(name = "n")
-	private long n;
+	private int n;
 
 	/**
 	 * The scriptPubKey asm.
@@ -63,7 +65,31 @@ public class BitcoinTransactionOutput {
 	 * Adresses.
 	 */
 	@Property(name = "addresses")
-	private Set<String> addresses;
+	private Set<String> addresses = new HashSet<String>();
+
+	/**
+	 * Adresses.
+	 */
+	@Relationship(type = "FOR_ADDRESS")
+	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<BitcoinAddress>();
+
+	/**
+	 * Getter de la propriété transaction.
+	 *
+	 * @return transaction
+	 */
+	public final BitcoinTransaction getTransaction() {
+		return transaction;
+	}
+
+	/**
+	 * Setter de la propriété transaction.
+	 *
+	 * @param newTransaction the transaction to set
+	 */
+	public final void setTransaction(final BitcoinTransaction newTransaction) {
+		transaction = newTransaction;
+	}
 
 	/**
 	 * Getter de la propriété scriptPubKeyReqSigs.
@@ -120,6 +146,24 @@ public class BitcoinTransactionOutput {
 	}
 
 	/**
+	 * Getter de la propriété bitcoinAddresses.
+	 *
+	 * @return bitcoinAddresses
+	 */
+	public final Set<BitcoinAddress> getBitcoinAddresses() {
+		return bitcoinAddresses;
+	}
+
+	/**
+	 * Setter de la propriété bitcoinAddresses.
+	 *
+	 * @param newBitcoinAddresses the bitcoinAddresses to set
+	 */
+	public final void setBitcoinAddresses(final Set<BitcoinAddress> newBitcoinAddresses) {
+		bitcoinAddresses = newBitcoinAddresses;
+	}
+
+	/**
 	 * Getter de la propriété id.
 	 *
 	 * @return id
@@ -135,24 +179,6 @@ public class BitcoinTransactionOutput {
 	 */
 	public final void setId(final Long newId) {
 		id = newId;
-	}
-
-	/**
-	 * Getter de la propriété txId.
-	 *
-	 * @return txId
-	 */
-	public final String getTxId() {
-		return txId;
-	}
-
-	/**
-	 * Setter de la propriété txId.
-	 *
-	 * @param newTxid the txId to set
-	 */
-	public final void setTxId(final String newTxid) {
-		txId = newTxid;
 	}
 
 	/**
@@ -178,7 +204,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @return n
 	 */
-	public final long getN() {
+	public final int getN() {
 		return n;
 	}
 
@@ -187,7 +213,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @param newN the n to set
 	 */
-	public final void setN(final long newN) {
+	public final void setN(final int newN) {
 		n = newN;
 	}
 

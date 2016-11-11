@@ -16,6 +16,11 @@ public class GetRawTransactionVIn implements Serializable {
 	private String txid;
 
 	/**
+	 * Coinbase.
+	 */
+	private String coinbase;
+
+	/**
 	 * vout.
 	 */
 	private long vout;
@@ -46,6 +51,24 @@ public class GetRawTransactionVIn implements Serializable {
 	 */
 	public final void setTxid(final String newTxid) {
 		txid = newTxid;
+	}
+
+	/**
+	 * Getter de la propriété coinbase.
+	 *
+	 * @return coinbase
+	 */
+	public final String getCoinbase() {
+		return coinbase;
+	}
+
+	/**
+	 * Setter de la propriété coinbase.
+	 *
+	 * @param newCoinbase the coinbase to set
+	 */
+	public final void setCoinbase(final String newCoinbase) {
+		coinbase = newCoinbase;
 	}
 
 	/**

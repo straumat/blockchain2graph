@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.util.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
@@ -72,6 +73,7 @@ public interface BitcoindToDomainMapper {
 	 */
 	@Mappings({
 			@Mapping(source = "txid", target = "txId"),
+			@Mapping(source = "coinbase", target = "coinbase"),
 			@Mapping(source = "vout", target = "vOut"),
 			@Mapping(source = "scriptSig.asm", target = "scriptSigAsm"),
 			@Mapping(source = "scriptSig.hex", target = "scriptSigHex"),
@@ -95,5 +97,16 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "scriptPubKey.addresses", target = "addresses")
 	})
 	BitcoinTransactionOutput rawTransactionVout(GetRawTransactionVOut grtvout);
+
+	/**
+	 * Maps a string to a bitcoin address.
+	 *
+	 * @param address address in string
+	 * @return bitcoin address
+	 */
+	@Mappings({
+			@Mapping(source = "address", target = "address")
+	})
+	BitcoinAddress bitcoinAddress(String address);
 
 }

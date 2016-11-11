@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -89,12 +90,12 @@ public class BitcoinTransaction {
 	/**
 	 * Inputs.
 	 */
-	private Set<BitcoinTransactionInput> inputs;
+	private Set<BitcoinTransactionInput> inputs = new HashSet<BitcoinTransactionInput>();
 
 	/**
 	 * Outputs.
 	 */
-	private Set<BitcoinTransactionOutput> outputs;
+	private Set<BitcoinTransactionOutput> outputs = new HashSet<BitcoinTransactionOutput>();
 
 	/**
 	 * Returns the output according to the index.
