@@ -194,8 +194,9 @@ public class IntegrationServiceTest {
 		// Testing if an address has correct outputs and inputs.
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
-		// Testing deposits.
-		assertEquals("Wrong number of inputs", 5, a1.getWithdrawals().size());
+		// Testing withdrawals.
+		final int a1NumberOfWithdrawls = 5;
+		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();
@@ -206,8 +207,9 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong transaction value", 29.0f, bti4.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti5 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe")).findFirst().get();
 		assertEquals("Wrong transaction value", 28.0f, bti5.getTransactionOutput().getValue());
-		// Testing withdrawals.
-		assertEquals("Wrong number of output", 6, a1.getDeposits().size());
+		// Testing deposits.
+		final int a1NumberOfDeposits = 6;
+		assertEquals("Wrong number of output", a1NumberOfDeposits, a1.getDeposits().size());
 		BitcoinTransactionOutput bto1 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bto1.getValue());
 		BitcoinTransactionOutput bto2 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();

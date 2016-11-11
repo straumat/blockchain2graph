@@ -2,7 +2,11 @@ package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.web.StatusHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Status service implementation.
@@ -10,6 +14,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StatusServiceImplementation implements StatusService {
+
+	/**
+	 * Date format.
+	 */
+	@Value("${blockchain2graph.date.format}")
+	private static final String DATE_FORMAT = "yyyy-mm-dd HH:mm";
 
 	/**
 	 * Status handler.
@@ -77,10 +87,10 @@ public class StatusServiceImplementation implements StatusService {
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
 		importedBlockCount = newImportedBlockCount;
 		statusHandler.updateImportedBlockCount(importedBlockCount);
-//		if ( importedBlockCount == 20) {
+//		if (importedBlockCount == 20) {
 //			addErrorMessage("[ERROR] 1");
 //		}
-//		if ( importedBlockCount == 40) {
+//		if (importedBlockCount == 80) {
 //			addErrorMessage("[ERROR] 2");
 //		}
 	}
@@ -102,8 +112,9 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final void addLogMessage(final String newLogMessage) {
-		lastLogMessage = newLogMessage;
-		statusHandler.updateLog(lastLogMessage);
+		String date = new SimpleDateFormat(DATE_FORMAT).format(Calendar.getInstance().getTime());
+		lastLogMessage = "[" + date + "] " + newLogMessage;
+		statusHandler.updateLog("[" + date + "] " + newLogMessage);
 	}
 
 	/**
@@ -123,7 +134,8 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final void addErrorMessage(final String newErrorMessage) {
-		lastErrorMessage = newErrorMessage;
-		statusHandler.updateErrorMessage(newErrorMessage);
+		String date = new SimpleDateFormat(DATE_FORMAT).format(Calendar.getInstance().getTime());
+		lastErrorMessage = "[" + date + "] " + newErrorMessage;
+		statusHandler.updateErrorMessage("[" + date + "] " + newErrorMessage);
 	}
 }

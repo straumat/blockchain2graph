@@ -72,6 +72,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
+		updateErrorMessage(ss.getLastErrorMessage());
 	}
 
 	/**

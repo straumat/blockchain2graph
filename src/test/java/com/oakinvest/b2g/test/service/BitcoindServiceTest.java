@@ -239,7 +239,7 @@ public class BitcoindServiceTest {
 		GetRawTransactionResult coinbaseTransaction = bds.getRawTransaction(COINBBASE_TRANSACTION_HASH).getResult();
 		assertEquals("Wrong vin transaction count", 1, coinbaseTransaction.getVin().size());
 		final String expectedCoinbase = "04ffff001d0134";
-		final long expectedSequence = 4294967295l;
+		final long expectedSequence = 4294967295L;
 		assertEquals("Coinbase not set", expectedCoinbase, coinbaseTransaction.getVin().get(0).getCoinbase());
 		assertEquals("Sequence not set", expectedSequence, coinbaseTransaction.getVin().get(0).getSequence());
 	}
