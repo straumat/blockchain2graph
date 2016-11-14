@@ -235,7 +235,7 @@ public class BitcoindServiceMock implements BitcoindService {
 		} catch (IOException e) {
 			log.error("Error : " + e);
 		} catch (ClassNotFoundException c) {
-			c.printStackTrace();
+			log.error("Error : " + c);
 		}
 		return o;
 	}
