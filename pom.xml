@@ -39,7 +39,6 @@
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
 		<jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
-		<aws-maven.version>5.0.0.RELEASE</aws-maven.version>
 
 		<!-- Java lib releases configuration -->
 		<neo4j.version>2.0.5</neo4j.version>
@@ -235,16 +234,6 @@
 
 		</plugins>
 
-		<extensions>
-
-			<!-- Plugin for delivering artifacts to aws -->
-			<extension>
-				<groupId>org.springframework.build</groupId>
-				<artifactId>aws-maven</artifactId>
-				<version>${aws-maven.version}</version>
-			</extension>
-
-		</extensions>
 	</build>
 	<!-- =========================================================================================================== -->
 
@@ -268,24 +257,6 @@
 
 		</plugins>
 	</reporting>
-	<!-- =========================================================================================================== -->
-
-	<!-- =========================================================================================================== -->
-	<!-- Distribution management -->
-	<!-- https://s3.amazonaws.com/oak-invest/blockchain2graph/snapshot -->
-	<!-- https://s3.amazonaws.com/oak-invest/blockchain2graph/release -->
-	<distributionManagement>
-		<snapshotRepository>
-			<id>aws-snapshot</id>
-			<name>AWS Snapshot Repository</name>
-			<url>s3://oak-invest/blockchain2graph/snapshot</url>
-		</snapshotRepository>
-		<repository>
-			<id>aws-release</id>
-			<name>AWS Release Repository</name>
-			<url>s3://oak-invest/blockchain2graph/release</url>
-		</repository>
-	</distributionManagement>
 	<!-- =========================================================================================================== -->
 
 </project>

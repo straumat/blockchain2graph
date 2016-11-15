@@ -7,12 +7,13 @@ jdk:
   - oraclejdk8
 sudo: required
 script:
-    - mvn deploy | egrep -v "(^ KB)"
+    - mvn package
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - codacy-coverage-reporter -l Java -r target/site/jacoco/jacoco.xml
 addons:
   artifacts:
+    s3_region: "us-west-1"
     paths:
     - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e jar$ -e war$ | tr "\n" ":")
