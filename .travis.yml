@@ -1,12 +1,13 @@
 env:
   global:
   - TERM=dumb
+  - _JAVA_OPTIONS=-Dlogging.level.org.springframework=ERROR
 language: java
 jdk:
   - oraclejdk8
 sudo: required
 script:
-    - mvn deploy
+    - mvn deploy | egrep -v "(^ KB)"
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
