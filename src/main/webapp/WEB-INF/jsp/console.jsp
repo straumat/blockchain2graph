@@ -15,18 +15,18 @@
 	<link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 
 	<!-- CSS lib -->
-	<link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
+	<link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/css/bootstrap.min.css'>
 
 	<!-- Javascript lib -->
-	<script src="/webjars/jquery/jquery.min.js"></script>
-	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/webjars/jquery/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/webjars/bootstrap/js/bootstrap.min.js"></script>
 
 	<!-- Custom CSS & Javascript -->
-	<link rel='stylesheet' href='/css/custom.css'>
+	<link rel='stylesheet' href='${pageContext.request.contextPath}/css/custom.css'>
 	<script>
 		var url = "${url}";
 	</script>
-	<script src="/js/console.js"></script>
+	<script src="${pageContext.request.contextPath}/js/console.js"></script>
 
 </head>
 <body>

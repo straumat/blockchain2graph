@@ -91,11 +91,7 @@
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-websocket</artifactId>
-			<version>${tomcat-embed-websocket.version}</version>
-		</dependency>
+
 
 		<!-- Neo4j -->
 		<dependency>
