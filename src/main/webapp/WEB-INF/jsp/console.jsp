@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>Blockchain2graph console</title>
-	<meta name="description" content="Blockchain2graph console (${url})">
+	<meta name="description" content="Blockchain2graph console">
 
 	<!--Let browser know this website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,7 +24,7 @@
 	<!-- Custom CSS & Javascript -->
 	<link rel='stylesheet' href='${pageContext.request.contextPath}/css/custom.css'>
 	<script>
-		var url = "${url}";
+		var url = "${url}/${pageContext.request.contextPath}";
 	</script>
 	<script src="${pageContext.request.contextPath}/js/console.js"></script>
 
