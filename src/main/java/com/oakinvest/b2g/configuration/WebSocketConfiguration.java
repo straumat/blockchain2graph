@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.standard.TomcatRequestUpgradeStrategy;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 /**
  * Web socket configuration.
@@ -28,7 +30,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	 */
 	@Override
 	public final void registerWebSocketHandlers(final WebSocketHandlerRegistry registry) {
-		registry.addHandler(statusHandler, "/status").setAllowedOrigins("*");
+		registry.addHandler(statusHandler, "/status").setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy())).setAllowedOrigins("*");
 	}
 
 }
