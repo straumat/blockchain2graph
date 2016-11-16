@@ -41,6 +41,7 @@
 		<jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
 
 		<!-- Java lib releases configuration -->
+		<tomcat-embed-websocket.version>7.0.52</tomcat-embed-websocket.version>
 		<neo4j.version>2.0.5</neo4j.version>
 		<mapstruct.version>1.1.0.CR1</mapstruct.version>
 		<json-simple.version>1.1.1</json-simple.version>
@@ -84,6 +85,11 @@
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-websocket</artifactId>
+			<version>${tomcat-embed-websocket.version}</version>
 		</dependency>
 
 		<!-- Neo4j -->
