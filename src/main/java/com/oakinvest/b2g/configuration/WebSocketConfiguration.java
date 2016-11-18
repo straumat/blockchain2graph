@@ -29,7 +29,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	@Override
 	public final void registerWebSocketHandlers(final WebSocketHandlerRegistry registry) {
 		registry.addHandler(statusHandler, "/status").setAllowedOrigins("*");
-		//registry.addHandler(statusHandler, "/status").setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy())).setAllowedOrigins("*");
 	}
 
 }

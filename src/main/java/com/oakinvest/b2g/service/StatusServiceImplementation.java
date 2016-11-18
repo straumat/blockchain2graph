@@ -19,7 +19,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * Date format.
 	 */
 	@Value("${blockchain2graph.date.format}")
-	private static final String DATE_FORMAT = "yyyy-mm-dd HH:mm";
+	private String dateFormat;
 
 	/**
 	 * Status handler.
@@ -112,7 +112,7 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final void addLogMessage(final String newLogMessage) {
-		String date = new SimpleDateFormat(DATE_FORMAT).format(Calendar.getInstance().getTime());
+		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastLogMessage = "[" + date + "] " + newLogMessage;
 		statusHandler.updateLog("[" + date + "] " + newLogMessage);
 	}
@@ -134,7 +134,7 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final void addErrorMessage(final String newErrorMessage) {
-		String date = new SimpleDateFormat(DATE_FORMAT).format(Calendar.getInstance().getTime());
+		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastErrorMessage = "[" + date + "] " + newErrorMessage;
 		statusHandler.updateErrorMessage("[" + date + "] " + newErrorMessage);
 	}
