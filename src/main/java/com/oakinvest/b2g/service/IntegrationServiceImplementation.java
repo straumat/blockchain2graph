@@ -154,7 +154,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		if (success) {
 			Iterator<GetRawTransactionResult> it = transactions.iterator();
 			while (it.hasNext()) {
-				it.next().getVout().stream().forEach(s -> s.getScriptPubKey().getAddresses().stream().forEach(a -> addresses.add(a)));
+				it.next().getVout().forEach(s -> s.getScriptPubKey().getAddresses().forEach(a -> addresses.add(a)));
 			}
 		}
 
@@ -197,8 +197,8 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				while (outputsIterator.hasNext()) {
 					BitcoinTransactionOutput o = outputsIterator.next();
 					o.setTransaction(bt);
-					o.getAddresses().stream().forEach(a -> o.getBitcoinAddresses().add((BitcoinAddress) bitcoinAddresses.get(a)));
-					o.getAddresses().stream().forEach(a -> ((BitcoinAddress) bitcoinAddresses.get(a)).getDeposits().add(o));
+					o.getAddresses().forEach(a -> o.getBitcoinAddresses().add((BitcoinAddress) bitcoinAddresses.get(a)));
+					o.getAddresses().forEach(a -> ((BitcoinAddress) bitcoinAddresses.get(a)).getDeposits().add(o));
 				}
 
 				// For each vin.
@@ -215,9 +215,9 @@ public class IntegrationServiceImplementation implements IntegrationService {
 						// We set the addresses "from" if it's not a coinbase transaction.
 						if (i.getCoinbase() == null) {
 							// We retrieve all the addresses used in the transaction.
-							originTransactionOutput.getAddresses().stream().forEach(a -> bitcoinAddresses.put(a, bar.findByAddress(a)));
+							originTransactionOutput.getAddresses().forEach(a -> bitcoinAddresses.put(a, bar.findByAddress(a)));
 							// We add the input.
-							originTransactionOutput.getAddresses().stream().forEach(a -> ((BitcoinAddress) bitcoinAddresses.get(a)).getWithdrawals().add(i));
+							originTransactionOutput.getAddresses().forEach(a -> ((BitcoinAddress) bitcoinAddresses.get(a)).getWithdrawals().add(i));
 						}
 					}
 				}

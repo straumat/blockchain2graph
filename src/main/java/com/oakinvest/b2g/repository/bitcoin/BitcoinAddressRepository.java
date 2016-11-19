@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress> {
 
 	/**
-	 * Retuns the number of blocks.
+	 * Returns the number of blocks.
 	 *
 	 * @return count
 	 */

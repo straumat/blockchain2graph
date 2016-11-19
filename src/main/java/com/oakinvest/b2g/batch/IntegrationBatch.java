@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 public class IntegrationBatch {
 
 	/**
-	 * Interval beteween calls.
+	 * Interval between calls.
 	 */
-	public static final int BITCOIN_INTERVAL_BETWEEN_CALLS = 1000;
+	private static final int BITCOIN_INTERVAL_BETWEEN_CALLS = 100;
 
 	/**
 	 * Logger.
@@ -50,7 +50,7 @@ public class IntegrationBatch {
 	 * Status service.
 	 */
 	@Autowired
-	private StatusService ss;
+	private StatusService status;
 
 	/**
 	 * Integration service.
@@ -66,14 +66,14 @@ public class IntegrationBatch {
 		if (enabled) {
 			log.info("Batch being called");
 			final long totalBlockCount = bds.getBlockCount().getResult();
-			ss.setTotalBlockCount(totalBlockCount);
+			status.setTotalBlockCount(totalBlockCount);
 			final long importedBlockCount = bbr.count();
 
 			// if there is another block to import, let's import it !
 			if (importedBlockCount < totalBlockCount) {
 				is.integrateBitcoinBlock(importedBlockCount + 1);
 				// Update status.
-				ss.setImportedBlockCount(bbr.count());
+				status.setImportedBlockCount(bbr.count());
 			}
 		}
 	}

@@ -49,7 +49,7 @@
 	<!-- Last error message -->
 	<div class="row">
 		<div class="col-sm-1">&nbsp;</div>
-		<div class="col-sm-10 errorMessage" id="lastErrorMessage">No errors.</div>
+		<div class="col-sm-10 errorMessage" id="lastErrorMessage"></div>
 		<div class="col-sm-1">&nbsp;</div>
 	</div>
 	<!-- Log display -->

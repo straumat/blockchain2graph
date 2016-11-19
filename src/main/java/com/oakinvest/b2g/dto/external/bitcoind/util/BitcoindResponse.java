@@ -12,6 +12,16 @@ public abstract class BitcoindResponse {
 	private BitcoindResponseError error;
 
 	/**
+	 * Default constructor.
+	 */
+	public BitcoindResponse() {
+		BitcoindResponseError e = new BitcoindResponseError();
+		e.setCode(-1);
+		e.setMessage("Empty response");
+		error = e;
+	}
+
+	/**
 	 * Getter of error.
 	 *
 	 * @return error

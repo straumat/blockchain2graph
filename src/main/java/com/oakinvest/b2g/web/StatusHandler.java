@@ -25,12 +25,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Param for message type.
 	 */
-	public static final String PARAM_MESSAGE_TYPE = "messageType";
+	private static final String PARAM_MESSAGE_TYPE = "messageType";
 
 	/**
 	 * Param for message value.
 	 */
-	public static final String PARAM_MESSAGE_VALUE = "messageValue";
+	private static final String PARAM_MESSAGE_VALUE = "messageValue";
 
 	/**
 	 * Imported block count.
@@ -61,7 +61,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * Status service.
 	 */
 	@Autowired
-	private StatusService ss;
+	private StatusService status;
 
 	/**
 	 * Session.
@@ -72,9 +72,9 @@ public class StatusHandler extends TextWebSocketHandler {
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
-		updateErrorMessage(ss.getLastErrorMessage());
-		updateImportedBlockCount(ss.getImportedBlockCount());
-		updateTotalBlockCount(ss.getTotalBlockCount());
+		updateTotalBlockCount(status.getTotalBlockCount());
+		updateImportedBlockCount(status.getImportedBlockCount());
+		updateErrorMessage(status.getLastErrorMessage());
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 *
 	 * @param message message
 	 */
-	public final void sendMessage(final String message) {
+	private void sendMessage(final String message) {
 		// First, we clean all sessions that are closed.
 		List<WebSocketSession> sessionsToRemove = new ArrayList<>();
 		for (WebSocketSession session : this.sessions) {

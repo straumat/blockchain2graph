@@ -40,7 +40,7 @@ public class BitcoinAddress {
 	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<BitcoinTransactionOutput>();
 
 	/**
-	 * Defaut constructor.
+	 * Default constructor.
 	 */
 	public BitcoinAddress() {
 	}

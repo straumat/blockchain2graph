@@ -5,14 +5,49 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- =========================================================================================================== -->
-	<!-- Project configuration -->
+	<!-- Project information -->
 	<groupId>com.oakinvest.b2g</groupId>
 	<artifactId>blockchain2graph</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>blockchain2graph</name>
 	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
-	<url>https://github.com/straumat/blockchain2graph</url>
+	<url>https://straumat.github.io/blockchain2graph</url>
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3.0</name>
+			<url>https://raw.githubusercontent.com/straumat/blockchain2graph/master/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<!-- =========================================================================================================== -->
+
+	<!-- =========================================================================================================== -->
+	<!-- Organization -->
+	<organization>
+		<name>Oak Invest</name>
+		<url>http://www.oak-invest.com</url>
+	</organization>
+	<!-- =========================================================================================================== -->
+
+	<!-- =========================================================================================================== -->
+	<!-- Developers -->
+	<developers>
+		<!-- Stéphane Traumat (straumat) -->
+		<developer>
+			<id>straumat</id>
+			<name>Stéphane Traumat</name>
+			<email>stephane.traumat@gmail.com</email>
+			<url>https://about.me/straumat</url>
+			<organization>Oak Invest</organization>
+			<organizationUrl>http://www.oak-invest.com</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Europe/Paris</timezone>
+		</developer>
+	</developers>
 	<!-- =========================================================================================================== -->
 
 	<!-- =========================================================================================================== -->
@@ -36,14 +71,14 @@
 		<start-class>com.oakinvest.b2g.Application</start-class>
 
 		<!-- Maven plugin releases -->
-		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
 		<jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
 
 		<!-- Java lib releases configuration -->
-		<tomcat-embed-websocket.version>7.0.52</tomcat-embed-websocket.version>
-		<neo4j.version>2.0.5</neo4j.version>
-		<mapstruct.version>1.1.0.CR1</mapstruct.version>
+		<neo4j-embedded-driver.version>2.0.5</neo4j-embedded-driver.version>
+		<neo4j-bolt-driver.version>2.0.5</neo4j-bolt-driver.version>
+		<mapstruct.version>1.1.0.CR2</mapstruct.version>
 		<json-simple.version>1.1.1</json-simple.version>
 
 		<!-- webjars -->
@@ -91,12 +126,6 @@
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!--		<dependency>
-					<groupId>org.apache.tomcat.embed</groupId>
-					<artifactId>tomcat-embed-websocket</artifactId>
-					<version>${tomcat-embed-websocket.version}</version>
-					<scope>provided</scope>
-				</dependency>-->
 
 		<!-- Neo4j -->
 		<dependency>
@@ -106,13 +135,13 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-embedded-driver</artifactId>
-			<version>${neo4j.version}</version>
+			<version>${neo4j-embedded-driver.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-bolt-driver</artifactId>
-			<version>${neo4j.version}</version>
+			<version>${neo4j-bolt-driver.version}</version>
 		</dependency>
 
 		<!-- Java utils -->
