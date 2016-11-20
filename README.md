@@ -13,4 +13,4 @@ The documentation can be found [here](https://github.com/straumat/blockchain2gra
 
 Blockchain2graph is released under version 3.0 of the [GNU General Public Licence](https://github.com/straumat/blockchain2graph/blob/master/LICENSE).
 
-[[https://github.com/straumat/blockchain2graph/blob/gh-pages/images/b2g-console-screenshot.png]]
+(https://github.com/straumat/blockchain2graph/blob/gh-pages/images/b2g-console-screenshot.png)
