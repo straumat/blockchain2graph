@@ -296,8 +296,11 @@
 						<featureBranchPrefix>feature-</featureBranchPrefix>
 						<releaseBranchPrefix>release-</releaseBranchPrefix>
 						<hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
-						<versionTagPrefix>blither-</versionTagPrefix>
+						<versionTagPrefix>version-</versionTagPrefix>
 					</flowInitContext>
+					<noDeploy>true</noDeploy>
+					<squash>true</squash>
+					<scmCommentPrefix>[RELEASE]</scmCommentPrefix>
 				</configuration>
 			</plugin>
 
