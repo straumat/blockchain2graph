@@ -252,7 +252,7 @@
 				<configuration>
 					<consoleOutput>true</consoleOutput>
 					<configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
-					<failOnViolation>false</failOnViolation>
+					<failOnViolation>true</failOnViolation>
 					<violationSeverity>warning</violationSeverity>
 				</configuration>
 			</plugin>

@@ -33,6 +33,11 @@ import java.util.Map;
 public class IntegrationServiceImplementation implements IntegrationService {
 
 	/**
+	 * How many milli seconds in one second.
+	 */
+	public static final float MILLISECONDS_IN_SECONDS = 1000F;
+
+	/**
 	 * Genesis transaction hash.
 	 */
 	private static final String GENESIS_BLOCK_TRANSACTION_HASH_1 = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098";
@@ -92,6 +97,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 */
 	@Override
 	public final boolean integrateBitcoinBlock(final long blockHeight) {
+		final long start = System.currentTimeMillis();
 		log.info("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 		status.addLogMessage("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 
@@ -229,9 +235,9 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			}
 
 		}
-
-		log.info("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done");
-		status.addLogMessage("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done");
+		final long elapsedTime = System.currentTimeMillis() - start;
+		log.info("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
+		status.addLogMessage("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
 		return success;
 	}
 
