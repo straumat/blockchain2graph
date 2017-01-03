@@ -77,7 +77,7 @@
 		<!-- Java lib -->
 		<neo4j-embedded-driver.version>2.0.5</neo4j-embedded-driver.version>
 		<neo4j-bolt-driver.version>2.0.5</neo4j-bolt-driver.version>
-		<mapstruct.version>1.1.0.CR2</mapstruct.version>
+		<mapstruct.version>1.1.0.Final</mapstruct.version>
 		<json-simple.version>1.1.1</json-simple.version>
 
 		<!-- webjars -->
@@ -97,8 +97,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.2.RELEASE</version>
-		<relativePath />
+		<version>1.4.3.RELEASE</version>
+		<relativePath/>
 	</parent>
 	<!-- =========================================================================================================== -->
 
