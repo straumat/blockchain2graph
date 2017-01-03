@@ -8,7 +8,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 
@@ -19,7 +18,6 @@ import javax.annotation.PostConstruct;
  */
 @SpringBootApplication
 @EnableNeo4jRepositories
-@EnableScheduling
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 

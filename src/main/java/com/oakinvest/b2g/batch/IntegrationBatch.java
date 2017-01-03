@@ -7,7 +7,6 @@ import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +26,6 @@ public class IntegrationBatch {
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(IntegrationBatch.class);
-
-	/**
-	 * Disable batch if running tests.
-	 */
-	@Value("${blockchain2graph.batch.enabled}")
-	private boolean enabled = true;
 
 	/**
 	 * Bitcoind service.
@@ -63,18 +56,16 @@ public class IntegrationBatch {
 	 */
 	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
 	public final void importNextBitcoinBlock() {
-		if (enabled) {
-			log.info("Batch being called");
-			final long totalBlockCount = bds.getBlockCount().getResult();
-			status.setTotalBlockCount(totalBlockCount);
-			final long importedBlockCount = bbr.count();
+		log.info("Batch being called");
+		final long totalBlockCount = bds.getBlockCount().getResult();
+		status.setTotalBlockCount(totalBlockCount);
+		final long importedBlockCount = bbr.count();
 
-			// if there is another block to import, let's import it !
-			if (importedBlockCount < totalBlockCount) {
-				is.integrateBitcoinBlock(importedBlockCount + 1);
-				// Update status.
-				status.setImportedBlockCount(bbr.count());
-			}
+		// if there is another block to import, let's import it !
+		if (importedBlockCount < totalBlockCount) {
+			is.integrateBitcoinBlock(importedBlockCount + 1);
+			// Update status.
+			status.setImportedBlockCount(bbr.count());
 		}
 	}
 
