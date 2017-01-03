@@ -32,7 +32,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	/**
 	 * Addresses.
 	 */
-	private ArrayList<String> addresses;
+	private ArrayList<String> addresses = new ArrayList<>();
 
 	/**
 	 * Getter of addresses.

@@ -29,7 +29,7 @@ public class IntegrationBatch {
 	private final Logger log = LoggerFactory.getLogger(IntegrationBatch.class);
 
 	/**
-	 * Server address.
+	 * Disable batch if running tests.
 	 */
 	@Value("${blockchain2graph.batch.enabled}")
 	private boolean enabled = true;

@@ -245,6 +245,17 @@ public class BitcoindServiceTest {
 	}
 
 	/**
+	 * getRawTransactionTest test.
+	 */
+	@Test
+	public final void getRawTransactionWithEmptyAddressesTest() {
+		final String invalidTransaction = "a288fec5559c3f73fd3d93db8e8460562ebfe2fcf04a5114e8d0f2920a6270dc";
+		GetRawTransactionResult r = bds.getRawTransaction(invalidTransaction).getResult();
+		assertNotNull(r.getVout().get(1).getScriptPubKey().getAddresses());
+	}
+
+
+	/**
 	 * Testing error management.
 	 */
 	@Test

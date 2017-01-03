@@ -126,7 +126,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 		// If the block is already in the datbase, we stop.
 		if (bbr.findByHash(blockHash.getResult()) != null) {
-			log.error("Block " + blockHeight + " already registred");
+			log.error("Block " + blockHeight + " already registered");
 			status.addErrorMessage("Error in calling getBlock " + block.getError());
 			success = false;
 		}
