@@ -3,14 +3,12 @@ package com.oakinvest.b2g.dto.external.bitcoind.getblock;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
-import java.io.Serializable;
-
 /**
  * getblock response.
  * Created by straumat on 30/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetBlockResponse extends BitcoindResponse implements Serializable {
+public class GetBlockResponse extends BitcoindResponse {
 
 	/**
 	 * Result field.

@@ -3,14 +3,12 @@ package com.oakinvest.b2g.dto.external.bitcoind.getblockhash;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponse;
 
-import java.io.Serializable;
-
 /**
  * getblockhash response.
  * Created by straumat on 26/08/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetBlockHashResponse extends BitcoindResponse implements Serializable {
+public class GetBlockHashResponse extends BitcoindResponse {
 
 	/**
 	 * the block header hash.

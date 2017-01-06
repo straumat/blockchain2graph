@@ -1,10 +1,12 @@
 package com.oakinvest.b2g.dto.external.bitcoind.util;
 
+import java.io.Serializable;
+
 /**
  * Error in bitcoind response.
  * Created by straumat on 01/09/16.
  */
-public class BitcoindResponseError {
+public class BitcoindResponseError implements Serializable {
 
 	/**
 	 * Error code.

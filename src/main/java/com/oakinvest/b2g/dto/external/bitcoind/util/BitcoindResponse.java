@@ -1,25 +1,17 @@
 package com.oakinvest.b2g.dto.external.bitcoind.util;
 
+import java.io.Serializable;
+
 /**
  * Generic reply from bitcoind.
  * Created by straumat on 30/08/16.
  */
-public abstract class BitcoindResponse {
+public abstract class BitcoindResponse implements Serializable {
 
 	/**
 	 * Error field.
 	 */
 	private BitcoindResponseError error;
-
-	/**
-	 * Default constructor.
-	 */
-	public BitcoindResponse() {
-		BitcoindResponseError e = new BitcoindResponseError();
-		e.setCode(-1);
-		e.setMessage("Empty response");
-		error = e;
-	}
 
 	/**
 	 * Getter of error.
