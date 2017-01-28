@@ -67,6 +67,8 @@ public class IntegrationBatch {
 			// Update status.
 			status.setImportedBlockCount(bbr.count());
 		}
+		log.info("Batch terminated");
+
 	}
 
 }

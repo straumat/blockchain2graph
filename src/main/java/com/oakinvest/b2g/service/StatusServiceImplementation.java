@@ -1,6 +1,8 @@
 package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.web.StatusHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,11 @@ import java.util.Calendar;
  */
 @Service
 public class StatusServiceImplementation implements StatusService {
+
+	/**
+	 * Logger.
+	 */
+	private final Logger log = LoggerFactory.getLogger(StatusService.class);
 
 	/**
 	 * Date format.
@@ -87,12 +94,6 @@ public class StatusServiceImplementation implements StatusService {
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
 		importedBlockCount = newImportedBlockCount;
 		statusHandler.updateImportedBlockCount(importedBlockCount);
-//		if (importedBlockCount == 20) {
-//			addErrorMessage("[ERROR] 1");
-//		}
-//		if (importedBlockCount == 80) {
-//			addErrorMessage("[ERROR] 2");
-//		}
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class StatusServiceImplementation implements StatusService {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastLogMessage = "[" + date + "] " + newLogMessage;
 		statusHandler.updateLog("[" + date + "] " + newLogMessage);
+		log.info(lastLogMessage);
 	}
 
 	/**
@@ -137,5 +139,7 @@ public class StatusServiceImplementation implements StatusService {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastErrorMessage = "[" + date + "] " + newErrorMessage;
 		statusHandler.updateErrorMessage("[" + date + "] " + newErrorMessage);
+		log.error(lastErrorMessage);
 	}
+
 }

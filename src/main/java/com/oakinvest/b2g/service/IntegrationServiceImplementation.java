@@ -17,8 +17,8 @@ import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,6 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * Bitcoind service.
 	 */
 	@Autowired
-	@Qualifier("BitcoindServiceImplementation") // FIXME Find a way to not set this in production.
 	private BitcoindService bds;
 
 	/**
@@ -96,101 +95,83 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * @return true is integrated successfully
 	 */
 	@Override
+	@Transactional
 	public final boolean integrateBitcoinBlock(final long blockHeight) {
+		boolean allDataAvailable = true;
+
+		// Starting.
 		final long start = System.currentTimeMillis();
-		log.info("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 		status.addLogMessage("Integrating bitcoin block number " + String.format("%09d", blockHeight));
 
-		// Variables.
-		boolean success = true;
-		GetBlockHashResponse blockHash;
-		GetBlockResponse block = new GetBlockResponse();
-		ArrayList<GetRawTransactionResult> transactions = new ArrayList<>();
-		ArrayList<String> addresses = new ArrayList<>();
+		// Data.
+		String blockHash;
+		GetBlockResponse blockData = null;
+		ArrayList<GetRawTransactionResult> transactionsData = new ArrayList<>();
+		ArrayList<String> addressesData = new ArrayList<>();
 
-		// Getting block hash & the block informations.
-		blockHash = bds.getBlockHash(blockHeight);
-		if (blockHash.getError() != null) {
-			log.error("Error in calling getBlockHash " + blockHash.getError());
-			status.addErrorMessage("Error in calling getBlockHash " + blockHash.getError());
-			success = false;
+		// Getting the block hash.
+		blockHash = getBlockHash(blockHeight);
+		if (blockHash != null) {
+			status.addLogMessage("Getting block hash of block number " + String.format("%09d", blockHeight) + " : " + blockHash);
 		} else {
-			// Getting block informations.
-			block = bds.getBlock(blockHash.getResult());
-			if (block.getError() != null) {
-				log.error("Error in calling getBlock " + block.getError());
-				status.addErrorMessage("Error in calling getBlock " + block.getError());
-				success = false;
-			}
+			status.addErrorMessage("Error getting the hash of block number " + String.format("%09d", blockHeight));
+			allDataAvailable = false;
 		}
 
-		// If the block is already in the datbase, we stop.
-		if (bbr.findByHash(blockHash.getResult()) != null) {
-			log.error("Block " + blockHeight + " already registered");
-			status.addErrorMessage("Error in calling getBlock " + block.getError());
-			success = false;
+		// Getting the block data.
+		if (blockHash != null) {
+			blockData = bds.getBlock(blockHash);
+			// Checking that there is no error.
+			if (blockData.getError() != null) {
+				status.addErrorMessage("Error in calling getBlock " + blockData.getError());
+				allDataAvailable = false;
+			}
 		}
 
 		// Getting all transactions.
-		if (success) {
-			Iterator<String> it = block.getResult().getTx().iterator();
-			while (it.hasNext() && success) {
-				String transactionHash = it.next();
-				// We don't treat the genesis block transaction.
-				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
-					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
-
-//					if (transaction.getResult().getVin().size() >= 4) {
-//						System.out.println("=> " + transaction.getResult().getTxId());
-//						System.exit(-1);
-//					}
-
-					if (transaction.getError() == null) {
-						transactions.add(transaction.getResult());
-					} else {
-						log.error("Error in calling getRawTransaction " + transaction.getError());
-						status.addErrorMessage("Error in calling getRawTransaction " + transaction.getError());
-						success = false;
-					}
-				}
+		if (blockHash != null) {
+			transactionsData = getBlockTransactions(blockHash);
+			// Checking that there is no error.
+			if (transactionsData == null) {
+				status.addErrorMessage("Error getting transactions data from block " + blockHeight);
+				allDataAvailable = false;
 			}
 		}
 
-		// Getting all bitcoin addresses.
-		if (success) {
-			Iterator<GetRawTransactionResult> it = transactions.iterator();
-			while (it.hasNext()) {
-				it.next().getVout().forEach(s -> s.getScriptPubKey().getAddresses().forEach(a -> addresses.add(a)));
-			}
+		// Getting the address list.
+		addressesData = getBlockAddresses(transactionsData);
+
+		// If the block is already in the database, we stop.
+		if (bbr.findByHash(blockHash) != null) {
+			status.addErrorMessage("Block " + blockHeight + " already registered");
+			allDataAvailable = false;
 		}
 
 		// Persisting data.
-		if (success) {
+		if (allDataAvailable) {
 			Map bitcoinAddresses = new HashMap<String, BitcoinAddress>();
 
 			// Saving the bitcoin addresses.
-			Iterator<String> itAddresses = addresses.iterator();
+			Iterator<String> itAddresses = addressesData.iterator();
 			while (itAddresses.hasNext()) {
 				String address = itAddresses.next();
 				BitcoinAddress bAddress = bar.findByAddress(address);
 				if (bAddress == null) {
 					bAddress = bar.save(new BitcoinAddress(address));
-					log.info("Address " + address + " created");
 					status.addLogMessage("Address " + address + " created");
 				} else {
-					log.info("Address " + address + " already exists");
+					status.addLogMessage("Address " + address + " already exists");
 				}
 				bitcoinAddresses.put(address, bAddress);
 			}
 
 			// Saving the block.
-			BitcoinBlock b = mapper.blockResultToBitcoinBlock(block.getResult());
+			BitcoinBlock b = mapper.blockResultToBitcoinBlock(blockData.getResult());
 			bbr.save(b);
-			log.info("Block " + b.getHash() + " created");
 			status.addLogMessage("Block " + b.getHash() + " created");
 
 			// Saving the transactions
-			Iterator<GetRawTransactionResult> itTransactions = transactions.iterator();
+			Iterator<GetRawTransactionResult> itTransactions = transactionsData.iterator();
 			while (itTransactions.hasNext()) {
 				GetRawTransactionResult t = itTransactions.next();
 				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
@@ -230,15 +211,77 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 				// Save the transaction.
 				btr.save(bt);
-				log.info("Transaction " + t.getTxid() + " created");
 				status.addLogMessage("Transaction " + t.getTxid() + " created");
 			}
 
 		}
 		final long elapsedTime = System.currentTimeMillis() - start;
-		log.info("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
 		status.addLogMessage("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
-		return success;
+		return allDataAvailable;
+	}
+
+	/**
+	 * Gets block hash.
+	 *
+	 * @param blockHeight block height.
+	 * @return block hash
+	 */
+	private String getBlockHash(final long blockHeight) {
+		GetBlockHashResponse blockHashResponse = bds.getBlockHash(blockHeight);
+		if (blockHashResponse.getError() == null) {
+			// In case of success.
+			status.addLogMessage("getBlockHash on block " + blockHeight + " returns " + blockHashResponse.getResult());
+			return blockHashResponse.getResult();
+		} else {
+			// In case of error.
+			status.addErrorMessage("Error in calling getBlockHash " + blockHashResponse.getError());
+			return null;
+		}
+	}
+
+	/**
+	 * Returns transactions inside a block.
+	 *
+	 * @param blockHash block hash.
+	 * @return transactions.
+	 */
+	private ArrayList<GetRawTransactionResult> getBlockTransactions(final String blockHash) {
+		ArrayList<GetRawTransactionResult> transactions = new ArrayList<GetRawTransactionResult>();
+		status.addLogMessage("Treating " + transactions.size() + " transactions for block " + blockHash);
+		Iterator<String> it = bds.getBlock(blockHash).getResult().getTx().iterator();
+		while (it.hasNext()) {
+			String transactionHash = it.next();
+			// We don't treat the genesis block transaction.
+			status.addLogMessage("Treating transaction " + transactionHash + " of block " + blockHash);
+			if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
+				GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
+				if (transaction.getError() == null) {
+					transactions.add(transaction.getResult());
+					status.addLogMessage("Transaction " + transactionHash + " added");
+				} else {
+					status.addErrorMessage("Error in calling getRawTransaction " + transaction.getError());
+					return null;
+				}
+			}
+		}
+		return transactions;
+	}
+
+	/**
+	 * Returns all the addresses in the block.
+	 *
+	 * @param transactions transactions.
+	 * @return addresses.
+	 */
+	private ArrayList<String> getBlockAddresses(final ArrayList<GetRawTransactionResult> transactions) {
+		ArrayList<String> addresses = new ArrayList<>();
+		transactions.stream().forEach(t -> {
+			t.getVout().forEach(s -> s.getScriptPubKey().getAddresses().forEach(a -> {
+				status.addLogMessage("Retrieving address " + a);
+				addresses.add(a);
+			}));
+		});
+		return addresses;
 	}
 
 }

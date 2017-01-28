@@ -75,6 +75,7 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(status.getTotalBlockCount());
 		updateImportedBlockCount(status.getImportedBlockCount());
 		updateErrorMessage(status.getLastErrorMessage());
+		updateLog(status.getLastLogMessage());
 	}
 
 	/**

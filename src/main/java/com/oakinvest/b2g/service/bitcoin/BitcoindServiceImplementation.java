@@ -10,11 +10,10 @@ import org.neo4j.ogm.json.JSONException;
 import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +26,6 @@ import java.util.List;
  * Created by straumat on 26/08/16.
  */
 @Service
-@Primary
-@Qualifier("BitcoindServiceImplementation")
 public class BitcoindServiceImplementation implements BitcoindService {
 
 	/**
@@ -182,7 +179,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * @return configured restTemplate
 	 */
 	private RestTemplate getRestTemplate() {
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
 		return restTemplate;
 	}
