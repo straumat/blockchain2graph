@@ -56,16 +56,18 @@ public class IntegrationBatch {
 	 */
 	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
 	public final void importNextBitcoinBlock() {
-		log.info("Batch being called");
-		final long totalBlockCount = bds.getBlockCount().getResult();
-		status.setTotalBlockCount(totalBlockCount);
+		log.info("Batch called");
+		// Retrieving data.
 		final long importedBlockCount = bbr.count();
+		final long totalBlockCount = bds.getBlockCount().getResult();
+
+		// Update status.
+		status.setImportedBlockCount(importedBlockCount);
+		status.setTotalBlockCount(totalBlockCount);
 
 		// if there is another block to import, let's import it !
 		if (importedBlockCount < totalBlockCount) {
 			is.integrateBitcoinBlock(importedBlockCount + 1);
-			// Update status.
-			status.setImportedBlockCount(bbr.count());
 		}
 		log.info("Batch terminated");
 

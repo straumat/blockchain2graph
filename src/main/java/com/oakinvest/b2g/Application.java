@@ -1,5 +1,9 @@
 package com.oakinvest.b2g;
 
+import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -7,6 +11,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Application launcher.
@@ -20,6 +26,24 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class Application extends SpringBootServletInitializer {
 
 	/**
+	 * Bitcoind service.
+	 */
+	@Autowired
+	private BitcoindService bds;
+
+	/**
+	 * Bitcoin blcok repository.
+	 */
+	@Autowired
+	private BitcoinBlockRepository bbr;
+
+	/**
+	 * Status service.
+	 */
+	@Autowired
+	private StatusService status;
+
+	/**
 	 * Application launcher.
 	 *
 	 * @param args parameters.
@@ -31,6 +55,16 @@ public class Application extends SpringBootServletInitializer {
 	@Override
 	protected final SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
 		return application.sources(Application.class);
+	}
+
+	/**
+	 * Application initialization.
+	 */
+	@PostConstruct
+	public final void initApplication() {
+		// Update status.
+		status.setImportedBlockCount(bbr.count());
+		status.setTotalBlockCount(bds.getBlockCount().getResult());
 	}
 
 }

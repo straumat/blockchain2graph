@@ -3,6 +3,7 @@ package com.oakinvest.b2g.configuration;
 import com.oakinvest.b2g.web.StatusHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  * Created by straumat on 31/10/16.
  */
 @Configuration
+@Profile("!test")
 @EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
