@@ -196,7 +196,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				while (inputsIterator.hasNext()) {
 					BitcoinTransactionInput i = inputsIterator.next();
 					i.setTransaction(bt);
-					status.addLogMessage("- Vin " + i.getSequence());
+					status.addLogMessage("- Vin " + i.getTxId() + " " + i.getvOut());
 
 					if (i.getTxId() != null) {
 						// We retrieve the original transaction.
