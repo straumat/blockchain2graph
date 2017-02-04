@@ -87,19 +87,29 @@ public class BitcoindCacheConfiguration {
 	 */
 		final File bitcoindDirectory = new File(SRC_TEST_RESOURCES_BITCOIND);
 		if (!bitcoindDirectory.exists()) {
-			bitcoindDirectory.mkdir();
+			if (!bitcoindDirectory.mkdir()) {
+				log.error("Impossible to create " + bitcoindDirectory.getAbsolutePath());
+			}
 		}
 		if (!getBlockDirectory.exists()) {
-			getBlockDirectory.mkdir();
+			if (!getBlockDirectory.mkdir()) {
+				log.error("Impossible to create " + getBlockDirectory.getAbsolutePath());
+			}
 		}
 		if (!getBlockCountDirectory.exists()) {
-			getBlockCountDirectory.mkdir();
+			if (!getBlockCountDirectory.mkdir()) {
+				log.error("Impossible to create " + getBlockCountDirectory.getAbsolutePath());
+			}
 		}
 		if (!getBlockHashDirectory.exists()) {
-			getBlockHashDirectory.mkdir();
+			if (!getBlockHashDirectory.mkdir()) {
+				log.error("Impossible to create " + getBlockHashDirectory.getAbsolutePath());
+			}
 		}
 		if (!getRawTransactionDirectory.exists()) {
-			getRawTransactionDirectory.mkdir();
+			if (!getRawTransactionDirectory.mkdir()) {
+				log.error("Impossible to create " + getRawTransactionDirectory.getAbsolutePath());
+			}
 		}
 	}
 
