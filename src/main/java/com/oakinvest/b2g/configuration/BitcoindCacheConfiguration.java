@@ -59,11 +59,6 @@ public class BitcoindCacheConfiguration {
 	private final Logger log = LoggerFactory.getLogger(BitcoindCacheConfiguration.class);
 
 	/**
-	 * bitcoind directory.
-	 */
-	private File bitcoindDirectory = new File(SRC_TEST_RESOURCES_BITCOIND);
-
-	/**
 	 * getblock directory.
 	 */
 	private File getBlockDirectory = new File(SRC_TEST_RESOURCES_BITCOIND_GETBLOCK);
@@ -87,6 +82,10 @@ public class BitcoindCacheConfiguration {
 	 * Default constructor.
 	 */
 	public BitcoindCacheConfiguration() {
+		/*
+	  bitcoind directory.
+	 */
+		final File bitcoindDirectory = new File(SRC_TEST_RESOURCES_BITCOIND);
 		if (!bitcoindDirectory.exists()) {
 			bitcoindDirectory.mkdir();
 		}

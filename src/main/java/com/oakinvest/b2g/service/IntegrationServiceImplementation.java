@@ -29,6 +29,7 @@ import java.util.Map;
  * Integrates blockchain data into the database.
  * Created by straumat on 04/09/16.
  */
+@SuppressWarnings("ALL")
 @Service
 public class IntegrationServiceImplementation implements IntegrationService {
 
