@@ -112,9 +112,9 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		// Getting the block hash.
 		blockHash = getBlockHash(blockHeight);
 		if (blockHash != null) {
-			status.addLogMessage("Getting block hash of block number " + String.format("%09d", blockHeight) + " : " + blockHash);
+			status.addLogMessage("Getting hash of block " + String.format("%09d", blockHeight) + " : " + blockHash);
 		} else {
-			status.addErrorMessage("Error getting the hash of block number " + String.format("%09d", blockHeight));
+			status.addErrorMessage("Error getting hash of block " + String.format("%09d", blockHeight));
 			allDataAvailable = false;
 		}
 
@@ -175,6 +175,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			while (itTransactions.hasNext()) {
 				GetRawTransactionResult t = itTransactions.next();
 				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(t);
+				status.addLogMessage("Starting with transaction " + bt.getTxId());
 
 				// Registering the block.
 				bt.setBlock(b);
@@ -183,6 +184,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				Iterator<BitcoinTransactionOutput> outputsIterator = bt.getOutputs().iterator();
 				while (outputsIterator.hasNext()) {
 					BitcoinTransactionOutput o = outputsIterator.next();
+					status.addLogMessage("- Vout " + o.getN());
 					o.setTransaction(bt);
 					o.getAddresses().forEach(a -> o.getBitcoinAddresses().add((BitcoinAddress) bitcoinAddresses.get(a)));
 					o.getAddresses().forEach(a -> ((BitcoinAddress) bitcoinAddresses.get(a)).getDeposits().add(o));
@@ -193,6 +195,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				while (inputsIterator.hasNext()) {
 					BitcoinTransactionInput i = inputsIterator.next();
 					i.setTransaction(bt);
+					status.addLogMessage("- Vin " + i.getSequence());
 
 					if (i.getTxId() != null) {
 						// We retrieve the original transaction.
@@ -216,7 +219,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 		}
 		final long elapsedTime = System.currentTimeMillis() - start;
-		status.addLogMessage("Integration of bitcoin block number " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
+		status.addLogMessage("Integration of bitcoin block " + String.format("%09d", blockHeight) + " done in " + elapsedTime / MILLISECONDS_IN_SECONDS + " secs");
 		return allDataAvailable;
 	}
 
@@ -230,7 +233,6 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		GetBlockHashResponse blockHashResponse = bds.getBlockHash(blockHeight);
 		if (blockHashResponse.getError() == null) {
 			// In case of success.
-			status.addLogMessage("getBlockHash on block " + blockHeight + " returns " + blockHashResponse.getResult());
 			return blockHashResponse.getResult();
 		} else {
 			// In case of error.
@@ -247,8 +249,8 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 */
 	private ArrayList<GetRawTransactionResult> getBlockTransactions(final String blockHash) {
 		ArrayList<GetRawTransactionResult> transactions = new ArrayList<GetRawTransactionResult>();
-		status.addLogMessage("Treating " + transactions.size() + " transactions for block " + blockHash);
 		Iterator<String> it = bds.getBlock(blockHash).getResult().getTx().iterator();
+		status.addLogMessage("Treating " + transactions.size() + " transactions");
 		while (it.hasNext()) {
 			String transactionHash = it.next();
 			// We don't treat the genesis block transaction.
@@ -277,7 +279,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		ArrayList<String> addresses = new ArrayList<>();
 		transactions.stream().forEach(t -> {
 			t.getVout().forEach(s -> s.getScriptPubKey().getAddresses().forEach(a -> {
-				status.addLogMessage("Retrieving address " + a);
+				status.addLogMessage("Adding address " + a);
 				addresses.add(a);
 			}));
 		});
