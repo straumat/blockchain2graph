@@ -67,7 +67,11 @@ public class IntegrationBatch {
 
 		// if there is another block to import, let's import it !
 		if (importedBlockCount < totalBlockCount) {
-			is.integrateBitcoinBlock(importedBlockCount + 1);
+			try {
+				is.integrateBitcoinBlock(importedBlockCount + 1);
+			} catch (Exception e) {
+				status.addErrorMessage("Error in block " + (importedBlockCount + 1) + " " + e.getMessage());
+			}
 		}
 		log.info("Batch terminated");
 
