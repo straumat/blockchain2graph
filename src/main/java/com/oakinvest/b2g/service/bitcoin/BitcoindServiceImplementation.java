@@ -11,6 +11,7 @@ import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -107,6 +108,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Cacheable("blockHashs")
 	public final GetBlockHashResponse getBlockHash(final long blockHeight) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
@@ -124,6 +126,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Cacheable("blocks")
 	public final GetBlockResponse getBlock(final String blockHash) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
@@ -141,6 +144,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Cacheable("rawTransactions")
 	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
