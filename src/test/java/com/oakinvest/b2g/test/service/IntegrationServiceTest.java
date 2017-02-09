@@ -173,7 +173,7 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong vout2 type", expectedVout2ScriptPubKeyType, vout2.getScriptPubKeyType());
 		assertEquals("Wrong vout2 address", expectedVout2ScriptPubKeyAddress, vout2.getAddresses().iterator().next());
 
-		// Integrating again the block last block and checking that we did not make a duplicate block.
+		// Integrating again the last block and checking that we did not make a duplicate block.
 		long numberOfBlocks = bbr.count();
 		is.integrateBitcoinBlock(lastBlockToImport);
 		assertEquals("The same block has been saved as two entities", numberOfBlocks, bbr.count());
@@ -184,7 +184,7 @@ public class IntegrationServiceTest {
 		assertNotNull("Bitcoin address not saved", bar.findByAddress(existingBitcoinAdress));
 		assertNull("Bitcoin address is saved but does not exists", bar.findByAddress(nonExistingBitcoinAdress));
 
-		// Integrating again the block last block and checking that we did not make a duplicate address.
+		// Integrating again the last block and checking that we did not make a duplicate address.
 		long numberOfAddresses = bbr.count();
 		is.integrateBitcoinBlock(lastBlockToImport);
 		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
@@ -199,6 +199,7 @@ public class IntegrationServiceTest {
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawls = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
+		//a1.getWithdrawals().forEach(i -> System.out.println("=> " + i.getTxId()));
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();
