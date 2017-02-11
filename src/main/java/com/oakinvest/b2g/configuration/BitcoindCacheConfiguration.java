@@ -31,27 +31,27 @@ public class BitcoindCacheConfiguration {
 	/**
 	 * bitcoind directory.
 	 */
-	private static final String SRC_TEST_RESOURCES_BITCOIND = "src/test/resources/bitcoind";
+	private static final String BITCOIND_CACHE_DIRECTORY = "target/cache";
 
 	/**
 	 * getblock directory.
 	 */
-	private static final String SRC_TEST_RESOURCES_BITCOIND_GETBLOCK = "src/test/resources/bitcoind/getblock";
+	private static final String GET_BLOCK_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getblock";
 
 	/**
 	 * getblockcount directory.
 	 */
-	private static final String SRC_TEST_RESOURCES_BITCOIND_GETBLOCKCOUNT = "src/test/resources/bitcoind/getblockcount";
+	private static final String GET_BLOCK_COUNT_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getblockcount";
 
 	/**
 	 * getBlockHash directory.
 	 */
-	private static final String SRC_TEST_RESOURCES_BITCOIND_GET_BLOCK_HASH = "src/test/resources/bitcoind/getBlockHash";
+	private static final String GET_BLOCK_HASH_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getBlockHash";
 
 	/**
 	 * getRawTransaction directory.
 	 */
-	private static final String SRC_TEST_RESOURCES_BITCOIND_GET_RAW_TRANSACTION = "src/test/resources/bitcoind/getRawTransaction";
+	private static final String GET_RAW_TRANSACTION_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getRawTransaction";
 
 	/**
 	 * Logger.
@@ -61,31 +61,28 @@ public class BitcoindCacheConfiguration {
 	/**
 	 * getblock directory.
 	 */
-	private File getBlockDirectory = new File(SRC_TEST_RESOURCES_BITCOIND_GETBLOCK);
+	private File getBlockDirectory = new File(GET_BLOCK_CACHE_DIRECTORY);
 
 	/**
 	 * getblockcount directory.
 	 */
-	private File getBlockCountDirectory = new File(SRC_TEST_RESOURCES_BITCOIND_GETBLOCKCOUNT);
+	private File getBlockCountDirectory = new File(GET_BLOCK_COUNT_CACHE_DIRECTORY);
 
 	/**
 	 * getBlockHash directory.
 	 */
-	private File getBlockHashDirectory = new File(SRC_TEST_RESOURCES_BITCOIND_GET_BLOCK_HASH);
+	private File getBlockHashDirectory = new File(GET_BLOCK_HASH_CACHE_DIRECTORY);
 
 	/**
 	 * getRawTransaction directory.
 	 */
-	private File getRawTransactionDirectory = new File(SRC_TEST_RESOURCES_BITCOIND_GET_RAW_TRANSACTION);
+	private File getRawTransactionDirectory = new File(GET_RAW_TRANSACTION_CACHE_DIRECTORY);
 
 	/**
 	 * Default constructor.
 	 */
 	public BitcoindCacheConfiguration() {
-		/*
-	  bitcoind directory.
-	 */
-		final File bitcoindDirectory = new File(SRC_TEST_RESOURCES_BITCOIND);
+		final File bitcoindDirectory = new File(BITCOIND_CACHE_DIRECTORY);
 		if (!bitcoindDirectory.exists()) {
 			if (!bitcoindDirectory.mkdir()) {
 				log.error("Impossible to create " + bitcoindDirectory.getAbsolutePath());

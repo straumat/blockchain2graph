@@ -2,7 +2,6 @@
 *.jar
 *.war
 *.ear
-*src/test/resources/bitcoind*
 
 # eclipse specific git ignore
 *.pydevproject
