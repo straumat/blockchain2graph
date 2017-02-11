@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -72,6 +73,27 @@ public class BitcoinTransactionOutput {
 	 */
 	@Relationship(type = "FOR_ADDRESS")
 	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<BitcoinAddress>();
+
+	/**
+	 * Returns vout description.
+	 *
+	 * @return desscription.
+	 */
+	public final String getDescription() {
+		String description = getValue() + " -> ";
+		if (getAddresses() == null) {
+			description += "No address";
+		} else {
+			Iterator<BitcoinAddress> it = getBitcoinAddresses().iterator();
+			while (it.hasNext()) {
+				description += it.next().getAddress();
+				if (it.hasNext()) {
+					description += ", ";
+				}
+			}
+		}
+		return description;
+	}
 
 	/**
 	 * Getter of transaction.

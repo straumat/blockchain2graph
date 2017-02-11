@@ -46,7 +46,7 @@ public interface StatusService {
 	 *
 	 * @param newLogMessage log message
 	 */
-	void addLogMessage(String newLogMessage);
+	void addLog(String newLogMessage);
 
 	/**
 	 * Returns the last error message.
@@ -60,6 +60,6 @@ public interface StatusService {
 	 *
 	 * @param newErrorMessage error message
 	 */
-	void addErrorMessage(String newErrorMessage);
+	void addError(String newErrorMessage);
 
 }

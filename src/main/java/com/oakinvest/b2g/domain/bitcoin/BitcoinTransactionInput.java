@@ -65,6 +65,15 @@ public class BitcoinTransactionInput {
 	private long sequence;
 
 	/**
+	 * Returns input description.
+	 *
+	 * @return description.
+	 */
+	public final String getDescription() {
+		return getTxId() + "-" + getvOut();
+	}
+
+	/**
 	 * Getter of transactionOutput.
 	 *
 	 * @return transactionOutput

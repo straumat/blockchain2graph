@@ -52,7 +52,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastLogMessageTest() {
-		ss.addLogMessage("Hi !");
+		ss.addLog("Hi !");
 		assertTrue("Wrong last log message after setting it", ss.getLastLogMessage().contains("Hi !"));
 	}
 
@@ -61,7 +61,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
-		ss.addErrorMessage("Error !");
+		ss.addError("Error !");
 		assertTrue("Wrong last error message after setting it", ss.getLastErrorMessage().contains("Error !"));
 	}
 

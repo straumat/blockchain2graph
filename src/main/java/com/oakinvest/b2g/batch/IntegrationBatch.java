@@ -70,7 +70,7 @@ public class IntegrationBatch {
 			try {
 				is.integrateBitcoinBlock(importedBlockCount + 1);
 			} catch (Exception e) {
-				status.addErrorMessage("Error in block " + (importedBlockCount + 1) + " " + e.getMessage());
+				status.addError("Error in block " + (importedBlockCount + 1) + " " + e.getMessage());
 			}
 		}
 		log.info("Batch terminated");
