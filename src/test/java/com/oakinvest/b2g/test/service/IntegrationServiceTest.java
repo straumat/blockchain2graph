@@ -18,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
@@ -70,7 +69,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			assertTrue("Block " + i + " integration failure", is.integrateBitcoinBlock(i));
+			is.integrateBitcoinBlock(i);
 		}
 
 		// Testing data of block 170.
@@ -239,6 +238,12 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong to address", "1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg", a2bto1.getAddresses().iterator().next());
 		assertEquals("Wrong from address", "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S", a2bto1.getTransaction().getInputs().iterator().next().getTransactionOutput().getAddresses().iterator().next());
 		assertEquals("Wrong transaction value", 10.0f, a2bto1.getValue());
+
+		// Test to check that coin creation is taken into account.
+		// https://blockchain.info/fr/tx/ec2ba1a3784dacd6962d53e9266d08d6cca40cce60240954bb3448c6acdf568f
+		BitcoinAddress a3 = bar.findByAddress("1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW");
+		assertEquals("No coinbase transaction found", 1, a3.getDeposits().size());
+		assertEquals("Wrong coinbase about", 50f, a3.getDeposits().stream().findFirst().get().getValue());
 	}
 
 }
