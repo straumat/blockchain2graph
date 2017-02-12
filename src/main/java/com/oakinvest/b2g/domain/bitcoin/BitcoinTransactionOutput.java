@@ -74,19 +74,15 @@ public class BitcoinTransactionOutput {
 	@Relationship(type = "FOR_ADDRESS")
 	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<BitcoinAddress>();
 
-	/**
-	 * Returns vout description.
-	 *
-	 * @return desscription.
-	 */
-	public final String getDescription() {
+	@Override
+	public final String toString() {
 		String description = getValue() + " -> ";
-		if (getAddresses() == null) {
+		if (getAddresses() == null || getAddresses().size() == 0) {
 			description += "No address";
 		} else {
-			Iterator<BitcoinAddress> it = getBitcoinAddresses().iterator();
+			Iterator<String> it = getAddresses().iterator();
 			while (it.hasNext()) {
-				description += it.next().getAddress();
+				description += it.next();
 				if (it.hasNext()) {
 					description += ", ";
 				}

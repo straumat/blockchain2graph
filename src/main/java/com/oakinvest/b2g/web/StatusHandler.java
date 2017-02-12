@@ -72,10 +72,9 @@ public class StatusHandler extends TextWebSocketHandler {
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
-		updateTotalBlockCount(status.getTotalBlockCount());
 		updateImportedBlockCount(status.getImportedBlockCount());
+		updateTotalBlockCount(status.getTotalBlockCount());
 		updateErrorMessage(status.getLastErrorMessage());
-		updateLog(status.getLastLogMessage());
 	}
 
 	/**

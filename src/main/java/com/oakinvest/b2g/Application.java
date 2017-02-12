@@ -34,7 +34,7 @@ public class Application extends SpringBootServletInitializer {
 	private BitcoindService bds;
 
 	/**
-	 * Bitcoin blcok repository.
+	 * Bitcoin block repository.
 	 */
 	@Autowired
 	private BitcoinBlockRepository bbr;

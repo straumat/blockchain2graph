@@ -59,6 +59,7 @@ public class IntegrationBatch {
 		log.info("Batch called");
 		// Retrieving data.
 		final long importedBlockCount = bbr.count();
+		final long nextBlockToImport = importedBlockCount + 1;
 		final long totalBlockCount = bds.getBlockCount().getResult();
 
 		// Update status.
@@ -68,13 +69,11 @@ public class IntegrationBatch {
 		// if there is another block to import, let's import it !
 		if (importedBlockCount < totalBlockCount) {
 			try {
-				is.integrateBitcoinBlock(importedBlockCount + 1);
+				is.integrateBitcoinBlock(nextBlockToImport);
 			} catch (Exception e) {
-				status.addError("Error in block " + (importedBlockCount + 1) + " " + e.getMessage());
+				status.addError("Error in block " + nextBlockToImport + " " + e.getMessage());
 			}
 		}
-		log.info("Batch terminated");
-
 	}
 
 }

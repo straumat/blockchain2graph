@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -88,23 +89,20 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number
-	 * @return true is integrated successfully
 	 */
 	@Override
-	public final boolean integrateBitcoinBlock(final long blockHeight) {
+	@Transactional
+	public final void integrateBitcoinBlock(final long blockHeight) {
 		// Starting.
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("-------------------------------------------------------------------------");
-		status.addLog("Integrating bitcoin block number " + blockHeight);
-
-		// Saved data.
-		BitcoinBlock b = null;
+		status.addLog("Integrating bitcoin block number " + formatedBlockHeight);
 
 		// Data.
-		boolean errorsFound = false;
 		String blockHash;
-		ArrayList<String> transactionList = new ArrayList<>();
+		BitcoinBlock block = null;
+		ArrayList<String> transactions = new ArrayList<>();
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Retrieve the block hash.
@@ -114,8 +112,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			status.addLog("Hash of block " + formatedBlockHeight + " is " + blockHash);
 		} else {
 			// Error.
-			status.addError("Error getting the hash of block " + formatedBlockHeight);
-			errorsFound = true;
+			throw new RuntimeException("Error getting the hash of block " + formatedBlockHeight);
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -125,54 +122,54 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			if (blockResponse.getError() == null) {
 				// Success.
 
-				// If the block doesn't exists, we save it else we retrieve it.
-				b = bbr.findByHash(blockHash);
-				if (b == null) {
-					b = mapper.blockResultToBitcoinBlock(blockResponse.getResult());
-					bbr.save(b);
-					status.addLog("Block " + formatedBlockHeight + " saved with id " + b.getId());
-				} else {
-					status.addLog("Block " + formatedBlockHeight + " alrerady exists with id " + b.getId());
-				}
-
 				// Retrieving transaction list.
-				status.addLog("Block " + formatedBlockHeight + " has " + transactionList.size() + " transactions");
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> transactionList.add(t));
+						.forEach(t -> transactions.add(t));
+
+				// If the block doesn't exists, we save it else we retrieve it.
+				block = bbr.findByHash(blockHash);
+				if (block == null) {
+					block = mapper.blockResultToBitcoinBlock(blockResponse.getResult());
+					bbr.save(block);
+					status.addLog("Block " + formatedBlockHeight + " has " + transactions.size() + " transaction(s) and is saved with id " + block.getId());
+				} else {
+					status.addLog("Block " + formatedBlockHeight + " alrerady exists with id " + block.getId());
+				}
 			} else {
 				// Error.
-				status.addError("Error getting the transaction list " + blockResponse.getError());
-				errorsFound = true;
+				throw new RuntimeException("Error saving the block and transactions list " + blockResponse.getError());
 			}
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Saving all transactions if we have the block.
-		if (b != null) {
-			Iterator<String> it = transactionList.iterator();
+		if (block != null) {
+			Iterator<String> it = transactions.iterator();
+			int i = 1;
 			while (it.hasNext()) {
 				// We retrieve the transaction data.
 				String transactionHash = it.next();
-				status.addLog("> Treating transaction " + transactionHash);
+				status.addLog("> Treating transaction n° " + i + " : " + transactionHash);
 				GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
 				if (transaction.getError() == null) {
 					// Success.
 					try {
-						// TODO Check of the transaction already exists.
 						// Saving the transaction in the database.
 						BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(transaction.getResult());
-						bt.setBlock(b);
+						bt.setBlock(block);
 
 						// For each Vin.
 						Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
 						while (vins.hasNext()) {
 							BitcoinTransactionInput vin = vins.next();
 							vin.setTransaction(bt);
-							status.addLog(">> Treating vin " + vin.getDescription());
-							if (vin.getTxId() != null) {
-								// We retrieve the original transaction.
+							if (vin.getTxId() == null) {
+								// Coinbase.
+								status.addLog(">> Done treating vin : " + vin);
+							} else {
+								// Not coinbase. We retrieve the original transaction.
 								BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
 								vin.setTransactionOutput(originTransactionOutput);
 
@@ -181,6 +178,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 									// We add the input to the withdrawls of the address.
 									originTransactionOutput.getAddresses().forEach(a -> createOrGetAddress(a).getWithdrawals().add(vin));
 								}
+								status.addLog(">> Done treating vin : " + vin);
 							}
 						}
 
@@ -189,31 +187,26 @@ public class IntegrationServiceImplementation implements IntegrationService {
 						while (vouts.hasNext()) {
 							BitcoinTransactionOutput vout = vouts.next();
 							vout.setTransaction(bt);
-							status.addLog(">> Treating vout " + vout.getDescription());
-							vout.setTransaction(bt);
 							vout.getAddresses().forEach(a -> (createOrGetAddress(a)).getDeposits().add(vout));
+							status.addLog(">> Done treating vout : " + vout);
 						}
 
 						// Saving the transaction.
 						btr.save(bt);
 						status.addLog("> Transaction " + transactionHash + " created");
 					} catch (Exception e) {
-						status.addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
-						errorsFound = true;
+						throw new RuntimeException("Error treating transaction " + transactionHash + " : " + e.getMessage());
 					}
 				} else {
 					// Error.
-					status.addError("Error in calling getRawTransaction " + transaction.getError());
-					errorsFound = true;
+					throw new RuntimeException("Error in calling getRawTransaction " + transaction.getError());
 				}
+				i++;
 			}
 		}
 
-		// TODO if error, delete block.
-
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
-		return !errorsFound;
 	}
 
 	/**
@@ -227,7 +220,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		if (bAddress == null) {
 			// If it doesn't exists, we create it.
 			bAddress = bar.save(new BitcoinAddress(address));
-			status.addError(">> Address " + address + " created with id " + bAddress.getId());
+			status.addLog(">> Address " + address + " created with id " + bAddress.getId());
 		} else {
 			// Else we just return the one existing in the database.
 			status.addLog(">> Address " + address + " already exists with id " + bAddress.getId());

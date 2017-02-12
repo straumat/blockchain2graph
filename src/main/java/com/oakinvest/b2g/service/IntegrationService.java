@@ -10,8 +10,7 @@ public interface IntegrationService {
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number
-	 * @return true is integrated successfully
 	 */
-	boolean integrateBitcoinBlock(long blockHeight);
+	void integrateBitcoinBlock(long blockHeight);
 
 }

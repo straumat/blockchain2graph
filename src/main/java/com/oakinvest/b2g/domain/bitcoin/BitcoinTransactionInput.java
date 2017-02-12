@@ -64,13 +64,13 @@ public class BitcoinTransactionInput {
 	@Property(name = "sequence")
 	private long sequence;
 
-	/**
-	 * Returns input description.
-	 *
-	 * @return description.
-	 */
-	public final String getDescription() {
-		return getTxId() + "-" + getvOut();
+	@Override
+	public final String toString() {
+		if (getTxId() == null) {
+			return "Coinbase";
+		} else {
+			return getTxId() + "-" + getvOut();
+		}
 	}
 
 	/**
