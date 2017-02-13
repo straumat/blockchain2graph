@@ -132,16 +132,17 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param message message
 	 */
 	private void sendMessage(final String message) {
-		// First, we clean all sessions that are closed.
-		List<WebSocketSession> sessionsToRemove = new ArrayList<>();
-		for (WebSocketSession session : this.sessions) {
-			if (!session.isOpen()) {
-				sessionsToRemove.add(session);
-			}
-		}
-		this.sessions.removeAll(sessionsToRemove);
-		// Then we send the messages to all opened sessions.
 		try {
+			// First, we clean all sessions that are closed.
+			List<WebSocketSession> sessionsToRemove = new ArrayList<>();
+			for (WebSocketSession session : this.sessions) {
+				if (!session.isOpen()) {
+					sessionsToRemove.add(session);
+				}
+			}
+			this.sessions.removeAll(sessionsToRemove);
+			// Then we send the messages to all opened sessions.
+
 			for (WebSocketSession session : this.sessions) {
 				session.sendMessage(new TextMessage(message));
 			}
