@@ -209,6 +209,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
+		status.addExecutionTimeStatistic(elapsedTime);
 	}
 
 	/**

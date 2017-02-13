@@ -31,5 +31,10 @@ connection.onmessage = function (e) {
 		$("#lastErrorMessage").text(response.messageValue);
 	}
 
+	// Execution time statistic.
+	if (response.messageType === "executionTimeStatistic") {
+		$("#executionTimeStatistic").text("Mean execution time : " + response.messageValue + " secs");
+	}
+
 };
 

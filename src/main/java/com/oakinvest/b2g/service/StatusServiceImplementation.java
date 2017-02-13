@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 /**
  * Status service implementation.
@@ -16,6 +17,16 @@ import java.util.Calendar;
  */
 @Service
 public class StatusServiceImplementation implements StatusService {
+
+	/**
+	 * How many digits for the statistics.
+	 */
+	public static final int ROUND_DIGITS = 100;
+
+	/**
+	 * Number of blocks used for executionTimeStatistics.
+	 */
+	private static final int MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS = ROUND_DIGITS;
 
 	/**
 	 * Logger.
@@ -53,6 +64,11 @@ public class StatusServiceImplementation implements StatusService {
 	 * Imported block count.
 	 */
 	private long importedBlockCount = 0;
+
+	/**
+	 * Execution time statistics.
+	 */
+	private LinkedList<Float> executionTimeStatistics = new LinkedList<>();
 
 	/**
 	 * Returns the total nubmer of blocks in the blockchain.
@@ -138,8 +154,40 @@ public class StatusServiceImplementation implements StatusService {
 	public final void addError(final String newErrorMessage) {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastErrorMessage = "[" + date + "] " + newErrorMessage;
-		statusHandler.updateErrorMessage("[" + date + "] " + newErrorMessage);
+		statusHandler.updateError("[" + date + "] " + newErrorMessage);
 		log.error(lastErrorMessage);
+	}
+
+	/**
+	 * Add an excution time statistics and return the excution mean.
+	 *
+	 * @param newTime new execution time.
+	 * @return mean time
+	 */
+	public final float addExecutionTimeStatistic(final float newTime) {
+		// If we reach the maximum numver of execution times, we remove the first one.
+		if (executionTimeStatistics.size() == MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
+			executionTimeStatistics.removeFirst();
+		}
+
+		// We add the statistics.
+		executionTimeStatistics.add(newTime);
+
+		// Calculate the mean.
+		if (executionTimeStatistics.size() > 0) {
+			int n;
+			float totalAmountOfTime = 0;
+			for (n = 0; n < executionTimeStatistics.size(); n++) {
+				totalAmountOfTime += executionTimeStatistics.get(n);
+			}
+			float executionTimeStatistic = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
+			statusHandler.updateExecutionTimeStatistic(executionTimeStatistic);
+			return executionTimeStatistic;
+		} else {
+			// Nothing to make a statistic, we return 0.
+			return 0;
+		}
+
 	}
 
 }

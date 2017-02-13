@@ -53,6 +53,11 @@ public class StatusHandler extends TextWebSocketHandler {
 	private static final String TYPE_ERROR = "error";
 
 	/**
+	 * Execution time.
+	 */
+	private static final String TYPE_EXECUTION_TIME_STATISTIC = "executionTimeStatistic";
+
+	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
@@ -68,13 +73,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	 */
 	private CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
-
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
 		updateImportedBlockCount(status.getImportedBlockCount());
 		updateTotalBlockCount(status.getTotalBlockCount());
-		updateErrorMessage(status.getLastErrorMessage());
+		updateError(status.getLastErrorMessage());
 		updateLog(status.getLastLogMessage());
 	}
 
@@ -119,11 +123,23 @@ public class StatusHandler extends TextWebSocketHandler {
 	 *
 	 * @param errorMessage error message.
 	 */
-	public final void updateErrorMessage(final String errorMessage) {
+	public final void updateError(final String errorMessage) {
 		JSONObject obj = new JSONObject();
 		obj.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
 		obj.put(PARAM_MESSAGE_VALUE, errorMessage);
 		updateLog(errorMessage);
+		sendMessage(obj.toString());
+	}
+
+	/**
+	 * Update execution time statistic.
+	 *
+	 * @param executionTimeStatistic new excution time statistics.
+	 */
+	public final void updateExecutionTimeStatistic(final float executionTimeStatistic) {
+		JSONObject obj = new JSONObject();
+		obj.put(PARAM_MESSAGE_TYPE, TYPE_EXECUTION_TIME_STATISTIC);
+		obj.put(PARAM_MESSAGE_VALUE, executionTimeStatistic);
 		sendMessage(obj.toString());
 	}
 
