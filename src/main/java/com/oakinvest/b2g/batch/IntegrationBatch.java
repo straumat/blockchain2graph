@@ -18,11 +18,6 @@ import org.springframework.stereotype.Component;
 public class IntegrationBatch {
 
 	/**
-	 * Interval between calls.
-	 */
-	private static final int BITCOIN_INTERVAL_BETWEEN_CALLS = 100;
-
-	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(IntegrationBatch.class);
@@ -54,7 +49,7 @@ public class IntegrationBatch {
 	/**
 	 * Import a bitcoin block.
 	 */
-	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
+	@Scheduled()
 	public final void importNextBitcoinBlock() {
 		log.info("Batch called");
 		// Retrieving data.

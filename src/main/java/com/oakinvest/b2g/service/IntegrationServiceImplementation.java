@@ -151,7 +151,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 			while (it.hasNext()) {
 				// We retrieve the transaction data.
 				String transactionHash = it.next();
-				status.addLog("> Treating transaction n° " + i + " : " + transactionHash);
+				status.addLog("> Treating transaction n°" + i + " : " + transactionHash);
 				GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
 				if (transaction.getError() == null) {
 					// Success.
@@ -192,8 +192,10 @@ public class IntegrationServiceImplementation implements IntegrationService {
 						}
 
 						// Saving the transaction.
+
+						status.addLog("> Saving transaction " + transactionHash);
 						btr.save(bt);
-						status.addLog("> Transaction " + transactionHash + " created");
+						status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
 					} catch (Exception e) {
 						throw new RuntimeException("Error treating transaction " + transactionHash + " : " + e.getMessage());
 					}
