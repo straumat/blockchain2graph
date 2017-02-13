@@ -145,7 +145,9 @@ public class StatusHandler extends TextWebSocketHandler {
 			// Then we send the messages to all opened sessions.
 
 			for (WebSocketSession session : this.sessions) {
-				session.sendMessage(new TextMessage(message));
+				synchronized (session) {
+					session.sendMessage(new TextMessage(message));
+				}
 			}
 		} catch (IOException e) {
 			log.error("Error sending message " + e);
