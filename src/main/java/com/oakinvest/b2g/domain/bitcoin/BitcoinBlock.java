@@ -105,6 +105,11 @@ public class BitcoinBlock {
 	@Property(name = "nextblockhash")
 	private String nextBlockHash;
 
+	/**
+	 * Indicates that the bloc is fully integrated.
+	 */
+	@Property(name = "integrated")
+	private boolean integrated = false;
 
 	/**
 	 * For display.
@@ -387,5 +392,21 @@ public class BitcoinBlock {
 		transactions = newTransactions;
 	}
 
+	/**
+	 * Getter de la propriété integrated.
+	 *
+	 * @return integrated
+	 */
+	public final boolean isIntegrated() {
+		return integrated;
+	}
 
+	/**
+	 * Setter de la propriété integrated.
+	 *
+	 * @param newIntegrated the integrated to set
+	 */
+	public final void setIntegrated(final boolean newIntegrated) {
+		integrated = newIntegrated;
+	}
 }

@@ -19,6 +19,14 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	long count();
 
 	/**
+	 * Find a block by its height.
+	 *
+	 * @param heigh height
+	 * @return block
+	 */
+	BitcoinBlock findByHeight(long heigh);
+
+	/**
 	 * Find a block by its hash.
 	 *
 	 * @param hash hash

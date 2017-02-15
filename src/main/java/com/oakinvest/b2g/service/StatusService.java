@@ -63,11 +63,18 @@ public interface StatusService {
 	void addError(String newErrorMessage);
 
 	/**
-	 * Add an excution time statistics and return the excution mean.
+	 * Add an execution time statistics and return the excution mean.
 	 *
 	 * @param newTime new execution time.
 	 * @return mean time
 	 */
 	float addExecutionTimeStatistic(float newTime);
+
+	/**
+	 * Return execution time mean.
+	 *
+	 * @return execution time mean
+	 */
+	float getExecutionTimeStatistic();
 
 }

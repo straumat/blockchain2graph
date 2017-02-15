@@ -80,6 +80,7 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(status.getTotalBlockCount());
 		updateError(status.getLastErrorMessage());
 		updateLog(status.getLastLogMessage());
+		updateExecutionTimeStatistic(status.getExecutionTimeStatistic());
 	}
 
 	/**
@@ -127,7 +128,6 @@ public class StatusHandler extends TextWebSocketHandler {
 		JSONObject obj = new JSONObject();
 		obj.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
 		obj.put(PARAM_MESSAGE_VALUE, errorMessage);
-		updateLog(errorMessage);
 		sendMessage(obj.toString());
 	}
 

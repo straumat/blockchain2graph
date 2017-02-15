@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.batch;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.IntegrationService;
 import com.oakinvest.b2g.service.StatusService;
@@ -66,12 +67,23 @@ public class IntegrationBatch {
 		status.setImportedBlockCount(importedBlockCount);
 		status.setTotalBlockCount(totalBlockCount);
 
-		// if there is another block to import, let's import it !
-		if (importedBlockCount < totalBlockCount) {
+		// Integrate block.
+		BitcoinBlock b = bbr.findByHeight(importedBlockCount);
+		if (!b.isIntegrated()) {
+			// If the block is not completely integrated, we re integrate it.
 			try {
-				is.integrateBitcoinBlock(nextBlockToImport);
+				is.integrateBitcoinBlock(importedBlockCount);
 			} catch (Exception e) {
-				status.addError("Error in block " + nextBlockToImport + " " + e.getMessage());
+				status.addError("Error in block " + importedBlockCount + " " + e.getMessage());
+			}
+		} else {
+			// else if there is another block to import, let's import it !
+			if (importedBlockCount < totalBlockCount) {
+				try {
+					is.integrateBitcoinBlock(nextBlockToImport);
+				} catch (Exception e) {
+					status.addError("Error in block " + nextBlockToImport + " " + e.getMessage());
+				}
 			}
 		}
 	}

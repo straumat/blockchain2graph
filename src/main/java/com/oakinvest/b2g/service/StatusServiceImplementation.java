@@ -66,6 +66,11 @@ public class StatusServiceImplementation implements StatusService {
 	private long importedBlockCount = 0;
 
 	/**
+	 * Executed time statistic.
+	 */
+	private float executionTimeStatistic = 0;
+
+	/**
 	 * Execution time statistics.
 	 */
 	private LinkedList<Float> executionTimeStatistics = new LinkedList<>();
@@ -165,8 +170,8 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return mean time
 	 */
 	public final float addExecutionTimeStatistic(final float newTime) {
-		// If we reach the maximum numver of execution times, we remove the first one.
-		if (executionTimeStatistics.size() == MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
+		// If we reach the maximum number of execution times, we remove the first one.
+		while (executionTimeStatistics.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
 			executionTimeStatistics.removeFirst();
 		}
 
@@ -180,7 +185,7 @@ public class StatusServiceImplementation implements StatusService {
 			for (n = 0; n < executionTimeStatistics.size(); n++) {
 				totalAmountOfTime += executionTimeStatistics.get(n);
 			}
-			float executionTimeStatistic = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
+			executionTimeStatistic = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
 			statusHandler.updateExecutionTimeStatistic(executionTimeStatistic);
 			return executionTimeStatistic;
 		} else {
@@ -188,6 +193,16 @@ public class StatusServiceImplementation implements StatusService {
 			return 0;
 		}
 
+	}
+
+	/**
+	 * Return execution time mean.
+	 *
+	 * @return execution time mean
+	 */
+	@Override
+	public final float getExecutionTimeStatistic() {
+		return executionTimeStatistic;
 	}
 
 }
