@@ -204,6 +204,8 @@ public class IntegrationServiceImplementation implements IntegrationService {
 						// Error.
 						throw new RuntimeException("Error in calling getrawtransaction " + transaction.getError());
 					}
+				} else {
+					status.addLog("> transaction n°" + i + " is already in the database");
 				}
 				i++;
 			}
