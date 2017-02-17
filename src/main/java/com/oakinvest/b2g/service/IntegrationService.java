@@ -7,6 +7,13 @@ package com.oakinvest.b2g.service;
 public interface IntegrationService {
 
 	/**
+	 * Load a block in cache.
+	 *
+	 * @param blockHeight block number
+	 */
+	void loadBlockInCache(long blockHeight);
+
+	/**
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number

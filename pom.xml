@@ -167,8 +167,8 @@
 			<version>${json-simple.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
 		</dependency>
 
 		<!-- Webjar locator -->

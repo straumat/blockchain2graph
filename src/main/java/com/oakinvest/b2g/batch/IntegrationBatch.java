@@ -57,32 +57,38 @@ public class IntegrationBatch {
 	 */
 	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
 	public final void importNextBitcoinBlock() {
-		log.info("Batch called");
-		// Retrieving data.
-		final long importedBlockCount = bbr.count();
-		final long nextBlockToImport = importedBlockCount + 1;
-		final long totalBlockCount = bds.getBlockCount().getResult();
+		log.info("Batch being called");
 
-		// Update status.
+		// Retrieving data & status update.
+		final long importedBlockCount = bbr.count();
+		final long totalBlockCount = bds.getBlockCount().getResult();
 		status.setImportedBlockCount(importedBlockCount);
 		status.setTotalBlockCount(totalBlockCount);
 
-		// Integrate block.
-		BitcoinBlock b = bbr.findByHeight(importedBlockCount);
-		if (!b.isIntegrated()) {
-			// If the block is not completely integrated, we re integrate it.
+		// Block designation.
+		final long lastImportedBlock = importedBlockCount;
+		final long blockToImport = lastImportedBlock + 1;
+		final long blockToCache = blockToImport + 1;
+
+		// Check if the last block has been fully integrated. If not, we re integrate it.
+		BitcoinBlock b = bbr.findByHeight(lastImportedBlock);
+		if (b != null && !b.isIntegrated()) {
 			try {
-				is.integrateBitcoinBlock(importedBlockCount);
+				is.integrateBitcoinBlock(lastImportedBlock);
 			} catch (Exception e) {
-				status.addError("Error in block " + importedBlockCount + " " + e.getMessage());
+				status.addError("Error in block " + lastImportedBlock + " " + e.getMessage());
 			}
 		} else {
-			// else if there is another block to import, let's import it !
+			// If the last block was well integrated, we run an async method to cache the data the block that
+			// will be integrated in the next call to this batch.
+			is.loadBlockInCache(blockToCache);
+
+			// If there is a block available to import, let's import it !
 			if (importedBlockCount < totalBlockCount) {
 				try {
-					is.integrateBitcoinBlock(nextBlockToImport);
+					is.integrateBitcoinBlock(blockToImport);
 				} catch (Exception e) {
-					status.addError("Error in block " + nextBlockToImport + " " + e.getMessage());
+					status.addError("Error in block " + blockToImport + " " + e.getMessage());
 				}
 			}
 		}

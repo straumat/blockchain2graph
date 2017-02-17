@@ -15,7 +15,9 @@ import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -90,6 +92,29 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	private BitcoindToDomainMapper mapper;
 
 	/**
+	 * Load a block in cache.
+	 *
+	 * @param blockHeight block number
+	 */
+	@Override
+	@Async
+	public final void loadBlockInCache(final long blockHeight) {
+		try {
+			// We don't care if this method returns any error.
+			String blockHash = bds.getBlockHash(blockHeight).getResult();
+			if (blockHash != null) {
+				GetBlockResponse blockResponse = bds.getBlock(blockHash);
+				blockResponse.getResult().getTx().stream()
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+						.forEach(t -> bds.getRawTransaction(t));
+			}
+		} catch (Exception e) {
+			log.info("Error while loading in cache the block n°" + blockHeight);
+		}
+	}
+
+	/**
 	 * Integrate a bitcoin block into the database.
 	 *
 	 * @param blockHeight block number
@@ -152,72 +177,81 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				String transactionHash = it.next();
 				status.addLog("> Treating transaction n°" + i + " : " + transactionHash);
 				// If the transaction is not yet integrated
-				if (btr.findByTxId(transactionHash) == null) {
-					// Getting the transaction and treating data.
-					GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
-					if (transaction.getError() == null) {
-						// Success.
-						try {
-							// Saving the transaction in the database.
-							BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(transaction.getResult());
-							bt.setBlock(block);
-
-							// For each Vin.
-							Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
-							while (vins.hasNext()) {
-								BitcoinTransactionInput vin = vins.next();
-								vin.setTransaction(bt);
-								if (vin.getTxId() == null) {
-									// Coinbase.
-									status.addLog(">> Done treating vin : " + vin);
-								} else {
-									// Not coinbase. We retrieve the original transaction.
-									BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
-									vin.setTransactionOutput(originTransactionOutput);
-
-									// We set the addresses "from" if it's not a coinbase transaction.
-									if (vin.getCoinbase() == null) {
-										// We add the input to the withdrawls of the address.
-										originTransactionOutput.getAddresses().forEach(a -> createOrGetAddress(a).getWithdrawals().add(vin));
-									}
-									status.addLog(">> Done treating vin : " + vin);
-								}
-							}
-
-							// For each Vout.
-							Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
-							while (vouts.hasNext()) {
-								BitcoinTransactionOutput vout = vouts.next();
-								vout.setTransaction(bt);
-								vout.getAddresses().forEach(a -> (createOrGetAddress(a)).getDeposits().add(vout));
-								status.addLog(">> Done treating vout : " + vout);
-							}
-
-							// Saving the transaction.
-							status.addLog("> Saving transaction " + transactionHash);
-							btr.save(bt);
-							status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
-						} catch (Exception e) {
-							throw new RuntimeException("Error treating transaction " + transactionHash + " : " + e.getMessage());
-						}
-					} else {
-						// Error.
-						throw new RuntimeException("Error in calling getrawtransaction " + transaction.getError());
-					}
+				BitcoinTransaction transaction = btr.findByTxId(transactionHash);
+				if (transaction == null) {
+					// Creating or updating the transaction.
+					transaction = createTransaction(transactionHash);
 				} else {
 					status.addLog("> transaction n°" + i + " is already in the database");
 				}
+				// We add the transaction to the block if it's not already there.
+				block.getTransactions().add(transaction);
+				transaction.setBlock(block);
 				i++;
 			}
 		}
+
+		// -------------------------------------------------------------------------------------------------------------
 		// Saving block and saying all has been integrated.
 		block.setIntegrated(true);
 		bbr.save(block);
-
-		// Sending message that all word fine
+		// Sending a message saying that all word fine.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
 		status.addExecutionTimeStatistic(elapsedTime);
+	}
+
+	/**
+	 * Create or updates a transaction.
+	 *
+	 * @param transactionHash transaction hash.
+	 * @return bitcoin transaction.
+	 */
+	private BitcoinTransaction createTransaction(final String transactionHash) {
+		GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
+		if (transaction.getError() == null) {
+			// Success.
+			try {
+				// Saving the transaction in the database.
+				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(transaction.getResult());
+
+				// For each Vin.
+				Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
+				while (vins.hasNext()) {
+					BitcoinTransactionInput vin = vins.next();
+					vin.setTransaction(bt);
+					if (vin.getTxId() != null) {
+						// Not coinbase. We retrieve the original transaction.
+						BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+						vin.setTransactionOutput(originTransactionOutput);
+
+						// We set the addresses "from" if it's not a coinbase transaction.
+						originTransactionOutput.getAddresses().forEach(a -> createOrGetAddress(a).getWithdrawals().add(vin));
+						status.addLog(">> Done treating vin : " + vin);
+					}
+				}
+
+				// For each Vout.
+				Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
+				while (vouts.hasNext()) {
+					BitcoinTransactionOutput vout = vouts.next();
+					vout.setTransaction(bt);
+					vout.getAddresses().forEach(a -> (createOrGetAddress(a)).getDeposits().add(vout));
+					status.addLog(">> Done treating vout : " + vout);
+				}
+
+				// Saving the transaction.
+				status.addLog("> Saving transaction " + transactionHash);
+				btr.save(bt);
+				status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
+				return bt;
+			} catch (Exception e) {
+				throw new RuntimeException("Error treating transaction " + transactionHash + " : " + e.getMessage());
+			}
+		} else {
+			// Error.
+			throw new RuntimeException("Error in calling getrawtransaction " + transaction.getError());
+		}
 	}
 
 	/**
@@ -226,6 +260,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * @param address address.
 	 * @return bitcoin address in database.
 	 */
+	@Transactional
 	private BitcoinAddress createOrGetAddress(final String address) {
 		BitcoinAddress bAddress = bar.findByAddress(address);
 		if (bAddress == null) {
