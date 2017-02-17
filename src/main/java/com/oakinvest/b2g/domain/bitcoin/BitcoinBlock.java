@@ -410,18 +410,33 @@ public class BitcoinBlock {
 		integrated = newIntegrated;
 	}
 
+	/**
+	 * Using block hash.
+	 *
+	 * @param o object
+	 * @return true if equals
+	 */
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof BitcoinBlock)) return false;
+	public final boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BitcoinBlock)) {
+			return false;
+		}
 
 		final BitcoinBlock that = (BitcoinBlock) o;
 
 		return getHash().equals(that.getHash());
 	}
 
+	/**
+	 * Using block hash.
+	 *
+	 * @return hash
+	 */
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return getHash().hashCode();
 	}
 }
