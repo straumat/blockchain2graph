@@ -409,4 +409,19 @@ public class BitcoinBlock {
 	public final void setIntegrated(final boolean newIntegrated) {
 		integrated = newIntegrated;
 	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BitcoinBlock)) return false;
+
+		final BitcoinBlock that = (BitcoinBlock) o;
+
+		return getHash().equals(that.getHash());
+	}
+
+	@Override
+	public int hashCode() {
+		return getHash().hashCode();
+	}
 }

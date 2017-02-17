@@ -359,4 +359,19 @@ public class BitcoinTransaction {
 		block = newBlock;
 	}
 
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BitcoinTransaction)) return false;
+
+		final BitcoinTransaction that = (BitcoinTransaction) o;
+
+		return getTxId().equals(that.getTxId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getTxId().hashCode();
+	}
 }

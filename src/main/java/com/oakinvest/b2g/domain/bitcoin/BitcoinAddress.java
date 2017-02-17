@@ -126,4 +126,18 @@ public class BitcoinAddress {
 		address = newAddress;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BitcoinAddress)) return false;
+
+		final BitcoinAddress that = (BitcoinAddress) o;
+
+		return getAddress().equals(that.getAddress());
+	}
+
+	@Override
+	public int hashCode() {
+		return getAddress().hashCode();
+	}
 }
