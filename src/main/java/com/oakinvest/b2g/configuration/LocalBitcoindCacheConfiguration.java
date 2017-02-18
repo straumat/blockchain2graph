@@ -23,10 +23,10 @@ import java.io.ObjectOutputStream;
  * Bitcoind cache service for tests.
  * Created by straumat on 04/01/17.
  */
-@Aspect
 @Configuration
+@Aspect
 @Profile("test")
-public class BitcoindCacheConfiguration {
+public class LocalBitcoindCacheConfiguration {
 
 	/**
 	 * bitcoind directory.
@@ -56,7 +56,7 @@ public class BitcoindCacheConfiguration {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoindCacheConfiguration.class);
+	private final Logger log = LoggerFactory.getLogger(LocalBitcoindCacheConfiguration.class);
 
 	/**
 	 * getblock directory.
@@ -81,7 +81,7 @@ public class BitcoindCacheConfiguration {
 	/**
 	 * Default constructor.
 	 */
-	public BitcoindCacheConfiguration() {
+	public LocalBitcoindCacheConfiguration() {
 		final File bitcoindDirectory = new File(BITCOIND_CACHE_DIRECTORY);
 		if (!bitcoindDirectory.exists()) {
 			if (!bitcoindDirectory.mkdir()) {

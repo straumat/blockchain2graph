@@ -2,8 +2,8 @@ package com.oakinvest.b2g.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.service.IntegrationService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinIntegrationService;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class IntegrationBatch {
 	 * Integration service.
 	 */
 	@Autowired
-	private IntegrationService is;
+	private BitcoinIntegrationService is;
 
 	/**
 	 * Import a bitcoin block.
@@ -79,7 +79,7 @@ public class IntegrationBatch {
 				status.addError("Error in block " + lastImportedBlock + " " + e.getMessage());
 			}
 		} else {
-			// If the last block was well integrated, we run an async method to cache the data the block that
+			// Else, if the last block was well integrated, we createTransaction an async method to cache the data the block that
 			// will be integrated in the next call to this batch.
 			is.loadBlockInCache(blockToCache);
 

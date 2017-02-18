@@ -1,26 +1,25 @@
-package com.oakinvest.b2g.service;
+package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
-import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Integrates blockchain data into the database.
@@ -28,7 +27,7 @@ import java.util.Iterator;
  */
 @SuppressWarnings("ALL")
 @Service
-public class IntegrationServiceImplementation implements IntegrationService {
+public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrationService {
 
 	/**
 	 * How many milli seconds in one second.
@@ -39,6 +38,11 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * Number of blocks to load in cache.
 	 */
 	public static final int NUMBER_OF_BLOCKS_TO_LOAD_IN_CACHE = 10;
+
+	/**
+	 * Pause between calls for checking if all transactions ar done.
+	 */
+	public static final int PAUSE_BETWEEN_PROCESS_CHECK = 1000;
 
 	/**
 	 * Genesis transaction hash.
@@ -53,7 +57,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(IntegrationService.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinIntegrationService.class);
 
 	/**
 	 * Bitcoind service.
@@ -92,6 +96,12 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	private BitcoindToDomainMapper mapper;
 
 	/**
+	 * Transaction task.
+	 */
+	@Autowired
+	private BitcoinTransactionIntegrationTask transactionTask;
+
+	/**
 	 * Load a block in cache.
 	 *
 	 * @param blockHeight block number
@@ -120,7 +130,8 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * @param blockHeight block number
 	 */
 	@Override
-	public final void integrateBitcoinBlock(final long blockHeight) {
+	@SuppressWarnings("checkstyle:emptyforiteratorpad")
+	public final void integrateBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
@@ -140,7 +151,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		// -------------------------------------------------------------------------------------------------------------
 		// Retrieve the transaction list and saving the block as non integrated.
 		BitcoinBlock block = null;
-		ArrayList<String> transactions = new ArrayList<>();
+		ArrayList<String> transactionsHashs = new ArrayList<>();
 		if (blockHash != null) {
 			GetBlockResponse blockResponse = bds.getBlock(blockHash);
 			if (blockResponse.getError() == null) {
@@ -150,14 +161,14 @@ public class IntegrationServiceImplementation implements IntegrationService {
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> transactions.add(t));
+						.forEach(t -> transactionsHashs.add(t));
 
 				// If the block doesn't exists, we save it else we retrieve it.
 				block = bbr.findByHash(blockHash);
 				if (block == null) {
 					block = mapper.blockResultToBitcoinBlock(blockResponse.getResult());
 					bbr.save(block);
-					status.addLog("Block " + formatedBlockHeight + " has " + transactions.size() + " transaction(s) and is saved with id " + block.getId());
+					status.addLog("Block " + formatedBlockHeight + " has " + transactionsHashs.size() + " transaction(s) and is saved with id " + block.getId());
 				} else {
 					status.addLog("Block " + formatedBlockHeight + " alrerady exists with id " + block.getId());
 				}
@@ -168,34 +179,68 @@ public class IntegrationServiceImplementation implements IntegrationService {
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
-		// Saving all transactions if we have the block.
+		// Saving all transactions if we have in the block (using @async).
+		transactionTask.setEnvironnement(log, bds, status, btr, bar, mapper);    // TODO Why autowired doesn't work ?
+		List<Future<BitcoinTransaction>> transactions = new LinkedList<>();
 		if (block != null) {
-			Iterator<String> it = transactions.iterator();
-			int i = 1;
-			while (it.hasNext()) {
-				// We retrieve the transaction data.
+			int counter = 1;
+			for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
+				// We run a an integration task for every transaction hashs in the block.
 				String transactionHash = it.next();
-				status.addLog("> Treating transaction n°" + i + " : " + transactionHash);
-				// If the transaction is not yet integrated
-				BitcoinTransaction transaction = btr.findByTxId(transactionHash);
-				if (transaction == null) {
-					// Creating or updating the transaction.
-					transaction = createTransaction(transactionHash);
-				} else {
-					status.addLog("> transaction n°" + i + " is already in the database");
-				}
-				// We add the transaction to the block if it's not already there.
-				block.getTransactions().add(transaction);
-				transaction.setBlock(block);
-				i++;
+				transactions.add(transactionTask.createTransaction(transactionHash));
+				status.addLog("> Started a thread for transaction n°" + counter + " : " + transactionHash);
+				counter++;
 			}
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
-		// Saving block and saying all has been integrated.
+		// Waiting for all the transactions to be done.
+		boolean allTransactionsTreated = false;
+		while (!allTransactionsTreated) {
+			int transactionsDone = 0;
+			int transactionsDoneWithErrors = 0;
+			int transactionsNotDone = 0;
+
+			// We see if we have all the results we expected.
+			for (Iterator<Future<BitcoinTransaction>> it = transactions.iterator(); it.hasNext(); ) {
+				Future<BitcoinTransaction> t = it.next();
+				if (t.isDone()) {
+					transactionsDone++;
+					// If it's null, an error occurer.
+					if (t == null) {
+						transactionsDoneWithErrors++;
+					} else {
+						// If it's not null, we set the relation.
+						block.getTransactions().add(t.get());
+						t.get().setBlock(block);
+					}
+				} else {
+					transactionsNotDone++;
+				}
+			}
+
+			// We print a status with the work needed to be done.
+			status.addLog("Block " + formatedBlockHeight + " : " + transactionsNotDone + " not yet integrated");
+			if (transactionsDoneWithErrors > 0) {
+				status.addLog("Block " + formatedBlockHeight + " : " + transactionsDoneWithErrors + " errors");
+			}
+
+			// We stop if all transactions have been treated and there are not errors
+			allTransactionsTreated = (transactionsDone == transactionsHashs.size()) && (transactionsDoneWithErrors == 0);
+
+			// If not done yet, we will pause for a while.
+			if (transactionsNotDone > 0) {
+				Thread.sleep(PAUSE_BETWEEN_PROCESS_CHECK);
+			}
+		}
+
+		// -------------------------------------------------------------------------------------------------------------
+		// Saving block and its relations woth tasks.
 		block.setIntegrated(true);
 		bbr.save(block);
-		// Sending a message saying that all word fine.
+
+		// -------------------------------------------------------------------------------------------------------------
+		// Sending a message saying that all worked fine and making some statistics.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
 		status.addExecutionTimeStatistic(elapsedTime);
@@ -208,70 +253,7 @@ public class IntegrationServiceImplementation implements IntegrationService {
 	 * @return bitcoin transaction.
 	 */
 	private BitcoinTransaction createTransaction(final String transactionHash) {
-		GetRawTransactionResponse transaction = bds.getRawTransaction(transactionHash);
-		if (transaction.getError() == null) {
-			// Success.
-			try {
-				// Saving the transaction in the database.
-				BitcoinTransaction bt = mapper.rawTransactionResultToBitcoinTransaction(transaction.getResult());
-
-				// For each Vin.
-				Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
-				while (vins.hasNext()) {
-					BitcoinTransactionInput vin = vins.next();
-					vin.setTransaction(bt);
-					if (vin.getTxId() != null) {
-						// Not coinbase. We retrieve the original transaction.
-						BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
-						vin.setTransactionOutput(originTransactionOutput);
-
-						// We set the addresses "from" if it's not a coinbase transaction.
-						originTransactionOutput.getAddresses().forEach(a -> createOrGetAddress(a).getWithdrawals().add(vin));
-						status.addLog(">> Done treating vin : " + vin);
-					}
-				}
-
-				// For each Vout.
-				Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
-				while (vouts.hasNext()) {
-					BitcoinTransactionOutput vout = vouts.next();
-					vout.setTransaction(bt);
-					vout.getAddresses().forEach(a -> (createOrGetAddress(a)).getDeposits().add(vout));
-					status.addLog(">> Done treating vout : " + vout);
-				}
-
-				// Saving the transaction.
-				status.addLog("> Saving transaction " + transactionHash);
-				btr.save(bt);
-				status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
-				return bt;
-			} catch (Exception e) {
-				throw new RuntimeException("Error treating transaction " + transactionHash + " : " + e.getMessage());
-			}
-		} else {
-			// Error.
-			throw new RuntimeException("Error in calling getrawtransaction " + transaction.getError());
-		}
-	}
-
-	/**
-	 * Creates or get a bitcoin address.
-	 *
-	 * @param address address.
-	 * @return bitcoin address in database.
-	 */
-	@Transactional
-	private BitcoinAddress createOrGetAddress(final String address) {
-		BitcoinAddress bAddress = bar.findByAddress(address);
-		if (bAddress == null) {
-			// If it doesn't exists, we create it.
-			bAddress = bar.save(new BitcoinAddress(address));
-			status.addLog(">> Address " + address + " created with id " + bAddress.getId());
-		} else {
-			// Else we just return the one existing in the database.
-			status.addLog(">> Address " + address + " already exists with id " + bAddress.getId());
-		}
-		return bAddress;
+		return null;
 	}
 
 }

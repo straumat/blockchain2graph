@@ -9,7 +9,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.IntegrationService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinIntegrationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class IntegrationServiceTest {
 	 * Integration service.
 	 */
 	@Autowired
-	private IntegrationService is;
+	private BitcoinIntegrationService is;
 
 	/**
 	 * Bitcoin blcok repository.
@@ -62,7 +62,7 @@ public class IntegrationServiceTest {
 	 * @throws InterruptedException if not able to suspend time.
 	 */
 	@Test
-	public final void integrateBitcoinBlockTest() throws InterruptedException {
+	public final void integrateBitcoinBlockTest() throws Exception {
 		// Configuration.
 		final int firstBlockToImport = 0;
 		final int lastBlockToImport = 500;

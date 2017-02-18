@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * Created by straumat on 03/01/17.
  */
 @Configuration
-@Profile("!test")
 @EnableScheduling
+@Profile("!test")
 public class SchedulingConfiguration {
 
 }
