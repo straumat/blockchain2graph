@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -44,7 +44,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	public static final int PAUSE_BETWEEN_PROCESS_CHECK = 1000;
+	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 1000;
 
 	/**
 	 * Genesis transaction hash.
@@ -136,21 +136,21 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 */
 	@Override
 	@SuppressWarnings("checkstyle:emptyforiteratorpad")
-	public final void integrateBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
+	public final void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
-		status.addLog("Integrating bitcoin block number " + formatedBlockHeight);
+		status.addLog("Importing data of bitcoin block n°" + formatedBlockHeight);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Retrieve the block hash.
 		String blockHash = bds.getBlockHash(blockHeight).getResult();
 		if (blockHash != null) {
 			// Success.
-			status.addLog("Hash of block " + formatedBlockHeight + " is " + blockHash);
+			status.addLog("Block n°" + formatedBlockHeight + " hash  is " + blockHash);
 		} else {
 			// Error.
-			throw new RuntimeException("Error getting the hash of block " + formatedBlockHeight);
+			throw new RuntimeException("Error getting the hash of block n°" + formatedBlockHeight);
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -161,7 +161,6 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 			GetBlockResponse blockResponse = bds.getBlock(blockHash);
 			if (blockResponse.getError() == null) {
 				// Success.
-
 				// Retrieving transaction list.
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
@@ -173,71 +172,74 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 				if (block == null) {
 					block = mapper.blockResultToBitcoinBlock(blockResponse.getResult());
 					bbr.save(block);
-					status.addLog("Block " + formatedBlockHeight + " has " + transactionsHashs.size() + " transaction(s) and is saved with id " + block.getId());
-				} else {
-					status.addLog("Block " + formatedBlockHeight + " alrerady exists with id " + block.getId());
 				}
+
+				// Send a message to set the status.
+				status.addLog("Block n°" + formatedBlockHeight + " has " + transactionsHashs.size() + " transaction(s) and its id is " + block.getId());
 			} else {
 				// Error.
-				throw new RuntimeException("Error getting block " + formatedBlockHeight + " infos : " + blockResponse.getError());
+				throw new RuntimeException("Error getting block n°" + formatedBlockHeight + " informations : " + blockResponse.getError());
 			}
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
-		// Saving all transactions if we have in the block (using @async).
-		transactionTask.setEnvironnement(log, bds, status, btr, bar, mapper);    // TODO Why autowired doesn't work ?
-		List<Future<BitcoinTransaction>> transactions = new LinkedList<>();
+		// Creating a thread for every transaction we have in the block (using @async).
+		transactionTask.setEnvironnement(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
+		HashMap<String, Future<BitcoinTransaction>> transactions = new HashMap<>();
 		if (block != null) {
 			int counter = 1;
 			for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
-				// We run a an integration task for every transaction hashs in the block.
+				// We run a an task for every transaction hashs in the block.
 				String transactionHash = it.next();
-				transactions.add(transactionTask.createTransaction(transactionHash));
-				status.addLog("> Started a thread for transaction n°" + counter + " : " + transactionHash);
+				status.addLog("> Starting a thread for transaction n°" + counter + " : " + transactionHash);
+				transactions.put(transactionHash, transactionTask.createTransaction(transactionHash));
 				counter++;
 			}
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
-		// Waiting for all the transactions to be done.
-		boolean allTransactionsTreated = false;
-		while (!allTransactionsTreated) {
-			int transactionsDone = 0;
-			int transactionsDoneWithErrors = 0;
-			int transactionsNotDone = 0;
+		// Waiting for all the transactions to be imported.
+		boolean allTransactionsImported = false;
+		while (!allTransactionsImported) {
+			int transactionsImportedWithoutError = 0;
+			int transactionsImportedWithErrors = 0;
+			int transactionsNotYetImported = 0;
 
 			// We see if we have all the results we expected.
-			for (Iterator<Future<BitcoinTransaction>> it = transactions.iterator(); it.hasNext(); ) {
-				Future<BitcoinTransaction> t = it.next();
-				if (t.isDone()) {
-					transactionsDone++;
-					// If it's null, an error occurer.
-					if (t == null) {
-						transactionsDoneWithErrors++;
-					} else {
+			for (Map.Entry<String, Future<BitcoinTransaction>> t : transactions.entrySet()) {
+				if (t.getValue().isDone()) {
+					// If the transaction work is done.
+					if (t.getValue() != null) {
+						// If it's done, we cound it as imported.
+						transactionsImportedWithoutError++;
 						// If it's not null, we set the relation.
-						block.getTransactions().add(t.get());
-						t.get().setBlock(block);
+						block.getTransactions().add(t.getValue().get());
+						t.getValue().get().setBlock(block);
+					} else {
+						// If it's done and it's null, an error occured.
+						transactionsImportedWithErrors++;
+						status.addLog("> Thread for transaction " + t.getKey() + " has an error");
 					}
 				} else {
-					transactionsNotDone++;
+					// If the transaction work is not yet done.
+					transactionsNotYetImported++;
 				}
 			}
 
-			// We print a status with the work needed to be done.
-			status.addLog("Block " + formatedBlockHeight + " : " + transactionsNotDone + " not yet integrated");
-			if (transactionsDoneWithErrors > 0) {
-				status.addLog("Block " + formatedBlockHeight + " : " + transactionsDoneWithErrors + " errors");
-			}
+			// Everything is imported if all the transactions are imported without errors.
+			allTransactionsImported = (transactionsImportedWithoutError == transactionsHashs.size());
 
-			// We stop if all transactions have been treated and there are not errors
-			allTransactionsTreated = (transactionsDone == transactionsHashs.size()) && (transactionsDoneWithErrors == 0);
-
-			// If not done yet, we will pause for a while.
-			if (transactionsNotDone > 0) {
-				Thread.sleep(PAUSE_BETWEEN_PROCESS_CHECK);
+			// If not has been imported, we log statics.
+			if (!allTransactionsImported) {
+				status.addLog("Block n°" + formatedBlockHeight + " statistics on threads.");
+				status.addLog(transactionsImportedWithoutError + " transaction(s) without errors");
+				status.addLog(transactionsImportedWithErrors + " transaction(s) with errors");
+				status.addLog(transactionsNotYetImported + " transaction(s) without errors");
+				// And we wait a bit to let time for the threads to finish before testing again.
+				Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
 			}
 		}
+		status.addLog("Block n°" + formatedBlockHeight + " : all threads treating transactions are done.");
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Saving block and its relations woth tasks.
@@ -263,10 +265,10 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 		if (bAddress == null) {
 			// If it doesn't exists, we create it.
 			bAddress = bar.save(new BitcoinAddress(address));
-			status.addLog(">> Address " + address + " created with id " + bAddress.getId());
+			log.info(">> Address " + address + " created with id " + bAddress.getId());
 		} else {
 			// Else we just return the one existing in the database.
-			status.addLog(">> Address " + address + " already exists with id " + bAddress.getId());
+			log.info(">> Address " + address + " already exists with id " + bAddress.getId());
 		}
 		return bAddress;
 	}

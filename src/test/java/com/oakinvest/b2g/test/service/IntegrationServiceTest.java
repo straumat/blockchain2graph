@@ -57,7 +57,7 @@ public class IntegrationServiceTest {
 	private BitcoinTransactionRepository btr;
 
 	/**
-	 * integrateBitcoinBlock test.
+	 * importBitcoinBlock test.
 	 *
 	 * @throws InterruptedException if not able to suspend time.
 	 */
@@ -69,7 +69,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			is.integrateBitcoinBlock(i);
+			is.importBitcoinBlock(i);
 		}
 
 		// Testing data of block 170.
@@ -174,7 +174,7 @@ public class IntegrationServiceTest {
 
 		// Integrating again the last block and checking that we did not make a duplicate block.
 		long numberOfBlocks = bbr.count();
-		is.integrateBitcoinBlock(lastBlockToImport);
+		is.importBitcoinBlock(lastBlockToImport);
 		assertEquals("The same block has been saved as two entities", numberOfBlocks, bbr.count());
 
 		// Testing if addresses are integrated
@@ -185,7 +185,7 @@ public class IntegrationServiceTest {
 
 		// Integrating again the last block and checking that we did not make a duplicate address.
 		long numberOfAddresses = bbr.count();
-		is.integrateBitcoinBlock(lastBlockToImport);
+		is.importBitcoinBlock(lastBlockToImport);
 		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
 
 		// testing relationsships between blocks and transactions.

@@ -74,7 +74,7 @@ public class IntegrationBatch {
 		BitcoinBlock b = bbr.findByHeight(lastImportedBlock);
 		if (b != null && !b.isIntegrated()) {
 			try {
-				is.integrateBitcoinBlock(lastImportedBlock);
+				is.importBitcoinBlock(lastImportedBlock);
 			} catch (Exception e) {
 				status.addError("Error in block " + lastImportedBlock + " " + e.getMessage());
 			}
@@ -86,7 +86,7 @@ public class IntegrationBatch {
 			// If there is a block available to import, let's import it !
 			if (importedBlockCount < totalBlockCount) {
 				try {
-					is.integrateBitcoinBlock(blockToImport);
+					is.importBitcoinBlock(blockToImport);
 				} catch (Exception e) {
 					status.addError("Error in block " + blockToImport + " " + e.getMessage());
 				}

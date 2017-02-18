@@ -23,6 +23,6 @@ public interface BitcoinIntegrationService {
 	 * @throws ExecutionException   exception
 	 */
 	// TODO Are execptions usefull ?
-	void integrateBitcoinBlock(long blockHeight) throws InterruptedException, ExecutionException;
+	void importBitcoinBlock(long blockHeight) throws InterruptedException, ExecutionException;
 
 }

@@ -130,7 +130,6 @@ public class BitcoinTransactionIntegrationTask {
 					}
 
 					// Saving the transaction.
-					log.info("> Saving transaction " + transactionHash);
 					btr.save(bt);
 					status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
 					return new AsyncResult<>(bt);
@@ -158,10 +157,10 @@ public class BitcoinTransactionIntegrationTask {
 		if (bAddress == null) {
 			// If it doesn't exists, we create it.
 			bAddress = bar.save(new BitcoinAddress(address));
-			status.addLog(">> Address " + address + " created with id " + bAddress.getId());
+			log.info(">> Address " + address + " created with id " + bAddress.getId());
 		} else {
 			// Else we just return the one existing in the database.
-			status.addLog(">> Address " + address + " already exists with id " + bAddress.getId());
+			log.info(">> Address " + address + " already exists with id " + bAddress.getId());
 		}
 		return bAddress;
 	}
