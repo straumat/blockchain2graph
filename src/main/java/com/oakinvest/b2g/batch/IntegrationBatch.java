@@ -81,7 +81,9 @@ public class IntegrationBatch {
 		} else {
 			// Else, if the last block was well integrated, we createTransaction an async method to cache the data the block that
 			// will be integrated in the next call to this batch.
-			is.loadBlockInCache(blockToCache);
+			if (blockToCache < totalBlockCount) {
+				is.loadBlockInCache(blockToCache);
+			}
 
 			// If there is a block available to import, let's import it !
 			if (importedBlockCount < totalBlockCount) {

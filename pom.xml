@@ -300,7 +300,7 @@
 						<developBranchName>development</developBranchName>
 						<featureBranchPrefix>feature-</featureBranchPrefix>
 						<releaseBranchPrefix>release-</releaseBranchPrefix>
-						<hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+						<hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
 						<versionTagPrefix>version-</versionTagPrefix>
 					</flowInitContext>
 					<noDeploy>true</noDeploy>
