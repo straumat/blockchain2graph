@@ -265,10 +265,10 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 		if (bAddress == null) {
 			// If it doesn't exists, we create it.
 			bAddress = bar.save(new BitcoinAddress(address));
-			log.info(">> Address " + address + " created with id " + bAddress.getId());
+			log.info("Address " + address + " created with id " + bAddress.getId());
 		} else {
 			// Else we just return the one existing in the database.
-			log.info(">> Address " + address + " already exists with id " + bAddress.getId());
+			log.info("Address " + address + " already exists with id " + bAddress.getId());
 		}
 		return bAddress;
 	}

@@ -37,4 +37,3 @@ connection.onmessage = function (e) {
 	}
 
 };
-
