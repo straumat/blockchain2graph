@@ -26,7 +26,7 @@ import java.io.ObjectOutputStream;
 @Configuration
 @Aspect
 @Profile("test")
-public class LocalBitcoindCacheConfiguration {
+public class BitcoindCacheConfigurationForTest {
 
 	/**
 	 * bitcoind directory.
@@ -56,7 +56,7 @@ public class LocalBitcoindCacheConfiguration {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(LocalBitcoindCacheConfiguration.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoindCacheConfigurationForTest.class);
 
 	/**
 	 * getblock directory.
@@ -81,7 +81,7 @@ public class LocalBitcoindCacheConfiguration {
 	/**
 	 * Default constructor.
 	 */
-	public LocalBitcoindCacheConfiguration() {
+	public BitcoindCacheConfigurationForTest() {
 		final File bitcoindDirectory = new File(BITCOIND_CACHE_DIRECTORY);
 		if (!bitcoindDirectory.exists()) {
 			if (!bitcoindDirectory.mkdir()) {

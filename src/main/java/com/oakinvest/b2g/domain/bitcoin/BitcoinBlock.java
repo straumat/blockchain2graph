@@ -108,6 +108,7 @@ public class BitcoinBlock {
 	/**
 	 * Indicates that the bloc is fully integrated.
 	 */
+	// TODO Rename for a better word.
 	@Property(name = "integrated")
 	private boolean integrated = false;
 

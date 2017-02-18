@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
  */
 @Configuration
 @EnableAsync
-public class AsyncConfiguration extends AsyncConfigurerSupport {
+public class AsynchronousConfiguration extends AsyncConfigurerSupport {
 
 	/**
 	 * Logger.

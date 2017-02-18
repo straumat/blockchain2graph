@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -117,7 +119,10 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> bds.getRawTransaction(t));
+						.forEach(t -> bds.getRawTransaction(t).getResult().getVout()
+								.stream().forEach(v -> v.getScriptPubKey().getAddresses()
+										.stream().filter(a -> a != null).forEach(a -> createOrGetAddress(a)))
+						);
 			}
 		} catch (Exception e) {
 			log.info("Error while loading in cache the block n°" + blockHeight);
@@ -247,13 +252,23 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	}
 
 	/**
-	 * Create or updates a transaction.
+	 * Creates or get a bitcoin address.
 	 *
-	 * @param transactionHash transaction hash.
-	 * @return bitcoin transaction.
+	 * @param address address.
+	 * @return bitcoin address in database.
 	 */
-	private BitcoinTransaction createTransaction(final String transactionHash) {
-		return null;
+	@Transactional
+	private BitcoinAddress createOrGetAddress(final String address) {
+		BitcoinAddress bAddress = bar.findByAddress(address);
+		if (bAddress == null) {
+			// If it doesn't exists, we create it.
+			bAddress = bar.save(new BitcoinAddress(address));
+			status.addLog(">> Address " + address + " created with id " + bAddress.getId());
+		} else {
+			// Else we just return the one existing in the database.
+			status.addLog(">> Address " + address + " already exists with id " + bAddress.getId());
+		}
+		return bAddress;
 	}
 
 }
