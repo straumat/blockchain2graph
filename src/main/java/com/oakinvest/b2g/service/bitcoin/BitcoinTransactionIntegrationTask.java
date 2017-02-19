@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
  * Bitcoin transaction integration task.
  * Created by straumat on 17/02/17.
  */
-@Service
+@Component
 public class BitcoinTransactionIntegrationTask {
 
 	/**
@@ -88,7 +88,8 @@ public class BitcoinTransactionIntegrationTask {
 	 * @return transaction.
 	 */
 	@Async
-	public final Future<BitcoinTransaction> createTransaction(final String transactionHash) {
+	@SuppressWarnings("checkstyle:designforextension")
+	public Future<BitcoinTransaction> createTransaction(final String transactionHash) {
 		BitcoinTransaction transaction = btr.findByTxId(transactionHash);
 		if (transaction != null) {
 			// If the transaction already exists in the database, we return it.

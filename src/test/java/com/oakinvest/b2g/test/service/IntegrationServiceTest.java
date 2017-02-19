@@ -69,6 +69,7 @@ public class IntegrationServiceTest {
 
 		// Launching integration.
 		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
+			is.loadBlockInCache(i + 1);
 			is.importBitcoinBlock(i);
 		}
 

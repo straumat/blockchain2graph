@@ -28,7 +28,7 @@ public class BitcoinTransaction {
 	private String hex;
 
 	/**
-	 * The transaction id (same as provided)?
+	 * The transaction id (same as provided).
 	 */
 	@Property(name = "txid")
 	private String txId;

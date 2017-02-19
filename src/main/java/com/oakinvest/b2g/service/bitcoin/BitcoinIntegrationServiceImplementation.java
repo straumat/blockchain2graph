@@ -44,7 +44,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 1000;
+	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 100;
 
 	/**
 	 * Genesis transaction hash.
@@ -110,7 +110,8 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 */
 	@Override
 	@Async
-	public final void loadBlockInCache(final long blockHeight) {
+	@SuppressWarnings("checkstyle:designforextension")
+	public void loadBlockInCache(final long blockHeight) {
 		try {
 			// We don't care if this method returns any error.
 			String blockHash = bds.getBlockHash(blockHeight).getResult();
@@ -201,6 +202,10 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 		// Waiting for all the transactions to be imported.
 		boolean allTransactionsImported = false;
 		while (!allTransactionsImported) {
+			// And we wait a bit to let time for the threads to finish before testing again.
+			Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
+
+			// Statistics.
 			int transactionsImportedWithoutError = 0;
 			int transactionsImportedWithErrors = 0;
 			int transactionsNotYetImported = 0;
@@ -209,16 +214,18 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 			for (Map.Entry<String, Future<BitcoinTransaction>> t : transactions.entrySet()) {
 				if (t.getValue().isDone()) {
 					// If the transaction work is done.
-					if (t.getValue() != null) {
-						// If it's done, we cound it as imported.
+					if (t.getValue().get() != null) {
+						// If it's done, we cound it as imported and we set the relations.
 						transactionsImportedWithoutError++;
-						// If it's not null, we set the relation.
 						block.getTransactions().add(t.getValue().get());
 						t.getValue().get().setBlock(block);
 					} else {
 						// If it's done and it's null, an error occured.
 						transactionsImportedWithErrors++;
 						status.addLog("> Thread for transaction " + t.getKey() + " has an error");
+						// We launch again a transaction task.
+						String transactionHash = t.getKey();
+						transactions.put(transactionHash, transactionTask.createTransaction(transactionHash));
 					}
 				} else {
 					// If the transaction work is not yet done.
@@ -234,9 +241,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 				status.addLog("Block n°" + formatedBlockHeight + " statistics on threads.");
 				status.addLog(transactionsImportedWithoutError + " transaction(s) without errors");
 				status.addLog(transactionsImportedWithErrors + " transaction(s) with errors");
-				status.addLog(transactionsNotYetImported + " transaction(s) without errors");
-				// And we wait a bit to let time for the threads to finish before testing again.
-				Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
+				status.addLog(transactionsNotYetImported + " transaction(s) not yet imported");
 			}
 		}
 		status.addLog("Block n°" + formatedBlockHeight + " : all threads treating transactions are done.");

@@ -19,9 +19,14 @@ import org.springframework.stereotype.Component;
 public class IntegrationBatch {
 
 	/**
-	 * Interval between calls.
+	 * Initial delay before first bitcoin import.
 	 */
-	private static final int BITCOIN_INTERVAL_BETWEEN_CALLS = 1;
+	public static final int BITCOIN_IMPORT_INITIAL_DELAY = 1000;
+
+	/**
+	 * Interval between bitcoin import calls.
+	 */
+	private static final int BITCOIN_INTERVAL_BETWEEN_IMPORTS = 1;
 
 	/**
 	 * Logger.
@@ -55,7 +60,7 @@ public class IntegrationBatch {
 	/**
 	 * Import a bitcoin block.
 	 */
-	@Scheduled(fixedDelay = BITCOIN_INTERVAL_BETWEEN_CALLS)
+	@Scheduled(initialDelay = BITCOIN_IMPORT_INITIAL_DELAY, fixedDelay = BITCOIN_INTERVAL_BETWEEN_IMPORTS)
 	public final void importNextBitcoinBlock() {
 		log.info("Batch being called");
 
