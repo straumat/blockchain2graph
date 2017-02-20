@@ -136,8 +136,8 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 * @param blockHeight block number
 	 */
 	@Override
-	@SuppressWarnings("checkstyle:emptyforiteratorpad")
-	public final void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
+	@SuppressWarnings({ "checkstyle:emptyforiteratorpad", "checkstyle:designforextension" })
+	public void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");

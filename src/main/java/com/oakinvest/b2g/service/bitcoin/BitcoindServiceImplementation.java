@@ -122,7 +122,8 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	@Cacheable("blockHashs")
-	public final GetBlockHashResponse getBlockHash(final long blockHeight) {
+	@SuppressWarnings("checkstyle:designforextension")
+	public GetBlockHashResponse getBlockHash(final long blockHeight) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
 		params.add(blockHeight);
@@ -140,7 +141,8 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	@Cacheable("blocks")
-	public final GetBlockResponse getBlock(final String blockHash) {
+	@SuppressWarnings("checkstyle:designforextension")
+	public GetBlockResponse getBlock(final String blockHash) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
 		params.add(blockHash);
@@ -158,7 +160,8 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	@Cacheable("rawTransactions")
-	public final GetRawTransactionResponse getRawTransaction(final String transactionHash) {
+	@SuppressWarnings("checkstyle:designforextension")
+	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
 		params.add(transactionHash);
