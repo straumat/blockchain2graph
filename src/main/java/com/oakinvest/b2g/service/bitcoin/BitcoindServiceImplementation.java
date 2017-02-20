@@ -194,19 +194,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	}
 
 	/**
-	 * Returns a configured restTemplate.
-	 *
-	 * @return configured restTemplate
-	 */
-	private RestTemplate getRestTemplate() {
-		if (restTemplate == null) {
-			restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-			restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
-		}
-		return restTemplate;
-	}
-
-	/**
 	 * Getting the URL to call.
 	 *
 	 * @return bitcoind serveur url

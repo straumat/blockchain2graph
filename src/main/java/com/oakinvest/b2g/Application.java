@@ -27,8 +27,8 @@ import static java.util.Collections.EMPTY_MAP;
  */
 @SpringBootApplication
 @EnableNeo4jRepositories
-@EnableCaching
 @EnableTransactionManagement
+@EnableCaching
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
@@ -84,7 +84,7 @@ public class Application extends SpringBootServletInitializer {
 		status.setImportedBlockCount(bbr.count());
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
-		// Create indexes in neo4j for blocks, transactions, addresses.
+		// Create unique constraints in neo4j for blocks, transactions, addresses.
 		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinBlock) ASSERT t.height IS UNIQUE", EMPTY_MAP);
 		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinBlock) ASSERT t.hash IS UNIQUE", EMPTY_MAP);
 		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinTransaction) ASSERT t.txid IS UNIQUE", EMPTY_MAP);

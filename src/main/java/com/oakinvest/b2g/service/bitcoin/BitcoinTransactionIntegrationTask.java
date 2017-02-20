@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
@@ -117,7 +116,7 @@ public class BitcoinTransactionIntegrationTask {
 							vin.setTransactionOutput(originTransactionOutput);
 
 							// We set the addresses "from" if it's not a coinbase transaction.
-							originTransactionOutput.getAddresses().forEach(a -> createOrGetAddress(a).getWithdrawals().add(vin));
+							originTransactionOutput.getAddresses().forEach(a -> (bar.findByAddress(a)).getWithdrawals().add(vin));
 							log.info(">> Done treating vin : " + vin);
 						}
 					}
@@ -127,7 +126,7 @@ public class BitcoinTransactionIntegrationTask {
 					while (vouts.hasNext()) {
 						BitcoinTransactionOutput vout = vouts.next();
 						vout.setTransaction(bt);
-						vout.getAddresses().forEach(a -> (createOrGetAddress(a)).getDeposits().add(vout));
+						vout.getAddresses().forEach(a -> (bar.findByAddress(a)).getDeposits().add(vout));
 						log.info(">> Done treating vout : " + vout);
 					}
 
@@ -146,26 +145,6 @@ public class BitcoinTransactionIntegrationTask {
 				return new AsyncResult<>(null);
 			}
 		}
-	}
-
-	/**
-	 * Creates or get a bitcoin address.
-	 *
-	 * @param address address.
-	 * @return bitcoin address in database.
-	 */
-	@Transactional
-	private BitcoinAddress createOrGetAddress(final String address) {
-		BitcoinAddress bAddress = bar.findByAddress(address);
-		if (bAddress == null) {
-			// If it doesn't exists, we create it.
-			bAddress = bar.save(new BitcoinAddress(address));
-			log.info("Address " + address + " created with id " + bAddress.getId());
-		} else {
-			// Else we just return the one existing in the database.
-			log.info("Address " + address + " already exists with id " + bAddress.getId());
-		}
-		return bAddress;
 	}
 
 }

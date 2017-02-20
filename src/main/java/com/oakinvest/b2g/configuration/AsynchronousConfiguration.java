@@ -3,9 +3,11 @@ package com.oakinvest.b2g.configuration;
 import com.oakinvest.b2g.service.bitcoin.BitcoinTransactionIntegrationTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -17,7 +19,7 @@ import java.util.concurrent.Executor;
  */
 @Configuration
 @EnableAsync
-public class AsynchronousConfiguration extends AsyncConfigurerSupport {
+public class AsynchronousConfiguration implements AsyncConfigurer {
 
 	/**
 	 * Logger.
@@ -28,11 +30,13 @@ public class AsynchronousConfiguration extends AsyncConfigurerSupport {
 	 * TODO Set as parameter
 	 * Core pool size.
 	 */
+	@Value("${blockchain2graph.threads.corePoolSize}")
 	private final int corePoolSize = 5;
 
 	/**
 	 * Max pool size.
 	 */
+	@Value("${blockchain2graph.threads.maxPoolSize}")
 	private final int maxPoolSize = 50;
 
 	@Override
@@ -43,10 +47,14 @@ public class AsynchronousConfiguration extends AsyncConfigurerSupport {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
-		executor.setWaitForTasksToCompleteOnShutdown(true);
-		executor.setThreadNamePrefix("Async-Executor-");
+		executor.setThreadNamePrefix("transaction-");
 		executor.initialize();
 		return executor;
+	}
+
+	@Override
+	public final AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+		return null;
 	}
 
 

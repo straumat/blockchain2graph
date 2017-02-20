@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,10 +119,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> bds.getRawTransaction(t).getResult().getVout()
-								.stream().forEach(v -> v.getScriptPubKey().getAddresses()
-										.stream().filter(a -> a != null).forEach(a -> createOrGetAddress(a)))
-						);
+						.forEach(t -> bds.getRawTransaction(t));
 			}
 		} catch (Exception e) {
 			log.info("Error while loading in cache the block n°" + blockHeight);
@@ -136,8 +132,8 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 * @param blockHeight block number
 	 */
 	@Override
-	@SuppressWarnings({ "checkstyle:emptyforiteratorpad", "checkstyle:designforextension" })
-	public void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
+	@SuppressWarnings("checkstyle:emptyforiteratorpad")
+	public final void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
@@ -182,6 +178,22 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 				throw new RuntimeException("Error getting block n°" + formatedBlockHeight + " informations : " + blockResponse.getError());
 			}
 		}
+
+		// -------------------------------------------------------------------------------------------------------------
+		// Creating all the addresses in the vout of all transactions.
+		transactionsHashs.stream()
+				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+				.forEach(t -> bds.getRawTransaction(t).getResult().getVout()
+						.stream().forEach(v -> v.getScriptPubKey().getAddresses()
+								.stream().filter(a -> a != null).forEach(a -> {
+									// If it doesn't exists, we create it.
+									if (bar.findByAddress(a) == null) {
+										BitcoinAddress address = bar.save(new BitcoinAddress(a));
+										log.info("Address " + address + " created with id " + address.getId());
+									}
+								}))
+				);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Creating a thread for every transaction we have in the block (using @async).
@@ -256,26 +268,6 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
 		status.addExecutionTimeStatistic(elapsedTime);
-	}
-
-	/**
-	 * Creates or get a bitcoin address.
-	 *
-	 * @param address address.
-	 * @return bitcoin address in database.
-	 */
-	@Transactional
-	private BitcoinAddress createOrGetAddress(final String address) {
-		BitcoinAddress bAddress = bar.findByAddress(address);
-		if (bAddress == null) {
-			// If it doesn't exists, we create it.
-			bAddress = bar.save(new BitcoinAddress(address));
-			log.info("Address " + address + " created with id " + bAddress.getId());
-		} else {
-			// Else we just return the one existing in the database.
-			log.info("Address " + address + " already exists with id " + bAddress.getId());
-		}
-		return bAddress;
 	}
 
 }
