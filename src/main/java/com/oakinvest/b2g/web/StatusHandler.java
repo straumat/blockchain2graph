@@ -10,7 +10,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -162,10 +161,12 @@ public class StatusHandler extends TextWebSocketHandler {
 
 			for (WebSocketSession session : this.sessions) {
 				synchronized (session) {
-					session.sendMessage(new TextMessage(message));
+					if (session.isOpen()) {
+						session.sendMessage(new TextMessage(message));
+					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("Error sending message " + e);
 		}
 	}

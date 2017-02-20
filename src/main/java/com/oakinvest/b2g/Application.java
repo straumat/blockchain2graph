@@ -91,5 +91,4 @@ public class Application extends SpringBootServletInitializer {
 		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinAddress) ASSERT t.address IS UNIQUE", EMPTY_MAP);
 	}
 
-
 }

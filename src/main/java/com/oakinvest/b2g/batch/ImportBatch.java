@@ -3,7 +3,7 @@ package com.oakinvest.b2g.batch;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoinIntegrationService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinImportService;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * Created by straumat on 31/10/16.
  */
 @Component
-public class IntegrationBatch {
+public class ImportBatch {
 
 	/**
 	 * Initial delay before first bitcoin import.
@@ -31,7 +31,7 @@ public class IntegrationBatch {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(IntegrationBatch.class);
+	private final Logger log = LoggerFactory.getLogger(ImportBatch.class);
 
 	/**
 	 * Bitcoind service.
@@ -55,7 +55,7 @@ public class IntegrationBatch {
 	 * Integration service.
 	 */
 	@Autowired
-	private BitcoinIntegrationService is;
+	private BitcoinImportService is;
 
 	/**
 	 * Import a bitcoin block.

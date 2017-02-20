@@ -24,12 +24,12 @@ import java.util.concurrent.Future;
  * Created by straumat on 17/02/17.
  */
 @Component
-public class BitcoinTransactionIntegrationTask {
+public class BitcoinTransactionImportTask {
 
 	/**
 	 * Logger.
 	 */
-	private Logger log = LoggerFactory.getLogger(BitcoinTransactionIntegrationTask.class);
+	private Logger log = LoggerFactory.getLogger(BitcoinTransactionImportTask.class);
 
 	/**
 	 * Bitcoind service.

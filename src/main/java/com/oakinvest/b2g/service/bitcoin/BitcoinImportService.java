@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
  * Integrates blockchain data into the database.
  * Created by straumat on 04/09/16.
  */
-public interface BitcoinIntegrationService {
+public interface BitcoinImportService {
 
 	/**
 	 * Load a block in cache.
@@ -23,6 +23,6 @@ public interface BitcoinIntegrationService {
 	 * @throws ExecutionException   exception
 	 */
 	// TODO Are execptions usefull ?
-	void importBitcoinBlock(long blockHeight) throws InterruptedException, ExecutionException;
+	void importBitcoinBlock(long blockHeight) throws ExecutionException, InterruptedException;
 
 }

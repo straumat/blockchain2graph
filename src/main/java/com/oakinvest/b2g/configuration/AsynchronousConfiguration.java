@@ -1,6 +1,6 @@
 package com.oakinvest.b2g.configuration;
 
-import com.oakinvest.b2g.service.bitcoin.BitcoinTransactionIntegrationTask;
+import com.oakinvest.b2g.service.bitcoin.BitcoinTransactionImportTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -24,7 +24,7 @@ public class AsynchronousConfiguration implements AsyncConfigurer {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinTransactionIntegrationTask.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinTransactionImportTask.class);
 
 	/**
 	 * TODO Set as parameter

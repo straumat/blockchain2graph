@@ -9,7 +9,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoinIntegrationService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinImportService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class IntegrationServiceTest {
 	 * Integration service.
 	 */
 	@Autowired
-	private BitcoinIntegrationService is;
+	private BitcoinImportService is;
 
 	/**
 	 * Bitcoin blcok repository.

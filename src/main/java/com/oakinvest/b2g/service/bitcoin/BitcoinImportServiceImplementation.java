@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  */
 @SuppressWarnings("ALL")
 @Service
-public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrationService {
+public class BitcoinImportServiceImplementation implements BitcoinImportService {
 
 	/**
 	 * How many milli seconds in one second.
@@ -58,7 +58,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinIntegrationService.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinImportService.class);
 
 	/**
 	 * Bitcoind service.
@@ -100,7 +100,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 * Transaction task.
 	 */
 	@Autowired
-	private BitcoinTransactionIntegrationTask transactionTask;
+	private BitcoinTransactionImportTask transactionTask;
 
 	/**
 	 * Load a block in cache.
@@ -133,7 +133,7 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 	 */
 	@Override
 	@SuppressWarnings("checkstyle:emptyforiteratorpad")
-	public final void importBitcoinBlock(final long blockHeight) throws InterruptedException, ExecutionException {
+	public final void importBitcoinBlock(final long blockHeight) throws ExecutionException, InterruptedException {
 		final long start = System.currentTimeMillis();
 		final String formatedBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
@@ -215,7 +215,11 @@ public class BitcoinIntegrationServiceImplementation implements BitcoinIntegrati
 		boolean allTransactionsImported = false;
 		while (!allTransactionsImported) {
 			// And we wait a bit to let time for the threads to finish before testing again.
-			Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
+			try {
+				Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			// Statistics.
 			int transactionsImportedWithoutError = 0;
