@@ -88,6 +88,7 @@ public class BitcoinTransactionIntegrationTask {
 	 * @return transaction.
 	 */
 	@Async
+	@Transactional
 	@SuppressWarnings("checkstyle:designforextension")
 	public Future<BitcoinTransaction> createTransaction(final String transactionHash) {
 		BitcoinTransaction transaction = btr.findByTxId(transactionHash);
