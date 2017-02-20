@@ -4,6 +4,7 @@ jdk:
 sudo: required
 script:
     - mvn package
+    - mvn jacoco:report
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
