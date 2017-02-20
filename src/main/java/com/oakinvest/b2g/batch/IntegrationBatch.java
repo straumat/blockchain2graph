@@ -82,6 +82,7 @@ public class IntegrationBatch {
 				is.importBitcoinBlock(lastImportedBlock);
 			} catch (Exception e) {
 				status.addError("Error in block " + lastImportedBlock + " " + e.getMessage());
+				e.printStackTrace();
 			}
 		} else {
 			// Else, if the last block was well integrated, we createTransaction an async method to cache the data the block that
@@ -96,6 +97,7 @@ public class IntegrationBatch {
 					is.importBitcoinBlock(blockToImport);
 				} catch (Exception e) {
 					status.addError("Error in block " + blockToImport + " " + e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}

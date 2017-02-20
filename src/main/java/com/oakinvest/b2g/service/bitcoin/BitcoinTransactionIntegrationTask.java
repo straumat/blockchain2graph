@@ -136,6 +136,7 @@ public class BitcoinTransactionIntegrationTask {
 					return new AsyncResult<>(bt);
 				} catch (Exception e) {
 					status.addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
+					e.printStackTrace();
 					return new AsyncResult<>(null);
 				}
 			} else {
