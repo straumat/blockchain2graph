@@ -56,7 +56,7 @@ public class Application extends SpringBootServletInitializer {
 	private StatusService status;
 
 	/**
-	 * Neo4j opérations.
+	 * Neo4j operations.
 	 */
 	@Autowired
 	private Neo4jOperations neo4jOperations;
@@ -85,10 +85,14 @@ public class Application extends SpringBootServletInitializer {
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Create unique constraints in neo4j for blocks, transactions, addresses.
-		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", EMPTY_MAP);
+		try {
+			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", EMPTY_MAP);
+			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", EMPTY_MAP);
+			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", EMPTY_MAP);
+			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", EMPTY_MAP);
+		} catch (Exception e) {
+			log.error("Error while creating constraints in neo4j");
+		}
 	}
 
 }

@@ -21,7 +21,7 @@ public class StatusServiceImplementation implements StatusService {
 	/**
 	 * How many digits for the statistics.
 	 */
-	public static final int ROUND_DIGITS = 100;
+	private static final int ROUND_DIGITS = 100;
 
 	/**
 	 * Number of blocks used for executionTimeStatistics.
@@ -32,6 +32,11 @@ public class StatusServiceImplementation implements StatusService {
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(StatusService.class);
+
+	/**
+	 * Execution time statistics.
+	 */
+	private final LinkedList<Float> executionTimeStatistics = new LinkedList<>();
 
 	/**
 	 * Date format.
@@ -71,12 +76,7 @@ public class StatusServiceImplementation implements StatusService {
 	private float executionTimeStatistic = 0;
 
 	/**
-	 * Execution time statistics.
-	 */
-	private LinkedList<Float> executionTimeStatistics = new LinkedList<>();
-
-	/**
-	 * Returns the total nubmer of blocks in the blockchain.
+	 * Returns the total number of blocks in the blockchain.
 	 *
 	 * @return total block count
 	 */
@@ -164,7 +164,7 @@ public class StatusServiceImplementation implements StatusService {
 	}
 
 	/**
-	 * Add an excution time statistics and return the excution mean.
+	 * Add an execution time statistics and return the execution mean.
 	 *
 	 * @param newTime new execution time.
 	 * @return mean time

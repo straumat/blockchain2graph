@@ -7,7 +7,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 /**
- * Response hander to deal with 500 error code from bitcoind.
+ * Response handler to deal with 500 error code from bitcoind.
  * Created by straumat on 01/09/16.
  */
 public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
@@ -23,7 +23,7 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 */
 	@Override
 	public final boolean hasError(final ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = response.getStatusCode();
+		HttpStatus.Series statusCode = response.getStatusCode().series();
 		return (HttpStatus.Series.SUCCESSFUL.equals(statusCode) || HttpStatus.Series.SERVER_ERROR.equals(statusCode));
 	}
 

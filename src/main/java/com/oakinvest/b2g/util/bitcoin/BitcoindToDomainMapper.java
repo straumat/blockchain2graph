@@ -46,7 +46,7 @@ public interface BitcoindToDomainMapper {
 	/**
 	 * Maps a raw transaction to a transaction.
 	 *
-	 * @param grtr getRawTransactionResult resumt
+	 * @param grtr getRawTransactionResult result
 	 * @return domain transaction
 	 */
 	@Mappings({

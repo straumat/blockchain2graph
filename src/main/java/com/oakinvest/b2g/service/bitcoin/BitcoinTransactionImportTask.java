@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
@@ -62,7 +63,7 @@ public class BitcoinTransactionImportTask {
 	private BitcoindToDomainMapper mapper;
 
 	/**
-	 * Set environnement.
+	 * Set environment.
 	 *
 	 * @param nLog    log
 	 * @param nBds    bds
@@ -71,7 +72,7 @@ public class BitcoinTransactionImportTask {
 	 * @param nBar    bar
 	 * @param nMapper mapper
 	 */
-	public final void setEnvironnement(final Logger nLog, final BitcoindService nBds, final StatusService nStatus, final BitcoinTransactionRepository nBtr, final BitcoinAddressRepository nBar, final BitcoindToDomainMapper nMapper) {
+	public final void setEnvironment(final Logger nLog, final BitcoindService nBds, final StatusService nStatus, final BitcoinTransactionRepository nBtr, final BitcoinAddressRepository nBar, final BitcoindToDomainMapper nMapper) {
 		log = nLog;
 		bds = nBds;
 		status = nStatus;
@@ -112,17 +113,18 @@ public class BitcoinTransactionImportTask {
 						vin.setTransaction(bt);
 						if (vin.getTxId() != null) {
 							// Not coinbase. We retrieve the original transaction.
-							BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
-							if (originTransactionOutput == null) {
+							Optional<BitcoinTransactionOutput> originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+							if (originTransactionOutput.isPresent()) {
+								vin.setTransactionOutput(originTransactionOutput.get());
+								// We set the addresses "from" if it's not a coinbase transaction.
+								originTransactionOutput.get().getAddresses().forEach(a -> (bar.findByAddress(a)).getWithdrawals().add(vin));
+								log.info(">> Done treating vin : " + vin);
+							} else {
 								log.error("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 								return new AsyncResult<>(null);
 							}
-							vin.setTransactionOutput(originTransactionOutput);
-
-							// We set the addresses "from" if it's not a coinbase transaction.
-							originTransactionOutput.getAddresses().forEach(a -> (bar.findByAddress(a)).getWithdrawals().add(vin));
-							log.info(">> Done treating vin : " + vin);
 						}
+
 					}
 
 					// For each Vout.

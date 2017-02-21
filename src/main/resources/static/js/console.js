@@ -1,9 +1,9 @@
 // Websocket connection
-var connection = new WebSocket("ws://" + url + "/status");
+let connection = new WebSocket("ws://" + url + "/status");
 connection.onmessage = function (e) {
 
 	// We parse the response.
-	var response = JSON.parse(e.data);
+	let response = JSON.parse(e.data);
 
 	// Imported block count.
 	if (response.messageType === "importedBlockCount") {
@@ -20,7 +20,7 @@ connection.onmessage = function (e) {
 		$("#logs").append("<div>" + response.messageValue + "</div>");
 
 		// We clean to avoid having too much logs.
-		var childrenLength = $("#logs").children().length;
+		let childrenLength = $("#logs").children().length;
 		if (childrenLength > 18) {
 			$("#logs").children().eq(0).remove();
 		}

@@ -67,7 +67,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Rest template.
 	 */
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
 	/**
 	 * Bitcoind hostname.
@@ -205,7 +205,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Manage authentication.
 	 *
-	 * @return requireed headers
+	 * @return required headers
 	 */
 	private HttpHeaders getHeaders() {
 		String auth = username + ":" + password;

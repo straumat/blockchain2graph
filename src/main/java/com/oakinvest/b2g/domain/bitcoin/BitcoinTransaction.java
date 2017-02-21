@@ -6,6 +6,7 @@ import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -90,12 +91,12 @@ public class BitcoinTransaction {
 	/**
 	 * Inputs.
 	 */
-	private Set<BitcoinTransactionInput> inputs = new HashSet<BitcoinTransactionInput>();
+	private Set<BitcoinTransactionInput> inputs = new HashSet<>();
 
 	/**
 	 * Outputs.
 	 */
-	private Set<BitcoinTransactionOutput> outputs = new HashSet<BitcoinTransactionOutput>();
+	private Set<BitcoinTransactionOutput> outputs = new HashSet<>();
 
 	/**
 	 * Returns the output according to the index.
@@ -103,8 +104,8 @@ public class BitcoinTransaction {
 	 * @param n index
 	 * @return output transaction
 	 */
-	public final BitcoinTransactionOutput getOutputByIndex(final int n) {
-		return getOutputs().stream().filter(o -> o.getN() == n).findAny().get();
+	public final Optional<BitcoinTransactionOutput> getOutputByIndex(final int n) {
+		return getOutputs().stream().filter(o -> o.getN() == n).findFirst();
 	}
 
 	/**
@@ -245,10 +246,10 @@ public class BitcoinTransaction {
 	/**
 	 * Setter of vSize.
 	 *
-	 * @param newvSize the vSize to set
+	 * @param newVSize the vSize to set
 	 */
-	public final void setvSize(final long newvSize) {
-		vSize = newvSize;
+	public final void setvSize(final long newVSize) {
+		vSize = newVSize;
 	}
 
 	/**

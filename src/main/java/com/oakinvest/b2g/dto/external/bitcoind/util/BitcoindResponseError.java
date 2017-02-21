@@ -55,7 +55,7 @@ public class BitcoindResponseError implements Serializable {
 	}
 
 	/**
-	 * Permet de retourner le message.
+	 * returns the response.
 	 *
 	 * @return message
 	 */

@@ -62,15 +62,15 @@ public class StatusHandler extends TextWebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
 
 	/**
+	 * Session.
+	 */
+	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+
+	/**
 	 * Status service.
 	 */
 	@Autowired
 	private StatusService status;
-
-	/**
-	 * Session.
-	 */
-	private CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
@@ -133,7 +133,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Update execution time statistic.
 	 *
-	 * @param executionTimeStatistic new excution time statistics.
+	 * @param executionTimeStatistic new execution time statistics.
 	 */
 	public final void updateExecutionTimeStatistic(final float executionTimeStatistic) {
 		JSONObject obj = new JSONObject();

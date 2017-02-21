@@ -36,19 +36,14 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 	public static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
-	 * Number of blocks to load in cache.
-	 */
-	public static final int NUMBER_OF_BLOCKS_TO_LOAD_IN_CACHE = 10;
-
-	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 100;
+	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 1000;
 
 	/**
 	 * Number of seconds before displaying threads statistics.
 	 */
-	public static final int TIME_BEFORE_DISSPLAYING_STATISTICS = 2;
+	public static final int SECONDS_BEFORE_DISPLAYING_STATISTICS = 2;
 
 	/**
 	 * Genesis transaction hash.
@@ -140,19 +135,19 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 	@SuppressWarnings("checkstyle:emptyforiteratorpad")
 	public final void importBitcoinBlock(final long blockHeight) throws ExecutionException, InterruptedException {
 		final long start = System.currentTimeMillis();
-		final String formatedBlockHeight = String.format("%08d", blockHeight);
+		final String fBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
-		status.addLog("Importing data of bitcoin block n°" + formatedBlockHeight);
+		status.addLog("Importing data of bitcoin block n°" + fBlockHeight);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Retrieve the block hash.
 		String blockHash = bds.getBlockHash(blockHeight).getResult();
 		if (blockHash != null) {
 			// Success.
-			status.addLog("Block n°" + formatedBlockHeight + " hash  is " + blockHash);
+			status.addLog("Block n°" + fBlockHeight + " hash  is " + blockHash);
 		} else {
 			// Error.
-			throw new RuntimeException("Error getting the hash of block n°" + formatedBlockHeight);
+			throw new RuntimeException("Error getting the hash of block n°" + fBlockHeight);
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -177,18 +172,16 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 				}
 
 				// Send a message to set the status.
-				status.addLog("Block n°" + formatedBlockHeight + " has " + transactionsHashs.size() + " transaction(s) and its id is " + block.getId());
+				status.addLog("Block n°" + fBlockHeight + " has " + transactionsHashs.size() + " transaction(s) and its id is " + block.getId());
 			} else {
 				// Error.
-				throw new RuntimeException("Error getting block n°" + formatedBlockHeight + " informations : " + blockResponse.getError());
+				throw new RuntimeException("Error getting block n°" + fBlockHeight + " informations : " + blockResponse.getError());
 			}
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Creating all the addresses in the vout of all transactions.
 		transactionsHashs.stream()
-				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
-				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
 				.forEach(t -> bds.getRawTransaction(t).getResult().getVout()
 						.stream().forEach(v -> v.getScriptPubKey().getAddresses()
 								.stream().filter(a -> a != null).forEach(a -> {
@@ -202,7 +195,7 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Creating a thread for every transaction we have in the block (using @async).
-		transactionTask.setEnvironnement(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
+		transactionTask.setEnvironment(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
 		HashMap<String, Future<BitcoinTransaction>> transactions = new HashMap<>();
 		if (block != null) {
 			int counter = 1;
@@ -237,9 +230,8 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 						// If it's done and it's null, an error occured.
 						transactionsImportedWithErrors++;
 						status.addLog("> Thread for transaction " + t.getKey() + " has an error");
-						// We launch again a transaction task.
-						String transactionHash = t.getKey();
-						transactions.put(transactionHash, transactionTask.createTransaction(transactionHash));
+						// We launch again a transaction task on this transaction hash.
+						transactions.put(t.getKey(), transactionTask.createTransaction(t.getKey()));
 					}
 				} else {
 					// If the transaction work is not yet done.
@@ -251,8 +243,8 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 			allTransactionsImported = (transactionsImportedWithoutError == transactionsHashs.size());
 
 			// If not has been imported, we log statics if we are already running for 2 secs.
-			if (!allTransactionsImported & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > TIME_BEFORE_DISSPLAYING_STATISTICS) {
-				status.addLog("Block n°" + formatedBlockHeight + " statistics on threads.");
+			if (!allTransactionsImported & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > SECONDS_BEFORE_DISPLAYING_STATISTICS) {
+				status.addLog("Block n°" + fBlockHeight + " statistics on threads.");
 				status.addLog(transactionsImportedWithoutError + " transaction(s) without errors");
 				status.addLog(transactionsImportedWithErrors + " transaction(s) with errors");
 				status.addLog(transactionsNotYetImported + " transaction(s) not yet imported");
@@ -265,17 +257,17 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 				}
 			}
 		}
-		status.addLog("Block n°" + formatedBlockHeight + " : all threads treating transactions are done.");
+		status.addLog("Block n°" + fBlockHeight + " : all threads treating transactions are done.");
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Saving block and its relations woth tasks.
-		block.setIntegrated(true);
+		block.setImported(allTransactionsImported);
 		bbr.save(block);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// Sending a message saying that all worked fine and making some statistics.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-		status.addLog("Block " + formatedBlockHeight + " treated in " + elapsedTime + " secs");
+		status.addLog("Block " + fBlockHeight + " treated in " + elapsedTime + " secs");
 		status.addExecutionTimeStatistic(elapsedTime);
 	}
 

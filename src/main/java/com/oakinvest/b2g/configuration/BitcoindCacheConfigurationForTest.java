@@ -61,22 +61,22 @@ public class BitcoindCacheConfigurationForTest {
 	/**
 	 * getblock directory.
 	 */
-	private File getBlockDirectory = new File(GET_BLOCK_CACHE_DIRECTORY);
+	private final File getBlockDirectory = new File(GET_BLOCK_CACHE_DIRECTORY);
 
 	/**
 	 * getblockcount directory.
 	 */
-	private File getBlockCountDirectory = new File(GET_BLOCK_COUNT_CACHE_DIRECTORY);
+	private final File getBlockCountDirectory = new File(GET_BLOCK_COUNT_CACHE_DIRECTORY);
 
 	/**
 	 * getBlockHash directory.
 	 */
-	private File getBlockHashDirectory = new File(GET_BLOCK_HASH_CACHE_DIRECTORY);
+	private final File getBlockHashDirectory = new File(GET_BLOCK_HASH_CACHE_DIRECTORY);
 
 	/**
 	 * getRawTransaction directory.
 	 */
-	private File getRawTransactionDirectory = new File(GET_RAW_TRANSACTION_CACHE_DIRECTORY);
+	private final File getRawTransactionDirectory = new File(GET_RAW_TRANSACTION_CACHE_DIRECTORY);
 
 	/**
 	 * Default constructor.

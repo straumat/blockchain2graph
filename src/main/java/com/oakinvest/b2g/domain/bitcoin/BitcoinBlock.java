@@ -31,7 +31,7 @@ public class BitcoinBlock {
 	 * Transactions in the block.
 	 */
 	@Relationship(type = "TRANSACTIONS")
-	private Set<BitcoinTransaction> transactions = new HashSet<BitcoinTransaction>();
+	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
 	 * Block height.
@@ -106,11 +106,10 @@ public class BitcoinBlock {
 	private String nextBlockHash;
 
 	/**
-	 * Indicates that the bloc is fully integrated.
+	 * Indicates that the bloc is fully imported.
 	 */
-	// TODO Rename for a better word.
-	@Property(name = "integrated")
-	private boolean integrated = false;
+	@Property(name = "imported")
+	private boolean imported = false;
 
 	/**
 	 * For display.
@@ -394,21 +393,21 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété integrated.
+	 * Getter of imported.
 	 *
-	 * @return integrated
+	 * @return imported
 	 */
-	public final boolean isIntegrated() {
-		return integrated;
+	public final boolean isImported() {
+		return imported;
 	}
 
 	/**
-	 * Setter de la propriété integrated.
+	 * Setter of imported.
 	 *
-	 * @param newIntegrated the integrated to set
+	 * @param newImported the imported to set
 	 */
-	public final void setIntegrated(final boolean newIntegrated) {
-		integrated = newIntegrated;
+	public final void setImported(final boolean newImported) {
+		imported = newImported;
 	}
 
 	/**

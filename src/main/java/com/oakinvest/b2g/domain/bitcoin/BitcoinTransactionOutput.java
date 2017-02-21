@@ -66,13 +66,13 @@ public class BitcoinTransactionOutput {
 	 * Adresses.
 	 */
 	@Property(name = "addresses")
-	private Set<String> addresses = new HashSet<String>();
+	private Set<String> addresses = new HashSet<>();
 
 	/**
 	 * Adresses.
 	 */
 	@Relationship(type = "FOR_ADDRESS")
-	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<BitcoinAddress>();
+	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<>();
 
 	@Override
 	public final String toString() {

@@ -22,7 +22,7 @@ public interface BitcoinImportService {
 	 * @throws InterruptedException exception
 	 * @throws ExecutionException   exception
 	 */
-	// TODO Are execptions usefull ?
+	// TODO Are exceptions useful ?
 	void importBitcoinBlock(long blockHeight) throws ExecutionException, InterruptedException;
 
 }

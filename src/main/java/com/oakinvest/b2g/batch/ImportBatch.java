@@ -21,7 +21,7 @@ public class ImportBatch {
 	/**
 	 * Initial delay before first bitcoin import.
 	 */
-	public static final int BITCOIN_IMPORT_INITIAL_DELAY = 1000;
+	private static final int BITCOIN_IMPORT_INITIAL_DELAY = 1000;
 
 	/**
 	 * Interval between bitcoin import calls.
@@ -40,7 +40,7 @@ public class ImportBatch {
 	private BitcoindService bds;
 
 	/**
-	 * Bitcoin blcok repository.
+	 * Bitcoin block repository.
 	 */
 	@Autowired
 	private BitcoinBlockRepository bbr;
@@ -65,19 +65,18 @@ public class ImportBatch {
 		log.info("Batch being called");
 
 		// Retrieving data & status update.
-		final long importedBlockCount = bbr.count();
+		final long lastImportedBlock = bbr.count();
 		final long totalBlockCount = bds.getBlockCount().getResult();
-		status.setImportedBlockCount(importedBlockCount);
+		status.setImportedBlockCount(lastImportedBlock);
 		status.setTotalBlockCount(totalBlockCount);
 
 		// Block designation.
-		final long lastImportedBlock = importedBlockCount;
 		final long blockToImport = lastImportedBlock + 1;
 		final long blockToCache = blockToImport + 1;
 
 		// Check if the last block has been fully integrated. If not, we re integrate it.
 		BitcoinBlock b = bbr.findByHeight(lastImportedBlock);
-		if (b != null && !b.isIntegrated()) {
+		if (b != null && !b.isImported()) {
 			try {
 				is.importBitcoinBlock(lastImportedBlock);
 			} catch (Exception e) {
@@ -92,7 +91,7 @@ public class ImportBatch {
 			}
 
 			// If there is a block available to import, let's import it !
-			if (importedBlockCount < totalBlockCount) {
+			if (lastImportedBlock < totalBlockCount) {
 				try {
 					is.importBitcoinBlock(blockToImport);
 				} catch (Exception e) {

@@ -39,7 +39,7 @@ public class IntegrationServiceTest {
 	private BitcoinImportService is;
 
 	/**
-	 * Bitcoin blcok repository.
+	 * Bitcoin block repository.
 	 */
 	@Autowired
 	private BitcoinBlockRepository bbr;
@@ -109,7 +109,7 @@ public class IntegrationServiceTest {
 		final long expectedTransactionSize = 275;
 		final long expectedTransactionVSize = 275;
 		final long expectedTransactionVersion = 1;
-		final long exepctedTransactionLocktime = 0;
+		final long expectedTransactionLockTime = 0;
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedTransactionTime = 1231731025;
 		final long expectedTransactionBlockTime = 1231731025;
@@ -119,9 +119,9 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong Tx id", expectedTransactionTxid, t.getTxId());
 		assertEquals("Wrong hash", expectedTransactionHash, t.getHash());
 		assertEquals("Wrong size", expectedTransactionSize, t.getSize());
-		assertEquals("Wrong vsize", expectedTransactionVSize, t.getvSize());
+		assertEquals("Wrong vSize", expectedTransactionVSize, t.getvSize());
 		assertEquals("Wrong version", expectedTransactionVersion, t.getVersion());
-		assertEquals("Wrong locktime", exepctedTransactionLocktime, t.getLockTime());
+		assertEquals("Wrong lockTime", expectedTransactionLockTime, t.getLockTime());
 		assertEquals("Wrong block hash", expectedBlockHash, t.getBlockHash());
 		assertEquals("Wrong time", expectedTransactionTime, t.getTime());
 		assertEquals("Wrong block time", expectedTransactionBlockTime, t.getBlockTime());
@@ -140,7 +140,7 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong vin1 sequence", expectedVin1Sequence, vin1.getSequence());
 
 		// VOut 1.
-		BitcoinTransactionOutput vout1 = t.getOutputByIndex(0);
+		BitcoinTransactionOutput vout1 = t.getOutputByIndex(0).get();
 		final float expectedVout1Value = 10;
 		final int expectedVout1N = 0;
 		final String expectedVout1ScriptPubKeyAsm = "04ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84c OP_CHECKSIG";
@@ -157,7 +157,7 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong vout1 address", expectedVout1ScriptPubKeyAddress, vout1.getAddresses().iterator().next());
 
 		// VOut 2.
-		BitcoinTransactionOutput vout2 = t.getOutputByIndex(1);
+		BitcoinTransactionOutput vout2 = t.getOutputByIndex(1).get();
 		final float expectedVout2Value = 40;
 		final int expectedVout2N = 1;
 		final String expectedVout2ScriptPubKeyAsm = "0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3 OP_CHECKSIG";
@@ -189,7 +189,7 @@ public class IntegrationServiceTest {
 		is.importBitcoinBlock(lastBlockToImport);
 		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
 
-		// testing relationsships between blocks and transactions.
+		// testing relationships between blocks and transactions.
 		assertEquals("Wrong block for the transaction", expectedBlockHash, t.getBlock().getHash());
 		assertEquals("Wrong transactions number for the block", 2, b.getTransactions().size());
 

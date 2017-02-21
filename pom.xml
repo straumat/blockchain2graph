@@ -72,7 +72,7 @@
 		<maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
 		<maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
 		<jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
-		<jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 
 		<!-- Java lib -->
 		<neo4j-embedded-driver.version>2.0.5</neo4j-embedded-driver.version>
