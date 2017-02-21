@@ -46,6 +46,11 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 100;
 
 	/**
+	 * Number of seconds before displaying threads statistics.
+	 */
+	public static final int TIME_BEFORE_DISSPLAYING_STATISTICS = 2;
+
+	/**
 	 * Genesis transaction hash.
 	 */
 	private static final String GENESIS_BLOCK_TRANSACTION_HASH_1 = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098";
@@ -214,13 +219,6 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 		// Waiting for all the transactions to be imported.
 		boolean allTransactionsImported = false;
 		while (!allTransactionsImported) {
-			// And we wait a bit to let time for the threads to finish before testing again.
-			try {
-				Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
 			// Statistics.
 			int transactionsImportedWithoutError = 0;
 			int transactionsImportedWithErrors = 0;
@@ -252,12 +250,19 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 			// Everything is imported if all the transactions are imported without errors.
 			allTransactionsImported = (transactionsImportedWithoutError == transactionsHashs.size());
 
-			// If not has been imported, we log statics.
-			if (!allTransactionsImported) {
+			// If not has been imported, we log statics if we are already running for 2 secs.
+			if (!allTransactionsImported & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > TIME_BEFORE_DISSPLAYING_STATISTICS) {
 				status.addLog("Block n°" + formatedBlockHeight + " statistics on threads.");
 				status.addLog(transactionsImportedWithoutError + " transaction(s) without errors");
 				status.addLog(transactionsImportedWithErrors + " transaction(s) with errors");
 				status.addLog(transactionsNotYetImported + " transaction(s) not yet imported");
+
+				// And we wait a bit to let time for the threads to finish before testing again.
+				try {
+					Thread.sleep(PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		status.addLog("Block n°" + formatedBlockHeight + " : all threads treating transactions are done.");

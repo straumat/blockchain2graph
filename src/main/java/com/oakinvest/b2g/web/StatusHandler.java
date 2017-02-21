@@ -157,8 +157,8 @@ public class StatusHandler extends TextWebSocketHandler {
 				}
 			}
 			this.sessions.removeAll(sessionsToRemove);
-			// Then we send the messages to all opened sessions.
 
+			// Then we send the messages to all opened sessions.
 			for (WebSocketSession session : this.sessions) {
 				synchronized (session) {
 					if (session.isOpen()) {

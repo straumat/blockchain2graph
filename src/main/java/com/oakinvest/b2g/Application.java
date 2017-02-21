@@ -85,10 +85,10 @@ public class Application extends SpringBootServletInitializer {
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Create unique constraints in neo4j for blocks, transactions, addresses.
-		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinBlock) ASSERT t.height IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinBlock) ASSERT t.hash IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinTransaction) ASSERT t.txid IS UNIQUE", EMPTY_MAP);
-		neo4jOperations.query("CREATE CONSTRAINT ON (t:BitcoinAddress) ASSERT t.address IS UNIQUE", EMPTY_MAP);
+		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", EMPTY_MAP);
+		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", EMPTY_MAP);
+		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", EMPTY_MAP);
+		neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", EMPTY_MAP);
 	}
 
 }

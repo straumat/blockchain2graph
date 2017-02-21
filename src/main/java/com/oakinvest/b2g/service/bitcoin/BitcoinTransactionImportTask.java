@@ -113,6 +113,10 @@ public class BitcoinTransactionImportTask {
 						if (vin.getTxId() != null) {
 							// Not coinbase. We retrieve the original transaction.
 							BitcoinTransactionOutput originTransactionOutput = btr.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+							if (originTransactionOutput == null) {
+								log.error("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+								return new AsyncResult<>(null);
+							}
 							vin.setTransactionOutput(originTransactionOutput);
 
 							// We set the addresses "from" if it's not a coinbase transaction.
