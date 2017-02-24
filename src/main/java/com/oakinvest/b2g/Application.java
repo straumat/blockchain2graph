@@ -10,11 +10,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.template.Neo4jOperations;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 
@@ -27,8 +25,6 @@ import static java.util.Collections.EMPTY_MAP;
  */
 @SpringBootApplication
 @EnableNeo4jRepositories
-@EnableTransactionManagement
-@EnableCaching
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 

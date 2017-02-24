@@ -1,7 +1,5 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * Integrates blockchain data into the database.
  * Created by straumat on 04/09/16.
@@ -20,9 +18,9 @@ public interface BitcoinImportService {
 	 *
 	 * @param blockHeight block number
 	 * @throws InterruptedException exception
-	 * @throws ExecutionException   exception
+	 * @throws Exception            exception
 	 */
 	// TODO Are exceptions useful ?
-	void importBitcoinBlock(long blockHeight) throws ExecutionException, InterruptedException;
+	void importBitcoinBlock(long blockHeight) throws Exception;
 
 }

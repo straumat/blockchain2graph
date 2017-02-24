@@ -4,6 +4,7 @@ import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.util.BitcoindResponseError;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Bitcoind cache service for tests.
@@ -27,6 +29,32 @@ import java.io.ObjectOutputStream;
 @Aspect
 @Profile("test")
 public class BitcoindCacheConfigurationForTest {
+
+	/**
+	 * Block in error.
+	 */
+	public static final int BLOCK_IN_ERROR_1 = 496;
+
+	/**
+	 * Block hash in error.
+	 */
+	public static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
+
+	/**
+	 * Non existing block.
+	 */
+	public static final int NON_EXISTING_BLOCK = 1000000;
+
+	/**
+	 * Non existing block hash.
+	 */
+	public static final String NON_EXISTING_BLOCK_HASH = "NON_EXISTING_HASH";
+
+
+	/**
+	 * Number of errors.
+	 */
+	public static final int NUMBER_OF_ERRORS = 8;
 
 	/**
 	 * bitcoind directory.
@@ -79,6 +107,21 @@ public class BitcoindCacheConfigurationForTest {
 	private final File getRawTransactionDirectory = new File(GET_RAW_TRANSACTION_CACHE_DIRECTORY);
 
 	/**
+	 * getBlockHash errors.
+	 */
+	private int getBlockHashErrors = 0;
+
+	/**
+	 * getBlock errors.
+	 */
+	private int getBlockErrors = 0;
+
+	/**
+	 * getRawTransaction errors.
+	 */
+	private int getRawTransactionErrors = 0;
+
+	/**
 	 * Default constructor.
 	 */
 	public BitcoindCacheConfigurationForTest() {
@@ -129,6 +172,20 @@ public class BitcoindCacheConfigurationForTest {
 		} else {
 			gbcr = (GetBlockCountResponse) loadObjectFromFile(response);
 		}
+
+		// We will generate an error on a random basis.
+		final int randomStart = 0;
+		final int randomEnd = 100;
+		int randomNumber = ThreadLocalRandom.current().nextInt(randomStart, randomEnd);
+		if (randomNumber == 1) {
+			// We create an error.
+			BitcoindResponseError error = new BitcoindResponseError();
+			error.setCode(0);
+			error.setMessage("Mock error on getBlockCount");
+			gbcr.setResult(0);
+			gbcr.setError(error);
+		}
+
 		return gbcr;
 	}
 
@@ -141,11 +198,19 @@ public class BitcoindCacheConfigurationForTest {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
-	public final Object getBlockHash(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
+	@SuppressWarnings("checkstyle:finalparameters")
+	public final Object getBlockHash(final ProceedingJoinPoint pjp, long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse gbhr;
-		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeight + ".ser");
+
+		// Simulate error on a specific bloc.
+		if (blockHeight == BLOCK_IN_ERROR_1 && getBlockHashErrors < NUMBER_OF_ERRORS) {
+			blockHeight = NON_EXISTING_BLOCK;
+			getBlockHashErrors++;
+		}
+
 		// if the file doesn't exists, we call the bitcoind server and save the file.
+		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeight + ".ser");
 		if (!response.exists()) {
 			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ blockHeight });
 			writeObjectToFile(getBlockHashDirectory.getPath(), "response-" + blockHeight + ".ser", gbhr);
@@ -164,11 +229,19 @@ public class BitcoindCacheConfigurationForTest {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
-	public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
+	@SuppressWarnings("checkstyle:finalparameters")
+	public final Object getBlock(final ProceedingJoinPoint pjp, String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
 		GetBlockResponse gbr;
-		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHash + ".ser");
+
+		// Simulate error on a specific bloc.
+		if (blockHash == BLOCK_HASH_IN_ERROR_1 && getBlockErrors < NUMBER_OF_ERRORS) {
+			blockHash = NON_EXISTING_BLOCK_HASH;
+			getBlockErrors++;
+		}
+
 		// if the file doesn't exists, we call the bitcoind server and save the file.
+		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHash + ".ser");
 		if (!response.exists()) {
 			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ blockHash });
 			writeObjectToFile(getBlockDirectory.getPath(), "response-" + blockHash + ".ser", gbr);

@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
@@ -29,6 +30,26 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 public class BitcoindServiceTest {
+
+	/**
+	 * Number of errors.
+	 */
+	public static final int NUMBER_OF_ERRORS = 8;
+
+	/**
+	 * Block in error.
+	 */
+	public static final int BLOCK_IN_ERROR_1 = 496;
+
+	/**
+	 * Block hash in error.
+	 */
+	public static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
+
+	/**
+	 * Number of blocks.
+	 */
+	private static final int NUMBER_OF_BLOCKS = 500;
 
 	/**
 	 * Double delta acceptable for assertEquals.
@@ -77,6 +98,24 @@ public class BitcoindServiceTest {
 	}
 
 	/**
+	 * getBlockCountTest test in error.
+	 * It happends randomely so this test may fail.
+	 */
+	@Test
+	public final void getBlockCountTestInError() {
+		boolean errorFound = false;
+		GetBlockCountResponse r = bds.getBlockCount();
+		assertNull(r.getError());
+		for (int i = 0; i < NUMBER_OF_BLOCKS + 1; i++) {
+			if (bds.getBlockCount().getError() != null) {
+				errorFound = true;
+				break;
+			}
+		}
+		assertTrue("bds.getBlockCount() never raised an error", errorFound);
+	}
+
+	/**
 	 * getBlockHash test.
 	 */
 	@Test
@@ -84,6 +123,19 @@ public class BitcoindServiceTest {
 		GetBlockHashResponse r = bds.getBlockHash(BLOCK_NUMBER_VALID);
 		assertNull("An error occurred", r.getError());
 		assertEquals("getblockhash did not give the right answer", BLOCK_HASH, r.getResult());
+	}
+
+	/**
+	 * getBlockHash test in error.
+	 */
+	@Test
+	public final void getBlockHashTestInError() {
+		GetBlockHashResponse r = bds.getBlockHash(BLOCK_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getBlockHash(BLOCK_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
 	}
 
 	/**
@@ -119,6 +171,19 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong chain work", "00000000000000000000000000000000000000000024f53caa84da5b8101b580", r.getChainwork());
 		assertEquals("Wrong previous block hash", "0000000000000000034a9b379481e41e935165dd32b39c69cb46591678b7eaa8", r.getPreviousblockhash());
 		assertEquals("Wrong next block hash", "0000000000000000029c774f0f83bff2f2a2418040e775b5d3237d23382e2cf0", r.getNextblockhash());
+	}
+
+	/**
+	 * getBlockTest test in error.
+	 */
+	@Test
+	public final void getBlockTestInError() {
+		GetBlockResponse r = bds.getBlock(BLOCK_HASH_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getBlock(BLOCK_HASH_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
 	}
 
 	/**
@@ -255,7 +320,6 @@ public class BitcoindServiceTest {
 		GetRawTransactionResult r = bds.getRawTransaction(invalidTransaction).getResult();
 		assertNotNull(r.getVout().get(1).getScriptPubKey().getAddresses());
 	}
-
 
 	/**
 	 * Testing error management.

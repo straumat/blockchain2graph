@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -38,12 +37,12 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 1000;
+	public static final int PAUSE_BETWEEN_TRANSACTIONS_THREADS_CHECK = 5000;
 
 	/**
 	 * Number of seconds before displaying threads statistics.
 	 */
-	public static final int SECONDS_BEFORE_DISPLAYING_STATISTICS = 2;
+	public static final int SECONDS_BEFORE_DISPLAYING_STATISTICS = 5;
 
 	/**
 	 * Genesis transaction hash.
@@ -133,7 +132,7 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 	 */
 	@Override
 	@SuppressWarnings("checkstyle:emptyforiteratorpad")
-	public final void importBitcoinBlock(final long blockHeight) throws ExecutionException, InterruptedException {
+	public final void importBitcoinBlock(final long blockHeight) throws Exception {
 		final long start = System.currentTimeMillis();
 		final String fBlockHeight = String.format("%08d", blockHeight);
 		status.addLog("--------------------------------------------------------------------------------");
@@ -147,7 +146,7 @@ public class BitcoinImportServiceImplementation implements BitcoinImportService 
 			status.addLog("Block n°" + fBlockHeight + " hash  is " + blockHash);
 		} else {
 			// Error.
-			throw new RuntimeException("Error getting the hash of block n°" + fBlockHeight);
+			throw new Exception("Error getting the hash of block n°" + fBlockHeight);
 		}
 
 		// -------------------------------------------------------------------------------------------------------------
