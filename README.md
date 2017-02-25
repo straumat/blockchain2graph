@@ -13,3 +13,37 @@ The documentation can be found [here](https://github.com/straumat/blockchain2gra
 Blockchain2graph is released under version 3.0 of the [GNU General Public Licence](https://github.com/straumat/blockchain2graph/blob/master/LICENSE).
 
 ![blockchain2graph console log](https://raw.githubusercontent.com/straumat/blockchain2graph/gh-pages/images/b2g-console-screenshot.png)
+
+
+# Building and Running with docker
+
+You can easily launch a standalone version for test purpose with docker-compose script provided.
+3 containers are provided and link together : 
+  - Neo4j
+  - Bitcoind
+  - Blockchain2graph app
+  
+You need to first install Docker and Docker Compose with official documentation : 
+  - [Docker Installation](https://docs.docker.com/engine/installation/)
+  - [Docker Compose Installation](https://docs.docker.com/compose/install/)
+  
+Then you can build Blockchain2graph with maven : 
+
+` maven install docker:build`
+
+And launch all 3 apps :
+
+` docker-compose up -d`
+
+_The first time you launch Neo4j,_ you need to change default password by connecting to http://localhost:7474/ 
+and log as neo4j / neo4j. You can set new password to neo4j123 to match docker-compose environment variable and restart app :
+
+` docker-compose restart app`
+
+Blockchain2graph is now available at `http://localhost:8080/`
+
+If you want to view realtime logs :
+
+` docker-compose logs -f`
+
+Note : Bitcoin and Neo4j data are store in data folder.
