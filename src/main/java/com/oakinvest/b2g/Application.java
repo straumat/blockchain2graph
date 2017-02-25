@@ -1,8 +1,8 @@
 package com.oakinvest.b2g;
 
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class Application extends SpringBootServletInitializer {
 	@PostConstruct
 	public final void initApplication() {
 		// Update status.
-		status.setImportedBlockCount(bbr.count());
+		status.setImportedBlockCount(bbr.countImported());
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Create unique constraints in neo4j for blocks, transactions, addresses.

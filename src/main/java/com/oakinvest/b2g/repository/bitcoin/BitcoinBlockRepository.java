@@ -20,6 +20,14 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	long count();
 
 	/**
+	 * Count the number of blocks imported.
+	 *
+	 * @return number of blocks completely imported
+	 */
+	@Query("MATCH (b:BitcoinBlock) WHERE b.imported = true return count(*)")
+	int countImported();
+
+	/**
 	 * Find a block by its height.
 	 *
 	 * @param height height
@@ -50,5 +58,13 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	 */
 	@Query("MATCH (b:BitcoinBlock) WHERE b.addressesImported = true and b.transactionsImported = false RETURN b order by b.height limit 1")
 	BitcoinBlock findFirstBlockWithoutTransactions();
+
+	/**
+	 * Find the first block without relations imported.
+	 *
+	 * @return block
+	 */
+	@Query("MATCH (b:BitcoinBlock) WHERE b.addressesImported = true and b.transactionsImported = true and b.relationsImported = false RETURN b order by b.height limit 1")
+	BitcoinBlock findFirstBlockWithoutRelations();
 
 }

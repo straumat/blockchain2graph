@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.configuration;
 
-import com.oakinvest.b2g.service.bitcoin.BitcoinTransactionImportTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;

@@ -1,14 +1,15 @@
 package com.oakinvest.b2g.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +133,6 @@ public class BitcoinImportBatch {
 	 */
 	@Autowired
 	private BitcoinImportBatchTransactionTask importTransactionTask;
-
 
 	/**
 	 * Import a block on the database.
@@ -401,8 +401,41 @@ public class BitcoinImportBatch {
 	 * Import the relations of a block in the datbase.
 	 */
 	@Scheduled(initialDelay = BLOCK_RELATIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	public void importBlockRelations() {
+	public final void importBlockRelations() {
+		final long start = System.currentTimeMillis();
+		// Block to import.
+		final BitcoinBlock blockToTreat = bbr.findFirstBlockWithoutRelations();
+		ArrayList<String> transactionsHashs = new ArrayList<>();
 
+		// -------------------------------------------------------------------------------------------------------------
+		// If there is a block to work on.
+		if (blockToTreat != null) {
+			// ---------------------------------------------------------------------------------------------------------
+			// Getting the block informations.
+			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
+			if (blockResponse.getError() == null) {
+				// -----------------------------------------------------------------------------------------------------
+				// Setting the relationship between blocks and transactions.
+				blockResponse.getResult().getTx().stream()
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+						.forEach(t -> {
+							BitcoinTransaction bt = btr.findByTxId(t);
+							bt.setBlock(blockToTreat);
+							blockToTreat.getTransactions().add(bt);
+						});
+
+			} else {
+				// Error while retrieving the block informations.
+				status.addError("importBlockRelations : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+			}
+			// We update the block to say everything went fine.
+			blockToTreat.setRelationsImported(true);
+			blockToTreat.setImported(true);
+			bbr.save(blockToTreat);
+			status.addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " : block completed.");
+			status.setImportedBlockCount(blockToTreat.getHeight());
+		}
 	}
 
 }

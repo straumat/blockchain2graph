@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service.bitcoin;
+package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;

@@ -2,6 +2,7 @@ package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.BitcoinImportBatch;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
@@ -9,7 +10,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoinImportService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +74,7 @@ public class BitcoinImportTest {
 	@Before
 	public void setUp() throws Exception {
 		// Launching import.
-		while (bbr.count() < NUMBERS_OF_BLOCK_TO_IMPORT + 100) {
+		while (bbr.countImported() <= NUMBERS_OF_BLOCK_TO_IMPORT) {
 			batch.importBlock();
 			batch.importBlockAddresses();
 			batch.importBlockTransactions();
@@ -212,9 +212,13 @@ public class BitcoinImportTest {
 	 * @throws InterruptedException if not able to suspend time.
 	 */
 	@Test
-	public final void integrateBitcoinBlockTest() throws Exception {
+	public final void importBlockRelationsTest() throws Exception {
+		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
+		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+		final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
+		BitcoinBlock b = bbr.findByHash(expectedHash);
+		BitcoinTransaction t = btr.findByTxId(transactionHash);
 
-		/*
 		// testing relationships between blocks and transactions.
 		assertEquals("Wrong block for the transaction", expectedBlockHash, t.getBlock().getHash());
 		assertEquals("Wrong transactions number for the block", 2, b.getTransactions().size());
@@ -271,7 +275,6 @@ public class BitcoinImportTest {
 		BitcoinAddress a3 = bar.findByAddress("1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW");
 		assertEquals("No coinbase transaction found", 1, a3.getDeposits().size());
 		assertEquals("Wrong coinbase about", 50f, a3.getDeposits().stream().findFirst().get().getValue());
-*/
 	}
 
 }

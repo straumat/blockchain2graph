@@ -159,7 +159,7 @@ public class BitcoindCacheConfigurationForTest {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockCount())")
+	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockCount())")
 	public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
 		log.debug("Using cache for getBlockCount()");
 		GetBlockCountResponse gbcr;
@@ -207,7 +207,7 @@ public class BitcoindCacheConfigurationForTest {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
+	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockHash(..)) && args(blockHeight)")
 	@SuppressWarnings("checkstyle:finalparameters")
 	public final Object getBlockHash(final ProceedingJoinPoint pjp, long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
@@ -238,7 +238,7 @@ public class BitcoindCacheConfigurationForTest {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
+	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlock(..)) && args(blockHash)")
 	@SuppressWarnings("checkstyle:finalparameters")
 	public final Object getBlock(final ProceedingJoinPoint pjp, String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
@@ -269,7 +269,7 @@ public class BitcoindCacheConfigurationForTest {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
+	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
 	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse grtr;

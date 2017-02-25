@@ -118,6 +118,12 @@ public class BitcoinBlock {
 	private boolean transactionsImported = false;
 
 	/**
+	 * Relations imported.
+	 */
+	@Property(name = "relationsImported")
+	private boolean relationsImported = false;
+
+	/**
 	 * Indicates that the bloc is fully imported.
 	 */
 	@Property(name = "imported")
@@ -456,6 +462,24 @@ public class BitcoinBlock {
 	 */
 	public final void setTransactionsImported(final boolean newTransactionsImported) {
 		transactionsImported = newTransactionsImported;
+	}
+
+	/**
+	 * Getter de la propriété relationsImported.
+	 *
+	 * @return relationsImported
+	 */
+	public final boolean isRelationsImported() {
+		return relationsImported;
+	}
+
+	/**
+	 * Setter de la propriété relationsImported.
+	 *
+	 * @param newRelationsImported the relationsImported to set
+	 */
+	public final void setRelationsImported(final boolean newRelationsImported) {
+		relationsImported = newRelationsImported;
 	}
 
 	/**
