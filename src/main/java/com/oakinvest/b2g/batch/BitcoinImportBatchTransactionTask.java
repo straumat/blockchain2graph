@@ -94,11 +94,10 @@ public class BitcoinImportBatchTransactionTask {
 		BitcoinTransaction transaction = btr.findByTxId(transactionHash);
 		if (transaction != null) {
 			// If the transaction already exists in the database, we return it.
-			log.info("Transaction " + transactionHash + " is already in the database");
+			log.info("importBlockTransactions : Transaction " + transactionHash + " already saved with id " + transaction.getId());
 			return new AsyncResult<>(true);
 		} else {
 			// If the transaction is not in the database, we create it.
-			log.info("Transaction " + transactionHash + " is not in the database. Creating it");
 			GetRawTransactionResponse transactionResponse = bds.getRawTransaction(transactionHash);
 			if (transactionResponse.getError() == null) {
 				// Success.
@@ -118,9 +117,9 @@ public class BitcoinImportBatchTransactionTask {
 								vin.setTransactionOutput(originTransactionOutput.get());
 								// We set the addresses "from" if it's not a coinbase transaction.
 								originTransactionOutput.get().getAddresses().forEach(a -> (bar.findByAddress(a)).getWithdrawals().add(vin));
-								log.info(">> Done treating vin : " + vin);
+								log.info("importBlockTransactions : Done treating vin : " + vin);
 							} else {
-								log.error("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+								status.addError("importBlockTransactions : Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 								return new AsyncResult<>(false);
 							}
 						}
@@ -132,21 +131,21 @@ public class BitcoinImportBatchTransactionTask {
 						BitcoinTransactionOutput vout = vouts.next();
 						vout.setTransaction(bt);
 						vout.getAddresses().forEach(a -> (bar.findByAddress(a)).getDeposits().add(vout));
-						log.info(">> Done treating vout : " + vout);
+						log.info("importBlockTransactions : Done treating vout : " + vout);
 					}
 
 					// Saving the transaction.
 					btr.save(bt);
-					status.addLog("> Transaction " + transactionHash + " created with id " + bt.getId());
+					status.addLog("importBlockTransactions : Transaction " + transactionHash + " created with id " + bt.getId());
 					return new AsyncResult<>(true);
 				} catch (Exception e) {
-					status.addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
+					status.addError("importBlockTransactions : Error treating transaction " + transactionHash + " : " + e.getMessage());
 					e.printStackTrace();
 					return new AsyncResult<>(false);
 				}
 			} else {
 				// Error.
-				status.addError("Error in calling getrawtransaction on " + transactionHash + " : " + transactionResponse.getError());
+				status.addError("importBlockTransactions : Error in calling getrawtransaction on " + transactionHash + " : " + transactionResponse.getError());
 				return new AsyncResult<>(false);
 			}
 		}

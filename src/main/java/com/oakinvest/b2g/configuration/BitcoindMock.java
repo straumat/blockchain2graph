@@ -28,32 +28,42 @@ import java.util.concurrent.ThreadLocalRandom;
 @Configuration
 @Aspect
 @Profile("test")
-public class BitcoindCacheConfigurationForTest {
-
-	/**
-	 * Block in error.
-	 */
-	public static final int BLOCK_IN_ERROR_1 = 496;
-
-	/**
-	 * Block hash in error.
-	 */
-	public static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
-
-	/**
-	 * Non existing block.
-	 */
-	public static final int NON_EXISTING_BLOCK = 1000000;
-
-	/**
-	 * Non existing block hash.
-	 */
-	public static final String NON_EXISTING_BLOCK_HASH = "NON_EXISTING_HASH";
+public class BitcoindMock {
 
 	/**
 	 * Number of errors.
 	 */
-	public static final int NUMBER_OF_ERRORS = 8;
+	private static final int NUMBER_OF_ERRORS = 8;
+
+	/**
+	 * Block in error.
+	 */
+	private static final int BLOCK_IN_ERROR_1 = 496;
+
+	/**
+	 * Block hash in error.
+	 */
+	private static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
+
+	/**
+	 * Transaction hash in error.
+	 */
+	private static final String TRANSACTION_HASH_IN_ERROR_1 = "bc15f9dcbe637c187bb94247057b14637316613630126fc396c22e08b89006ea";
+
+	/**
+	 * Non existing block.
+	 */
+	private static final int NON_EXISTING_BLOCK = 1000000;
+
+	/**
+	 * Non existing block hash.
+	 */
+	private static final String NON_EXISTING_BLOCK_HASH = "NON_EXISTING_BLOCK_HASH";
+
+	/**
+	 * Non existing transaction hash.
+	 */
+	private static final String NON_EXISTING_TRANSACTION_HASH = "NON_EXISTING_TRANSACTION_HASH";
 
 	/**
 	 * bitcoind directory.
@@ -83,7 +93,7 @@ public class BitcoindCacheConfigurationForTest {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoindCacheConfigurationForTest.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoindMock.class);
 
 	/**
 	 * getblock directory.
@@ -123,7 +133,7 @@ public class BitcoindCacheConfigurationForTest {
 	/**
 	 * Default constructor.
 	 */
-	public BitcoindCacheConfigurationForTest() {
+	public BitcoindMock() {
 		final File bitcoindDirectory = new File(BITCOIND_CACHE_DIRECTORY);
 		if (!bitcoindDirectory.exists()) {
 			if (!bitcoindDirectory.mkdir()) {
@@ -150,6 +160,15 @@ public class BitcoindCacheConfigurationForTest {
 				log.error("Impossible to create " + getRawTransactionDirectory.getAbsolutePath());
 			}
 		}
+	}
+
+	/**
+	 * Reset errors counter.
+	 */
+	public void resetErrorCounters() {
+		getBlockHashErrors = 0;
+		getBlockErrors = 0;
+		getRawTransactionErrors = 0;
 	}
 
 	/**
@@ -270,9 +289,17 @@ public class BitcoindCacheConfigurationForTest {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
-	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
+	@SuppressWarnings("checkstyle:finalparameters")
+	public final Object getRawTransaction(final ProceedingJoinPoint pjp, String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse grtr;
+
+		// Simulate error on a specific bloc.
+		if (transactionHash == TRANSACTION_HASH_IN_ERROR_1 && getRawTransactionErrors < NUMBER_OF_ERRORS) {
+			transactionHash = NON_EXISTING_TRANSACTION_HASH;
+			getRawTransactionErrors++;
+		}
+
 		File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHash + ".ser");
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		if (!response.exists()) {

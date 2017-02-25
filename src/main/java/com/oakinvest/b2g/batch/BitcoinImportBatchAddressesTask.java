@@ -80,7 +80,7 @@ public class BitcoinImportBatchAddressesTask {
 	 */
 	@Async
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public Future<Boolean> importAddrresses(final String transactionHash) {
+	public Future<Boolean> importAddresses(final String transactionHash) {
 		GetRawTransactionResponse transactionResponse = bds.getRawTransaction(transactionHash);
 		if (transactionResponse.getError() == null) {
 			// Retrieving all address in all the vout of the transaction.

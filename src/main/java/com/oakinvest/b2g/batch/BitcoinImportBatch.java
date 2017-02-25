@@ -139,6 +139,7 @@ public class BitcoinImportBatch {
 	 */
 	@Scheduled(initialDelay = BLOCK_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	public final void importBlock() {
+		final long start = System.currentTimeMillis();
 		// Block to import.
 		final long blockToTreat = bbr.count() + 1;
 
@@ -156,7 +157,7 @@ public class BitcoinImportBatch {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the block data...
 					String blockHash = blockHashResponse.getResult();
-					status.addLog("importBlock : Importing block n°" + blockToTreat + " (" + blockHash + ")");
+					status.addLog("importBlock : Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
 					GetBlockResponse blockResponse = bds.getBlock(blockHash);
 					if (blockResponse.getError() == null) {
 						// ---------------------------------------------------------------------------------------------
@@ -169,6 +170,8 @@ public class BitcoinImportBatch {
 						} else {
 							status.addLog("importBlock : Block n°" + blockToTreat + " already saved with id " + block.getId());
 						}
+						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+						status.addLog("importBlock : Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
 					} else {
 						// Error while retrieving the block informations.
 						status.addError("importBlock : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
@@ -178,11 +181,11 @@ public class BitcoinImportBatch {
 					status.addError("importBlock : Error getting the hash of block n°" + blockToTreat + " : " + blockHashResponse.getError());
 				}
 			} else {
-				status.addLog("importBlock : all block are imported");
+				status.addLog("importBlock : All block are imported");
 			}
 		} else {
 			// Error while retrieving the number of blocks in bitcoind.
-			status.addError("importBlock : Error getting number of blocks in bitcoind : " + blockCountResponse.getError());
+			status.addError("importBlock : Error getting number of blocks : " + blockCountResponse.getError());
 		}
 	}
 
@@ -205,13 +208,13 @@ public class BitcoinImportBatch {
 			// Getting the block informations.
 			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
 			if (blockResponse.getError() == null) {
+				status.addLog("importBlockAddresses : Starting to import addresses from block n°" + blockToTreat.getHeight());
 				// -----------------------------------------------------------------------------------------------------
 				// Retrieving all the transaction hashs.
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
 						.forEach(t -> transactionsHashs.add(t));
-
 				// -----------------------------------------------------------------------------------------------------
 				// Launching a thread to treat every addresses in transactions.
 				importAddressesTask.setEnvironment(log, bds, status, btr, bar); // TODO Why autowired doesn't work ?
@@ -220,7 +223,7 @@ public class BitcoinImportBatch {
 					// We run a an task for every transaction hashs in the block.
 					String transactionHash = it.next();
 					status.addLog("importBlockAddresses : Starting thread " + counter + " for addresses in transaction : " + transactionHash);
-					threads.put(transactionHash, importAddressesTask.importAddrresses(transactionHash));
+					threads.put(transactionHash, importAddressesTask.importAddresses(transactionHash));
 					counter++;
 				}
 			} else {
@@ -245,7 +248,8 @@ public class BitcoinImportBatch {
 						try {
 							executionResult = t.getValue().get();
 						} catch (Exception e) {
-							log.error("importBlock : importBlockAddresses in getting result from thread");
+							log.error("importBlock : Error in getting result from thread : " + e.getMessage());
+							e.printStackTrace();
 							executionResult = false;
 						}
 						// If the result is ok.
@@ -254,9 +258,9 @@ public class BitcoinImportBatch {
 						} else {
 							// If it's done and it's null, an error occured.
 							threadsWithErrors++;
-							status.addLog("importBlockAddresses : Thread for transaction " + t.getKey() + " had an error");
+							status.addLog("importBlockAddresses : Thread for transaction " + t.getKey() + " had an error. Re launch");
 							// We launch again a thread task on this transaction hash.
-							threads.put(t.getKey(), importAddressesTask.importAddrresses(t.getKey()));
+							threads.put(t.getKey(), importAddressesTask.importAddresses(t.getKey()));
 						}
 					} else {
 						// If the transaction work is not yet done.
@@ -283,11 +287,11 @@ public class BitcoinImportBatch {
 					}
 				}
 			}
-			status.addLog("Block n°" + blockToTreat.getHeight() + " : all threads treating transactions are done.");
-
 			// We update the block to say everything went fine.
 			blockToTreat.setAddressesImported(true);
 			bbr.save(blockToTreat);
+			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+			status.addLog("importBlockAddresses : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		}
 
 	}
@@ -311,13 +315,13 @@ public class BitcoinImportBatch {
 			// Getting the block informations.
 			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
 			if (blockResponse.getError() == null) {
+				status.addLog("importBlockTransactions : Starting to import transactions from block n°" + blockToTreat.getHeight());
 				// -----------------------------------------------------------------------------------------------------
 				// Retrieving all the transaction hashs.
 				blockResponse.getResult().getTx().stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
 						.forEach(t -> transactionsHashs.add(t));
-
 				// -----------------------------------------------------------------------------------------------------
 				// Launching a thread to treat every addresses in transactions.
 				importTransactionTask.setEnvironment(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
@@ -351,7 +355,8 @@ public class BitcoinImportBatch {
 						try {
 							executionResult = t.getValue().get();
 						} catch (Exception e) {
-							log.error("importBlockTransactions : error in getting result from thread");
+							log.error("importBlockTransactions : error in getting result from thread " + e.getMessage());
+							e.printStackTrace();
 							executionResult = false;
 						}
 						// If the result is ok.
@@ -375,7 +380,7 @@ public class BitcoinImportBatch {
 
 				// If not has been imported, we log statics if we are already running for 2 secs.
 				if (!allThreadsDone & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > PAUSE_BEFORE_DISPLAYING_STATISTICS) {
-					String message = "importTransactionTask : Block n°" + blockToTreat.getHeight() + " statistics on threads :";
+					String message = "importBlockTransactions : Block n°" + blockToTreat.getHeight() + " statistics on threads :";
 					message += threadsWithoutError + " ok / ";
 					message += threadsWithErrors + " not ok / ";
 					message += threadsNotYetDone + " not done";
@@ -389,11 +394,11 @@ public class BitcoinImportBatch {
 					}
 				}
 			}
-			status.addLog("Block n°" + blockToTreat.getHeight() + " : all threads treating transactions are done.");
-
 			// We update the block to say everything went fine.
 			blockToTreat.setTransactionsImported(true);
 			bbr.save(blockToTreat);
+			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+			status.addLog("importBlockTransactions : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		}
 	}
 
@@ -414,6 +419,7 @@ public class BitcoinImportBatch {
 			// Getting the block informations.
 			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
 			if (blockResponse.getError() == null) {
+				status.addLog("importBlockRelations : Starting to import relations from block n°" + blockToTreat.getHeight());
 				// -----------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
 				blockResponse.getResult().getTx().stream()
@@ -425,16 +431,16 @@ public class BitcoinImportBatch {
 							blockToTreat.getTransactions().add(bt);
 						});
 
+				// We update the block to say everything went fine.
+				blockToTreat.setRelationsImported(true);
+				blockToTreat.setImported(true);
+				bbr.save(blockToTreat);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+				status.addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} else {
 				// Error while retrieving the block informations.
 				status.addError("importBlockRelations : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
 			}
-			// We update the block to say everything went fine.
-			blockToTreat.setRelationsImported(true);
-			blockToTreat.setImported(true);
-			bbr.save(blockToTreat);
-			status.addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " : block completed.");
-			status.setImportedBlockCount(blockToTreat.getHeight());
 		}
 	}
 

@@ -23,7 +23,7 @@ public class AsynchronousConfiguration implements AsyncConfigurer {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinTransactionImportTask.class);
+	private final Logger log = LoggerFactory.getLogger(AsynchronousConfiguration.class);
 
 	/**
 	 * TODO Set as parameter

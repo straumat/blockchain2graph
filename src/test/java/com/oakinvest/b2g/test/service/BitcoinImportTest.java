@@ -2,6 +2,7 @@ package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.BitcoinImportBatch;
+import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -37,12 +38,6 @@ public class BitcoinImportTest {
 	public static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
 
 	/**
-	 * Integration service.
-	 */
-	@Autowired
-	private BitcoinImportService is;
-
-	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
@@ -67,12 +62,19 @@ public class BitcoinImportTest {
 	private BitcoinImportBatch batch;
 
 	/**
+	 * Bitcoind mock.
+	 */
+	@Autowired
+	private BitcoindMock bitcoindMock;
+
+	/**
 	 * Importing the data.
 	 *
 	 * @throws Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		bitcoindMock.resetErrorCounters();
 		// Launching import.
 		while (bbr.countImported() <= NUMBERS_OF_BLOCK_TO_IMPORT) {
 			batch.importBlock();

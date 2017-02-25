@@ -1,14 +1,17 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 import com.oakinvest.b2g.service.BitcoindService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,10 +85,31 @@ public class BitcoindServiceTest {
 	private static final String BLOCK_NON_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8333";
 
 	/**
+	 * Transaction hash in error.
+	 */
+	private static final String TRANSACTION_HASH_IN_ERROR_1 = "bc15f9dcbe637c187bb94247057b14637316613630126fc396c22e08b89006ea";
+
+	/**
 	 * Bitcoind service.
 	 */
 	@Autowired
 	private BitcoindService bds;
+
+	/**
+	 * Bitcoind mock.
+	 */
+	@Autowired
+	private BitcoindMock bitcoindMock;
+
+	/**
+	 * Setup.
+	 *
+	 * @throws Exception exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		bitcoindMock.resetErrorCounters();
+	}
 
 	/**
 	 * getBlockCount test.
@@ -309,6 +333,19 @@ public class BitcoindServiceTest {
 		final long expectedSequence = 4294967295L;
 		assertEquals("Coinbase not set", expectedCoinbase, coinbaseTransaction.getVin().get(0).getCoinbase());
 		assertEquals("Sequence not set", expectedSequence, coinbaseTransaction.getVin().get(0).getSequence());
+	}
+
+	/**
+	 * getRawTransaction test in error.
+	 */
+	@Test
+	public final void getRawTransactionInError() {
+		GetRawTransactionResponse r = bds.getRawTransaction(TRANSACTION_HASH_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getRawTransaction(TRANSACTION_HASH_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
 	}
 
 	/**
