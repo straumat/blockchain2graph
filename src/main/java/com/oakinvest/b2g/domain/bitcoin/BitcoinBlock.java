@@ -112,6 +112,12 @@ public class BitcoinBlock {
 	private boolean addressesImported = false;
 
 	/**
+	 * Transactions imported.
+	 */
+	@Property(name = "transactionsImported")
+	private boolean transactionsImported = false;
+
+	/**
 	 * Indicates that the bloc is fully imported.
 	 */
 	@Property(name = "imported")
@@ -432,6 +438,24 @@ public class BitcoinBlock {
 	 */
 	public final void setAddressesImported(final boolean newAddressesImported) {
 		addressesImported = newAddressesImported;
+	}
+
+	/**
+	 * Getter de la propriété transactionsImported.
+	 *
+	 * @return transactionsImported
+	 */
+	public final boolean isTransactionsImported() {
+		return transactionsImported;
+	}
+
+	/**
+	 * Setter de la propriété transactionsImported.
+	 *
+	 * @param newTransactionsImported the transactionsImported to set
+	 */
+	public final void setTransactionsImported(final boolean newTransactionsImported) {
+		transactionsImported = newTransactionsImported;
 	}
 
 	/**

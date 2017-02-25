@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -80,7 +79,6 @@ public class BitcoinImportBatchAddressesTask {
 	 * @return address list
 	 */
 	@Async
-	@Transactional
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public Future<Boolean> importAddrresses(final String transactionHash) {
 		GetRawTransactionResponse transactionResponse = bds.getRawTransaction(transactionHash);

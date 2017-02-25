@@ -128,6 +128,13 @@ public class BitcoinImportBatch {
 	private BitcoinImportBatchAddressesTask importAddressesTask;
 
 	/**
+	 * Import transactions task.
+	 */
+	@Autowired
+	private BitcoinImportBatchTransactionTask importTransactionTask;
+
+
+	/**
 	 * Import a block on the database.
 	 */
 	@Scheduled(initialDelay = BLOCK_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
@@ -289,8 +296,105 @@ public class BitcoinImportBatch {
 	 * Import the transactions of a block in the database.
 	 */
 	@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	public void importBlockTransactions() {
+	@SuppressWarnings("checkstyle:emptyforiteratorpad")
+	public final void importBlockTransactions() {
+		final long start = System.currentTimeMillis();
+		// Block to import.
+		final BitcoinBlock blockToTreat = bbr.findFirstBlockWithoutTransactions();
+		ArrayList<String> transactionsHashs = new ArrayList<>();
+		HashMap<String, Future<Boolean>> threads = new HashMap<>();
 
+		// -------------------------------------------------------------------------------------------------------------
+		// If there is a block to work on.
+		if (blockToTreat != null) {
+			// ---------------------------------------------------------------------------------------------------------
+			// Getting the block informations.
+			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
+			if (blockResponse.getError() == null) {
+				// -----------------------------------------------------------------------------------------------------
+				// Retrieving all the transaction hashs.
+				blockResponse.getResult().getTx().stream()
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+						.forEach(t -> transactionsHashs.add(t));
+
+				// -----------------------------------------------------------------------------------------------------
+				// Launching a thread to treat every addresses in transactions.
+				importTransactionTask.setEnvironment(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
+				int counter = 1;
+				for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
+					// We run a an task for every transaction hashs in the block.
+					String transactionHash = it.next();
+					status.addLog("importBlockTransactions : Starting thread " + counter + " to treat transaction " + transactionHash);
+					threads.put(transactionHash, importTransactionTask.importTransaction(transactionHash));
+					counter++;
+				}
+			} else {
+				// Error while retrieving the block informations.
+				status.addError("importBlockTransactions : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+			}
+
+			// ---------------------------------------------------------------------------------------------------------
+			// Waiting for all the threads to be done.
+			boolean allThreadsDone = false;
+			while (!allThreadsDone) {
+				// Statistics.
+				int threadsWithoutError = 0;
+				int threadsWithErrors = 0;
+				int threadsNotYetDone = 0;
+
+				// We see if we have all the results we expected.
+				for (Map.Entry<String, Future<Boolean>> t : threads.entrySet()) {
+					if (t.getValue().isDone()) {
+						// Work is done. Is the result ok ?
+						Boolean executionResult = false;
+						try {
+							executionResult = t.getValue().get();
+						} catch (Exception e) {
+							log.error("importBlockTransactions : error in getting result from thread");
+							executionResult = false;
+						}
+						// If the result is ok.
+						if (executionResult) {
+							threadsWithoutError++;
+						} else {
+							// If it's done and it's null, an error occured so we restart it.
+							threadsWithErrors++;
+							status.addLog("importBlockTransactions : Thread for transaction " + t.getKey() + " had an error");
+							// We launch again a thread task on this transaction hash.
+							threads.put(t.getKey(), importTransactionTask.importTransaction(t.getKey()));
+						}
+					} else {
+						// If the transaction work is not yet done.
+						threadsNotYetDone++;
+					}
+				}
+
+				// Everything is imported if all the transactions are imported without errors.
+				allThreadsDone = (threadsWithoutError == transactionsHashs.size());
+
+				// If not has been imported, we log statics if we are already running for 2 secs.
+				if (!allThreadsDone & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > PAUSE_BEFORE_DISPLAYING_STATISTICS) {
+					String message = "importTransactionTask : Block n°" + blockToTreat.getHeight() + " statistics on threads :";
+					message += threadsWithoutError + " ok / ";
+					message += threadsWithErrors + " not ok / ";
+					message += threadsNotYetDone + " not done";
+					status.addLog(message);
+
+					// And we wait a bit to let time for the threads to finish before testing again.
+					try {
+						Thread.sleep(PAUSE_BETWEEN_THREADS_CHECK);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			status.addLog("Block n°" + blockToTreat.getHeight() + " : all threads treating transactions are done.");
+
+			// We update the block to say everything went fine.
+			blockToTreat.setTransactionsImported(true);
+			bbr.save(blockToTreat);
+		}
 	}
 
 	/**

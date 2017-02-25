@@ -38,9 +38,17 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	/**
 	 * Find the first block without addresses imported.
 	 *
-	 * @return block id
+	 * @return block
 	 */
 	@Query("MATCH (b:BitcoinBlock) WHERE b.addressesImported = false RETURN b order by b.height limit 1")
 	BitcoinBlock findFirstBlockWithoutAddresses();
+
+	/**
+	 * Find the first block without transactions imported.
+	 *
+	 * @return block
+	 */
+	@Query("MATCH (b:BitcoinBlock) WHERE b.addressesImported = true and b.transactionsImported = false RETURN b order by b.height limit 1")
+	BitcoinBlock findFirstBlockWithoutTransactions();
 
 }

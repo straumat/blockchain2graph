@@ -131,7 +131,7 @@ public class BitcoinImportTest {
 	/**
 	 * importBlockTransactions() test.
 	 */
-
+	@Test
 	public final void importBlockTransactionsTest() {
 		// Testing the transaction of the block 170
 		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
