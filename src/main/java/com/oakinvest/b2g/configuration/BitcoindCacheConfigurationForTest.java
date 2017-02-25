@@ -50,7 +50,6 @@ public class BitcoindCacheConfigurationForTest {
 	 */
 	public static final String NON_EXISTING_BLOCK_HASH = "NON_EXISTING_HASH";
 
-
 	/**
 	 * Number of errors.
 	 */
@@ -172,6 +171,17 @@ public class BitcoindCacheConfigurationForTest {
 		} else {
 			gbcr = (GetBlockCountResponse) loadObjectFromFile(response);
 		}
+
+/*		// Generate an error
+		if (gbcr.getResult() == BLOCK_COUNT_IN_ERROR_1 && getBlockCountErrors < NUMBER_OF_ERRORS) {
+			BitcoindResponseError error = new BitcoindResponseError();
+			error.setCode(0);
+			error.setMessage("Mock error on getBlockCount");
+			gbcr.setResult(0);
+			gbcr.setError(error);
+			getBlockCountErrors++;
+			response.delete();
+		}*/
 
 		// We will generate an error on a random basis.
 		final int randomStart = 0;

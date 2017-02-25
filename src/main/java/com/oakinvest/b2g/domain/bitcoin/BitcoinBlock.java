@@ -106,6 +106,12 @@ public class BitcoinBlock {
 	private String nextBlockHash;
 
 	/**
+	 * Addresses imported.
+	 */
+	@Property(name = "addressesImported")
+	private boolean addressesImported = false;
+
+	/**
 	 * Indicates that the bloc is fully imported.
 	 */
 	@Property(name = "imported")
@@ -408,6 +414,24 @@ public class BitcoinBlock {
 	 */
 	public final void setImported(final boolean newImported) {
 		imported = newImported;
+	}
+
+	/**
+	 * Getter de la propriété addressesImported.
+	 *
+	 * @return addressesImported
+	 */
+	public final boolean isAddressesImported() {
+		return addressesImported;
+	}
+
+	/**
+	 * Setter de la propriété addressesImported.
+	 *
+	 * @param newAddressesImported the addressesImported to set
+	 */
+	public final void setAddressesImported(final boolean newAddressesImported) {
+		addressesImported = newAddressesImported;
 	}
 
 	/**
