@@ -79,6 +79,7 @@
 		<neo4j-bolt-driver.version>2.0.5</neo4j-bolt-driver.version>
 		<mapstruct.version>1.1.0.Final</mapstruct.version>
 		<json-simple.version>1.1.1</json-simple.version>
+		<caffeine.version>2.4.0</caffeine.version>
 
 		<!-- webjars -->
 		<webjars-locator.version>0.32</webjars-locator.version>
@@ -169,6 +170,7 @@
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
+			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!-- Webjar locator -->
