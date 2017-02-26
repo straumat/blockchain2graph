@@ -2,14 +2,7 @@ package com.oakinvest.b2g.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.BitcoindService;
-import com.oakinvest.b2g.service.StatusService;
 import org.neo4j.graphdb.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -23,54 +16,7 @@ import java.util.concurrent.Future;
  * Created by straumat on 25/02/17.
  */
 @Component
-public class BitcoinImportBatchAddressesTask {
-
-	/**
-	 * Logger.
-	 */
-	private Logger log = LoggerFactory.getLogger(BitcoinImportBatchAddressesTask.class);
-
-	/**
-	 * Status service.
-	 */
-	@Autowired
-	private StatusService status;
-
-	/**
-	 * Bitcoind service.
-	 */
-	@Autowired
-	private BitcoindService bds;
-
-	/**
-	 * Bitcoin transaction repository.
-	 */
-	@Autowired
-	private BitcoinTransactionRepository btr;
-
-	/**
-	 * Bitcoin block repository.
-	 */
-	@Autowired
-	private BitcoinAddressRepository bar;
-
-	/**
-	 * Set environment.
-	 *
-	 * @param newLog    log
-	 * @param newBds    bds
-	 * @param newStatus status
-	 * @param newBtr    btr
-	 * @param newBar    bar
-	 */
-	// TODO why ioc doesn't work ?
-	public final void setEnvironment(final Logger newLog, final BitcoindService newBds, final StatusService newStatus, final BitcoinTransactionRepository newBtr, final BitcoinAddressRepository newBar) {
-		log = newLog;
-		bds = newBds;
-		status = newStatus;
-		btr = newBtr;
-		bar = newBar;
-	}
+public class BitcoinImportBatchAddressesTask extends BitcoinImportBatchTask {
 
 	/**
 	 * Create all the addresses used in the vout of a transaction.
@@ -81,7 +27,7 @@ public class BitcoinImportBatchAddressesTask {
 	@Async
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public Future<Boolean> importAddresses(final String transactionHash) {
-		GetRawTransactionResponse transactionResponse = bds.getRawTransaction(transactionHash);
+		GetRawTransactionResponse transactionResponse = getBds().getRawTransaction(transactionHash);
 		if (transactionResponse.getError() == null) {
 			// Retrieving all address in all the vout of the transaction.
 			final LinkedHashSet<String> addresses = new LinkedHashSet<>();
@@ -94,24 +40,24 @@ public class BitcoinImportBatchAddressesTask {
 			// Creating all addresses.
 			for (Iterator<String> it = addresses.iterator(); it.hasNext(); ) {
 				String address = it.next();
-				BitcoinAddress a = bar.findByAddress(address);
+				BitcoinAddress a = getBar().findByAddress(address);
 				if (a == null) {
 					// Address creation.
 					try {
 						a = new BitcoinAddress(address);
-						bar.save(a);
+						getBar().save(a);
 					} catch (ConstraintViolationException e) {
-						a = bar.findByAddress(address);
+						a = getBar().findByAddress(address);
 					}
-					status.addLog("importBlockAddresses : Address " + address + " created  with id " + a.getId());
+					getStatus().addLog("importBlockAddresses : Address " + address + " created  with id " + a.getId());
 				} else {
-					status.addLog("importBlockAddresses : Address " + address + " already exists with id " + a.getId());
+					getStatus().addLog("importBlockAddresses : Address " + address + " already exists with id " + a.getId());
 				}
 			}
 			// Returns the list of addresses.
 			return new AsyncResult<>(true);
 		} else {
-			status.addError("importBlockAddresses : Impossible to retrieve transaction " + transactionHash + " : " + transactionResponse.getError());
+			getStatus().addError("importBlockAddresses : Impossible to retrieve transaction " + transactionHash + " : " + transactionResponse.getError());
 			return new AsyncResult<>(false);
 		}
 	}

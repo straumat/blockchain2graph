@@ -191,17 +191,6 @@ public class BitcoindMock {
 			gbcr = (GetBlockCountResponse) loadObjectFromFile(response);
 		}
 
-/*		// Generate an error
-		if (gbcr.getResult() == BLOCK_COUNT_IN_ERROR_1 && getBlockCountErrors < NUMBER_OF_ERRORS) {
-			BitcoindResponseError error = new BitcoindResponseError();
-			error.setCode(0);
-			error.setMessage("Mock error on getBlockCount");
-			gbcr.setResult(0);
-			gbcr.setError(error);
-			getBlockCountErrors++;
-			response.delete();
-		}*/
-
 		// We will generate an error on a random basis.
 		final int randomStart = 0;
 		final int randomEnd = 100;
@@ -227,16 +216,9 @@ public class BitcoindMock {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockHash(..)) && args(blockHeight)")
-	@SuppressWarnings("checkstyle:finalparameters")
-	public final Object getBlockHash(final ProceedingJoinPoint pjp, long blockHeight) throws Throwable {
+	public final Object getBlockHash(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse gbhr;
-
-		// Simulate error on a specific bloc.
-		if (blockHeight == BLOCK_IN_ERROR_1 && getBlockHashErrors < NUMBER_OF_ERRORS) {
-			blockHeight = NON_EXISTING_BLOCK;
-			getBlockHashErrors++;
-		}
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeight + ".ser");
@@ -246,6 +228,13 @@ public class BitcoindMock {
 		} else {
 			gbhr = (GetBlockHashResponse) loadObjectFromFile(response);
 		}
+
+		// Simulate error on a specific bloc.
+		if (blockHeight == BLOCK_IN_ERROR_1 && getBlockHashErrors < NUMBER_OF_ERRORS) {
+			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ NON_EXISTING_BLOCK });
+			getBlockHashErrors++;
+		}
+
 		return gbhr;
 	}
 
@@ -258,16 +247,9 @@ public class BitcoindMock {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlock(..)) && args(blockHash)")
-	@SuppressWarnings("checkstyle:finalparameters")
-	public final Object getBlock(final ProceedingJoinPoint pjp, String blockHash) throws Throwable {
+	public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
 		GetBlockResponse gbr;
-
-		// Simulate error on a specific bloc.
-		if (blockHash == BLOCK_HASH_IN_ERROR_1 && getBlockErrors < NUMBER_OF_ERRORS) {
-			blockHash = NON_EXISTING_BLOCK_HASH;
-			getBlockErrors++;
-		}
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHash + ".ser");
@@ -277,6 +259,13 @@ public class BitcoindMock {
 		} else {
 			gbr = (GetBlockResponse) loadObjectFromFile(response);
 		}
+
+		// Simulate error on a specific bloc.
+		if (BLOCK_HASH_IN_ERROR_1.equals(blockHash) && getBlockErrors < NUMBER_OF_ERRORS) {
+			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ NON_EXISTING_BLOCK_HASH });
+			getBlockErrors++;
+		}
+
 		return gbr;
 	}
 
@@ -289,16 +278,9 @@ public class BitcoindMock {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
-	@SuppressWarnings("checkstyle:finalparameters")
-	public final Object getRawTransaction(final ProceedingJoinPoint pjp, String transactionHash) throws Throwable {
+	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse grtr;
-
-		// Simulate error on a specific bloc.
-		if (transactionHash == TRANSACTION_HASH_IN_ERROR_1 && getRawTransactionErrors < NUMBER_OF_ERRORS) {
-			transactionHash = NON_EXISTING_TRANSACTION_HASH;
-			getRawTransactionErrors++;
-		}
 
 		File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHash + ".ser");
 		// if the file doesn't exists, we call the bitcoind server and save the file.
@@ -308,6 +290,13 @@ public class BitcoindMock {
 		} else {
 			grtr = (GetRawTransactionResponse) loadObjectFromFile(response);
 		}
+
+		// Simulate error on a specific bloc.
+		if (TRANSACTION_HASH_IN_ERROR_1.equals(transactionHash) && getRawTransactionErrors < NUMBER_OF_ERRORS) {
+			grtr = (GetRawTransactionResponse) pjp.proceed(new Object[]{ NON_EXISTING_TRANSACTION_HASH });
+			getRawTransactionErrors++;
+		}
+
 		return grtr;
 	}
 

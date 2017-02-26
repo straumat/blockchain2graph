@@ -192,7 +192,6 @@ public class StatusServiceImplementation implements StatusService {
 			// Nothing to make a statistic, we return 0.
 			return 0;
 		}
-
 	}
 
 	/**

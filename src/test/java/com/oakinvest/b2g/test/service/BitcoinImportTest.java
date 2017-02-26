@@ -35,7 +35,7 @@ public class BitcoinImportTest {
 	/**
 	 * Number of blocs to import.
 	 */
-	public static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
+	private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
 
 	/**
 	 * Bitcoin block repository.
@@ -103,6 +103,7 @@ public class BitcoinImportTest {
 		final String expectedChainwork = "000000000000000000000000000000000000000000000000000000ab00ab00ab";
 		final String expectedPreviousblockhash = "000000002a22cfee1f2c846adbd12b3e183d4f97683f85dad08a79780a84bd55";
 		final String expectedNextblockhash = "00000000c9ec538cab7f38ef9c67a95742f56ab07b0a37c5be6b02808dbfb4e0";
+		final int expectedTxSize = 2;
 		BitcoinBlock b = bbr.findByHash(expectedHash);
 		assertEquals("Wrong Block height", expectedHeight, b.getHeight());
 		assertEquals("Wrong Block size ", expectedSize, b.getSize());
@@ -116,6 +117,7 @@ public class BitcoinImportTest {
 		assertEquals("Wrong Block chainblock ", expectedChainwork, b.getChainWork());
 		assertEquals("Wrong Block previous block hash ", expectedPreviousblockhash, b.getPreviousBlockHash());
 		assertEquals("Wrong Block next block hash ", expectedNextblockhash, b.getNextBlockHash());
+		assertEquals("Wrong tx size", expectedTxSize, b.getTx().size());
 	}
 
 	/**

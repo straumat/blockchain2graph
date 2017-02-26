@@ -176,6 +176,7 @@ public class BitcoindServiceTest {
 		final int expectedMedianTime = 1472667998;
 		final long expectedNonce = 2771503229L;
 		final float difficulty = 220755908330.3723f;
+		final int expectedTxSize = 323;
 
 		// Test.
 		GetBlockResult r = bds.getBlock(BLOCK_HASH).getResult();
@@ -195,6 +196,7 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong chain work", "00000000000000000000000000000000000000000024f53caa84da5b8101b580", r.getChainwork());
 		assertEquals("Wrong previous block hash", "0000000000000000034a9b379481e41e935165dd32b39c69cb46591678b7eaa8", r.getPreviousblockhash());
 		assertEquals("Wrong next block hash", "0000000000000000029c774f0f83bff2f2a2418040e775b5d3237d23382e2cf0", r.getNextblockhash());
+		assertEquals("Wrong tx size", expectedTxSize, r.getTx().size());
 	}
 
 	/**
