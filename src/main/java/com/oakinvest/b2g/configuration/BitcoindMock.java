@@ -135,30 +135,20 @@ public class BitcoindMock {
 	 */
 	public BitcoindMock() {
 		final File bitcoindDirectory = new File(BITCOIND_CACHE_DIRECTORY);
-		if (!bitcoindDirectory.exists()) {
-			if (!bitcoindDirectory.mkdir()) {
-				log.error("Impossible to create " + bitcoindDirectory.getAbsolutePath());
-			}
+		if (!bitcoindDirectory.exists() && !bitcoindDirectory.mkdir()) {
+			log.error("Impossible to create " + bitcoindDirectory.getAbsolutePath());
 		}
-		if (!getBlockDirectory.exists()) {
-			if (!getBlockDirectory.mkdir()) {
-				log.error("Impossible to create " + getBlockDirectory.getAbsolutePath());
-			}
+		if (!getBlockDirectory.exists() && !getBlockDirectory.mkdir()) {
+			log.error("Impossible to create " + getBlockDirectory.getAbsolutePath());
 		}
-		if (!getBlockCountDirectory.exists()) {
-			if (!getBlockCountDirectory.mkdir()) {
-				log.error("Impossible to create " + getBlockCountDirectory.getAbsolutePath());
-			}
+		if (!getBlockCountDirectory.exists() && !getBlockCountDirectory.mkdir()) {
+			log.error("Impossible to create " + getBlockCountDirectory.getAbsolutePath());
 		}
-		if (!getBlockHashDirectory.exists()) {
-			if (!getBlockHashDirectory.mkdir()) {
-				log.error("Impossible to create " + getBlockHashDirectory.getAbsolutePath());
-			}
+		if (!getBlockHashDirectory.exists() && !getBlockHashDirectory.mkdir()) {
+			log.error("Impossible to create " + getBlockHashDirectory.getAbsolutePath());
 		}
-		if (!getRawTransactionDirectory.exists()) {
-			if (!getRawTransactionDirectory.mkdir()) {
-				log.error("Impossible to create " + getRawTransactionDirectory.getAbsolutePath());
-			}
+		if (!getRawTransactionDirectory.exists() && !getRawTransactionDirectory.mkdir()) {
+			log.error("Impossible to create " + getRawTransactionDirectory.getAbsolutePath());
 		}
 	}
 
