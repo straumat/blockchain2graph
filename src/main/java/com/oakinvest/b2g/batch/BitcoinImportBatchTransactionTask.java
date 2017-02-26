@@ -57,6 +57,9 @@ public class BitcoinImportBatchTransactionTask extends BitcoinImportBatchTask {
 								getLog().info("importBlockTransactions : Done treating vin : " + vin);
 							} else {
 								getStatus().addError("importBlockTransactions : Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+								// As we did not find a transaction, we will use async to reimport it.
+								importTransaction(vin.getTxId());
+								importTransaction(originTransactionOutput.get().getTransaction().getTxId());
 								return new AsyncResult<>(false);
 							}
 						}
@@ -78,6 +81,7 @@ public class BitcoinImportBatchTransactionTask extends BitcoinImportBatchTask {
 				} catch (Exception e) {
 					getStatus().addError("importBlockTransactions : Error treating transaction " + transactionHash + " : " + e.getMessage());
 					getLog().error(e.toString());
+					e.printStackTrace();
 					return new AsyncResult<>(false);
 				}
 			} else {

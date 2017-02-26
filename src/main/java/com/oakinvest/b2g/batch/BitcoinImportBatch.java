@@ -287,10 +287,12 @@ public class BitcoinImportBatch {
 				}
 			}
 			// We update the block to say everything went fine.
-			blockToTreat.setAddressesImported(true);
-			bbr.save(blockToTreat);
-			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			status.addLog("importBlockAddresses : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			if (allThreadsDone) {
+				blockToTreat.setAddressesImported(true);
+				bbr.save(blockToTreat);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+				status.addLog("importBlockAddresses : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			}
 		} else {
 			status.addLog("importBlockAddresses : Nothing to do");
 			try {
@@ -396,10 +398,12 @@ public class BitcoinImportBatch {
 				}
 			}
 			// We update the block to say everything went fine.
-			blockToTreat.setTransactionsImported(true);
-			bbr.save(blockToTreat);
-			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			status.addLog("importBlockTransactions : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			if (allThreadsDone) {
+				blockToTreat.setTransactionsImported(true);
+				bbr.save(blockToTreat);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+				status.addLog("importBlockTransactions : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			}
 		} else {
 			status.addLog("importBlockTransactions : Nothing to do");
 			try {
