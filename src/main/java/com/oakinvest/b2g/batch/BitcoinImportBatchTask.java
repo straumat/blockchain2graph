@@ -75,7 +75,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return mapperBtD
 	 */
-	public final BitcoindToDomainMapper getMapperBtD() {
+	final BitcoindToDomainMapper getMapperBtD() {
 		return mapperBtD;
 	}
 
@@ -84,7 +84,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return log
 	 */
-	public final Logger getLog() {
+	final Logger getLog() {
 		return log;
 	}
 
@@ -93,7 +93,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return status
 	 */
-	public final StatusService getStatus() {
+	final StatusService getStatus() {
 		return status;
 	}
 
@@ -102,7 +102,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return bds
 	 */
-	public final BitcoindService getBds() {
+	final BitcoindService getBds() {
 		return bds;
 	}
 
@@ -111,7 +111,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return btr
 	 */
-	public final BitcoinTransactionRepository getBtr() {
+	final BitcoinTransactionRepository getBtr() {
 		return btr;
 	}
 
@@ -120,7 +120,7 @@ public abstract class BitcoinImportBatchTask {
 	 *
 	 * @return bar
 	 */
-	public final BitcoinAddressRepository getBar() {
+	final BitcoinAddressRepository getBar() {
 		return bar;
 	}
 }

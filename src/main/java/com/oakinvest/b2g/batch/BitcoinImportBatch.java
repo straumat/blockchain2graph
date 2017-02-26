@@ -63,7 +63,7 @@ public class BitcoinImportBatch {
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	private static final int PAUSE_BETWEEN_CHECKS = 5000;
+	private static final int PAUSE_BETWEEN_CHECKS = 1000;
 
 	/**
 	 * Number of seconds before displaying threads statistics.
@@ -242,7 +242,7 @@ public class BitcoinImportBatch {
 				for (Map.Entry<String, Future<Boolean>> t : threads.entrySet()) {
 					if (t.getValue().isDone()) {
 						// Work is done. Is the result ok ?
-						Boolean executionResult = false;
+						Boolean executionResult;
 						try {
 							executionResult = t.getValue().get();
 						} catch (Exception e) {
@@ -351,7 +351,7 @@ public class BitcoinImportBatch {
 				for (Map.Entry<String, Future<Boolean>> t : threads.entrySet()) {
 					if (t.getValue().isDone()) {
 						// Work is done. Is the result ok ?
-						Boolean executionResult = false;
+						Boolean executionResult;
 						try {
 							executionResult = t.getValue().get();
 						} catch (Exception e) {

@@ -26,7 +26,6 @@ public class AsynchronousConfiguration implements AsyncConfigurer {
 	private final Logger log = LoggerFactory.getLogger(AsynchronousConfiguration.class);
 
 	/**
-	 * TODO Set as parameter
 	 * Core pool size.
 	 */
 	@Value("${blockchain2graph.threads.corePoolSize}")
@@ -46,14 +45,14 @@ public class AsynchronousConfiguration implements AsyncConfigurer {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(corePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
-		executor.setThreadNamePrefix("transaction-");
+		executor.setThreadNamePrefix("thread-");
 		executor.initialize();
 		return executor;
 	}
 
 	@Override
 	public final AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-		return null;
+		return (throwable, method, objects) -> throwable.printStackTrace();
 	}
 
 

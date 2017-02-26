@@ -37,17 +37,17 @@ public class BitcoindServiceTest {
 	/**
 	 * Number of errors.
 	 */
-	public static final int NUMBER_OF_ERRORS = 8;
+	private static final int NUMBER_OF_ERRORS = 8;
 
 	/**
 	 * Block in error.
 	 */
-	public static final int BLOCK_IN_ERROR_1 = 496;
+	private static final int BLOCK_IN_ERROR_1 = 496;
 
 	/**
 	 * Block hash in error.
 	 */
-	public static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
+	private static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
 
 	/**
 	 * Number of blocks.

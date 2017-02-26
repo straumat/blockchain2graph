@@ -1,10 +1,6 @@
 *target*
 
 # eclipse specific git ignore
-*.pydevproject
-.project
-.metadata
-local.properties
 bin/**
 .tmp/
 tmp/**

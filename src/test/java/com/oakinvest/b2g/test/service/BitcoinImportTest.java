@@ -70,7 +70,7 @@ public class BitcoinImportTest {
 	/**
 	 * Importing the data.
 	 *
-	 * @throws Exception
+	 * @throws Exception exception
 	 */
 	@Before
 	public void setUp() throws Exception {
