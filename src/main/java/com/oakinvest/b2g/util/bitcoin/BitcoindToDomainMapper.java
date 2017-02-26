@@ -36,6 +36,7 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "mediantime", target = "medianTime"),
 			@Mapping(source = "nonce", target = "nonce"),
 			@Mapping(source = "bits", target = "bits"),
+			@Mapping(source = "tx", target = "tx"),
 			@Mapping(source = "difficulty", target = "difficulty"),
 			@Mapping(source = "chainwork", target = "chainWork"),
 			@Mapping(source = "previousblockhash", target = "previousBlockHash"),

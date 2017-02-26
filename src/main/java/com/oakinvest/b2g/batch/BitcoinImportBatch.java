@@ -204,31 +204,25 @@ public class BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			// ---------------------------------------------------------------------------------------------------------
-			// Getting the block informations.
-			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
-			if (blockResponse.getError() == null) {
-				status.addLog("importBlockAddresses : Starting to import addresses from block n°" + blockToTreat.getHeight());
-				// -----------------------------------------------------------------------------------------------------
-				// Retrieving all the transaction hashs.
-				blockResponse.getResult().getTx().stream()
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> transactionsHashs.add(t));
-				// -----------------------------------------------------------------------------------------------------
-				// Launching a thread to treat every addresses in transactions.
-				importAddressesTask.setEnvironment(log, bds, status, btr, bar); // TODO Why autowired doesn't work ?
-				int counter = 1;
-				for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
-					// We run a an task for every transaction hashs in the block.
-					String transactionHash = it.next();
-					status.addLog("importBlockAddresses : Starting thread " + counter + " for addresses in transaction : " + transactionHash);
-					threads.put(transactionHash, importAddressesTask.importAddresses(transactionHash));
-					counter++;
-				}
-			} else {
-				// Error while retrieving the block informations.
-				status.addError("importBlockAddresses : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+			status.addLog("importBlockAddresses : Starting to import addresses from block n°" + blockToTreat.getHeight());
+
+			// -----------------------------------------------------------------------------------------------------
+			// Retrieving all the transaction hashs.
+			blockToTreat.getTx().stream()
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+					.forEach(t -> transactionsHashs.add(t));
+
+			// -----------------------------------------------------------------------------------------------------
+			// Launching a thread to treat every addresses in transactions.
+			importAddressesTask.setEnvironment(log, bds, status, btr, bar); // TODO Why autowired doesn't work ?
+			int counter = 1;
+			for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
+				// We run a an task for every transaction hashs in the block.
+				String transactionHash = it.next();
+				status.addLog("importBlockAddresses : Starting thread " + counter + " for addresses in transaction : " + transactionHash);
+				threads.put(transactionHash, importAddressesTask.importAddresses(transactionHash));
+				counter++;
 			}
 
 			// ---------------------------------------------------------------------------------------------------------
@@ -293,7 +287,6 @@ public class BitcoinImportBatch {
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 			status.addLog("importBlockAddresses : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		}
-
 	}
 
 	/**
@@ -311,31 +304,25 @@ public class BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			// ---------------------------------------------------------------------------------------------------------
-			// Getting the block informations.
-			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
-			if (blockResponse.getError() == null) {
-				status.addLog("importBlockTransactions : Starting to import transactions from block n°" + blockToTreat.getHeight());
-				// -----------------------------------------------------------------------------------------------------
-				// Retrieving all the transaction hashs.
-				blockResponse.getResult().getTx().stream()
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> transactionsHashs.add(t));
-				// -----------------------------------------------------------------------------------------------------
-				// Launching a thread to treat every addresses in transactions.
-				importTransactionTask.setEnvironment(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
-				int counter = 1;
-				for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
-					// We run a an task for every transaction hashs in the block.
-					String transactionHash = it.next();
-					status.addLog("importBlockTransactions : Starting thread " + counter + " to treat transaction " + transactionHash);
-					threads.put(transactionHash, importTransactionTask.importTransaction(transactionHash));
-					counter++;
-				}
-			} else {
-				// Error while retrieving the block informations.
-				status.addError("importBlockTransactions : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+			status.addLog("importBlockTransactions : Starting to import transactions from block n°" + blockToTreat.getHeight());
+
+			// -----------------------------------------------------------------------------------------------------
+			// Retrieving all the transaction hashs.
+			blockToTreat.getTx().stream()
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+					.forEach(t -> transactionsHashs.add(t));
+
+			// -----------------------------------------------------------------------------------------------------
+			// Launching a thread to treat every addresses in transactions.
+			importTransactionTask.setEnvironment(log, bds, status, btr, bar, mapper); // TODO Why autowired doesn't work ?
+			int counter = 1;
+			for (Iterator<String> it = transactionsHashs.iterator(); it.hasNext(); ) {
+				// We run a an task for every transaction hashs in the block.
+				String transactionHash = it.next();
+				status.addLog("importBlockTransactions : Starting thread " + counter + " to treat transaction " + transactionHash);
+				threads.put(transactionHash, importTransactionTask.importTransaction(transactionHash));
+				counter++;
 			}
 
 			// ---------------------------------------------------------------------------------------------------------
@@ -410,37 +397,30 @@ public class BitcoinImportBatch {
 		final long start = System.currentTimeMillis();
 		// Block to import.
 		final BitcoinBlock blockToTreat = bbr.findFirstBlockWithoutRelations();
-		ArrayList<String> transactionsHashs = new ArrayList<>();
 
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Getting the block informations.
-			GetBlockResponse blockResponse = bds.getBlock(blockToTreat.getHash());
-			if (blockResponse.getError() == null) {
-				status.addLog("importBlockRelations : Starting to import relations from block n°" + blockToTreat.getHeight());
-				// -----------------------------------------------------------------------------------------------------
-				// Setting the relationship between blocks and transactions.
-				blockResponse.getResult().getTx().stream()
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
-						.forEach(t -> {
-							BitcoinTransaction bt = btr.findByTxId(t);
-							bt.setBlock(blockToTreat);
-							blockToTreat.getTransactions().add(bt);
-						});
+			status.addLog("importBlockRelations : Starting to import relations from block n°" + blockToTreat.getHeight());
+			// -----------------------------------------------------------------------------------------------------
+			// Setting the relationship between blocks and transactions.
+			blockToTreat.getTx().stream()
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
+					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+					.forEach(t -> {
+						BitcoinTransaction bt = btr.findByTxId(t);
+						bt.setBlock(blockToTreat);
+						blockToTreat.getTransactions().add(bt);
+					});
 
-				// We update the block to say everything went fine.
-				blockToTreat.setRelationsImported(true);
-				blockToTreat.setImported(true);
-				bbr.save(blockToTreat);
-				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				status.addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
-			} else {
-				// Error while retrieving the block informations.
-				status.addError("importBlockRelations : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
-			}
+			// We update the block to say everything went fine.
+			blockToTreat.setRelationsImported(true);
+			blockToTreat.setImported(true);
+			bbr.save(blockToTreat);
+			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+			status.addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		}
 	}
 

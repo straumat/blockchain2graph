@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -104,6 +105,12 @@ public class BitcoinBlock {
 	 */
 	@Property(name = "nextblockhash")
 	private String nextBlockHash;
+
+	/**
+	 * The transaction ids.
+	 */
+	@Property(name = "tx")
+	private ArrayList<String> tx;
 
 	/**
 	 * Addresses imported.
@@ -480,6 +487,24 @@ public class BitcoinBlock {
 	 */
 	public final void setRelationsImported(final boolean newRelationsImported) {
 		relationsImported = newRelationsImported;
+	}
+
+	/**
+	 * Getter de la propriété tx.
+	 *
+	 * @return tx
+	 */
+	public final ArrayList<String> getTx() {
+		return tx;
+	}
+
+	/**
+	 * Setter de la propriété tx.
+	 *
+	 * @param newTx the tx to set
+	 */
+	public final void setTx(final ArrayList<String> newTx) {
+		tx = newTx;
 	}
 
 	/**

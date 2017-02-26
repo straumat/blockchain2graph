@@ -82,7 +82,7 @@ public class GetBlockResult implements Serializable {
 	/**
 	 * The transaction ids.
 	 */
-	private ArrayList<String> tx;
+	private ArrayList<String> tx = new ArrayList<>();
 
 	/**
 	 * Getter of tx.

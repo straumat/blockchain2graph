@@ -165,7 +165,7 @@ public class BitcoindMock {
 	/**
 	 * Reset errors counter.
 	 */
-	public void resetErrorCounters() {
+	public final void resetErrorCounters() {
 		getBlockHashErrors = 0;
 		getBlockErrors = 0;
 		getRawTransactionErrors = 0;
