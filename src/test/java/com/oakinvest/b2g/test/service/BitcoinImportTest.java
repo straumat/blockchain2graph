@@ -1,7 +1,10 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.BitcoinImportBatch;
+import com.oakinvest.b2g.batch.BitcoinImportBatchAddresses;
+import com.oakinvest.b2g.batch.BitcoinImportBatchBlocks;
+import com.oakinvest.b2g.batch.BitcoinImportBatchRelations;
+import com.oakinvest.b2g.batch.BitcoinImportBatchTransactions;
 import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -59,7 +62,25 @@ public class BitcoinImportTest {
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatch batch;
+	private BitcoinImportBatchBlocks batchBlocks;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchAddresses batchAddresses;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchTransactions batchTransactions;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchRelations batchRelations;
 
 	/**
 	 * Bitcoind mock.
@@ -77,10 +98,10 @@ public class BitcoinImportTest {
 		bitcoindMock.resetErrorCounters();
 		// Launching import.
 		while (bbr.countImported() <= NUMBERS_OF_BLOCK_TO_IMPORT) {
-			batch.importBlock();
-			batch.importBlockAddresses();
-			batch.importBlockTransactions();
-			batch.importBlockRelations();
+			batchBlocks.importData();
+			batchAddresses.importData();
+			batchTransactions.importData();
+			batchRelations.importData();
 		}
 	}
 
@@ -213,7 +234,7 @@ public class BitcoinImportTest {
 	/**
 	 * importBitcoinBlock test.
 	 *
-	 * @throws InterruptedException if not able to suspend time.
+	 * @throws Exception if not able to suspend time.
 	 */
 	@Test
 	public final void importBlockRelationsTest() throws Exception {
