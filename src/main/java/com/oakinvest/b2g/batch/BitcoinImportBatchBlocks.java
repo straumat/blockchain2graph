@@ -20,6 +20,19 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 	private static final int BLOCK_IMPORT_INITIAL_DELAY = 1000;
 
 	/**
+	 * Log prefix.
+	 */
+	private static final String PREFIX = "Blocks batch";
+
+	/**
+	 * Returns the log prefix to display in each log.
+	 */
+	@Override
+	public String getLogPrefix() {
+		return PREFIX;
+	}
+
+	/**
 	 * Import data.
 	 */
 	@Override
@@ -44,7 +57,7 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the block data...
 					String blockHash = blockHashResponse.getResult();
-					getStatus().addLog("importBlock : Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
+					addLog("Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
 					GetBlockResponse blockResponse = getBds().getBlock(blockHash);
 					if (blockResponse.getError() == null) {
 						// ---------------------------------------------------------------------------------------------
@@ -53,31 +66,31 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 						if (block == null) {
 							block = getMapper().blockResultToBitcoinBlock(blockResponse.getResult());
 							getBbr().save(block);
-							getStatus().addLog("importBlock : Block n°" + blockToTreat + " saved with id " + block.getId());
+							addLog("Block n°" + blockToTreat + " saved with id " + block.getId());
 						} else {
-							getStatus().addLog("importBlock : Block n°" + blockToTreat + " already saved with id " + block.getId());
+							addLog("Block n°" + blockToTreat + " already saved with id " + block.getId());
 						}
 						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-						getStatus().addLog("importBlock : Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
+						addLog("Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
 					} else {
 						// Error while retrieving the block informations.
-						getStatus().addError("importBlock : Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+						addError("Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
 					}
 				} else {
 					// Error while retrieving the block hash.
-					getStatus().addError("importBlock : Error getting the hash of block n°" + blockToTreat + " : " + blockHashResponse.getError());
+					addError("Error getting the hash of block n°" + blockToTreat + " : " + blockHashResponse.getError());
 				}
 			} else {
-				getStatus().addLog("importBlock : All blocks are imported");
+				addLog("All blocks are imported");
 				try {
 					Thread.sleep(PAUSE_BETWEEN_CHECKS);
 				} catch (Exception e) {
-					getLog().error("importBlock : Error while waiting : " + e.getMessage());
+					addError("Error while waiting : " + e.getMessage());
 				}
 			}
 		} else {
 			// Error while retrieving the number of blocks in bitcoind.
-			getStatus().addError("importBlock : Error getting number of blocks : " + blockCountResponse.getError());
+			addError("Error getting the number of blocks : " + blockCountResponse.getError());
 		}
 	}
 

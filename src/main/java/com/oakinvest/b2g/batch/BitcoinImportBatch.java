@@ -83,10 +83,32 @@ public abstract class BitcoinImportBatch {
 	private BitcoinTransactionRepository btr;
 
 	/**
+	 * Returns the log prefix to display in each log.
+	 */
+	public abstract String getLogPrefix();
+
+	/**
 	 * Import data.
 	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public abstract void importData();
+
+	/**
+	 * Add a log to the status and the logs.
+	 *
+	 * @param message message
+	 */
+	protected void addLog(final String message) {
+		status.addLog(getLogPrefix() + " - " + message);
+	}
+
+	/**
+	 * Add an error to the status and the logs.
+	 *
+	 * @param message message
+	 */
+	protected void addError(final String message) {
+		status.addError(getLogPrefix() + " - " + message);
+	}
 
 	/**
 	 * Getter de la propriété log.

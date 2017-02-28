@@ -3,7 +3,6 @@ package com.oakinvest.b2g.batch;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import org.neo4j.graphdb.ConstraintViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +21,19 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 	private static final int BLOCK_ADDRESSES_IMPORT_INITIAL_DELAY = 2000;
 
 	/**
+	 * Log prefix.
+	 */
+	private static final String PREFIX = "Addresses batch";
+
+	/**
+	 * Returns the log prefix to display in each log.
+	 */
+	@Override
+	public String getLogPrefix() {
+		return PREFIX;
+	}
+
+	/**
 	 * Import data.
 	 */
 	@Override
@@ -35,7 +47,7 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			getStatus().addLog("importBlockAddresses : Starting to import addresses from block n°" + blockToTreat.getHeight());
+			addLog("Starting to import addresses from block n°" + blockToTreat.getHeight());
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -58,17 +70,17 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 												try {
 													a = new BitcoinAddress(address);
 													getBar().save(a);
-												} catch (ConstraintViolationException e) {
+												} catch (Exception e) {
 													a = getBar().findByAddress(address);
 												}
-												getStatus().addLog("importBlockAddresses : Address " + address + " created  with id " + a.getId());
+												addLog("Address " + address + " created  with id " + a.getId());
 											} else {
-												getStatus().addLog("importBlockAddresses : Address " + address + " already exists with id " + a.getId());
+												addLog("Address " + address + " already exists with id " + a.getId());
 											}
 
 										}));
 					} else {
-						getStatus().addError("importBlockAddresses : Impossible to get transaction " + transactionHash + " data : " + transactionResponse.getError());
+						addError("Impossible to get transaction " + transactionHash + " data : " + transactionResponse.getError());
 						return;
 					}
 				}
@@ -76,14 +88,13 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 			blockToTreat.setAddressesImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			getStatus().addLog("importBlockAddresses : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
 		} else {
-			getStatus().addLog("importBlockAddresses : Nothing to do");
+			addLog("Nothing to do");
 			try {
 				Thread.sleep(PAUSE_BETWEEN_CHECKS);
 			} catch (Exception e) {
-				getLog().error("importBlockAddresses : Error while waiting : " + e.getMessage());
-				getLog().error(e.toString());
+				addError("Error while waiting : " + e.getMessage());
 			}
 		}
 	}

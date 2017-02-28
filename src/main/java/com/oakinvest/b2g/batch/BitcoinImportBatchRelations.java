@@ -18,6 +18,19 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 	private static final int BLOCK_RELATIONS_IMPORT_INITIAL_DELAY = 4000;
 
 	/**
+	 * Log prefix.
+	 */
+	private static final String PREFIX = "Relations batch";
+
+	/**
+	 * Returns the log prefix to display in each log.
+	 */
+	@Override
+	public String getLogPrefix() {
+		return PREFIX;
+	}
+
+	/**
 	 * Import data.
 	 */
 	@Override
@@ -33,7 +46,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 		if (blockToTreat != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Getting the block informations.
-			getStatus().addLog("importBlockRelations : Starting to import relations from block n°" + blockToTreat.getHeight());
+			addLog("Starting to import relations from block n°" + blockToTreat.getHeight());
 			// ---------------------------------------------------------------------------------------------------------
 			// Setting the relationship between blocks and transactions.
 			blockToTreat.getTx().stream()
@@ -50,14 +63,14 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			blockToTreat.setImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			getStatus().addLog("importBlockRelations : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			getStatus().setImportedBlockCount(getBbr().countImported());
 		} else {
-			getStatus().addLog("importBlockRelations : Nothing to do");
+			addLog("Nothing to do");
 			try {
 				Thread.sleep(PAUSE_BETWEEN_CHECKS);
 			} catch (Exception e) {
-				getLog().error("importBlockRelations : Error while waiting : " + e.getMessage());
+				addError("Error while waiting : " + e.getMessage());
 			}
 		}
 

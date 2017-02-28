@@ -24,6 +24,19 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 	private static final int BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY = 3000;
 
 	/**
+	 * Log prefix.
+	 */
+	private static final String PREFIX = "Transactions batch";
+
+	/**
+	 * Returns the log prefix to display in each log.
+	 */
+	@Override
+	public String getLogPrefix() {
+		return PREFIX;
+	}
+
+	/**
 	 * Import data.
 	 */
 	@Override
@@ -37,7 +50,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			getStatus().addLog("importBlockTransactions : Starting to import transactions from block n°" + blockToTreat.getHeight());
+			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -69,7 +82,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 										originTransactionOutput.get().getAddresses().forEach(a -> (getBar().findByAddress(a)).getWithdrawals().add(vin));
 										getLog().info("importBlockTransactions : Done treating vin : " + vin);
 									} else {
-										getStatus().addError("importBlockTransactions : Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 										// As we did not find a transaction, we will use async to reimport it.
 										return;
 									}
@@ -87,14 +100,14 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 
 							// Saving the transaction.
 							getBtr().save(bt);
-							getStatus().addLog("importBlockTransactions : Transaction " + transactionHash + " created with id " + bt.getId());
+							addLog("Transaction " + transactionHash + " created with id " + bt.getId());
 						} catch (Exception e) {
-							getStatus().addError("importBlockTransactions : Error treating transaction " + transactionHash + " : " + e.getMessage());
+							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
 							return;
 						}
 					} else {
 						// Error.
-						getStatus().addError("importBlockTransactions : Error in calling getrawtransaction on " + transactionHash + " : " + transactionResponse.getError());
+						addError("Error in calling getrawtransaction on " + transactionHash + " : " + transactionResponse.getError());
 						return;
 					}
 				}
@@ -102,18 +115,16 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 			blockToTreat.setTransactionsImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			getStatus().addLog("importBlockTransactions : Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		} else {
-			getStatus().addLog("importBlockTransactions : Nothing to do");
+			addLog("Nothing to do");
 			try {
 				Thread.sleep(PAUSE_BETWEEN_CHECKS);
 			} catch (Exception e) {
-				getLog().error("importBlockTransactions : Error while waiting : " + e.getMessage());
-				getLog().error(e.toString());
+				addError("Error while waiting : " + e.getMessage());
 			}
 		}
 
 	}
-
 
 }
