@@ -84,6 +84,8 @@ public abstract class BitcoinImportBatch {
 
 	/**
 	 * Returns the log prefix to display in each log.
+	 *
+	 * @return log prefix
 	 */
 	public abstract String getLogPrefix();
 
@@ -97,7 +99,7 @@ public abstract class BitcoinImportBatch {
 	 *
 	 * @param message message
 	 */
-	protected void addLog(final String message) {
+	protected final void addLog(final String message) {
 		status.addLog(getLogPrefix() + " - " + message);
 	}
 
@@ -106,7 +108,7 @@ public abstract class BitcoinImportBatch {
 	 *
 	 * @param message message
 	 */
-	protected void addError(final String message) {
+	protected final void addError(final String message) {
 		status.addError(getLogPrefix() + " - " + message);
 	}
 

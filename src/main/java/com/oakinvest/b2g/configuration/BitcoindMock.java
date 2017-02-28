@@ -173,6 +173,7 @@ public class BitcoindMock {
 		log.debug("Using cache for getBlockCount()");
 		GetBlockCountResponse gbcr;
 		File response = new File(getBlockCountDirectory.getPath() + "/response.ser");
+
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		if (!response.exists()) {
 			gbcr = (GetBlockCountResponse) pjp.proceed(new Object[]{ });
@@ -210,19 +211,22 @@ public class BitcoindMock {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse gbhr;
 
-		// if the file doesn't exists, we call the bitcoind server and save the file.
-		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeight + ".ser");
-		if (!response.exists()) {
-			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ blockHeight });
-			writeObjectToFile(getBlockHashDirectory.getPath(), "response-" + blockHeight + ".ser", gbhr);
-		} else {
-			gbhr = (GetBlockHashResponse) loadObjectFromFile(response);
-		}
+		// blockHeightValue is the value to get.
+		long blockHeightValue = blockHeight;
 
 		// Simulate error on a specific bloc.
 		if (blockHeight == BLOCK_IN_ERROR_1 && getBlockHashErrors < NUMBER_OF_ERRORS) {
-			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ NON_EXISTING_BLOCK });
+			blockHeightValue = NON_EXISTING_BLOCK;
 			getBlockHashErrors++;
+		}
+
+		// if the file doesn't exists, we call the bitcoind server and save the file.
+		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeightValue + ".ser");
+		if (!response.exists()) {
+			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ blockHeightValue });
+			writeObjectToFile(getBlockHashDirectory.getPath(), "response-" + blockHeightValue + ".ser", gbhr);
+		} else {
+			gbhr = (GetBlockHashResponse) loadObjectFromFile(response);
 		}
 
 		return gbhr;
@@ -241,19 +245,22 @@ public class BitcoindMock {
 		log.debug("Using cache for getBlock()");
 		GetBlockResponse gbr;
 
-		// if the file doesn't exists, we call the bitcoind server and save the file.
-		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHash + ".ser");
-		if (!response.exists()) {
-			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ blockHash });
-			writeObjectToFile(getBlockDirectory.getPath(), "response-" + blockHash + ".ser", gbr);
-		} else {
-			gbr = (GetBlockResponse) loadObjectFromFile(response);
-		}
+		// blockHash is the value to get.
+		String blockHashValue = blockHash;
 
 		// Simulate error on a specific bloc.
-		if (BLOCK_HASH_IN_ERROR_1.equals(blockHash) && getBlockErrors < NUMBER_OF_ERRORS) {
-			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ NON_EXISTING_BLOCK_HASH });
+		if (BLOCK_HASH_IN_ERROR_1.equals(blockHashValue) && getBlockErrors < NUMBER_OF_ERRORS) {
+			blockHashValue = NON_EXISTING_BLOCK_HASH;
 			getBlockErrors++;
+		}
+
+		// if the file doesn't exists, we call the bitcoind server and save the file.
+		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHashValue + ".ser");
+		if (!response.exists()) {
+			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ blockHashValue });
+			writeObjectToFile(getBlockDirectory.getPath(), "response-" + blockHashValue + ".ser", gbr);
+		} else {
+			gbr = (GetBlockResponse) loadObjectFromFile(response);
 		}
 
 		return gbr;
@@ -272,19 +279,22 @@ public class BitcoindMock {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse grtr;
 
-		File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHash + ".ser");
-		// if the file doesn't exists, we call the bitcoind server and save the file.
-		if (!response.exists()) {
-			grtr = (GetRawTransactionResponse) pjp.proceed(new Object[]{ transactionHash });
-			writeObjectToFile(getRawTransactionDirectory.getPath(), "response-" + transactionHash + ".ser", grtr);
-		} else {
-			grtr = (GetRawTransactionResponse) loadObjectFromFile(response);
-		}
+		// blockHash is the value to get.
+		String transactionHashValue = transactionHash;
 
 		// Simulate error on a specific bloc.
 		if (TRANSACTION_HASH_IN_ERROR_1.equals(transactionHash) && getRawTransactionErrors < NUMBER_OF_ERRORS) {
-			grtr = (GetRawTransactionResponse) pjp.proceed(new Object[]{ NON_EXISTING_TRANSACTION_HASH });
+			transactionHashValue = NON_EXISTING_TRANSACTION_HASH;
 			getRawTransactionErrors++;
+		}
+
+		File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser");
+		// if the file doesn't exists, we call the bitcoind server and save the file.
+		if (!response.exists()) {
+			grtr = (GetRawTransactionResponse) pjp.proceed(new Object[]{ transactionHashValue });
+			writeObjectToFile(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser", grtr);
+		} else {
+			grtr = (GetRawTransactionResponse) loadObjectFromFile(response);
 		}
 
 		return grtr;

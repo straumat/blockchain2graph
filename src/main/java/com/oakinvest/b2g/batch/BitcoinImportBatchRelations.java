@@ -26,7 +26,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 	 * Returns the log prefix to display in each log.
 	 */
 	@Override
-	public String getLogPrefix() {
+	public final String getLogPrefix() {
 		return PREFIX;
 	}
 
