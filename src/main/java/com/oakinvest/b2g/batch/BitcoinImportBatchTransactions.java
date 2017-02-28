@@ -5,7 +5,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import org.neo4j.graphdb.ConstraintViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +45,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 				String transactionHash = transactionsHashs.next();
 				// -----------------------------------------------------------------------------------------------------
 				// For every transaction hash, we get and save the informations.
-				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
+				if ((getBtr().findByTxId(transactionHash) == null) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
 					// If the transaction is not in the database, we create it.
 					GetRawTransactionResponse transactionResponse = getBds().getRawTransaction(transactionHash);
 					if (transactionResponse.getError() == null) {
@@ -87,11 +86,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 							}
 
 							// Saving the transaction.
-							try {
-								getBtr().save(bt);
-							} catch (ConstraintViolationException e) {
-								getLog().info("importBlockTransactions : transaction " + bt + " already exists");
-							}
+							getBtr().save(bt);
 							getStatus().addLog("importBlockTransactions : Transaction " + transactionHash + " created with id " + bt.getId());
 						} catch (Exception e) {
 							getStatus().addError("importBlockTransactions : Error treating transaction " + transactionHash + " : " + e.getMessage());

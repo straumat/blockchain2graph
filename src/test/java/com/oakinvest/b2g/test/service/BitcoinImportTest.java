@@ -22,8 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 /**
@@ -97,13 +99,45 @@ public class BitcoinImportTest {
 	public void setUp() throws Exception {
 		bitcoindMock.resetErrorCounters();
 		// Launching import.
-		while (bbr.countImported() <= NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (bbr.countImported() != NUMBERS_OF_BLOCK_TO_IMPORT) {
 			batchBlocks.importData();
 			batchAddresses.importData();
 			batchTransactions.importData();
 			batchRelations.importData();
 		}
 	}
+
+	/**
+	 * Test for recovery after crash.
+	 */
+	@Test
+	public final void testRecoveryAfterCrash() {
+		// We set the last block as not at all imported
+		BitcoinBlock b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+		b.setAddressesImported(false);
+		b.setTransactionsImported(false);
+		b.setRelationsImported(false);
+		b.setImported(false);
+		bbr.save(b);
+
+		// Then, we reimport it.
+		try {
+			batchAddresses.importData();
+			batchTransactions.importData();
+			batchRelations.importData();
+		} catch (Exception e) {
+			fail("Recovery after crash did not work " + e.getMessage());
+		}
+
+		// we check that everything as been reimported on that block
+		assertEquals("Block not re imported", bbr.countImported(), NUMBERS_OF_BLOCK_TO_IMPORT);
+		b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+		assertTrue("Addresses not imported", b.isAddressesImported());
+		assertTrue("Transactions not imported", b.isTransactionsImported());
+		assertTrue("Relations not imported", b.isRelationsImported());
+		assertTrue("Block not imported", b.isImported());
+	}
+
 
 	/**
 	 * importBlock() test.

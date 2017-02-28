@@ -28,6 +28,14 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	int countImported();
 
 	/**
+	 * Find a block by its height.
+	 *
+	 * @param height height
+	 * @return block
+	 */
+	BitcoinBlock findByHeight(long height);
+
+	/**
 	 * Find a block by its hash.
 	 *
 	 * @param hash hash
