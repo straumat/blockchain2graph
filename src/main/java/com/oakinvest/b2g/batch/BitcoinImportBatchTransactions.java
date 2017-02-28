@@ -58,7 +58,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 				String transactionHash = transactionsHashs.next();
 				// -----------------------------------------------------------------------------------------------------
 				// For every transaction hash, we get and save the informations.
-				if ((getBtr().findByTxId(transactionHash) == null) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
+				if ((getBtr().findByTxId(transactionHash) == null) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION)) {
 					// If the transaction is not in the database, we create it.
 					GetRawTransactionResponse transactionResponse = getBds().getRawTransaction(transactionHash);
 					if (transactionResponse.getError() == null) {

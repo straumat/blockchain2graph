@@ -55,7 +55,7 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 				String transactionHash = transactionsHashs.next();
 				// -----------------------------------------------------------------------------------------------------
 				// For every transaction hash, we get all the addresses in vout.
-				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_1) && !transactionHash.equals(GENESIS_BLOCK_TRANSACTION_HASH_2)) {
+				if (!transactionHash.equals(GENESIS_BLOCK_TRANSACTION)) {
 					GetRawTransactionResponse transactionResponse = getBds().getRawTransaction(transactionHash);
 					if (transactionResponse.getError() == null) {
 						transactionResponse.getResult()

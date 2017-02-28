@@ -24,7 +24,7 @@ public abstract class BitcoinImportBatch {
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	protected static final int PAUSE_BETWEEN_CHECKS = 2000;
+	protected static final int PAUSE_BETWEEN_CHECKS = 1000;
 
 	/**
 	 * How many milli seconds in one second.
@@ -34,12 +34,7 @@ public abstract class BitcoinImportBatch {
 	/**
 	 * Genesis transaction hash.
 	 */
-	protected static final String GENESIS_BLOCK_TRANSACTION_HASH_1 = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098";
-
-	/**
-	 * Genesis transaction hash.
-	 */
-	protected static final String GENESIS_BLOCK_TRANSACTION_HASH_2 = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
+	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * Logger.

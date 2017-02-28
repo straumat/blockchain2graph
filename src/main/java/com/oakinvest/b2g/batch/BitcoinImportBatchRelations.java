@@ -49,9 +49,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			addLog("Starting to import relations from block n°" + blockToTreat.getHeight());
 			// ---------------------------------------------------------------------------------------------------------
 			// Setting the relationship between blocks and transactions.
-			blockToTreat.getTx().stream()
-					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_1))
-					.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION_HASH_2))
+			blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 					.forEach(t -> {
 						BitcoinTransaction bt = getBtr().findByTxId(t);
 						bt.setBlock(blockToTreat);
