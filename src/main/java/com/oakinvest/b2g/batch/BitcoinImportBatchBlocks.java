@@ -6,7 +6,6 @@ import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountRespon
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Bitcoin import blocks batch.
@@ -38,7 +37,6 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 	 */
 	@Override
 	@Scheduled(initialDelay = BLOCK_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	@Transactional
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void importData() {
 		final long start = System.currentTimeMillis();
