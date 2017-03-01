@@ -1,12 +1,15 @@
 package com.oakinvest.b2g.batch;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -40,6 +43,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 	 * Import data.
 	 */
 	@Override
+	@Transactional
 	@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void importData() {
@@ -52,9 +56,12 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		if (blockToTreat != null) {
 			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
 
+			// TMP - Retrieving the block data
+			GetBlockResponse blockData = getBds().getBlock(blockToTreat.getHash());
+
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
-			for (Iterator<String> transactionsHashs = blockToTreat.getTx().iterator(); transactionsHashs.hasNext(); ) {
+			for (Iterator<String> transactionsHashs = blockData.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
 				String transactionHash = transactionsHashs.next();
 				// -----------------------------------------------------------------------------------------------------
 				// For every transaction hash, we get and save the informations.
@@ -83,7 +90,6 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 										getLog().info("importBlockTransactions : Done treating vin : " + vin);
 									} else {
 										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
-										// As we did not find a transaction, we will use async to reimport it.
 										return;
 									}
 								}
@@ -94,15 +100,21 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 								BitcoinTransactionOutput vout = vouts.next();
 								bt.getOutputs().add(vout);
 								vout.setTransaction(bt);
-								vout.getAddresses().forEach(a -> (getBar().findByAddress(a)).getDeposits().add(vout));
+								vout.getAddresses().stream().filter(a -> a != null).forEach(a -> {
+									if (getBar().findByAddress(a) == null) {
+										getBar().save(new BitcoinAddress(a));
+									}
+									(getBar().findByAddress(a)).getDeposits().add(vout);
+								});
 								getLog().info("importBlockTransactions : Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
 							getBtr().save(bt);
-							addLog("Transaction " + transactionHash + " created with id " + bt.getId());
+							addLog("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
+							e.printStackTrace();
 							return;
 						}
 					} else {

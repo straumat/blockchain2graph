@@ -110,7 +110,7 @@ public class BitcoinBlock {
 	 * The transaction ids.
 	 */
 	@Property(name = "tx")
-	private ArrayList<String> tx;
+	private ArrayList<String> tx = new ArrayList<>();
 
 	/**
 	 * Addresses imported.

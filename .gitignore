@@ -1,4 +1,5 @@
 *target*
+logs
 
 # eclipse specific git ignore
 bin/**
@@ -14,6 +15,7 @@ tmp/**/*
 .settings/
 .loadpath
 .checkstyle
+
 
 # External tool builders
 .externalToolBuilders/
