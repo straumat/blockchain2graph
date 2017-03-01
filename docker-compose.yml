@@ -3,14 +3,10 @@ services:
   bitcoin:
     image:  kylemanna/bitcoind
     volumes:
+      - ./src/main/docker/conf/bitcoin/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf
       - ./data/bitcoin:/bitcoin
     ports:
       - 8332:8332
-    environment:
-      - DISABLEWALLET=1
-      - PRINTTOCONSOLE=1
-      - RPCUSER=bitcoinrpc
-      - RPCPASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
   neo4j:
     image: neo4j:3.1.1
     ports:
