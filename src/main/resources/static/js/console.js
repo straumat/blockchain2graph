@@ -61,10 +61,8 @@ connection.onmessage = function (e) {
 	}
 
 	// Execution time statistic.
-	/*
-	 if (response.messageType === "executionTimeStatistic") {
-	 $("#executionTimeStatistic").text("Mean execution time : " + response.messageValue + " secs");
-	 }
-	 */
-
+	if (response.messageType === "executionTimeStatistic") {
+		$("#executionTimeStatistic").text("Mean execution time : " + response.messageValue + " secs");
+	}
+	 
 };
