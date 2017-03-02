@@ -5,9 +5,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -42,7 +40,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 	 * Import data.
 	 */
 	@Override
-	@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
+	//@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void importData() {
 		final long start = System.currentTimeMillis();
@@ -54,12 +52,9 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		if (blockToTreat != null) {
 			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
 
-			// TMP - Retrieving the block data
-			GetBlockResponse blockData = getBds().getBlock(blockToTreat.getHash());
-
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
-			for (Iterator<String> transactionsHashs = blockData.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
+			for (Iterator<String> transactionsHashs = blockToTreat.getTx().iterator(); transactionsHashs.hasNext(); ) {
 				String transactionHash = transactionsHashs.next();
 				// -----------------------------------------------------------------------------------------------------
 				// For every transaction hash, we get and save the informations.
@@ -94,6 +89,11 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 							}
 
 							Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
+							if (bt.getOutputs() == null || bt.getOutputs().size() == 0) {
+								System.out.println("!> impossible (1) !");
+								System.exit(-1);
+							}
+
 							while (vouts.hasNext()) {
 								BitcoinTransactionOutput vout = vouts.next();
 								bt.getOutputs().add(vout);
