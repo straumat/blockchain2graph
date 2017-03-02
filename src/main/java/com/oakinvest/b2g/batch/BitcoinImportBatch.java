@@ -108,7 +108,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété log.
+	 * Getter log.
 	 *
 	 * @return log
 	 */
@@ -117,7 +117,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété status.
+	 * Getter status.
 	 *
 	 * @return status
 	 */
@@ -126,7 +126,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété status.
+	 * Setter status.
 	 *
 	 * @param newStatus the status to set
 	 */
@@ -135,7 +135,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété bds.
+	 * Getter bds.
 	 *
 	 * @return bds
 	 */
@@ -144,7 +144,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété bds.
+	 * Setter bds.
 	 *
 	 * @param newBds the bds to set
 	 */
@@ -153,7 +153,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété mapper.
+	 * Getter mapper.
 	 *
 	 * @return mapper
 	 */
@@ -162,7 +162,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété mapper.
+	 * Setter mapper.
 	 *
 	 * @param newMapper the mapper to set
 	 */
@@ -171,7 +171,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété bbr.
+	 * Getter bbr.
 	 *
 	 * @return bbr
 	 */
@@ -180,7 +180,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété bbr.
+	 * Setter bbr.
 	 *
 	 * @param newBbr the bbr to set
 	 */
@@ -189,7 +189,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété bar.
+	 * Getter bar.
 	 *
 	 * @return bar
 	 */
@@ -198,7 +198,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété bar.
+	 * Setter bar.
 	 *
 	 * @param newBar the bar to set
 	 */
@@ -207,7 +207,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter de la propriété btr.
+	 * Getter btr.
 	 *
 	 * @return btr
 	 */
@@ -216,7 +216,7 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Setter de la propriété btr.
+	 * Setter btr.
 	 *
 	 * @param newBtr the btr to set
 	 */

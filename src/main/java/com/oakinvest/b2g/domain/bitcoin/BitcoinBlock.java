@@ -436,7 +436,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété addressesImported.
+	 * Getter addressesImported.
 	 *
 	 * @return addressesImported
 	 */
@@ -445,7 +445,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété addressesImported.
+	 * Setter addressesImported.
 	 *
 	 * @param newAddressesImported the addressesImported to set
 	 */
@@ -454,7 +454,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété transactionsImported.
+	 * Getter transactionsImported.
 	 *
 	 * @return transactionsImported
 	 */
@@ -463,7 +463,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété transactionsImported.
+	 * Setter transactionsImported.
 	 *
 	 * @param newTransactionsImported the transactionsImported to set
 	 */
@@ -472,7 +472,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété relationsImported.
+	 * Getter relationsImported.
 	 *
 	 * @return relationsImported
 	 */
@@ -481,7 +481,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété relationsImported.
+	 * Setter relationsImported.
 	 *
 	 * @param newRelationsImported the relationsImported to set
 	 */
@@ -490,7 +490,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété tx.
+	 * Getter tx.
 	 *
 	 * @return tx
 	 */
@@ -499,7 +499,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété tx.
+	 * Setter tx.
 	 *
 	 * @param newTx the tx to set
 	 */

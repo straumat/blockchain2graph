@@ -21,28 +21,28 @@ connection.onmessage = function (e) {
 		//$("#logs").append("<div>" + $("#logType").val() + "</div>");
 
 		// Blocks batch logs.
-		if ($("#logType").val() == "blocks") {
+		if ($("#logType").val() === "blocks") {
 			if (response.messageValue.includes("Blocks batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
 		}
 
 		// Addresses batch logs.
-		if ($("#logType").val() == "addresses") {
+		if ($("#logType").val() === "addresses") {
 			if (response.messageValue.includes("Addresses batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
 		}
 
 		// Addresses batch logs.
-		if ($("#logType").val() == "transactions") {
+		if ($("#logType").val() === "transactions") {
 			if (response.messageValue.includes("Transactions batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
 		}
 
 		// Addresses batch logs.
-		if ($("#logType").val() == "relations") {
+		if ($("#logType").val() === "relations") {
 			if (response.messageValue.includes("Relations batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
@@ -64,5 +64,5 @@ connection.onmessage = function (e) {
 	if (response.messageType === "executionTimeStatistic") {
 		$("#executionTimeStatistic").text("Mean execution time : " + response.messageValue + " secs");
 	}
-	 
+
 };

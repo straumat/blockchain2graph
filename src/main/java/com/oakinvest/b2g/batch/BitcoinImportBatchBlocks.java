@@ -16,7 +16,7 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 	/**
 	 * Initial delay before importing a block.
 	 */
-	private static final int BLOCK_IMPORT_INITIAL_DELAY = 1000;
+	//private static final int BLOCK_IMPORT_INITIAL_DELAY = 1000;
 
 	/**
 	 * Log prefix.

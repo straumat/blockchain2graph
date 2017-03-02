@@ -105,11 +105,6 @@ public class BitcoinTransaction {
 	 * @return output transaction
 	 */
 	public final Optional<BitcoinTransactionOutput> getOutputByIndex(final int n) {
-		if (getOutputs().size() == 0) {
-			System.out.println("=====> " + getBlockHash());
-			System.out.println("=====> " + getTxId());
-			System.exit(-1);
-		}
 		return getOutputs().stream().filter(o -> o.getN() == n).findFirst();
 	}
 

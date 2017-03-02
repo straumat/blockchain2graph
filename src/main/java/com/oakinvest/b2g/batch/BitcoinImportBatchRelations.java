@@ -14,7 +14,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 	/**
 	 * Initial delay before importing a block relations.
 	 */
-	private static final int BLOCK_RELATIONS_IMPORT_INITIAL_DELAY = 4000;
+	//private static final int BLOCK_RELATIONS_IMPORT_INITIAL_DELAY = 4000;
 
 	/**
 	 * Log prefix.
@@ -65,7 +65,6 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				getStatus().setImportedBlockCount(getBbr().countImported());
 			} catch (Exception e) {
 				addError("Block n°" + blockToTreat.getHeight() + " raised an exception " + e.getMessage());
-				e.printStackTrace();
 			}
 		} else {
 			addLog("Nothing to do");

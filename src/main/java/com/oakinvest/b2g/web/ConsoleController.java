@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ConsoleController {
 
 	/**
+	 * Console view.
+	 */
+	public static final String CONSOLE_VIEW = "console";
+
+	/**
 	 * Server address.
 	 */
 	@Value("${blockchain2graph.address}")
@@ -33,7 +38,7 @@ public class ConsoleController {
 	@RequestMapping(value = "/")
 	public final String index(final Model model) {
 		model.addAttribute("url", address + ":" + port);
-		return "console";
+		return CONSOLE_VIEW;
 	}
 
 }

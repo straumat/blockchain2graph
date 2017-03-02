@@ -21,7 +21,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 	/**
 	 * Initial delay before importing a block transactions.
 	 */
-	private static final int BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY = 3000;
+	//private static final int BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY = 3000;
 
 	/**
 	 * Log prefix.
@@ -89,11 +89,6 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 							}
 
 							Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
-							if (bt.getOutputs() == null || bt.getOutputs().size() == 0) {
-								System.out.println("!> impossible (1) !");
-								System.exit(-1);
-							}
-
 							while (vouts.hasNext()) {
 								BitcoinTransactionOutput vout = vouts.next();
 								bt.getOutputs().add(vout);
@@ -112,7 +107,6 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 							addLog("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
-							e.printStackTrace();
 							return;
 						}
 					} else {
