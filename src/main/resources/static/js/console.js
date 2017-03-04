@@ -7,15 +7,13 @@ connection.onmessage = function (e) {
 
 	// Imported block count.
 	if (response.messageType === "importedBlockCount") {
-		$(document).prop('title', "b2g - " + response.messageValue + ' blocks imported');
+		$(document).prop('title', "b2g - " + response.messageValue + " blocks imported");
 		$("#importedBlockCount").text(response.messageValue);
-	}
-
+	} else
 	// Total block count.
 	if (response.messageType === "totalBlockCount") {
 		$("#totalBlockCount").text(response.messageValue);
-	}
-
+	} else
 	// Log message.
 	if (response.messageType === "log") {
 
@@ -26,22 +24,19 @@ connection.onmessage = function (e) {
 			if (response.messageValue.includes("Blocks batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
-		}
-
+		} else
 		// Addresses batch logs.
 		if ($("#logType").val() === "addresses") {
 			if (response.messageValue.includes("Addresses batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
-		}
-
+		} else
 		// Addresses batch logs.
 		if ($("#logType").val() === "transactions") {
 			if (response.messageValue.includes("Transactions batch")) {
 				$("#logs").append("<div>" + response.messageValue + "</div>");
 			}
-		}
-
+		} else
 		// Addresses batch logs.
 		if ($("#logType").val() === "relations") {
 			if (response.messageValue.includes("Relations batch")) {
@@ -54,13 +49,11 @@ connection.onmessage = function (e) {
 		if (childrenLength > 18) {
 			$("#logs").children().eq(0).remove();
 		}
-	}
-
+	} else
 	// Error message.
 	if (response.messageType === "error") {
 		$("#lastErrorMessage").text(response.messageValue);
-	}
-
+	} else
 	// Execution time statistic.
 	if (response.messageType === "averageBlockImportDuration") {
 		$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
