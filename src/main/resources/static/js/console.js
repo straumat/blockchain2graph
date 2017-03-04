@@ -62,8 +62,8 @@ connection.onmessage = function (e) {
 	}
 
 	// Execution time statistic.
-	if (response.messageType === "executionTimeStatistic") {
-		$("#executionTimeStatistic").text("Mean execution time : " + response.messageValue + " secs");
+	if (response.messageType === "averageBlockImportDuration") {
+		$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
 	}
 
 };

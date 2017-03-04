@@ -71,7 +71,7 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 						}
 						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 						addLog("Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
-						getLogger().info("Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
+						getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
 					} else {
 						// Error while retrieving the block informations.
 						addError("Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());

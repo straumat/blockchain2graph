@@ -68,13 +68,13 @@ public interface StatusService {
 	 * @param newTime new execution time.
 	 * @return mean time
 	 */
-	float addExecutionTimeStatistic(float newTime);
+	float addBlockImportDurationStatistic(float newTime);
 
 	/**
 	 * Return execution time mean.
 	 *
 	 * @return execution time mean
 	 */
-	float getExecutionTimeStatistic();
+	float getAverageBlockImportDuration();
 
 }

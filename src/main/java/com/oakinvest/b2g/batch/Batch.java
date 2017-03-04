@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Temporary batch used because multi threading doesn't work..
+ * Temporary batch used because multi threading doesn't work.
  * Created by straumat on 02/03/17.
  */
 @Component
@@ -18,12 +18,12 @@ public class Batch {
 	/**
 	 * Define the maximum time for a too long import.
 	 */
-	public static final int MAXIMUM_IMPORT_DURATION = 60;
+	private static final int MAXIMUM_IMPORT_DURATION = 60;
 
 	/**
 	 * Pause between imports.
 	 */
-	private static final int PAUSE_BETWEEN_IMPORTS = 1000;
+	private static final int PAUSE_BETWEEN_IMPORTS = 100;
 
 	/**
 	 * How many milli seconds in one second.
@@ -87,7 +87,7 @@ public class Batch {
 
 		// Adding a statistic.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-		status.addExecutionTimeStatistic(elapsedTime);
+		status.addBlockImportDurationStatistic(elapsedTime);
 
 		// If it takes too much time, we clear the neo4j session.
 		if (elapsedTime > MAXIMUM_IMPORT_DURATION) {

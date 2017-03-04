@@ -68,22 +68,22 @@ public class StatusServiceTest {
 	}
 
 	/**
-	 * Test for addExecutionTimeStatistic().
+	 * Test for addBlockImportDurationStatistic().
 	 */
 	@Test
 	public final void getStatisticsTest() {
 		// Simple test with twi values
-		assertEquals(1f, ss.addExecutionTimeStatistic(1f), 0f);
-		assertEquals(1.5f, ss.addExecutionTimeStatistic(2f), 0f);
+		assertEquals(1f, ss.addBlockImportDurationStatistic(1f), 0f);
+		assertEquals(1.5f, ss.addBlockImportDurationStatistic(2f), 0f);
 
 		// Adding 100 values to see if the two previous number are disappearing.
 		for (int i = 0; i < 100; i++) {
-			ss.addExecutionTimeStatistic(4);
+			ss.addBlockImportDurationStatistic(4);
 		}
-		assertEquals(4f, ss.addExecutionTimeStatistic(4f), 0f);
+		assertEquals(4f, ss.addBlockImportDurationStatistic(4f), 0f);
 
 		// Adding another value.
-		assertEquals(5f, ss.addExecutionTimeStatistic(104f), 0f);
+		assertEquals(5f, ss.addBlockImportDurationStatistic(104f), 0f);
 	}
 
 }

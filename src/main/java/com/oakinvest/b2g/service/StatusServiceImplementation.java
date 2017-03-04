@@ -24,9 +24,9 @@ public class StatusServiceImplementation implements StatusService {
 	private static final int ROUND_DIGITS = 100;
 
 	/**
-	 * Number of blocks used for executionTimeStatistics.
+	 * Number of blocks used for blockImportDurations.
 	 */
-	private static final int MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS = ROUND_DIGITS;
+	private static final int MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS = 100;
 
 	/**
 	 * Logger.
@@ -36,7 +36,7 @@ public class StatusServiceImplementation implements StatusService {
 	/**
 	 * Execution time statistics.
 	 */
-	private final LinkedList<Float> executionTimeStatistics = new LinkedList<>();
+	private final LinkedList<Float> blockImportDurations = new LinkedList<>();
 
 	/**
 	 * Date format.
@@ -73,7 +73,7 @@ public class StatusServiceImplementation implements StatusService {
 	/**
 	 * Executed time statistic.
 	 */
-	private float executionTimeStatistic = 0;
+	private float averageBlockImportDuration = 0;
 
 	/**
 	 * Returns the total number of blocks in the blockchain.
@@ -169,25 +169,25 @@ public class StatusServiceImplementation implements StatusService {
 	 * @param newTime new execution time.
 	 * @return mean time
 	 */
-	public final float addExecutionTimeStatistic(final float newTime) {
+	public final float addBlockImportDurationStatistic(final float newTime) {
 		// If we reach the maximum number of execution times, we remove the first one.
-		while (executionTimeStatistics.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
-			executionTimeStatistics.removeFirst();
+		while (blockImportDurations.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
+			blockImportDurations.removeFirst();
 		}
 
 		// We add the statistics.
-		executionTimeStatistics.add(newTime);
+		blockImportDurations.add(newTime);
 
 		// Calculate the mean.
-		if (executionTimeStatistics.size() > 0) {
+		if (blockImportDurations.size() > 0) {
 			int n;
 			float totalAmountOfTime = 0;
-			for (n = 0; n < executionTimeStatistics.size(); n++) {
-				totalAmountOfTime += executionTimeStatistics.get(n);
+			for (n = 0; n < blockImportDurations.size(); n++) {
+				totalAmountOfTime += blockImportDurations.get(n);
 			}
-			executionTimeStatistic = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
-			statusHandler.updateExecutionTimeStatistic(executionTimeStatistic);
-			return executionTimeStatistic;
+			averageBlockImportDuration = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
+			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
+			return averageBlockImportDuration;
 		} else {
 			// Nothing to make a statistic, we return 0.
 			return 0;
@@ -200,8 +200,8 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return execution time mean
 	 */
 	@Override
-	public final float getExecutionTimeStatistic() {
-		return executionTimeStatistic;
+	public final float getAverageBlockImportDuration() {
+		return averageBlockImportDuration;
 	}
 
 }

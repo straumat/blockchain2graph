@@ -73,8 +73,10 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 													a = getBar().findByAddress(address);
 												}
 												addLog("Address " + address + " created  with id " + a.getId());
+												getLogger().info(getLogPrefix() + " - Address " + address + " created  with id " + a.getId());
 											} else {
 												addLog("Address " + address + " already exists with id " + a.getId());
+												getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());
 											}
 
 										}));
@@ -88,7 +90,7 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 			addLog("Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
-			getLogger().info("Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
+			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
 			try {

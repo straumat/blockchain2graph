@@ -17,24 +17,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class BitcoinImportBatch {
 
 	/**
-	 * Pause between imports.
+	 * Pause between imports - Not used for the moment because of multi threading problems.
 	 */
 	protected static final int PAUSE_BETWEEN_IMPORTS = 10;
 
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	protected static final int PAUSE_BETWEEN_CHECKS = 1000;
+	static final int PAUSE_BETWEEN_CHECKS = 1000;
 
 	/**
 	 * How many milli seconds in one second.
 	 */
-	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
+	static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * Genesis transaction hash.
 	 */
-	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
+	static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * Logger.

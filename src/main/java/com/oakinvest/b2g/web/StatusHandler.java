@@ -54,7 +54,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Execution time.
 	 */
-	private static final String TYPE_EXECUTION_TIME_STATISTIC = "executionTimeStatistic";
+	private static final String TYPE_AVERAGE_BLOCK_DURATION = "averageBlockImportDuration";
 
 	/**
 	 * Logger.
@@ -79,7 +79,7 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(status.getTotalBlockCount());
 		updateError(status.getLastErrorMessage());
 		updateLog(status.getLastLogMessage());
-		updateExecutionTimeStatistic(status.getExecutionTimeStatistic());
+		updateAverageBlockImportDuration(status.getAverageBlockImportDuration());
 	}
 
 	/**
@@ -133,12 +133,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Update execution time statistic.
 	 *
-	 * @param executionTimeStatistic new execution time statistics.
+	 * @param averageBlockImportDuration new execution time statistics.
 	 */
-	public final void updateExecutionTimeStatistic(final float executionTimeStatistic) {
+	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
 		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_EXECUTION_TIME_STATISTIC);
-		obj.put(PARAM_MESSAGE_VALUE, executionTimeStatistic);
+		obj.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
+		obj.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
 		sendMessage(obj.toString());
 	}
 

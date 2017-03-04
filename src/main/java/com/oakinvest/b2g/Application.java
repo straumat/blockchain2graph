@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 
 import javax.annotation.PostConstruct;
@@ -24,7 +23,6 @@ import static java.util.Collections.EMPTY_MAP;
  * @author straumat
  */
 @SpringBootApplication
-@EnableNeo4jRepositories
 @ComponentScan
 public class Application extends SpringBootServletInitializer {
 
