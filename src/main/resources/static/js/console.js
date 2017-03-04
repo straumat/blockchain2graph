@@ -1,3 +1,5 @@
+/*global url:true*/
+/*eslint no-undef: "error"*/
 // Websocket connection
 let connection = new WebSocket("ws://" + url + "/status");
 connection.onmessage = function (e) {
@@ -5,58 +7,64 @@ connection.onmessage = function (e) {
 	// We parse the response.
 	let response = JSON.parse(e.data);
 
-	// Imported block count.
-	if (response.messageType === "importedBlockCount") {
-		$(document).prop('title', "b2g - " + response.messageValue + " blocks imported");
-		$("#importedBlockCount").text(response.messageValue);
-	} else
-	// Total block count.
-	if (response.messageType === "totalBlockCount") {
-		$("#totalBlockCount").text(response.messageValue);
-	} else
-	// Log message.
-	if (response.messageType === "log") {
+	// Switch on message type.
+	switch (response.messageType) {
 
-		//$("#logs").append("<div>" + $("#logType").val() + "</div>");
+		// -------------------------------------------------------------------------------------------------------------
+		case "importedBlockCount":
+			$(document).prop("title", "b2g - " + response.messageValue + " blocks imported");
+			$("#importedBlockCount").text(response.messageValue);
+			break;
 
-		// Blocks batch logs.
-		if ($("#logType").val() === "blocks") {
-			if (response.messageValue.includes("Blocks batch")) {
-				$("#logs").append("<div>" + response.messageValue + "</div>");
-			}
-		} else
-		// Addresses batch logs.
-		if ($("#logType").val() === "addresses") {
-			if (response.messageValue.includes("Addresses batch")) {
-				$("#logs").append("<div>" + response.messageValue + "</div>");
-			}
-		} else
-		// Addresses batch logs.
-		if ($("#logType").val() === "transactions") {
-			if (response.messageValue.includes("Transactions batch")) {
-				$("#logs").append("<div>" + response.messageValue + "</div>");
-			}
-		} else
-		// Addresses batch logs.
-		if ($("#logType").val() === "relations") {
-			if (response.messageValue.includes("Relations batch")) {
-				$("#logs").append("<div>" + response.messageValue + "</div>");
-			}
-		}
+		// -------------------------------------------------------------------------------------------------------------
+		case "totalBlockCount":
+			$("#totalBlockCount").text(response.messageValue);
+			break;
 
-		// We clean to avoid having too much logs.
-		let childrenLength = $("#logs").children().length;
-		if (childrenLength > 18) {
-			$("#logs").children().eq(0).remove();
-		}
-	} else
-	// Error message.
-	if (response.messageType === "error") {
-		$("#lastErrorMessage").text(response.messageValue);
-	} else
-	// Execution time statistic.
-	if (response.messageType === "averageBlockImportDuration") {
-		$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
+		// -------------------------------------------------------------------------------------------------------------
+		case "log":
+			switch ($("#logType").val()) {
+				case "blocks":
+					if (response.messageValue.includes("Blocks batch")) {
+						$("#logs").append("<div>" + response.messageValue + "</div>");
+					}
+					break;
+
+				case "addresses":
+					if (response.messageValue.includes("Addresses batch")) {
+						$("#logs").append("<div>" + response.messageValue + "</div>");
+					}
+					break;
+
+				case "transactions":
+					if (response.messageValue.includes("Transactions batch")) {
+						$("#logs").append("<div>" + response.messageValue + "</div>");
+					}
+					break;
+
+				case "relations":
+					if (response.messageValue.includes("Relations batch")) {
+						$("#logs").append("<div>" + response.messageValue + "</div>");
+					}
+					break;
+			}
+			break;
+
+		// -------------------------------------------------------------------------------------------------------------
+		case "error":
+			$("#lastErrorMessage").text(response.messageValue);
+			break;
+
+		// -------------------------------------------------------------------------------------------------------------
+		case "averageBlockImportDuration":
+			$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
+			break;
 	}
 
-};
+	// We clean to avoid having too much logs.
+	let childrenLength = $("#logs").children().length;
+	if (childrenLength > 18) {
+		$("#logs").children().eq(0).remove();
+	}
+
+}
