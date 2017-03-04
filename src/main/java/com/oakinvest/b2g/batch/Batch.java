@@ -73,12 +73,10 @@ public class Batch {
 
 	/**
 	 * Import data.
-	 *
-	 * @throws Exception exception
 	 */
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings("checkstyle:designforextension")
-	public void importData() throws Exception {
+	public void importData() {
 		final long start = System.currentTimeMillis();
 
 		// Importing the block.
@@ -95,11 +93,6 @@ public class Batch {
 		if (elapsedTime > MAXIMUM_IMPORT_DURATION) {
 			log.info("Clearing the neo4j session");
 			session.clear();
-			try {
-				Thread.sleep(MAXIMUM_IMPORT_DURATION);
-			} catch (Exception e) {
-				log.error("Exception while waiting : " + e.getMessage());
-			}
 		}
 	}
 
