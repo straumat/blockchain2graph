@@ -7,6 +7,7 @@ connection.onmessage = function (e) {
 
 	// Imported block count.
 	if (response.messageType === "importedBlockCount") {
+		$(document).prop('title', "b2g - " + response.messageValue + ' blocks imported');
 		$("#importedBlockCount").text(response.messageValue);
 	}
 
