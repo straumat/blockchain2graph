@@ -67,4 +67,4 @@ connection.onmessage = function (e) {
 		$("#logs").children().eq(0).remove();
 	}
 
-}
+};
