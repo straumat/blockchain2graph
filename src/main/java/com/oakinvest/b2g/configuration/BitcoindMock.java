@@ -22,7 +22,7 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Bitcoind cache service for tests.
+ * Bitcoind mock for tests.
  * Created by straumat on 04/01/17.
  */
 @Configuration

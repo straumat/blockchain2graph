@@ -80,7 +80,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 										vin.setTransactionOutput(originTransactionOutput.get());
 										// We set the addresses "from" if it's not a coinbase transaction.
 										originTransactionOutput.get().getAddresses().forEach(a -> (getBar().findByAddress(a)).getWithdrawals().add(vin));
-										getLog().info("importBlockTransactions : Done treating vin : " + vin);
+										getLogger().info("importBlockTransactions : Done treating vin : " + vin);
 									} else {
 										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 										return;
@@ -99,12 +99,13 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 									}
 									(getBar().findByAddress(a)).getDeposits().add(vout);
 								});
-								getLog().info("importBlockTransactions : Done treating vout : " + vout);
+								getLogger().info("importBlockTransactions : Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
 							getBtr().save(bt);
 							addLog("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
+							getLogger().info("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
 							return;

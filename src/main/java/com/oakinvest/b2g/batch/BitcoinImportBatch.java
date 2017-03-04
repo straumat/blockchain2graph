@@ -39,7 +39,7 @@ public abstract class BitcoinImportBatch {
 	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinImportBatch.class);
+	private final Logger logger = LoggerFactory.getLogger(BitcoinImportBatch.class);
 
 	/**
 	 * Status service.
@@ -78,9 +78,9 @@ public abstract class BitcoinImportBatch {
 	private BitcoinTransactionRepository btr;
 
 	/**
-	 * Returns the log prefix to display in each log.
+	 * Returns the logger prefix to display in each logger.
 	 *
-	 * @return log prefix
+	 * @return logger prefix
 	 */
 	public abstract String getLogPrefix();
 
@@ -90,7 +90,7 @@ public abstract class BitcoinImportBatch {
 	public abstract void importData();
 
 	/**
-	 * Add a log to the status and the logs.
+	 * Add a logger to the status and the logs.
 	 *
 	 * @param message message
 	 */
@@ -108,12 +108,12 @@ public abstract class BitcoinImportBatch {
 	}
 
 	/**
-	 * Getter log.
+	 * Getter logger.
 	 *
-	 * @return log
+	 * @return logger
 	 */
-	public final Logger getLog() {
-		return log;
+	public final Logger getLogger() {
+		return logger;
 	}
 
 	/**

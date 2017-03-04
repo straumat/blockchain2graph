@@ -62,6 +62,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				getBbr().save(blockToTreat);
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+				getLogger().info("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 				getStatus().setImportedBlockCount(getBbr().countImported());
 			} catch (Exception e) {
 				addError("Block n°" + blockToTreat.getHeight() + " raised an exception " + e.getMessage());
