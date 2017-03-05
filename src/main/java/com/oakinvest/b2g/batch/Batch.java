@@ -5,6 +5,7 @@ import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Batch {
-
-	/**
-	 * Define the maximum time for a too long import.
-	 */
-	private static final int MAXIMUM_IMPORT_DURATION = 60;
 
 	/**
 	 * Pause between imports.
@@ -34,6 +30,12 @@ public class Batch {
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(Batch.class);
+
+	/**
+	 * Maximum block import duration.
+	 */
+	@Value("${spring.data.neo4j.block-import.maximum-duration}")
+	private int maximumBlockImportDuration;
 
 	/**
 	 * Import batch.
@@ -90,7 +92,7 @@ public class Batch {
 		status.addBlockImportDurationStatistic(elapsedTime);
 
 		// If it takes too much time, we clear the neo4j session.
-		if (elapsedTime > MAXIMUM_IMPORT_DURATION) {
+		if (elapsedTime > maximumBlockImportDuration) {
 			log.info("Clearing the neo4j session");
 			session.clear();
 		}
