@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.batch;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
@@ -94,12 +93,9 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 								BitcoinTransactionOutput vout = vouts.next();
 								bt.getOutputs().add(vout);
 								vout.setTransaction(bt);
-								vout.getAddresses().stream().filter(a -> a != null).forEach(a -> {
-									if (getBar().findByAddress(a) == null) {
-										getBar().save(new BitcoinAddress(a));
-									}
-									(getBar().findByAddress(a)).getDeposits().add(vout);
-								});
+								vout.getAddresses().stream()
+										.filter(a -> a != null)
+										.forEach(a -> (getBar().findByAddress(a)).getDeposits().add(vout));
 								getLogger().info(getLogPrefix() + " - Done treating vout : " + vout);
 							}
 
