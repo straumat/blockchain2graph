@@ -82,10 +82,14 @@ public class Batch {
 		final long start = System.currentTimeMillis();
 
 		// Importing the block.
-		batchBlocks.importData();
-		batchAddresses.importData();
-		batchTransactions.importData();
-		batchRelations.importData();
+		try {
+			batchBlocks.importData();
+			batchAddresses.importData();
+			batchTransactions.importData();
+			batchRelations.importData();
+		} catch (Exception e) {
+			status.addError("Error in the batch process : " + e.getMessage());
+		}
 
 		// Adding a statistic.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
