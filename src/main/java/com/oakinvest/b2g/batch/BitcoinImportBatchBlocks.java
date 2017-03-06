@@ -56,6 +56,7 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the block data...
 					String blockHash = blockHashResponse.getResult();
+					addLog("-------------------------------------------------------------------------------------------------");
 					addLog("Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
 					GetBlockResponse blockResponse = getBds().getBlock(blockHash);
 					if (blockResponse.getError() == null) {

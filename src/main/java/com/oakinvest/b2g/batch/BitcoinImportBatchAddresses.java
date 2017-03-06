@@ -46,6 +46,7 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
+			addLog("-------------------------------------------------------------------------------------------------");
 			addLog("Starting to import addresses from block n°" + blockToTreat.getHeight());
 
 			// ---------------------------------------------------------------------------------------------------------

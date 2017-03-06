@@ -50,6 +50,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
+			addLog("-------------------------------------------------------------------------------------------------");
 			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
 
 			// ---------------------------------------------------------------------------------------------------------

@@ -46,6 +46,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			try {
 				// ---------------------------------------------------------------------------------------------------------
 				// Getting the block informations.
+				addLog("-------------------------------------------------------------------------------------------------");
 				addLog("Starting to import relations from block n°" + blockToTreat.getHeight());
 				// ---------------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
