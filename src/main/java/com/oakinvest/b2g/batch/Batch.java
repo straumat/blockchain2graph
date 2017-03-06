@@ -99,6 +99,11 @@ public class Batch {
 		if (elapsedTime > maximumBlockImportDuration) {
 			log.info("Clearing the neo4j session");
 			session.clear();
+			try {
+				Thread.sleep(maximumBlockImportDuration);
+			} catch (InterruptedException e) {
+				log.error("Error while waiting : " + e.getMessage());
+			}
 		}
 	}
 
