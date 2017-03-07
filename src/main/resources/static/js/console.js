@@ -48,6 +48,11 @@ connection.onmessage = function (e) {
 					}
 					break;
 			}
+			// We clean to avoid having too much logs.
+			let childrenLength = $("#logs").children().length;
+			if (childrenLength > 18) {
+				$("#logs").children().eq(0).remove();
+			}
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -59,12 +64,6 @@ connection.onmessage = function (e) {
 		case "averageBlockImportDuration":
 			$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
 			break;
-	}
-
-	// We clean to avoid having too much logs.
-	let childrenLength = $("#logs").children().length;
-	if (childrenLength > 18) {
-		$("#logs").children().eq(0).remove();
 	}
 
 };
