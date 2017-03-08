@@ -1,14 +1,7 @@
 *target*
-*.jar
-*.war
-*.ear
-*src/test/resources/bitcoind*
+logs
 
 # eclipse specific git ignore
-*.pydevproject
-.project
-.metadata
-local.properties
 bin/**
 .tmp/
 tmp/**
@@ -22,6 +15,7 @@ tmp/**/*
 .settings/
 .loadpath
 .checkstyle
+
 
 # External tool builders
 .externalToolBuilders/
@@ -79,8 +73,6 @@ mockserver.log
 # User-specific stuff:
 
 # Sensitive or high-churn files:
-.idea/checkstyle-idea.xml
-.idea/misc.xml
 .idea/dataSources.ids
 .idea/dataSources.xml
 .idea/dataSources.local.xml
@@ -113,5 +105,4 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
-.idea/
 Supprimerait release.properties
