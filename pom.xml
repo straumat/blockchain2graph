@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- =========================================================================================================== -->
 	<!-- Project information -->
 	<groupId>com.oakinvest.b2g</groupId>
 	<artifactId>blockchain2graph</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>blockchain2graph</name>
 	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
@@ -99,7 +98,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.5.RELEASE</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 	<!-- =========================================================================================================== -->
 
