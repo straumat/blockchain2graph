@@ -1,12 +1,15 @@
 package com.oakinvest.b2g.service;
 
 import com.oakinvest.b2g.web.StatusHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 /**
  * Status service implementation.
@@ -14,6 +17,26 @@ import java.util.Calendar;
  */
 @Service
 public class StatusServiceImplementation implements StatusService {
+
+	/**
+	 * How many digits for the statistics.
+	 */
+	private static final int ROUND_DIGITS = 100;
+
+	/**
+	 * Number of blocks used for blockImportDurations.
+	 */
+	private static final int MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS = 100;
+
+	/**
+	 * Logger.
+	 */
+	private final Logger log = LoggerFactory.getLogger(StatusService.class);
+
+	/**
+	 * Execution time statistics.
+	 */
+	private final LinkedList<Float> blockImportDurations = new LinkedList<>();
 
 	/**
 	 * Date format.
@@ -48,7 +71,12 @@ public class StatusServiceImplementation implements StatusService {
 	private long importedBlockCount = 0;
 
 	/**
-	 * Returns the total nubmer of blocks in the blockchain.
+	 * Executed time statistic.
+	 */
+	private float averageBlockImportDuration = 0;
+
+	/**
+	 * Returns the total number of blocks in the blockchain.
 	 *
 	 * @return total block count
 	 */
@@ -87,12 +115,6 @@ public class StatusServiceImplementation implements StatusService {
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
 		importedBlockCount = newImportedBlockCount;
 		statusHandler.updateImportedBlockCount(importedBlockCount);
-//		if (importedBlockCount == 20) {
-//			addErrorMessage("[ERROR] 1");
-//		}
-//		if (importedBlockCount == 80) {
-//			addErrorMessage("[ERROR] 2");
-//		}
 	}
 
 	/**
@@ -111,7 +133,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * @param newLogMessage log message
 	 */
 	@Override
-	public final void addLogMessage(final String newLogMessage) {
+	public final void addLog(final String newLogMessage) {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastLogMessage = "[" + date + "] " + newLogMessage;
 		statusHandler.updateLog("[" + date + "] " + newLogMessage);
@@ -133,9 +155,53 @@ public class StatusServiceImplementation implements StatusService {
 	 * @param newErrorMessage error message
 	 */
 	@Override
-	public final void addErrorMessage(final String newErrorMessage) {
+	public final void addError(final String newErrorMessage) {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastErrorMessage = "[" + date + "] " + newErrorMessage;
-		statusHandler.updateErrorMessage("[" + date + "] " + newErrorMessage);
+		statusHandler.updateLog("[" + date + "] " + newErrorMessage);
+		statusHandler.updateError("[" + date + "] " + newErrorMessage);
+		log.error(lastErrorMessage);
 	}
+
+	/**
+	 * Add an execution time statistics and return the execution mean.
+	 *
+	 * @param newTime new execution time.
+	 * @return mean time
+	 */
+	public final float addBlockImportDurationStatistic(final float newTime) {
+		// If we reach the maximum number of execution times, we remove the first one.
+		while (blockImportDurations.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
+			blockImportDurations.removeFirst();
+		}
+
+		// We add the statistics.
+		blockImportDurations.add(newTime);
+
+		// Calculate the mean.
+		if (blockImportDurations.size() > 0) {
+			int n;
+			float totalAmountOfTime = 0;
+			for (n = 0; n < blockImportDurations.size(); n++) {
+				totalAmountOfTime += blockImportDurations.get(n);
+			}
+			averageBlockImportDuration = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
+			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
+			return averageBlockImportDuration;
+		} else {
+			// Nothing to make a statistic, we return 0.
+			return 0;
+		}
+	}
+
+	/**
+	 * Return execution time mean.
+	 *
+	 * @return execution time mean
+	 */
+	@Override
+	public final float getAverageBlockImportDuration() {
+		return averageBlockImportDuration;
+	}
+
 }

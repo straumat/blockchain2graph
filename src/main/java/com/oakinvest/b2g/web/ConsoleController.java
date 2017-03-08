@@ -2,15 +2,20 @@ package com.oakinvest.b2g.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Index.
+ * Console controller.
  * Created by straumat on 02/11/16.
  */
 @Controller
 public class ConsoleController {
+
+	/**
+	 * Console view.
+	 */
+	public static final String CONSOLE_VIEW = "console";
 
 	/**
 	 * Server address.
@@ -27,11 +32,13 @@ public class ConsoleController {
 	/**
 	 * Page to be display.
 	 *
-	 * @return page to display
+	 * @param model model.
+	 * @return page to display.
 	 */
 	@RequestMapping(value = "/")
-	public final ModelAndView index() {
-		return new ModelAndView("console", "url", address + ":" + port);
+	public final String index(final Model model) {
+		model.addAttribute("url", address + ":" + port);
+		return CONSOLE_VIEW;
 	}
 
 }

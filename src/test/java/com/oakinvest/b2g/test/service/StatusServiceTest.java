@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -15,8 +17,10 @@ import static org.junit.Assert.assertTrue;
  * Tests for the status service.
  * Created by straumat on 28/10/16.
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StatusServiceTest {
 
 	/**
@@ -50,7 +54,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastLogMessageTest() {
-		ss.addLogMessage("Hi !");
+		ss.addLog("Hi !");
 		assertTrue("Wrong last log message after setting it", ss.getLastLogMessage().contains("Hi !"));
 	}
 
@@ -59,8 +63,27 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
-		ss.addErrorMessage("Error !");
+		ss.addError("Error !");
 		assertTrue("Wrong last error message after setting it", ss.getLastErrorMessage().contains("Error !"));
+	}
+
+	/**
+	 * Test for addBlockImportDurationStatistic().
+	 */
+	@Test
+	public final void getStatisticsTest() {
+		// Simple test with twi values
+		assertEquals(1f, ss.addBlockImportDurationStatistic(1f), 0f);
+		assertEquals(1.5f, ss.addBlockImportDurationStatistic(2f), 0f);
+
+		// Adding 100 values to see if the two previous number are disappearing.
+		for (int i = 0; i < 100; i++) {
+			ss.addBlockImportDurationStatistic(4);
+		}
+		assertEquals(4f, ss.addBlockImportDurationStatistic(4f), 0f);
+
+		// Adding another value.
+		assertEquals(5f, ss.addBlockImportDurationStatistic(104f), 0f);
 	}
 
 }

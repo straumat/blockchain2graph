@@ -10,7 +10,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,9 +52,19 @@ public class StatusHandler extends TextWebSocketHandler {
 	private static final String TYPE_ERROR = "error";
 
 	/**
+	 * Execution time.
+	 */
+	private static final String TYPE_AVERAGE_BLOCK_DURATION = "averageBlockImportDuration";
+
+	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
+
+	/**
+	 * Session.
+	 */
+	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Status service.
@@ -63,18 +72,14 @@ public class StatusHandler extends TextWebSocketHandler {
 	@Autowired
 	private StatusService status;
 
-	/**
-	 * Session.
-	 */
-	private CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-
-
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
-		updateTotalBlockCount(status.getTotalBlockCount());
 		updateImportedBlockCount(status.getImportedBlockCount());
-		updateErrorMessage(status.getLastErrorMessage());
+		updateTotalBlockCount(status.getTotalBlockCount());
+		updateError(status.getLastErrorMessage());
+		updateLog(status.getLastLogMessage());
+		updateAverageBlockImportDuration(status.getAverageBlockImportDuration());
 	}
 
 	/**
@@ -118,11 +123,22 @@ public class StatusHandler extends TextWebSocketHandler {
 	 *
 	 * @param errorMessage error message.
 	 */
-	public final void updateErrorMessage(final String errorMessage) {
+	public final void updateError(final String errorMessage) {
 		JSONObject obj = new JSONObject();
 		obj.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
 		obj.put(PARAM_MESSAGE_VALUE, errorMessage);
-		updateLog(errorMessage);
+		sendMessage(obj.toString());
+	}
+
+	/**
+	 * Update execution time statistic.
+	 *
+	 * @param averageBlockImportDuration new execution time statistics.
+	 */
+	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
+		JSONObject obj = new JSONObject();
+		obj.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
+		obj.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
 		sendMessage(obj.toString());
 	}
 
@@ -132,20 +148,25 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param message message
 	 */
 	private void sendMessage(final String message) {
-		// First, we clean all sessions that are closed.
-		List<WebSocketSession> sessionsToRemove = new ArrayList<>();
-		for (WebSocketSession session : this.sessions) {
-			if (!session.isOpen()) {
-				sessionsToRemove.add(session);
-			}
-		}
-		this.sessions.removeAll(sessionsToRemove);
-		// Then we send the messages to all opened sessions.
 		try {
+			// First, we clean all sessions that are closed.
+			List<WebSocketSession> sessionsToRemove = new ArrayList<>();
 			for (WebSocketSession session : this.sessions) {
-				session.sendMessage(new TextMessage(message));
+				if (!session.isOpen()) {
+					sessionsToRemove.add(session);
+				}
 			}
-		} catch (IOException e) {
+			this.sessions.removeAll(sessionsToRemove);
+
+			// Then we send the messages to all opened sessions.
+			for (WebSocketSession session : this.sessions) {
+				synchronized (session) {
+					if (session.isOpen()) {
+						session.sendMessage(new TextMessage(message));
+					}
+				}
+			}
+		} catch (Exception e) {
 			log.error("Error sending message " + e);
 		}
 	}

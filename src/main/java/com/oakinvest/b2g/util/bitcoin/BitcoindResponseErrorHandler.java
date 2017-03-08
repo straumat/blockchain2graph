@@ -1,5 +1,7 @@
 package com.oakinvest.b2g.util.bitcoin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -7,10 +9,15 @@ import org.springframework.web.client.ResponseErrorHandler;
 import java.io.IOException;
 
 /**
- * Response hander to deal with 500 error code from bitcoind.
+ * Response handler to deal with 500 error code from bitcoind.
  * Created by straumat on 01/09/16.
  */
 public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
+
+	/**
+	 * Logger.
+	 */
+	private final Logger log = LoggerFactory.getLogger(BitcoindResponseErrorHandler.class);
 
 	/**
 	 * Indicates whether the given response has any errors.
@@ -23,7 +30,7 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 */
 	@Override
 	public final boolean hasError(final ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = response.getStatusCode();
+		HttpStatus.Series statusCode = response.getStatusCode().series();
 		return (HttpStatus.Series.SUCCESSFUL.equals(statusCode) || HttpStatus.Series.SERVER_ERROR.equals(statusCode));
 	}
 
@@ -35,8 +42,8 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 * @throws IOException in case of I/O errors
 	 */
 	@Override
-	public void handleError(final ClientHttpResponse response) throws IOException {
-
+	public final void handleError(final ClientHttpResponse response) throws IOException {
+		log.debug("Response error: {} {}", response.getStatusCode(), response.getStatusText());
 	}
 
 }

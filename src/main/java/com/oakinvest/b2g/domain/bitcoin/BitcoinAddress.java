@@ -31,13 +31,13 @@ public class BitcoinAddress {
 	 * Input transactions.
 	 */
 	@Relationship(type = "IN_TRANSACTION_INPUTS")
-	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<BitcoinTransactionInput>();
+	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<>();
 
 	/**
 	 * Output transactions.
 	 */
 	@Relationship(type = "IN_TRANSACTION_OUTPUTS")
-	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<BitcoinTransactionOutput>();
+	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
 
 	/**
 	 * Default constructor.
@@ -126,4 +126,33 @@ public class BitcoinAddress {
 		address = newAddress;
 	}
 
+	/**
+	 * Using bitcoin address.
+	 *
+	 * @param o object
+	 * @return true if equals
+	 */
+	@Override
+	public final boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BitcoinAddress)) {
+			return false;
+		}
+
+		final BitcoinAddress that = (BitcoinAddress) o;
+
+		return getAddress().equals(that.getAddress());
+	}
+
+	/**
+	 * Using bitcoin address.
+	 *
+	 * @return hash
+	 */
+	@Override
+	public final int hashCode() {
+		return getAddress().hashCode();
+	}
 }

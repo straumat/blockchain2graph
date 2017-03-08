@@ -7,14 +7,14 @@ package com.oakinvest.b2g.service;
 public interface StatusService {
 
 	/**
-	 * Returns the total nubmer of blocks in the blockchain.
+	 * Returns the total number of blocks in the blockchain.
 	 *
 	 * @return total block count
 	 */
 	long getTotalBlockCount();
 
 	/**
-	 * Set the total nubmer of blocks in the blockchain.
+	 * Set the total number of blocks in the blockchain.
 	 *
 	 * @param newTotalBlockCount new value
 	 */
@@ -46,7 +46,7 @@ public interface StatusService {
 	 *
 	 * @param newLogMessage log message
 	 */
-	void addLogMessage(String newLogMessage);
+	void addLog(String newLogMessage);
 
 	/**
 	 * Returns the last error message.
@@ -60,6 +60,21 @@ public interface StatusService {
 	 *
 	 * @param newErrorMessage error message
 	 */
-	void addErrorMessage(String newErrorMessage);
+	void addError(String newErrorMessage);
+
+	/**
+	 * Add an execution time statistics and return the execution mean.
+	 *
+	 * @param newTime new execution time.
+	 * @return mean time
+	 */
+	float addBlockImportDurationStatistic(float newTime);
+
+	/**
+	 * Return execution time mean.
+	 *
+	 * @return execution time mean
+	 */
+	float getAverageBlockImportDuration();
 
 }

@@ -1,6 +1,11 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.batch.BitcoinImportBatchAddresses;
+import com.oakinvest.b2g.batch.BitcoinImportBatchBlocks;
+import com.oakinvest.b2g.batch.BitcoinImportBatchRelations;
+import com.oakinvest.b2g.batch.BitcoinImportBatchTransactions;
+import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -9,36 +14,36 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.IntegrationService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 /**
- * Tests for IntegrationService.
+ * Tests for bitcoin blockchain import.
  * Created by straumat on 04/09/16.
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class IntegrationServiceTest {
+public class BitcoinImportTest {
 
 	/**
-	 * Integration service.
+	 * Number of blocs to import.
 	 */
-	@Autowired
-	private IntegrationService is;
+	private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
 
 	/**
-	 * Bitcoin blcok repository.
+	 * Bitcoin block repository.
 	 */
 	@Autowired
 	private BitcoinBlockRepository bbr;
@@ -56,21 +61,89 @@ public class IntegrationServiceTest {
 	private BitcoinTransactionRepository btr;
 
 	/**
-	 * integrateBitcoinBlock test.
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchBlocks batchBlocks;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchAddresses batchAddresses;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchTransactions batchTransactions;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinImportBatchRelations batchRelations;
+
+	/**
+	 * Bitcoind mock.
+	 */
+	@Autowired
+	private BitcoindMock bitcoindMock;
+
+	/**
+	 * Importing the data.
 	 *
-	 * @throws InterruptedException if not able to suspend time.
+	 * @throws Exception exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		bitcoindMock.resetErrorCounters();
+		// Launching import.
+		while (bbr.countImported() != NUMBERS_OF_BLOCK_TO_IMPORT) {
+			batchBlocks.importData();
+			batchAddresses.importData();
+			batchTransactions.importData();
+			batchRelations.importData();
+		}
+	}
+
+	/**
+	 * Test for recovery after crash.
 	 */
 	@Test
-	public final void integrateBitcoinBlockTest() throws InterruptedException {
-		// Configuration.
-		final int firstBlockToImport = 0;
-		final int lastBlockToImport = 500;
+	public final void testRecoveryAfterCrash() {
+		// We set the last block as not at all imported
+		BitcoinBlock b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+		b.setAddressesImported(false);
+		b.setTransactionsImported(false);
+		b.setRelationsImported(false);
+		b.setImported(false);
+		bbr.save(b);
 
-		// Launching integration.
-		for (int i = firstBlockToImport; i <= lastBlockToImport; i++) {
-			assertTrue("Block " + i + " integration failure", is.integrateBitcoinBlock(i));
+		// Then, we reimport it.
+		try {
+			batchAddresses.importData();
+			batchTransactions.importData();
+			batchRelations.importData();
+		} catch (Exception e) {
+			fail("Recovery after crash did not work " + e.getMessage());
 		}
 
+		// we check that everything as been reimported on that block
+		assertEquals("Block not re imported", bbr.countImported(), NUMBERS_OF_BLOCK_TO_IMPORT);
+		b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+		assertTrue("Addresses not imported", b.isAddressesImported());
+		assertTrue("Transactions not imported", b.isTransactionsImported());
+		assertTrue("Relations not imported", b.isRelationsImported());
+		assertTrue("Block not imported", b.isImported());
+	}
+
+
+	/**
+	 * importBlock() test.
+	 */
+	@Test
+	public final void importBlockTest() {
 		// Testing data of block 170.
 		final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedHeight = 170;
@@ -85,6 +158,7 @@ public class IntegrationServiceTest {
 		final String expectedChainwork = "000000000000000000000000000000000000000000000000000000ab00ab00ab";
 		final String expectedPreviousblockhash = "000000002a22cfee1f2c846adbd12b3e183d4f97683f85dad08a79780a84bd55";
 		final String expectedNextblockhash = "00000000c9ec538cab7f38ef9c67a95742f56ab07b0a37c5be6b02808dbfb4e0";
+		final int expectedTxSize = 2;
 		BitcoinBlock b = bbr.findByHash(expectedHash);
 		assertEquals("Wrong Block height", expectedHeight, b.getHeight());
 		assertEquals("Wrong Block size ", expectedSize, b.getSize());
@@ -98,7 +172,26 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong Block chainblock ", expectedChainwork, b.getChainWork());
 		assertEquals("Wrong Block previous block hash ", expectedPreviousblockhash, b.getPreviousBlockHash());
 		assertEquals("Wrong Block next block hash ", expectedNextblockhash, b.getNextBlockHash());
+		assertEquals("Wrong tx size", expectedTxSize, b.getTx().size());
+	}
 
+	/**
+	 * importBlockAddresses() test.
+	 */
+	@Test
+	public final void importBlockAddressesTest() {
+		// Testing that the address of block 500 is imported and that non existing address does not.
+		final String existingAddress = "1C1ENNWdkPMyhZ7xTEM4Kwq1FTUifZNCRd";
+		final String nonExistingAddress = "TOTO";
+		assertNotNull("The address should exists", bar.findByAddress(existingAddress));
+		assertNull("The address should exists", bar.findByAddress(nonExistingAddress));
+	}
+
+	/**
+	 * importBlockTransactions() test.
+	 */
+	@Test
+	public final void importBlockTransactionsTest() {
 		// Testing the transaction of the block 170
 		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
 		final String expectedTransactionHex = "0100000001c997a5e56e104102fa209c6a852dd90660a20b2d9c352423edce25857fcd3704000000004847304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901ffffffff0200ca9a3b00000000434104ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84cac00286bee0000000043410411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3ac00000000";
@@ -107,7 +200,7 @@ public class IntegrationServiceTest {
 		final long expectedTransactionSize = 275;
 		final long expectedTransactionVSize = 275;
 		final long expectedTransactionVersion = 1;
-		final long exepctedTransactionLocktime = 0;
+		final long expectedTransactionLockTime = 0;
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedTransactionTime = 1231731025;
 		final long expectedTransactionBlockTime = 1231731025;
@@ -117,9 +210,9 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong Tx id", expectedTransactionTxid, t.getTxId());
 		assertEquals("Wrong hash", expectedTransactionHash, t.getHash());
 		assertEquals("Wrong size", expectedTransactionSize, t.getSize());
-		assertEquals("Wrong vsize", expectedTransactionVSize, t.getvSize());
+		assertEquals("Wrong vSize", expectedTransactionVSize, t.getvSize());
 		assertEquals("Wrong version", expectedTransactionVersion, t.getVersion());
-		assertEquals("Wrong locktime", exepctedTransactionLocktime, t.getLockTime());
+		assertEquals("Wrong lockTime", expectedTransactionLockTime, t.getLockTime());
 		assertEquals("Wrong block hash", expectedBlockHash, t.getBlockHash());
 		assertEquals("Wrong time", expectedTransactionTime, t.getTime());
 		assertEquals("Wrong block time", expectedTransactionBlockTime, t.getBlockTime());
@@ -138,7 +231,7 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong vin1 sequence", expectedVin1Sequence, vin1.getSequence());
 
 		// VOut 1.
-		BitcoinTransactionOutput vout1 = t.getOutputByIndex(0);
+		BitcoinTransactionOutput vout1 = t.getOutputByIndex(0).get();
 		final float expectedVout1Value = 10;
 		final int expectedVout1N = 0;
 		final String expectedVout1ScriptPubKeyAsm = "04ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84c OP_CHECKSIG";
@@ -155,7 +248,7 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong vout1 address", expectedVout1ScriptPubKeyAddress, vout1.getAddresses().iterator().next());
 
 		// VOut 2.
-		BitcoinTransactionOutput vout2 = t.getOutputByIndex(1);
+		BitcoinTransactionOutput vout2 = t.getOutputByIndex(1).get();
 		final float expectedVout2Value = 40;
 		final int expectedVout2N = 1;
 		final String expectedVout2ScriptPubKeyAsm = "0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3 OP_CHECKSIG";
@@ -170,24 +263,22 @@ public class IntegrationServiceTest {
 		assertEquals("wrong vout2 reqSigs", expectedVout2ScriptPubKeyReqSigs, vout2.getScriptPubKeyReqSigs());
 		assertEquals("Wrong vout2 type", expectedVout2ScriptPubKeyType, vout2.getScriptPubKeyType());
 		assertEquals("Wrong vout2 address", expectedVout2ScriptPubKeyAddress, vout2.getAddresses().iterator().next());
+	}
 
-		// Integrating again the block last block and checking that we did not make a duplicate block.
-		long numberOfBlocks = bbr.count();
-		is.integrateBitcoinBlock(lastBlockToImport);
-		assertEquals("The same block has been saved as two entities", numberOfBlocks, bbr.count());
+	/**
+	 * importBitcoinBlock test.
+	 *
+	 * @throws Exception if not able to suspend time.
+	 */
+	@Test
+	public final void importBlockRelationsTest() throws Exception {
+		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
+		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+		final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
+		BitcoinBlock b = bbr.findByHash(expectedHash);
+		BitcoinTransaction t = btr.findByTxId(transactionHash);
 
-		// Testing if addresses are integrated
-		final String existingBitcoinAdress = "1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3";
-		final String nonExistingBitcoinAdress = "1Jy1ZoZaTzVs3dsa6LUYif1F5wyRVkLdDv";
-		assertNotNull("Bitcoin address not saved", bar.findByAddress(existingBitcoinAdress));
-		assertNull("Bitcoin address is saved but does not exists", bar.findByAddress(nonExistingBitcoinAdress));
-
-		// Integrating again the block last block and checking that we did not make a duplicate address.
-		long numberOfAddresses = bbr.count();
-		is.integrateBitcoinBlock(lastBlockToImport);
-		assertEquals("The same address has been saved as two entities", numberOfAddresses, bbr.count());
-
-		// testing relationsships between blocks and transactions.
+		// testing relationships between blocks and transactions.
 		assertEquals("Wrong block for the transaction", expectedBlockHash, t.getBlock().getHash());
 		assertEquals("Wrong transactions number for the block", 2, b.getTransactions().size());
 
@@ -197,6 +288,7 @@ public class IntegrationServiceTest {
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawls = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
+		//a1.getWithdrawals().forEach(i -> System.out.println("=> " + i.getTxId()));
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();
@@ -236,6 +328,12 @@ public class IntegrationServiceTest {
 		assertEquals("Wrong to address", "1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg", a2bto1.getAddresses().iterator().next());
 		assertEquals("Wrong from address", "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S", a2bto1.getTransaction().getInputs().iterator().next().getTransactionOutput().getAddresses().iterator().next());
 		assertEquals("Wrong transaction value", 10.0f, a2bto1.getValue());
+
+		// Test to check that coin creation is taken into account.
+		// https://blockchain.info/fr/tx/ec2ba1a3784dacd6962d53e9266d08d6cca40cce60240954bb3448c6acdf568f
+		BitcoinAddress a3 = bar.findByAddress("1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW");
+		assertEquals("No coinbase transaction found", 1, a3.getDeposits().size());
+		assertEquals("Wrong coinbase about", 50f, a3.getDeposits().stream().findFirst().get().getValue());
 	}
 
 }

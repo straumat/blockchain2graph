@@ -24,7 +24,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	/**
 	 * Register.
 	 *
-	 * @param registry resigtry
+	 * @param registry registry
 	 */
 	@Override
 	public final void registerWebSocketHandlers(final WebSocketHandlerRegistry registry) {

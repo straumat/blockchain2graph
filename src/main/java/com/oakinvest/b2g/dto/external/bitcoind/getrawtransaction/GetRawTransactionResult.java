@@ -50,12 +50,12 @@ public class GetRawTransactionResult implements Serializable {
 	/**
 	 * Vin.
 	 */
-	private ArrayList<GetRawTransactionVIn> vin;
+	private ArrayList<GetRawTransactionVIn> vin = new ArrayList<>();
 
 	/**
 	 * Vout.
 	 */
-	private ArrayList<GetRawTransactionVOut> vout;
+	private ArrayList<GetRawTransactionVOut> vout = new ArrayList<>();
 
 	/**
 	 * the block hash.

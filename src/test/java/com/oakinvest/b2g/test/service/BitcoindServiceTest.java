@@ -1,17 +1,22 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.configuration.BitcoindMock;
+import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.service.BitcoindService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.TestCase.assertFalse;
@@ -24,9 +29,30 @@ import static org.junit.Assert.assertTrue;
  * Tests for BitcoindService.
  * Created by straumat on 29/08/16.
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 public class BitcoindServiceTest {
+
+	/**
+	 * Number of errors.
+	 */
+	private static final int NUMBER_OF_ERRORS = 8;
+
+	/**
+	 * Block in error.
+	 */
+	private static final int BLOCK_IN_ERROR_1 = 496;
+
+	/**
+	 * Block hash in error.
+	 */
+	private static final String BLOCK_HASH_IN_ERROR_1 = "00000000b0c5a240b2a61d2e75692224efd4cbecdf6eaf4cc2cf477ca7c270e7";
+
+	/**
+	 * Number of blocks.
+	 */
+	private static final int NUMBER_OF_BLOCKS = 500;
 
 	/**
 	 * Double delta acceptable for assertEquals.
@@ -46,7 +72,7 @@ public class BitcoindServiceTest {
 	/**
 	 * Block hash with coinbase transaction.
 	 */
-	private static final String COINBBASE_TRANSACTION_HASH = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
+	private static final String COINBASE_TRANSACTION_HASH = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
 
 	/**
 	 * Existing transaction in the block.
@@ -59,10 +85,31 @@ public class BitcoindServiceTest {
 	private static final String BLOCK_NON_EXISTING_TRANSACTION_HASH = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8333";
 
 	/**
+	 * Transaction hash in error.
+	 */
+	private static final String TRANSACTION_HASH_IN_ERROR_1 = "bc15f9dcbe637c187bb94247057b14637316613630126fc396c22e08b89006ea";
+
+	/**
 	 * Bitcoind service.
 	 */
 	@Autowired
 	private BitcoindService bds;
+
+	/**
+	 * Bitcoind mock.
+	 */
+	@Autowired
+	private BitcoindMock bitcoindMock;
+
+	/**
+	 * Setup.
+	 *
+	 * @throws Exception exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		bitcoindMock.resetErrorCounters();
+	}
 
 	/**
 	 * getBlockCount test.
@@ -70,8 +117,26 @@ public class BitcoindServiceTest {
 	@Test
 	public final void getBlockCountTest() {
 		GetBlockCountResponse r = bds.getBlockCount();
-		assertNull("An error occured", r.getError());
+		assertNull("An error occurred", r.getError());
 		assertTrue("getblockcount failed", r.getResult() >= 1);
+	}
+
+	/**
+	 * getBlockCountTest test in error.
+	 * It happends randomely so this test may fail.
+	 */
+	@Test
+	public final void getBlockCountTestInError() {
+		boolean errorFound = false;
+		GetBlockCountResponse r = bds.getBlockCount();
+		assertNull(r.getError());
+		for (int i = 0; i < NUMBER_OF_BLOCKS + 1; i++) {
+			if (bds.getBlockCount().getError() != null) {
+				errorFound = true;
+				break;
+			}
+		}
+		assertTrue("bds.getBlockCount() never raised an error", errorFound);
 	}
 
 	/**
@@ -80,8 +145,21 @@ public class BitcoindServiceTest {
 	@Test
 	public final void getBlockHashTest() {
 		GetBlockHashResponse r = bds.getBlockHash(BLOCK_NUMBER_VALID);
-		assertNull("An error occured", r.getError());
+		assertNull("An error occurred", r.getError());
 		assertEquals("getblockhash did not give the right answer", BLOCK_HASH, r.getResult());
+	}
+
+	/**
+	 * getBlockHash test in error.
+	 */
+	@Test
+	public final void getBlockHashTestInError() {
+		GetBlockHashResponse r = bds.getBlockHash(BLOCK_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getBlockHash(BLOCK_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
 	}
 
 	/**
@@ -98,6 +176,7 @@ public class BitcoindServiceTest {
 		final int expectedMedianTime = 1472667998;
 		final long expectedNonce = 2771503229L;
 		final float difficulty = 220755908330.3723f;
+		final int expectedTxSize = 323;
 
 		// Test.
 		GetBlockResult r = bds.getBlock(BLOCK_HASH).getResult();
@@ -117,6 +196,20 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong chain work", "00000000000000000000000000000000000000000024f53caa84da5b8101b580", r.getChainwork());
 		assertEquals("Wrong previous block hash", "0000000000000000034a9b379481e41e935165dd32b39c69cb46591678b7eaa8", r.getPreviousblockhash());
 		assertEquals("Wrong next block hash", "0000000000000000029c774f0f83bff2f2a2418040e775b5d3237d23382e2cf0", r.getNextblockhash());
+		assertEquals("Wrong tx size", expectedTxSize, r.getTx().size());
+	}
+
+	/**
+	 * getBlockTest test in error.
+	 */
+	@Test
+	public final void getBlockTestInError() {
+		GetBlockResponse r = bds.getBlock(BLOCK_HASH_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getBlock(BLOCK_HASH_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
 	}
 
 	/**
@@ -127,7 +220,7 @@ public class BitcoindServiceTest {
 		// Expected values.
 		final String expectedHex = "01000000036cdb9b62cbe05f8a927b9533c516cec7f48ea86f84a74a7a270b565e716c8d03010000006a4730440220658261d55d04fc86bbc8ab24580ec054608efbba4e7ef323f47d7da6115d53a40220555d4a7d7d764af19dab228f58f16897a1ec2df6ebb86d2f2fdec54022c7212d0121020ca90ba28ac971548973887e0ca85ba49a28a6d420d69f234484187939f21440fffffffff654b6e676d5df674cf6243d3cbd43ec1808b693e093592babdcd482efec1d29000000006a4730440220410979edac5c8fdbcadeed4dbf60d4c81a23529fd638a85ee2021ddfa8ccec9d022024a51ed255cc0e155e0242cc6a78424cbd425e3214748eed3abc91477e7d3684012102a7ee7ab483e24923fc07a2da4f04fcb57bb2ae07f9534f13ac0ab66b24f2f231fffffffffd641b0dbee467fc645dca838910f54b71d7215b6f7338e66f65a5d424fcb855000000006a47304402201a1ff43febcfee2fffb1dff37348181a4a0bfb3c3fd018efcf26c27812a1e13f02205a2dc3935c2c315d98f4b6da97f264931ec97234b69ddee3d76ad47989a23b2b012103e4ab3eb6a7f15ca989a16ec4457a0f776ebce42930580abc76f2a2f06939bc27ffffffff02e0d14d000000000017a9146169cadbc390751d0932864719c8ca539e18ad9487924a1a00000000001976a9144e7d959b26448aa47de48c622e6ce23838edbb6788ac00000000";
 		final String expectedTxID = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322";
-		final String expectedhash = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322";
+		final String expectedHash = "5481ccb8fd867ae90ae33793fff2b6bcd93f8881f1c883035f955c59d4fa8322";
 		final int expectedSize = 517;
 		final int expectedVsize = 517;
 		final int expectedVersion = 1;
@@ -178,7 +271,7 @@ public class BitcoindServiceTest {
 		GetRawTransactionResult r = bds.getRawTransaction(BLOCK_EXISTING_TRANSACTION_HASH).getResult();
 		assertEquals("Wrong hex", expectedHex, r.getHex());
 		assertEquals("Wrong tx id", expectedTxID, r.getTxid());
-		assertEquals("Wrong hash", expectedhash, r.getHash());
+		assertEquals("Wrong hash", expectedHash, r.getHash());
 		assertEquals("Wrong size", expectedSize, r.getSize());
 		assertEquals("Wrong vsize", expectedVsize, r.getVsize());
 		assertEquals("Wrong version", expectedVersion, r.getVersion());
@@ -236,12 +329,35 @@ public class BitcoindServiceTest {
 		assertEquals("Wrong block time", expectedBlockTime, r.getBlocktime());
 
 		// Getrawtransaction for coinbase.
-		GetRawTransactionResult coinbaseTransaction = bds.getRawTransaction(COINBBASE_TRANSACTION_HASH).getResult();
+		GetRawTransactionResult coinbaseTransaction = bds.getRawTransaction(COINBASE_TRANSACTION_HASH).getResult();
 		assertEquals("Wrong vin transaction count", 1, coinbaseTransaction.getVin().size());
 		final String expectedCoinbase = "04ffff001d0134";
 		final long expectedSequence = 4294967295L;
 		assertEquals("Coinbase not set", expectedCoinbase, coinbaseTransaction.getVin().get(0).getCoinbase());
 		assertEquals("Sequence not set", expectedSequence, coinbaseTransaction.getVin().get(0).getSequence());
+	}
+
+	/**
+	 * getRawTransaction test in error.
+	 */
+	@Test
+	public final void getRawTransactionInError() {
+		GetRawTransactionResponse r = bds.getRawTransaction(TRANSACTION_HASH_IN_ERROR_1);
+		assertNotNull("No error occurred", r.getError());
+		for (int i = 0; i < NUMBER_OF_ERRORS + 1; i++) {
+			r = bds.getRawTransaction(TRANSACTION_HASH_IN_ERROR_1);
+		}
+		assertNull("An error occurred", r.getError());
+	}
+
+	/**
+	 * getRawTransactionTest test.
+	 */
+	@Test
+	public final void getRawTransactionWithEmptyAddressesTest() {
+		final String invalidTransaction = "a288fec5559c3f73fd3d93db8e8460562ebfe2fcf04a5114e8d0f2920a6270dc";
+		GetRawTransactionResult r = bds.getRawTransaction(invalidTransaction).getResult();
+		assertNotNull(r.getVout().get(1).getScriptPubKey().getAddresses());
 	}
 
 	/**

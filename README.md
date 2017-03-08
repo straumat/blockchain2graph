@@ -7,7 +7,7 @@ Here are some use cases :
 * Build web sites like [Blockchain.info](https://blockchain.info/).
 * Add meta informations to addresses and transactions.
 
-At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain and we needed to have a conveniant way to access blockchain informations. With blockchain2graph, we can analyse blockchain data as transactions between nodes and add meta informations on them.
+At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain and we needed to have a convenient way to access blockchain informations. With blockchain2graph, we can analyse blockchain data as transactions between nodes and add meta informations on them.
 
 The documentation can be found [here](https://github.com/straumat/blockchain2graph/wiki).
 

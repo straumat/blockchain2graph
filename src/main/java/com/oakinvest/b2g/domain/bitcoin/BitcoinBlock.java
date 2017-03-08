@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class BitcoinBlock {
 	 * Transactions in the block.
 	 */
 	@Relationship(type = "TRANSACTIONS")
-	private Set<BitcoinTransaction> transactions = new HashSet<BitcoinTransaction>();
+	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
 	 * Block height.
@@ -105,6 +106,35 @@ public class BitcoinBlock {
 	@Property(name = "nextblockhash")
 	private String nextBlockHash;
 
+	/**
+	 * The transaction ids.
+	 */
+	@Property(name = "tx")
+	private ArrayList<String> tx = new ArrayList<>();
+
+	/**
+	 * Addresses imported.
+	 */
+	@Property(name = "addressesImported")
+	private boolean addressesImported = false;
+
+	/**
+	 * Transactions imported.
+	 */
+	@Property(name = "transactionsImported")
+	private boolean transactionsImported = false;
+
+	/**
+	 * Relations imported.
+	 */
+	@Property(name = "relationsImported")
+	private boolean relationsImported = false;
+
+	/**
+	 * Indicates that the bloc is fully imported.
+	 */
+	@Property(name = "imported")
+	private boolean imported = false;
 
 	/**
 	 * For display.
@@ -387,5 +417,123 @@ public class BitcoinBlock {
 		transactions = newTransactions;
 	}
 
+	/**
+	 * Getter of imported.
+	 *
+	 * @return imported
+	 */
+	public final boolean isImported() {
+		return imported;
+	}
 
+	/**
+	 * Setter of imported.
+	 *
+	 * @param newImported the imported to set
+	 */
+	public final void setImported(final boolean newImported) {
+		imported = newImported;
+	}
+
+	/**
+	 * Getter addressesImported.
+	 *
+	 * @return addressesImported
+	 */
+	public final boolean isAddressesImported() {
+		return addressesImported;
+	}
+
+	/**
+	 * Setter addressesImported.
+	 *
+	 * @param newAddressesImported the addressesImported to set
+	 */
+	public final void setAddressesImported(final boolean newAddressesImported) {
+		addressesImported = newAddressesImported;
+	}
+
+	/**
+	 * Getter transactionsImported.
+	 *
+	 * @return transactionsImported
+	 */
+	public final boolean isTransactionsImported() {
+		return transactionsImported;
+	}
+
+	/**
+	 * Setter transactionsImported.
+	 *
+	 * @param newTransactionsImported the transactionsImported to set
+	 */
+	public final void setTransactionsImported(final boolean newTransactionsImported) {
+		transactionsImported = newTransactionsImported;
+	}
+
+	/**
+	 * Getter relationsImported.
+	 *
+	 * @return relationsImported
+	 */
+	public final boolean isRelationsImported() {
+		return relationsImported;
+	}
+
+	/**
+	 * Setter relationsImported.
+	 *
+	 * @param newRelationsImported the relationsImported to set
+	 */
+	public final void setRelationsImported(final boolean newRelationsImported) {
+		relationsImported = newRelationsImported;
+	}
+
+	/**
+	 * Getter tx.
+	 *
+	 * @return tx
+	 */
+	public final ArrayList<String> getTx() {
+		return tx;
+	}
+
+	/**
+	 * Setter tx.
+	 *
+	 * @param newTx the tx to set
+	 */
+	public final void setTx(final ArrayList<String> newTx) {
+		tx = newTx;
+	}
+
+	/**
+	 * Using block hash.
+	 *
+	 * @param o object
+	 * @return true if equals
+	 */
+	@Override
+	public final boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BitcoinBlock)) {
+			return false;
+		}
+
+		final BitcoinBlock that = (BitcoinBlock) o;
+
+		return getHash().equals(that.getHash());
+	}
+
+	/**
+	 * Using block hash.
+	 *
+	 * @return hash
+	 */
+	@Override
+	public final int hashCode() {
+		return getHash().hashCode();
+	}
 }
