@@ -26,31 +26,31 @@ connection.onmessage = function (e) {
 			switch ($("#logType").val()) {
 				case "blocks":
 					if (response.messageValue.includes("Blocks batch")) {
-						$("#logs").append("<div>" + response.messageValue + "</div>");
+						$("#logs").append("<div>" + response.messageValue.replace("Blocks batch - ", "") + "</div>");
 					}
 					break;
 
 				case "addresses":
 					if (response.messageValue.includes("Addresses batch")) {
-						$("#logs").append("<div>" + response.messageValue + "</div>");
+						$("#logs").append("<div>" + response.messageValue.replace("Addresses batch - ", "") + "</div>");
 					}
 					break;
 
 				case "transactions":
 					if (response.messageValue.includes("Transactions batch")) {
-						$("#logs").append("<div>" + response.messageValue + "</div>");
+						$("#logs").append("<div>" + response.messageValue.replace("Transactions batch - ", "") + "</div>");
 					}
 					break;
 
 				case "relations":
 					if (response.messageValue.includes("Relations batch")) {
-						$("#logs").append("<div>" + response.messageValue + "</div>");
+						$("#logs").append("<div>" + response.messageValue.replace("Relations batch - ", "") + "</div>");
 					}
 					break;
 			}
 			// We clean to avoid having too much logs.
 			let childrenLength = $("#logs").children().length;
-			if (childrenLength > 18) {
+			if (childrenLength > 19) {
 				$("#logs").children().eq(0).remove();
 			}
 			break;
