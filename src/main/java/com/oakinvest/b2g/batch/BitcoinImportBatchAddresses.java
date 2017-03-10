@@ -90,8 +90,8 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 			blockToTreat.setAddressesImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " imported in " + elapsedTime + " secs");
-			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
+			addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
+			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
 			try {

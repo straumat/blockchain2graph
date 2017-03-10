@@ -66,6 +66,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 						try {
 							// Saving the transaction in the database.
 							BitcoinTransaction bt = getMapper().rawTransactionResultToBitcoinTransaction(transactionResponse.getResult());
+							addLog("Treating transaction " + transactionHash);
 
 							// For each Vin.
 							Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
@@ -80,7 +81,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 										vin.setTransactionOutput(originTransactionOutput.get());
 										// We set the addresses "from" if it's not a coinbase transaction.
 										originTransactionOutput.get().getAddresses().forEach(a -> (getBar().findByAddress(a)).getWithdrawals().add(vin));
-										getLogger().info(getLogPrefix() + " - Done treating vin : " + vin);
+										addLog(" - Done treating vin : " + vin);
 									} else {
 										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 										return;
@@ -96,12 +97,12 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
 										.forEach(a -> (getBar().findByAddress(a)).getDeposits().add(vout));
-								getLogger().info(getLogPrefix() + " - Done treating vout : " + vout);
+								addLog(" - Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
 							getBtr().save(bt);
-							addLog("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
+							addLog("Transaction " + transactionHash + " saved (id=" + bt.getId() + ")");
 							getLogger().info(getLogPrefix() + " - Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
