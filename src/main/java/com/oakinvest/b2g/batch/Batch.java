@@ -1,5 +1,7 @@
 package com.oakinvest.b2g.batch;
 
+import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
@@ -74,12 +76,28 @@ public class Batch {
 	private Session session;
 
 	/**
+	 * Bitcoin block repository.
+	 */
+	@Autowired
+	private BitcoinBlockRepository bbr;
+
+	/**
+	 * Bitcoind service.
+	 */
+	@Autowired
+	private BitcoindService bds;
+
+	/**
 	 * Import data.
 	 */
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
 		final long start = System.currentTimeMillis();
+
+		// Update block statistics.
+		status.setImportedBlockCount(bbr.countImported());
+		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Importing the block.
 		try {
@@ -91,7 +109,7 @@ public class Batch {
 			status.addError("Error in the batch process : " + e.getMessage());
 		}
 
-		// Adding a statistic.
+		// Adding a statistic on duration.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addBlockImportDurationStatistic(elapsedTime);
 
