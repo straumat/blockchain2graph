@@ -49,8 +49,8 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			addLog("-------------------------------------------------------------------------------------------------");
-			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
+			addLog(LOG_SEPARATOR);
+			addLog("Starting to import transactions from block n°" + getFormatedBlock(blockToTreat.getHeight()));
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -117,7 +117,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 			blockToTreat.setTransactionsImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
 			try {

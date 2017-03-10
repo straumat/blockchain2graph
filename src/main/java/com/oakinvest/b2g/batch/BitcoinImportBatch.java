@@ -22,6 +22,11 @@ public abstract class BitcoinImportBatch {
 	protected static final int PAUSE_BETWEEN_IMPORTS = 10;
 
 	/**
+	 * Log separator.
+	 */
+	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
+
+	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
 	protected static final int PAUSE_BETWEEN_CHECKS = 1000;
@@ -76,6 +81,16 @@ public abstract class BitcoinImportBatch {
 	 */
 	@Autowired
 	private BitcoinTransactionRepository btr;
+
+	/**
+	 * Returns the block height in a formated way.
+	 *
+	 * @param blockHeight block height
+	 * @return formated block height
+	 */
+	protected final String getFormatedBlock(final long blockHeight) {
+		return String.format("%09d", blockHeight);
+	}
 
 	/**
 	 * Returns the logger prefix to display in each logger.

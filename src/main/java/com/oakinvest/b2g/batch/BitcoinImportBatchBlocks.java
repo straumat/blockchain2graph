@@ -56,8 +56,8 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the block data...
 					String blockHash = blockHashResponse.getResult();
-					addLog("-------------------------------------------------------------------------------------------------");
-					addLog("Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
+					addLog(LOG_SEPARATOR);
+					addLog("Starting to import block n°" + getFormatedBlock(blockToTreat) + " (" + blockHash + ")");
 					GetBlockResponse blockResponse = getBds().getBlock(blockHash);
 					if (blockResponse.getError() == null) {
 						// ---------------------------------------------------------------------------------------------
@@ -66,20 +66,20 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 						if (block == null) {
 							block = getMapper().blockResultToBitcoinBlock(blockResponse.getResult());
 							getBbr().save(block);
-							addLog("Block n°" + blockToTreat + " saved with id " + block.getId());
+							addLog("Block n°" + getFormatedBlock(blockToTreat) + " saved with id " + block.getId());
 						} else {
-							addLog("Block n°" + blockToTreat + " already saved with id " + block.getId());
+							addLog("Block n°" + getFormatedBlock(blockToTreat) + " already saved with id " + block.getId());
 						}
 						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-						addLog("Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
+						addLog("Block n°" + getFormatedBlock(blockToTreat) + " imported in " + elapsedTime + " secs");
 						getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
 					} else {
 						// Error while retrieving the block informations.
-						addError("Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+						addError("Error getting block n°" + getFormatedBlock(blockToTreat) + " informations : " + blockResponse.getError());
 					}
 				} else {
 					// Error while retrieving the block hash.
-					addError("Error getting the hash of block n°" + blockToTreat + " : " + blockHashResponse.getError());
+					addError("Error getting the hash of block n°" + getFormatedBlock(blockToTreat) + " : " + blockHashResponse.getError());
 				}
 			} else {
 				addLog("All blocks are imported");

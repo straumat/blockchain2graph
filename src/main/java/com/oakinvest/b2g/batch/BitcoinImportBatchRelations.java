@@ -46,8 +46,8 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			try {
 				// ---------------------------------------------------------------------------------------------------------
 				// Getting the block informations.
-				addLog("-------------------------------------------------------------------------------------------------");
-				addLog("Starting to import relations from block n°" + blockToTreat.getHeight());
+				addLog(LOG_SEPARATOR);
+				addLog("Starting to import relations from block n°" + getFormatedBlock(blockToTreat.getHeight()));
 				// ---------------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
 				blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
@@ -62,10 +62,10 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				blockToTreat.setImported(true);
 				getBbr().save(blockToTreat);
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+				addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {
-				addError("Block n°" + blockToTreat.getHeight() + " raised an exception " + e.getMessage());
+				addError("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
 			}
 		} else {
 			addLog("Nothing to do");
