@@ -12,13 +12,13 @@ connection.onmessage = function (e) {
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "importedBlockCount":
-			$(document).prop("title", "b2g - " + response.messageValue + " blocks imported");
-			$("#importedBlockCount").text(response.messageValue);
+			$(document).prop("title", "b2g - " + response.messageValue.toLocaleString() + " blocks imported");
+			$("#importedBlockCount").text(response.messageValue.toLocaleString());
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "totalBlockCount":
-			$("#totalBlockCount").text(response.messageValue);
+			$("#totalBlockCount").text(response.messageValue.toLocaleString());
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
