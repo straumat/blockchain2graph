@@ -3,6 +3,7 @@ package com.oakinvest.b2g.batch;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;

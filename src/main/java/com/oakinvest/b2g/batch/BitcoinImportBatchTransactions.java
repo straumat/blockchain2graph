@@ -5,6 +5,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
