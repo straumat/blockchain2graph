@@ -4,6 +4,8 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.neo4j.ogm.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,11 @@ public class Batch {
 	 * How many milli seconds in one second.
 	 */
 	private static final float MILLISECONDS_IN_SECONDS = 1000F;
+
+	/**
+	 * Logger.
+	 */
+	private final Logger log = LoggerFactory.getLogger(Batch.class);
 
 	/**
 	 * Import batch.
@@ -92,7 +99,8 @@ public class Batch {
 			batchTransactions.importData();
 			batchRelations.importData();
 		} catch (Exception e) {
-			status.addError("Error in the batch process : " + e.getMessage());
+			status.addError("Error in the batch processes : " + e.getMessage());
+			log.error(e.getStackTrace().toString());
 		} finally {
 			session.clear();
 		}
