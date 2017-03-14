@@ -288,10 +288,8 @@ public class BitcoinImportTest {
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
 		// Testing withdrawals.
-		System.out.println("=> " + a1.getDeposits().size());
 		final int a1NumberOfWithdrawls = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
-		//a1.getWithdrawals().forEach(i -> System.out.println("=> " + i.getTxId()));
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();

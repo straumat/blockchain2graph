@@ -85,7 +85,7 @@ public class Application extends SpringBootServletInitializer {
 			session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
 			session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
 		} catch (Exception e) {
-			log.error("Error while creating constraints in neo4j" + e.getMessage());
+			log.error("Error while creating constraints in neo4j : " + e.getMessage());
 		}
 	}
 

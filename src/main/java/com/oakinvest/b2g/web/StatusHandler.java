@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.web;
 
+import com.google.gson.Gson;
 import com.oakinvest.b2g.service.StatusService;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -62,9 +63,14 @@ public class StatusHandler extends TextWebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
 
 	/**
-	 * Session.
+	 * Sessions.
 	 */
 	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+
+	/**
+	 * Gson.
+	 */
+	private Gson gson = new Gson();
 
 	/**
 	 * Status service.
@@ -89,10 +95,10 @@ public class StatusHandler extends TextWebSocketHandler {
 	 */
 	public final void updateImportedBlockCount(final long count) {
 		// TODO move from JSONObject to GSon
-		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
-		obj.put(PARAM_MESSAGE_VALUE, count);
-		sendMessage(obj.toString());
+		HashMap<Object, Object> information = new HashMap();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
+		information.put(PARAM_MESSAGE_VALUE, count);
+		sendMessage(gson.toJson(information));
 	}
 
 	/**
@@ -101,10 +107,10 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param count new value.
 	 */
 	public final void updateTotalBlockCount(final long count) {
-		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
-		obj.put(PARAM_MESSAGE_VALUE, count);
-		sendMessage(obj.toString());
+		HashMap<Object, Object> information = new HashMap();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
+		information.put(PARAM_MESSAGE_VALUE, count);
+		sendMessage(gson.toJson(information));
 	}
 
 	/**
@@ -113,10 +119,10 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param logMessage log message
 	 */
 	public final void updateLog(final String logMessage) {
-		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
-		obj.put(PARAM_MESSAGE_VALUE, logMessage);
-		sendMessage(obj.toString());
+		HashMap<Object, Object> information = new HashMap();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
+		information.put(PARAM_MESSAGE_VALUE, logMessage);
+		sendMessage(gson.toJson(information));
 	}
 
 	/**
@@ -125,10 +131,10 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param errorMessage error message.
 	 */
 	public final void updateError(final String errorMessage) {
-		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
-		obj.put(PARAM_MESSAGE_VALUE, errorMessage);
-		sendMessage(obj.toString());
+		HashMap<Object, Object> information = new HashMap();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
+		information.put(PARAM_MESSAGE_VALUE, errorMessage);
+		sendMessage(gson.toJson(information));
 	}
 
 	/**
@@ -137,10 +143,10 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param averageBlockImportDuration new execution time statistics.
 	 */
 	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
-		JSONObject obj = new JSONObject();
-		obj.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
-		obj.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
-		sendMessage(obj.toString());
+		HashMap<Object, Object> information = new HashMap();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
+		information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
+		sendMessage(gson.toJson(information));
 	}
 
 	/**
