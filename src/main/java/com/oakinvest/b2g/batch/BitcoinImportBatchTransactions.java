@@ -107,6 +107,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 							getLogger().info(getLogPrefix() + " - Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
+							getLogger().error(e.getStackTrace().toString());
 							return;
 						}
 					} else {

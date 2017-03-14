@@ -67,6 +67,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {
 				addError("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
+				getLogger().error(e.getStackTrace().toString());
 			}
 		} else {
 			addLog("Nothing to do");

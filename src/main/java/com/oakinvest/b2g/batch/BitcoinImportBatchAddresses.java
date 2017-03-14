@@ -99,6 +99,7 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 				Thread.sleep(PAUSE_BETWEEN_CHECKS);
 			} catch (Exception e) {
 				addError("Error while waiting : " + e.getMessage());
+				getLogger().error(e.getStackTrace().toString());
 			}
 		}
 	}

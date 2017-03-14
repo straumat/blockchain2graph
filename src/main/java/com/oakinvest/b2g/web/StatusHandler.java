@@ -174,6 +174,7 @@ public class StatusHandler extends TextWebSocketHandler {
 			}
 		} catch (Exception e) {
 			log.error("Error sending message " + e);
+			log.error(e.getStackTrace().toString());
 		}
 	}
 
