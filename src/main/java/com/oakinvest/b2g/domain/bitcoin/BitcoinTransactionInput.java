@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -8,6 +9,7 @@ import org.neo4j.ogm.annotation.Relationship;
  * Bitcoin transaction input.
  * Created by straumat on 22/09/16.
  */
+@NodeEntity(label = "BitcoinTransactionInput")
 public class BitcoinTransactionInput {
 
 	/**

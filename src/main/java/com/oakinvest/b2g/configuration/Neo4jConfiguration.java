@@ -1,8 +1,5 @@
 package com.oakinvest.b2g.configuration;
 
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
@@ -20,10 +17,10 @@ public class Neo4jConfiguration {
 	 * @return session factory
 	 * @throws Exception exception
 	 */
-	@Bean
+/*	@Bean
 	@SuppressWarnings("checkstyle:designforextension")
 	public Session getSession() throws Exception {
 		return new SessionFactory("com.oakinvest.b2g").openSession();
-	}
+	}*/
 
 }

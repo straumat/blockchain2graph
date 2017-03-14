@@ -53,6 +53,7 @@ public class Application extends SpringBootServletInitializer {
 	 * Neo4j operations.
 	 */
 	@Autowired
+	// TODO Neo4jOperations is deprecated - change to session https://github.com/spring-projects/spring-boot/issues/7391
 	private Neo4jOperations neo4jOperations;
 
 	/**

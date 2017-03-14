@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Bitcoin import batch - abstract model.
+ * TODO Move to util.
  * Created by straumat on 27/02/17.
  */
 public abstract class BitcoinImportBatch {

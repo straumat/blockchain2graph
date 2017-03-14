@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,6 +36,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BitcoinImportTest {
 
 	/**
@@ -286,6 +288,7 @@ public class BitcoinImportTest {
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
 		// Testing withdrawals.
+		System.out.println("=> " + a1.getDeposits().size());
 		final int a1NumberOfWithdrawls = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
 		//a1.getWithdrawals().forEach(i -> System.out.println("=> " + i.getTxId()));

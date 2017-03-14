@@ -88,6 +88,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param count new value.
 	 */
 	public final void updateImportedBlockCount(final long count) {
+		// TODO move from JSONObject to GSon
 		JSONObject obj = new JSONObject();
 		obj.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
 		obj.put(PARAM_MESSAGE_VALUE, count);
