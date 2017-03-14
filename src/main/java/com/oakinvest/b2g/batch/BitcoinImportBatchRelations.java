@@ -71,11 +71,6 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			}
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-			}
 		}
 
 	}

@@ -95,12 +95,6 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-				getLogger().error(e.getStackTrace().toString());
-			}
 		}
 	}
 

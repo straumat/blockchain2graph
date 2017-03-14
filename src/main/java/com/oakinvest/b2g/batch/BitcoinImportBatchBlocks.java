@@ -82,13 +82,6 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 					// Error while retrieving the block hash.
 					addError("Error getting the hash of block n°" + getFormatedBlock(blockToTreat) + " : " + blockHashResponse.getError());
 				}
-			} else {
-				addLog("All blocks are imported");
-				try {
-					Thread.sleep(PAUSE_BETWEEN_CHECKS);
-				} catch (Exception e) {
-					addError("Error while waiting : " + e.getMessage());
-				}
 			}
 		} else {
 			// Error while retrieving the number of blocks in bitcoind.

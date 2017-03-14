@@ -123,11 +123,6 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 			addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-			}
 		}
 
 	}
