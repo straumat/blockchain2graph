@@ -3,6 +3,7 @@ package com.oakinvest.b2g;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
+import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.neo4j.template.Neo4jOperations;
 
 import javax.annotation.PostConstruct;
-
-import static java.util.Collections.EMPTY_MAP;
+import java.util.Collections;
 
 /**
  * Application launcher.
@@ -50,11 +49,10 @@ public class Application extends SpringBootServletInitializer {
 	private StatusService status;
 
 	/**
-	 * Neo4j operations.
+	 * Neo4j session.
 	 */
 	@Autowired
-	// TODO Neo4jOperations is deprecated - change to session https://github.com/spring-projects/spring-boot/issues/7391
-	private Neo4jOperations neo4jOperations;
+	private Session session;
 
 	/**
 	 * Application launcher.
@@ -82,10 +80,10 @@ public class Application extends SpringBootServletInitializer {
 		// Create unique constraints in neo4j for blocks, transactions, addresses.
 		try {
 			// Constraints.
-			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", EMPTY_MAP);
-			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", EMPTY_MAP);
-			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", EMPTY_MAP);
-			neo4jOperations.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", EMPTY_MAP);
+			session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
+			session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
+			session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
+			session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
 		} catch (Exception e) {
 			log.error("Error while creating constraints in neo4j" + e.getMessage());
 		}
