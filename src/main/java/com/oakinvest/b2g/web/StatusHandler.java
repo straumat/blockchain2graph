@@ -94,8 +94,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param count new value.
 	 */
 	public final void updateImportedBlockCount(final long count) {
-		// TODO move from JSONObject to GSon
-		HashMap<Object, Object> information = new HashMap();
+		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
 		information.put(PARAM_MESSAGE_VALUE, count);
 		sendMessage(gson.toJson(information));
@@ -107,7 +106,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param count new value.
 	 */
 	public final void updateTotalBlockCount(final long count) {
-		HashMap<Object, Object> information = new HashMap();
+		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
 		information.put(PARAM_MESSAGE_VALUE, count);
 		sendMessage(gson.toJson(information));
@@ -119,7 +118,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param logMessage log message
 	 */
 	public final void updateLog(final String logMessage) {
-		HashMap<Object, Object> information = new HashMap();
+		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
 		information.put(PARAM_MESSAGE_VALUE, logMessage);
 		sendMessage(gson.toJson(information));
@@ -131,7 +130,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param errorMessage error message.
 	 */
 	public final void updateError(final String errorMessage) {
-		HashMap<Object, Object> information = new HashMap();
+		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
 		information.put(PARAM_MESSAGE_VALUE, errorMessage);
 		sendMessage(gson.toJson(information));
@@ -143,7 +142,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 * @param averageBlockImportDuration new execution time statistics.
 	 */
 	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
-		HashMap<Object, Object> information = new HashMap();
+		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
 		information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
 		sendMessage(gson.toJson(information));
