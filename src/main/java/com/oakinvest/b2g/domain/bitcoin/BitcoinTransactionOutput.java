@@ -65,13 +65,13 @@ public class BitcoinTransactionOutput {
 	private String scriptPubKeyType;
 
 	/**
-	 * Adresses.
+	 * Addresses.
 	 */
 	@Property(name = "addresses")
 	private Set<String> addresses = new HashSet<>();
 
 	/**
-	 * Adresses.
+	 * Addresses.
 	 */
 	@Relationship(type = "FOR_ADDRESS")
 	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<>();

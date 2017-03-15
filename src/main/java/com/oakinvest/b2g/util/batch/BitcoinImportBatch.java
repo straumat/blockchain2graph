@@ -78,12 +78,12 @@ public abstract class BitcoinImportBatch {
 	private BitcoinTransactionRepository btr;
 
 	/**
-	 * Returns the block height in a formated way.
+	 * Returns the block height in a formatted way.
 	 *
 	 * @param blockHeight block height
-	 * @return formated block height
+	 * @return formatted block height
 	 */
-	protected final String getFormatedBlock(final long blockHeight) {
+	protected final String getFormattedBlock(final long blockHeight) {
 		return String.format("%09d", blockHeight);
 	}
 

@@ -49,8 +49,7 @@ connection.onmessage = function (e) {
 					break;
 			}
 			// We clean to avoid having too much logs.
-			let childrenLength = $("#logs").children().length;
-			if (childrenLength > 19) {
+			if ($("#logs").children().length > 19) {
 				$("#logs").children().eq(0).remove();
 			}
 			break;

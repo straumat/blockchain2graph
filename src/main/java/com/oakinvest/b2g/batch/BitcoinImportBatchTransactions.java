@@ -19,11 +19,6 @@ import java.util.Optional;
 public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 
 	/**
-	 * Initial delay before importing a block transactions.
-	 */
-	//private static final int BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY = 3000;
-
-	/**
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Transactions batch";
@@ -51,7 +46,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		// If there is a block to work on.
 		if (blockToTreat != null) {
 			addLog(LOG_SEPARATOR);
-			addLog("Starting to import transactions from block n°" + getFormatedBlock(blockToTreat.getHeight()));
+			addLog("Starting to import transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -120,7 +115,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 			blockToTreat.setTransactionsImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
 		}

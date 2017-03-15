@@ -13,11 +13,6 @@ import org.springframework.stereotype.Component;
 public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 
 	/**
-	 * Initial delay before importing a block relations.
-	 */
-	//private static final int BLOCK_RELATIONS_IMPORT_INITIAL_DELAY = 4000;
-
-	/**
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Relations batch";
@@ -48,7 +43,7 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				// ---------------------------------------------------------------------------------------------------------
 				// Getting the block informations.
 				addLog(LOG_SEPARATOR);
-				addLog("Starting to import relations from block n°" + getFormatedBlock(blockToTreat.getHeight()));
+				addLog("Starting to import relations from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 				// ---------------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
 				blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
@@ -63,10 +58,10 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				blockToTreat.setImported(true);
 				getBbr().save(blockToTreat);
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				addLog("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
+				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {
-				addError("Block n°" + getFormatedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
+				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
 				getLogger().error(e.getStackTrace().toString());
 			}
 		} else {

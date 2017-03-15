@@ -55,7 +55,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété inputTransactions.
+	 * Getter inputTransactions.
 	 *
 	 * @return inputTransactions
 	 */
@@ -74,7 +74,7 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Getter de la propriété outputTransactions.
+	 * Getter outputTransactions.
 	 *
 	 * @return outputTransactions
 	 */

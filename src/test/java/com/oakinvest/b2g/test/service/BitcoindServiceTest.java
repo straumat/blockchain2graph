@@ -123,7 +123,7 @@ public class BitcoindServiceTest {
 
 	/**
 	 * getBlockCountTest test in error.
-	 * It happends randomely so this test may fail.
+	 * It appends randomly so this test may fail.
 	 */
 	@Test
 	public final void getBlockCountTestInError() {

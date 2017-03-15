@@ -30,22 +30,22 @@ import java.util.List;
 public class BitcoindServiceImplementation implements BitcoindService {
 
 	/**
-	 * Command to get blockcount.
+	 * Command to getblockcount.
 	 */
 	private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
 
 	/**
-	 * Command to get getblockhash.
+	 * Command to getblockhash.
 	 */
 	private static final String COMMAND_GETBLOCKHASH = "getblockhash";
 
 	/**
-	 * Command to get getblock.
+	 * Command to getblock.
 	 */
 	private static final String COMMAND_GETBLOCK = "getblock";
 
 	/**
-	 * Command to get getrawtransaction.
+	 * Command to getrawtransaction.
 	 */
 	private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
 
@@ -193,7 +193,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Getting the URL to call.
 	 *
-	 * @return bitcoind serveur url
+	 * @return bitcoind server url
 	 */
 	private String getURL() {
 		return "http://" + hostname + ":" + port;
