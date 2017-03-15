@@ -30,22 +30,22 @@ import java.util.List;
 public class BitcoindServiceImplementation implements BitcoindService {
 
 	/**
-	 * Command to get blockcount.
+	 * Command to getblockcount.
 	 */
 	private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
 
 	/**
-	 * Command to get getblockhash.
+	 * Command to getblockhash.
 	 */
 	private static final String COMMAND_GETBLOCKHASH = "getblockhash";
 
 	/**
-	 * Command to get getblock.
+	 * Command to getblock.
 	 */
 	private static final String COMMAND_GETBLOCK = "getblock";
 
 	/**
-	 * Command to get getrawtransaction.
+	 * Command to getrawtransaction.
 	 */
 	private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
 
@@ -111,7 +111,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		JSONObject request = getRequest(COMMAND_GETBLOCKCOUNT, params);
 
 		// Making the call.
-		//RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
@@ -130,7 +129,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		JSONObject request = getRequest(COMMAND_GETBLOCKHASH, params);
 
 		// Making the call.
-		//RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblockHash on block " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
@@ -149,7 +147,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		JSONObject request = getRequest(COMMAND_GETBLOCK, params);
 
 		// Making the call.
-		//RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getblock on block " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
@@ -169,7 +166,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		JSONObject request = getRequest(COMMAND_GETRAWTRANSACTION, params);
 
 		// Making the call.
-		//RestTemplate restTemplate = getRestTemplate();
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
 		log.info("Calling getrawtransaction on transaction " + request);
 		return restTemplate.postForObject(getURL(), entity, GetRawTransactionResponse.class);
@@ -189,6 +185,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 			request.put(PARAMETER_PARAMS, params);
 		} catch (JSONException e) {
 			log.error("Error while building the request " + e);
+			log.error(e.getStackTrace().toString());
 		}
 		return request;
 	}
@@ -196,7 +193,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Getting the URL to call.
 	 *
-	 * @return bitcoind serveur url
+	 * @return bitcoind server url
 	 */
 	private String getURL() {
 		return "http://" + hostname + ":" + port;

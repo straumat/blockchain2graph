@@ -3,6 +3,7 @@ package com.oakinvest.b2g.batch;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -13,11 +14,6 @@ import java.util.Iterator;
  */
 @Component
 public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
-
-	/**
-	 * Initial delay before importing a block addresses.
-	 */
-	//private static final int BLOCK_ADDRESSES_IMPORT_INITIAL_DELAY = 2000;
 
 	/**
 	 * Log prefix.
@@ -46,8 +42,8 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			addLog("-------------------------------------------------------------------------------------------------");
-			addLog("Starting to import addresses from block n°" + blockToTreat.getHeight());
+			addLog(LOG_SEPARATOR);
+			addLog("Starting to import addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -90,15 +86,10 @@ public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
 			blockToTreat.setAddressesImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			addLog("Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
-			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " imported in " + elapsedTime + " secs");
+			addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
+			getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-			}
 		}
 	}
 

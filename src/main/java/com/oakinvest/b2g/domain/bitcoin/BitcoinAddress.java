@@ -30,13 +30,13 @@ public class BitcoinAddress {
 	/**
 	 * Input transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_INPUTS")
+	@Relationship(type = "IN_TRANSACTION_INPUTS", direction = Relationship.UNDIRECTED)
 	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<>();
 
 	/**
 	 * Output transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_OUTPUTS")
+	@Relationship(type = "IN_TRANSACTION_OUTPUTS", direction = Relationship.UNDIRECTED)
 	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
 
 	/**
@@ -55,6 +55,44 @@ public class BitcoinAddress {
 	}
 
 	/**
+	 * Getter inputTransactions.
+	 *
+	 * @return inputTransactions
+	 */
+	public final Set<BitcoinTransactionInput> getInputTransactions() {
+		return inputTransactions;
+	}
+
+	/**
+	 * Setter of inputTransactions.
+	 *
+	 * @param newInputTransactions the inputTransactions to set
+	 */
+	@Relationship
+	public final void setInputTransactions(final Set<BitcoinTransactionInput> newInputTransactions) {
+		inputTransactions = newInputTransactions;
+	}
+
+	/**
+	 * Getter outputTransactions.
+	 *
+	 * @return outputTransactions
+	 */
+	public final Set<BitcoinTransactionOutput> getOutputTransactions() {
+		return outputTransactions;
+	}
+
+	/**
+	 * Setter of outputTransactions.
+	 *
+	 * @param newOutputTransactions the outputTransactions to set
+	 */
+	@Relationship
+	public final void setOutputTransactions(final Set<BitcoinTransactionOutput> newOutputTransactions) {
+		outputTransactions = newOutputTransactions;
+	}
+
+	/**
 	 * Getter of inputTransactions.
 	 *
 	 * @return inputTransactions
@@ -64,30 +102,12 @@ public class BitcoinAddress {
 	}
 
 	/**
-	 * Setter of inputTransactions.
-	 *
-	 * @param newInputTransactions the inputTransactions to set
-	 */
-	public final void setInputTransactions(final Set<BitcoinTransactionInput> newInputTransactions) {
-		inputTransactions = newInputTransactions;
-	}
-
-	/**
 	 * Getter of outputTransactions.
 	 *
 	 * @return outputTransactions
 	 */
 	public final Set<BitcoinTransactionOutput> getDeposits() {
 		return outputTransactions;
-	}
-
-	/**
-	 * Setter of outputTransactions.
-	 *
-	 * @param newOutputTransactions the outputTransactions to set
-	 */
-	public final void setOutputTransactions(final Set<BitcoinTransactionOutput> newOutputTransactions) {
-		outputTransactions = newOutputTransactions;
 	}
 
 	/**
@@ -155,4 +175,5 @@ public class BitcoinAddress {
 	public final int hashCode() {
 		return getAddress().hashCode();
 	}
+
 }

@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,11 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class BitcoinImportBatchRelations extends BitcoinImportBatch {
-
-	/**
-	 * Initial delay before importing a block relations.
-	 */
-	//private static final int BLOCK_RELATIONS_IMPORT_INITIAL_DELAY = 4000;
 
 	/**
 	 * Log prefix.
@@ -46,8 +42,8 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 			try {
 				// ---------------------------------------------------------------------------------------------------------
 				// Getting the block informations.
-				addLog("-------------------------------------------------------------------------------------------------");
-				addLog("Starting to import relations from block n°" + blockToTreat.getHeight());
+				addLog(LOG_SEPARATOR);
+				addLog("Starting to import relations from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 				// ---------------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
 				blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
@@ -62,19 +58,14 @@ public class BitcoinImportBatchRelations extends BitcoinImportBatch {
 				blockToTreat.setImported(true);
 				getBbr().save(blockToTreat);
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
-				getStatus().setImportedBlockCount(getBbr().countImported());
 			} catch (Exception e) {
-				addError("Block n°" + blockToTreat.getHeight() + " raised an exception " + e.getMessage());
+				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
+				getLogger().error(e.getStackTrace().toString());
 			}
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-			}
 		}
 
 	}

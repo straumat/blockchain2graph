@@ -12,13 +12,13 @@ connection.onmessage = function (e) {
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "importedBlockCount":
-			$(document).prop("title", "b2g - " + response.messageValue + " blocks imported");
-			$("#importedBlockCount").text(response.messageValue);
+			$(document).prop("title", "b2g - " + response.messageValue.toLocaleString() + " blocks imported");
+			$("#importedBlockCount").text(response.messageValue.toLocaleString());
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "totalBlockCount":
-			$("#totalBlockCount").text(response.messageValue);
+			$("#totalBlockCount").text(response.messageValue.toLocaleString());
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -49,8 +49,7 @@ connection.onmessage = function (e) {
 					break;
 			}
 			// We clean to avoid having too much logs.
-			let childrenLength = $("#logs").children().length;
-			if (childrenLength > 19) {
+			if ($("#logs").children().length > 19) {
 				$("#logs").children().eq(0).remove();
 			}
 			break;

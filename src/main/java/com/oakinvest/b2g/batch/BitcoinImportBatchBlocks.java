@@ -4,6 +4,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.external.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.external.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,11 +13,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
-
-	/**
-	 * Initial delay before importing a block.
-	 */
-	//private static final int BLOCK_IMPORT_INITIAL_DELAY = 1000;
 
 	/**
 	 * Log prefix.
@@ -56,8 +52,8 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the block data...
 					String blockHash = blockHashResponse.getResult();
-					addLog("-------------------------------------------------------------------------------------------------");
-					addLog("Starting to import block n°" + blockToTreat + " (" + blockHash + ")");
+					addLog(LOG_SEPARATOR);
+					addLog("Starting to import block n°" + getFormattedBlock(blockToTreat) + " (" + blockHash + ")");
 					GetBlockResponse blockResponse = getBds().getBlock(blockHash);
 					if (blockResponse.getError() == null) {
 						// ---------------------------------------------------------------------------------------------
@@ -66,27 +62,20 @@ public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
 						if (block == null) {
 							block = getMapper().blockResultToBitcoinBlock(blockResponse.getResult());
 							getBbr().save(block);
-							addLog("Block n°" + blockToTreat + " saved with id " + block.getId());
+							addLog("Block n°" + getFormattedBlock(blockToTreat) + " saved with id " + block.getId());
 						} else {
-							addLog("Block n°" + blockToTreat + " already saved with id " + block.getId());
+							addLog("Block n°" + getFormattedBlock(blockToTreat) + " already saved with id " + block.getId());
 						}
 						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-						addLog("Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
-						getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " imported in " + elapsedTime + " secs");
+						addLog("Block n°" + getFormattedBlock(blockToTreat) + " treated in " + elapsedTime + " secs");
+						getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " treated in " + elapsedTime + " secs");
 					} else {
 						// Error while retrieving the block informations.
-						addError("Error getting block n°" + blockToTreat + " informations : " + blockResponse.getError());
+						addError("Error getting block n°" + getFormattedBlock(blockToTreat) + " informations : " + blockResponse.getError());
 					}
 				} else {
 					// Error while retrieving the block hash.
-					addError("Error getting the hash of block n°" + blockToTreat + " : " + blockHashResponse.getError());
-				}
-			} else {
-				addLog("All blocks are imported");
-				try {
-					Thread.sleep(PAUSE_BETWEEN_CHECKS);
-				} catch (Exception e) {
-					addError("Error while waiting : " + e.getMessage());
+					addError("Error getting the hash of block n°" + getFormattedBlock(blockToTreat) + " : " + blockHashResponse.getError());
 				}
 			}
 		} else {

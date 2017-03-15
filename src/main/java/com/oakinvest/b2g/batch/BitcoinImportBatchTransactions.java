@@ -5,6 +5,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.external.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -16,11 +17,6 @@ import java.util.Optional;
  */
 @Component
 public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
-
-	/**
-	 * Initial delay before importing a block transactions.
-	 */
-	//private static final int BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY = 3000;
 
 	/**
 	 * Log prefix.
@@ -49,8 +45,8 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
 		if (blockToTreat != null) {
-			addLog("-------------------------------------------------------------------------------------------------");
-			addLog("Starting to import transactions from block n°" + blockToTreat.getHeight());
+			addLog(LOG_SEPARATOR);
+			addLog("Starting to import transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the addresses.
@@ -66,6 +62,7 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 						try {
 							// Saving the transaction in the database.
 							BitcoinTransaction bt = getMapper().rawTransactionResultToBitcoinTransaction(transactionResponse.getResult());
+							addLog("Treating transaction " + transactionHash);
 
 							// For each Vin.
 							Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
@@ -79,8 +76,8 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 									if (originTransactionOutput.isPresent()) {
 										vin.setTransactionOutput(originTransactionOutput.get());
 										// We set the addresses "from" if it's not a coinbase transaction.
-										originTransactionOutput.get().getAddresses().forEach(a -> (getBar().findByAddress(a)).getWithdrawals().add(vin));
-										getLogger().info(getLogPrefix() + " - Done treating vin : " + vin);
+										originTransactionOutput.get().getAddresses().forEach(a -> (getBar().findByAddress(a)).getInputTransactions().add(vin));
+										addLog(" - Done treating vin : " + vin);
 									} else {
 										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 										return;
@@ -95,16 +92,17 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 								vout.setTransaction(bt);
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
-										.forEach(a -> (getBar().findByAddress(a)).getDeposits().add(vout));
-								getLogger().info(getLogPrefix() + " - Done treating vout : " + vout);
+										.forEach(a -> (getBar().findByAddress(a)).getOutputTransactions().add(vout));
+								addLog(" - Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
 							getBtr().save(bt);
-							addLog("Transaction " + transactionHash + " (id=" + bt.getId() + ")");
+							addLog("Transaction " + transactionHash + " saved (id=" + bt.getId() + ")");
 							getLogger().info(getLogPrefix() + " - Transaction " + transactionHash + " (id=" + bt.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + transactionHash + " : " + e.getMessage());
+							getLogger().error(e.getStackTrace().toString());
 							return;
 						}
 					} else {
@@ -117,14 +115,9 @@ public class BitcoinImportBatchTransactions extends BitcoinImportBatch {
 			blockToTreat.setTransactionsImported(true);
 			getBbr().save(blockToTreat);
 			final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-			addLog("Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+			addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 		} else {
 			addLog("Nothing to do");
-			try {
-				Thread.sleep(PAUSE_BETWEEN_CHECKS);
-			} catch (Exception e) {
-				addError("Error while waiting : " + e.getMessage());
-			}
 		}
 
 	}

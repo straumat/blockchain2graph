@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,6 +36,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BitcoinImportTest {
 
 	/**
@@ -120,7 +122,7 @@ public class BitcoinImportTest {
 		b.setImported(false);
 		bbr.save(b);
 
-		// Then, we reimport it.
+		// Then, we import it.
 		try {
 			batchAddresses.importData();
 			batchTransactions.importData();
@@ -129,7 +131,7 @@ public class BitcoinImportTest {
 			fail("Recovery after crash did not work " + e.getMessage());
 		}
 
-		// we check that everything as been reimported on that block
+		// we check that everything as been imported again on that block
 		assertEquals("Block not re imported", bbr.countImported(), NUMBERS_OF_BLOCK_TO_IMPORT);
 		b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
 		assertTrue("Addresses not imported", b.isAddressesImported());
@@ -286,9 +288,8 @@ public class BitcoinImportTest {
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
 		// Testing withdrawals.
-		final int a1NumberOfWithdrawls = 5;
-		assertEquals("Wrong number of inputs", a1NumberOfWithdrawls, a1.getWithdrawals().size());
-		//a1.getWithdrawals().forEach(i -> System.out.println("=> " + i.getTxId()));
+		final int a1NumberOfWithdrawals = 5;
+		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();
