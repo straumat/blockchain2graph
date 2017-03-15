@@ -18,6 +18,11 @@ import org.springframework.stereotype.Component;
 public class Batch {
 
 	/**
+	 * How much time it takes to create a new block for bitcoin (10 minutes).
+	 */
+	private static final int TIME_BEFORE_NEW_BITCOIN_BLOCK = 10 * 60 * 1000;
+
+	/**
 	 * Pause between imports.
 	 */
 	private static final int PAUSE_BETWEEN_IMPORTS = 1000;
@@ -108,6 +113,16 @@ public class Batch {
 		// Adding a statistic on duration.
 		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 		status.addBlockImportDurationStatistic(elapsedTime);
+
+		// If we are up to date with the blockchain last block.
+		if (bbr.countImported() == bds.getBlockCount().getResult()) {
+			try {
+				Thread.sleep(TIME_BEFORE_NEW_BITCOIN_BLOCK);
+			} catch (InterruptedException e) {
+				log.error("Error while pause : " + e.getMessage());
+			}
+		}
+
 	}
 
 }

@@ -27,11 +27,6 @@ public abstract class BitcoinImportBatch {
 	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
 
 	/**
-	 * Pause between calls for checking if all transactions ar done.
-	 */
-	protected static final int PAUSE_BETWEEN_CHECKS = 1000;
-
-	/**
 	 * How many milli seconds in one second.
 	 */
 	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
