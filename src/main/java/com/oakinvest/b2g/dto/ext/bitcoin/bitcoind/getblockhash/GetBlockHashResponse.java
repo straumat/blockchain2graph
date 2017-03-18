@@ -32,4 +32,5 @@ public class GetBlockHashResponse extends BitcoindResponse {
 	public final void setResult(final String newResult) {
 		result = newResult;
 	}
+
 }

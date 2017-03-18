@@ -91,7 +91,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockNumber block number
 	 * @return block data or null if a problem occurred.
 	 */
-	@Cacheable(value = "blockData")
+	@Cacheable(value = "blockData", unless = "#result != null")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public BitcoindBlockData getBlockDataFromBitcoind(final long blockNumber) {
 		try {
