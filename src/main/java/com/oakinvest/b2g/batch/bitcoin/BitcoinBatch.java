@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Temporary batch used because multi threading doesn't work.
  * Created by straumat on 02/03/17.
  */
 @Component
-public class Batch {
+public class BitcoinBatch {
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
@@ -28,38 +30,33 @@ public class Batch {
 	private static final int PAUSE_BETWEEN_IMPORTS = 1000;
 
 	/**
-	 * How many milli seconds in one second.
-	 */
-	private static final float MILLISECONDS_IN_SECONDS = 1000F;
-
-	/**
 	 * Logger.
 	 */
-	private final Logger log = LoggerFactory.getLogger(Batch.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinBatch.class);
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchBlocks batchBlocks;
+	private BitcoinBatchBlocks batchBlocks;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchAddresses batchAddresses;
+	private BitcoinBatchAddresses batchAddresses;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchTransactions batchTransactions;
+	private BitcoinBatchTransactions batchTransactions;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchRelations batchRelations;
+	private BitcoinBatchRelations batchRelations;
 
 	/**
 	 * Status service.
@@ -91,7 +88,7 @@ public class Batch {
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
-		final long start = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 
 		// Update block statistics.
 		status.setImportedBlockCount(bbr.countImported());
@@ -111,8 +108,7 @@ public class Batch {
 		}
 
 		// Adding a statistic on duration.
-		final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-		status.addBlockImportDurationStatistic(elapsedTime);
+		status.addBlockImportDurationStatistic(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime));
 
 		// If we are up to date with the blockchain last block.
 		if (bbr.countImported() == bds.getBlockCount().getResult()) {

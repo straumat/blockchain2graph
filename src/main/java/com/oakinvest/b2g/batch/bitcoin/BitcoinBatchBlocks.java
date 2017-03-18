@@ -1,10 +1,10 @@
-package com.oakinvest.b2g.batch;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
-import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
+import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinImportBatchBlocks extends BitcoinImportBatch {
+public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 	/**
 	 * Log prefix.

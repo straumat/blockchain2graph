@@ -1,11 +1,10 @@
-package com.oakinvest.b2g.batch;
+package com.oakinvest.b2g.util.bitcoin;
 
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
-import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Bitcoin import batch - abstract model.
  * Created by straumat on 27/02/17.
  */
-public abstract class BitcoinImportBatch {
+public abstract class BitcoinBatchTemplate {
 
 	/**
 	 * Pause between imports - Not used for the moment because of multi threading problems.
@@ -22,9 +21,9 @@ public abstract class BitcoinImportBatch {
 	protected static final int PAUSE_BETWEEN_IMPORTS = 10;
 
 	/**
-	 * Pause between calls for checking if all transactions ar done.
+	 * Log separator.
 	 */
-	protected static final int PAUSE_BETWEEN_CHECKS = 1000;
+	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
 
 	/**
 	 * How many milli seconds in one second.
@@ -39,7 +38,7 @@ public abstract class BitcoinImportBatch {
 	/**
 	 * Logger.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(BitcoinImportBatch.class);
+	private final Logger logger = LoggerFactory.getLogger(BitcoinBatchTemplate.class);
 
 	/**
 	 * Status service.
@@ -76,6 +75,16 @@ public abstract class BitcoinImportBatch {
 	 */
 	@Autowired
 	private BitcoinTransactionRepository btr;
+
+	/**
+	 * Returns the block height in a formatted way.
+	 *
+	 * @param blockHeight block height
+	 * @return formatted block height
+	 */
+	protected final String getFormattedBlock(final long blockHeight) {
+		return String.format("%09d", blockHeight);
+	}
 
 	/**
 	 * Returns the logger prefix to display in each logger.

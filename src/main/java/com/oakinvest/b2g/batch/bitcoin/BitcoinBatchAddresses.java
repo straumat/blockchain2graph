@@ -1,9 +1,9 @@
-package com.oakinvest.b2g.batch;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.util.batch.BitcoinImportBatch;
+import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinImportBatchAddresses extends BitcoinImportBatch {
+public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 	/**
 	 * Log prefix.

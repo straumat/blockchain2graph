@@ -1,10 +1,10 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.BitcoinImportBatchAddresses;
-import com.oakinvest.b2g.batch.BitcoinImportBatchBlocks;
-import com.oakinvest.b2g.batch.BitcoinImportBatchRelations;
-import com.oakinvest.b2g.batch.BitcoinImportBatchTransactions;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchAddresses;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchTransactions;
 import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -66,25 +66,25 @@ public class BitcoinImportTest {
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchBlocks batchBlocks;
+	private BitcoinBatchBlocks batchBlocks;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchAddresses batchAddresses;
+	private BitcoinBatchAddresses batchAddresses;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchTransactions batchTransactions;
+	private BitcoinBatchTransactions batchTransactions;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinImportBatchRelations batchRelations;
+	private BitcoinBatchRelations batchRelations;
 
 	/**
 	 * Bitcoind mock.
