@@ -5,6 +5,8 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Bitcoin import relations batch.
  * Created by straumat on 27/02/17.
@@ -31,10 +33,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	@Override
 	//@Scheduled(initialDelay = BLOCK_RELATIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void importData() {
+	public void process() {
 		final long start = System.currentTimeMillis();
 		// Block to import.
-		final BitcoinBlock blockToTreat = getBbr().findFirstBlockWithoutRelations();
+		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockWithoutRelations();
 
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
@@ -44,11 +46,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				// Getting the block informations.
 				addLog(LOG_SEPARATOR);
 				addLog("Starting to import relations from block n°" + getFormattedBlock(blockToTreat.getHeight()));
+
 				// ---------------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
 				blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 						.forEach(t -> {
-							BitcoinTransaction bt = getBtr().findByTxId(t);
+							BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
 							bt.setBlock(blockToTreat);
 							blockToTreat.getTransactions().add(bt);
 						});
@@ -56,8 +59,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				// We update the block to say everything went fine.
 				blockToTreat.setRelationsImported(true);
 				blockToTreat.setImported(true);
-				getBbr().save(blockToTreat);
-				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+				getBlockRepository().save(blockToTreat);
+
+				// We log.
+				final float elapsedTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {

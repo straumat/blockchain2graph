@@ -12,6 +12,7 @@ import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,19 +25,9 @@ import java.util.LinkedHashMap;
 public abstract class BitcoinBatchTemplate {
 
 	/**
-	 * Pause between imports - Not used for the moment because of multi threading problems.
-	 */
-	protected static final int PAUSE_BETWEEN_IMPORTS = 10;
-
-	/**
 	 * Log separator.
 	 */
 	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
-
-	/**
-	 * How many milli seconds in one second.
-	 */
-	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * Genesis transaction hash.
@@ -58,7 +49,7 @@ public abstract class BitcoinBatchTemplate {
 	 * Bitcoind service.
 	 */
 	@Autowired
-	private BitcoindService bds;
+	private BitcoindService bitcoindService;
 
 	/**
 	 * Mapper.
@@ -70,19 +61,19 @@ public abstract class BitcoinBatchTemplate {
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository bbr;
+	private BitcoinBlockRepository blockRepository;
 
 	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinAddressRepository bar;
+	private BitcoinAddressRepository addressRepository;
 
 	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinTransactionRepository btr;
+	private BitcoinTransactionRepository transactionRepository;
 
 	/**
 	 * Returns the block height in a formatted way.
@@ -100,17 +91,18 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockNumber block number
 	 * @return block data or null if a problem occurred.
 	 */
+	@Cacheable(value = "blockData")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public BitcoindBlockData getBlockDataFromBitcoind(final long blockNumber) {
 		try {
 			// ---------------------------------------------------------------------------------------------------------
 			// We retrieve the block hash...
-			GetBlockHashResponse blockHashResponse = bds.getBlockHash(blockNumber);
+			GetBlockHashResponse blockHashResponse = bitcoindService.getBlockHash(blockNumber);
 			if (blockHashResponse.getError() == null) {
 				// -----------------------------------------------------------------------------------------------------
 				// Then we retrieve the block data...
 				String blockHash = blockHashResponse.getResult();
-				final GetBlockResponse blockResponse = bds.getBlock(blockHash);
+				final GetBlockResponse blockResponse = bitcoindService.getBlock(blockHash);
 				if (blockResponse.getError() == null) {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the transactions data...
@@ -118,9 +110,9 @@ public abstract class BitcoinBatchTemplate {
 					for (Iterator<String> transactionsHashs = blockResponse.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
 						String t = transactionsHashs.next();
 						if (!t.equals(GENESIS_BLOCK_TRANSACTION)) {
-							GetRawTransactionResponse r = bds.getRawTransaction(t);
+							GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
 							if (r.getError() == null) {
-								transactions.put(t, bds.getRawTransaction(t).getResult());
+								transactions.put(t, bitcoindService.getRawTransaction(t).getResult());
 							} else {
 								status.addError("Error getting transaction n°" + t + " informations : " + r.getError());
 								return null;
@@ -157,7 +149,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Import data.
 	 */
-	public abstract void importData();
+	public abstract void process();
 
 	/**
 	 * Add a logger to the status and the logs.
@@ -205,21 +197,21 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter bds.
+	 * Getter bitcoindService.
 	 *
-	 * @return bds
+	 * @return bitcoindService
 	 */
-	public final BitcoindService getBds() {
-		return bds;
+	public final BitcoindService getBitcoindService() {
+		return bitcoindService;
 	}
 
 	/**
-	 * Setter bds.
+	 * Setter bitcoindService.
 	 *
-	 * @param newBds the bds to set
+	 * @param newBds the bitcoindService to set
 	 */
-	public final void setBds(final BitcoindService newBds) {
-		bds = newBds;
+	public final void setBitcoindService(final BitcoindService newBds) {
+		bitcoindService = newBds;
 	}
 
 	/**
@@ -241,57 +233,57 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter bbr.
+	 * Getter blockRepository.
 	 *
-	 * @return bbr
+	 * @return blockRepository
 	 */
-	public final BitcoinBlockRepository getBbr() {
-		return bbr;
+	public final BitcoinBlockRepository getBlockRepository() {
+		return blockRepository;
 	}
 
 	/**
-	 * Setter bbr.
+	 * Setter blockRepository.
 	 *
-	 * @param newBbr the bbr to set
+	 * @param newBbr the blockRepository to set
 	 */
-	public final void setBbr(final BitcoinBlockRepository newBbr) {
-		bbr = newBbr;
+	public final void setBlockRepository(final BitcoinBlockRepository newBbr) {
+		blockRepository = newBbr;
 	}
 
 	/**
-	 * Getter bar.
+	 * Getter addressRepository.
 	 *
-	 * @return bar
+	 * @return addressRepository
 	 */
-	public final BitcoinAddressRepository getBar() {
-		return bar;
+	public final BitcoinAddressRepository getAddressRepository() {
+		return addressRepository;
 	}
 
 	/**
-	 * Setter bar.
+	 * Setter addressRepository.
 	 *
-	 * @param newBar the bar to set
+	 * @param newBar the addressRepository to set
 	 */
-	public final void setBar(final BitcoinAddressRepository newBar) {
-		bar = newBar;
+	public final void setAddressRepository(final BitcoinAddressRepository newBar) {
+		addressRepository = newBar;
 	}
 
 	/**
-	 * Getter btr.
+	 * Getter transactionRepository.
 	 *
-	 * @return btr
+	 * @return transactionRepository
 	 */
-	public final BitcoinTransactionRepository getBtr() {
-		return btr;
+	public final BitcoinTransactionRepository getTransactionRepository() {
+		return transactionRepository;
 	}
 
 	/**
-	 * Setter btr.
+	 * Setter transactionRepository.
 	 *
-	 * @param newBtr the btr to set
+	 * @param newBtr the transactionRepository to set
 	 */
-	public final void setBtr(final BitcoinTransactionRepository newBtr) {
-		btr = newBtr;
+	public final void setTransactionRepository(final BitcoinTransactionRepository newBtr) {
+		transactionRepository = newBtr;
 	}
 
 }

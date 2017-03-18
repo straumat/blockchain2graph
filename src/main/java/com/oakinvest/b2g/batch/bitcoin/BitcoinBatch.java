@@ -96,10 +96,10 @@ public class BitcoinBatch {
 
 		// Importing the block.
 		try {
-			batchBlocks.importData();
-			batchAddresses.importData();
-			batchTransactions.importData();
-			batchRelations.importData();
+			batchBlocks.process();
+			batchAddresses.process();
+			batchTransactions.process();
+			batchRelations.process();
 		} catch (Exception e) {
 			status.addError("Error in the batch processes : " + e.getMessage());
 			log.error(e.getStackTrace().toString());

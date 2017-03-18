@@ -106,10 +106,10 @@ public class BitcoinImportTest {
 		// Launching import.
 		while (bbr.countImported() != NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
-				batchBlocks.importData();
-				batchAddresses.importData();
-				batchTransactions.importData();
-				batchRelations.importData();
+				batchBlocks.process();
+				batchAddresses.process();
+				batchTransactions.process();
+				batchRelations.process();
 				iterations++;
 			} catch (Exception e) {
 				if (iterations >= maxIteration) {
@@ -134,9 +134,9 @@ public class BitcoinImportTest {
 
 		// Then, we import it.
 		try {
-			batchAddresses.importData();
-			batchTransactions.importData();
-			batchRelations.importData();
+			batchAddresses.process();
+			batchTransactions.process();
+			batchRelations.process();
 		} catch (Exception e) {
 			fail("Recovery after crash did not work " + e.getMessage());
 		}
