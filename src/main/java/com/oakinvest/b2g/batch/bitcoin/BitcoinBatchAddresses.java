@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
@@ -39,7 +40,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	public void process() {
 		final long start = System.currentTimeMillis();
 		// Block to import.
-		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockWithoutAddresses();
+		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.BLOCK_IMPORTED);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
@@ -77,11 +78,10 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 												addLog("Address " + address + " already exists with id " + a.getId());
 												getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());
 											}
-
 										}));
 					}
 				}
-				blockToTreat.setAddressesImported(true);
+				blockToTreat.setState(BitcoinBlockState.ADDRESSES_IMPORTED);
 				getBlockRepository().save(blockToTreat);
 
 				// We log.

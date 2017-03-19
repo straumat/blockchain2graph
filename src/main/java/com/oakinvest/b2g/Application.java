@@ -1,5 +1,6 @@
 package com.oakinvest.b2g;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
@@ -74,7 +75,7 @@ public class Application extends SpringBootServletInitializer {
 	@PostConstruct
 	public final void initApplication() {
 		// Update status.
-		status.setImportedBlockCount(bbr.countImported());
+		status.setImportedBlockCount(bbr.countBlockByState(BitcoinBlockState.IMPORTED));
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Create unique constraints in neo4j for blocks, transactions, addresses.
@@ -84,6 +85,8 @@ public class Application extends SpringBootServletInitializer {
 			session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
 			session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
 			session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
+			// Indexes.
+			session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 		} catch (Exception e) {
 			log.error("Error while creating constraints in neo4j : " + e.getMessage());
 			log.error(e.getStackTrace().toString());

@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
@@ -43,7 +44,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	public void process() {
 		final long start = System.currentTimeMillis();
 		// Block to import.
-		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockWithoutTransactions();
+		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
@@ -111,7 +112,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 						}
 					}
 				}
-				blockToTreat.setTransactionsImported(true);
+				blockToTreat.setState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
 				getBlockRepository().save(blockToTreat);
 
 				// We log.

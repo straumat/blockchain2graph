@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	public void process() {
 		final long start = System.currentTimeMillis();
 		// Block to import.
-		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockWithoutRelations();
+		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
 
 		// -------------------------------------------------------------------------------------------------------------
 		// If there is a block to work on.
@@ -57,8 +58,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 						});
 				// ---------------------------------------------------------------------------------------------------------
 				// We update the block to say everything went fine.
-				blockToTreat.setRelationsImported(true);
-				blockToTreat.setImported(true);
+				blockToTreat.setState(BitcoinBlockState.IMPORTED);
 				getBlockRepository().save(blockToTreat);
 
 				// We log.

@@ -8,6 +8,7 @@ import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchTransactions;
 import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
@@ -23,7 +24,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -104,7 +104,7 @@ public class BitcoinImportTest {
 		bitcoindMock.resetErrorCounters();
 
 		// Launching import.
-		while (bbr.countImported() != NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) != NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.process();
 				batchAddresses.process();
@@ -126,10 +126,7 @@ public class BitcoinImportTest {
 	public final void testRecoveryAfterCrash() {
 		// We set the last block as not at all imported
 		BitcoinBlock b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
-		b.setAddressesImported(false);
-		b.setTransactionsImported(false);
-		b.setRelationsImported(false);
-		b.setImported(false);
+		b.setState(BitcoinBlockState.BLOCK_IMPORTED);
 		bbr.save(b);
 
 		// Then, we import it.
@@ -142,14 +139,10 @@ public class BitcoinImportTest {
 		}
 
 		// we check that everything as been imported again on that block
-		assertEquals("Block not re imported", bbr.countImported(), NUMBERS_OF_BLOCK_TO_IMPORT);
+		assertEquals("Block not re imported", bbr.countBlockByState(BitcoinBlockState.IMPORTED), NUMBERS_OF_BLOCK_TO_IMPORT);
 		b = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT - 1);
-		assertTrue("Addresses not imported", b.isAddressesImported());
-		assertTrue("Transactions not imported", b.isTransactionsImported());
-		assertTrue("Relations not imported", b.isRelationsImported());
-		assertTrue("Block not imported", b.isImported());
+		assertEquals("State not imported", BitcoinBlockState.IMPORTED, b.getState());
 	}
-
 
 	/**
 	 * importBlock() test.
@@ -163,7 +156,7 @@ public class BitcoinImportTest {
 		final long expectedVersion = 1;
 		final String expectedMerkleroot = "7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff";
 		final long expectedTime = 1231731025;
-		final long expectedmedianTime = 1231716245;
+		final long expectedMedianTime = 1231716245;
 		final long expectedNonce = 1889418792;
 		final String expectedBits = "1d00ffff";
 		final float expectedDifficulty = 1;
@@ -177,7 +170,7 @@ public class BitcoinImportTest {
 		assertEquals("Wrong Block version ", expectedVersion, b.getVersion());
 		assertEquals("Wrong Block merkel root ", expectedMerkleroot, b.getMerkleRoot());
 		assertEquals("Block time ", expectedTime, b.getTime());
-		assertEquals("Block median time ", expectedmedianTime, b.getMedianTime());
+		assertEquals("Block median time ", expectedMedianTime, b.getMedianTime());
 		assertEquals("Wrong Block nonce ", expectedNonce, b.getNonce());
 		assertEquals("Wrong Block difficulty ", expectedDifficulty, b.getDifficulty());
 		assertEquals("Wrong Block bits ", expectedBits, b.getBits());

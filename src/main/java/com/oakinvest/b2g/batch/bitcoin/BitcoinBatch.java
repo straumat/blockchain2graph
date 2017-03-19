@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
@@ -27,7 +28,7 @@ public class BitcoinBatch {
 	/**
 	 * Pause between imports.
 	 */
-	private static final int PAUSE_BETWEEN_IMPORTS = 1000;
+	private static final int PAUSE_BETWEEN_IMPORTS = 100;
 
 	/**
 	 * Logger.
@@ -91,7 +92,7 @@ public class BitcoinBatch {
 		final long startTime = System.currentTimeMillis();
 
 		// Update block statistics.
-		status.setImportedBlockCount(bbr.countImported());
+		status.setImportedBlockCount(bbr.countBlockByState(BitcoinBlockState.IMPORTED));
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Importing the block.
@@ -111,7 +112,7 @@ public class BitcoinBatch {
 		status.addBlockImportDurationStatistic(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime));
 
 		// If we are up to date with the blockchain last block.
-		if (bbr.countImported() == bds.getBlockCount().getResult()) {
+		if (bbr.countBlockByState(BitcoinBlockState.IMPORTED) == bds.getBlockCount().getResult()) {
 			try {
 				Thread.sleep(TIME_BEFORE_NEW_BITCOIN_BLOCK);
 			} catch (InterruptedException e) {
