@@ -12,7 +12,7 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 	/**
 	 * Number of blocks to cache.
 	 */
-	public static final int NUMBER_OF_BLOCKS_TO_CACHE = 5;
+	private static final int NUMBER_OF_BLOCKS_TO_CACHE = 10;
 
 	/**
 	 * Pause between imports.
@@ -23,6 +23,11 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Cache batch";
+
+	/**
+	 * Higher block in cache.
+	 */
+	private long highestBlockInCache = 0;
 
 	/**
 	 * Returns the logger prefix to display in each logger.
@@ -44,8 +49,15 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 		final long currentBlockBeingImported = getBlockRepository().count();
 
 		// We load in cache several blocks ahead.
-		for (int i = 1; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
-			getBlockDataFromBitcoind(currentBlockBeingImported + i);
+		int i = 0;
+		while ((highestBlockInCache - currentBlockBeingImported) < NUMBER_OF_BLOCKS_TO_CACHE) {
+			try {
+				getBlockDataFromBitcoind(currentBlockBeingImported + i);
+				highestBlockInCache = currentBlockBeingImported + i;
+				i++;
+			} catch (Exception e) {
+				getLogger().error("Error while loading cache " + e.getMessage());
+			}
 		}
 	}
 }
