@@ -23,7 +23,7 @@ public class BitcoinBatch {
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
 	 */
-	private static final int TIME_BEFORE_NEW_BITCOIN_BLOCK = 10 * 60 * 1000;
+	private static final int TIME_BEFORE_A_NEW_BITCOIN_BLOCK = 10 * 60 * 1000;
 
 	/**
 	 * Pause between imports.
@@ -89,35 +89,38 @@ public class BitcoinBatch {
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
-		final long startTime = System.currentTimeMillis();
-
 		// Update block statistics.
-		status.setImportedBlockCount(bbr.countBlockByState(BitcoinBlockState.IMPORTED));
-		status.setTotalBlockCount(bds.getBlockCount().getResult());
+		long importedBlockCount = bbr.countBlockByState(BitcoinBlockState.IMPORTED);
+		long totalBlockCount = bds.getBlockCount().getResult();
 
-		// Importing the block.
-		try {
-			batchBlocks.process();
-			batchAddresses.process();
-			batchTransactions.process();
-			batchRelations.process();
-		} catch (Exception e) {
-			status.addError("Error in the batch processes : " + e.getMessage());
-			log.error(e.getStackTrace().toString());
-		} finally {
-			session.clear();
-		}
+		// Update status.
+		status.setImportedBlockCount(importedBlockCount);
+		status.setTotalBlockCount(totalBlockCount);
 
-		// Adding a statistic on duration.
-		status.addBlockImportDurationStatistic(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime));
-
-		// If we are up to date with the blockchain last block.
-		if (bbr.countBlockByState(BitcoinBlockState.IMPORTED) == bds.getBlockCount().getResult()) {
+		// Make a pause if there is nothing to do (If we are up to date with the blockchain last block)
+		if (importedBlockCount == totalBlockCount) {
 			try {
-				Thread.sleep(TIME_BEFORE_NEW_BITCOIN_BLOCK);
+				Thread.sleep(TIME_BEFORE_A_NEW_BITCOIN_BLOCK);
 			} catch (InterruptedException e) {
 				log.error("Error while pause : " + e.getMessage());
 			}
+		} else {
+			// Importing the next available block.
+			final long startTime = System.currentTimeMillis();
+			try {
+				batchBlocks.process();
+				batchAddresses.process();
+				batchTransactions.process();
+				batchRelations.process();
+			} catch (Exception e) {
+				status.addError("Error in the batch processes : " + e.getMessage());
+				log.error(e.getStackTrace().toString());
+			} finally {
+				session.clear();
+			}
+
+			// Adding a statistic on duration.
+			status.addBlockImportDurationStatistic(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime));
 		}
 
 	}
