@@ -6,8 +6,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Bitcoin import relations batch.
  * Created by straumat on 27/02/17.
@@ -62,7 +60,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				getBlockRepository().save(blockToTreat);
 
 				// We log.
-				final float elapsedTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {

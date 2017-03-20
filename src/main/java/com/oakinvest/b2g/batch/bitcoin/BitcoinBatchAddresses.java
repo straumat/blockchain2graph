@@ -9,7 +9,6 @@ import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Bitcoin import addresses batch.
@@ -85,7 +84,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				getBlockRepository().save(blockToTreat);
 
 				// We log.
-				final float elapsedTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} else {

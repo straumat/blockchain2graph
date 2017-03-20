@@ -30,6 +30,11 @@ public abstract class BitcoinBatchTemplate {
 	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
 
 	/**
+	 * How many milli seconds in one second.
+	 */
+	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
+
+	/**
 	 * Genesis transaction hash.
 	 */
 	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";

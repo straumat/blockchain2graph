@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Temporary batch used because multi threading doesn't work.
  * Created by straumat on 02/03/17.
  */
 @Component
 public class BitcoinBatch {
+
+	/**
+	 * How many milli seconds in one second.
+	 */
+	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
@@ -106,7 +109,7 @@ public class BitcoinBatch {
 			}
 		} else {
 			// Importing the next available block.
-			final long startTime = System.currentTimeMillis();
+			final long start = System.currentTimeMillis();
 			try {
 				batchBlocks.process();
 				batchAddresses.process();
@@ -120,7 +123,7 @@ public class BitcoinBatch {
 			}
 
 			// Adding a statistic on duration.
-			status.addBlockImportDurationStatistic(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime));
+			status.addBlockImportDurationStatistic((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
 		}
 
 	}

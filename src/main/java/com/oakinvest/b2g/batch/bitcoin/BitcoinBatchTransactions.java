@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Bitcoin import transactions batch.
@@ -116,7 +115,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				getBlockRepository().save(blockToTreat);
 
 				// We log.
-				final float elapsedTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
+				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 			} else {
 				addLog("No response from bitcoind - transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");

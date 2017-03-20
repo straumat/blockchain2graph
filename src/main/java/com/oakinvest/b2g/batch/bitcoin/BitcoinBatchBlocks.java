@@ -6,8 +6,6 @@ import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Bitcoin import blocks batch.
  * Created by straumat on 27/02/17.
@@ -67,7 +65,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 					}
 
 					// We log.
-					final float elapsedTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
+					final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 					addLog("Block n°" + getFormattedBlock(blockToTreat) + " treated in " + elapsedTime + " secs");
 					getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " treated in " + elapsedTime + " secs");
 				}
