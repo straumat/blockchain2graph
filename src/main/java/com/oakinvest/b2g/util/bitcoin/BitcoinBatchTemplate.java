@@ -144,7 +144,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return logger prefix
 	 */
-	public abstract String getLogPrefix();
+	protected abstract String getLogPrefix();
 
 	/**
 	 * Import data.
@@ -174,7 +174,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return logger
 	 */
-	public final Logger getLogger() {
+	protected final Logger getLogger() {
 		return logger;
 	}
 
