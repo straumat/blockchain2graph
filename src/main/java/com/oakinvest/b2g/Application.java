@@ -89,7 +89,7 @@ public class Application extends SpringBootServletInitializer {
 			session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 		} catch (Exception e) {
 			log.error("Error while creating constraints in neo4j : " + e.getMessage());
-			log.error(e.getStackTrace().toString());
+			log.error("Error : " + e);
 		}
 	}
 

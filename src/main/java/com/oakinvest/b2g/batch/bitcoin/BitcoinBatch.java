@@ -117,7 +117,7 @@ public class BitcoinBatch {
 				batchRelations.process();
 			} catch (Exception e) {
 				status.addError("Error in the batch processes : " + e.getMessage());
-				log.error(e.getStackTrace().toString());
+				log.error("Error : " + e);
 			} finally {
 				session.clear();
 			}
