@@ -98,7 +98,9 @@ public class BitcoinBatch {
 
 		// Update status.
 		status.setImportedBlockCount(importedBlockCount);
-		status.setTotalBlockCount(totalBlockCount);
+		if (totalBlockCount != status.getTotalBlockCount()) {
+			status.setTotalBlockCount(totalBlockCount);
+		}
 
 		// Make a pause if there is nothing to do (If we are up to date with the blockchain last block)
 		if (importedBlockCount == totalBlockCount) {

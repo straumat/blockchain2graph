@@ -2,17 +2,19 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 /**
  * This batch loads block data from bitcoind ahead of the import process.
  * Created by straumat on 20/03/17.
  */
+@Component
 public class BitcoinBatchCache extends BitcoinBatchTemplate {
 
 	/**
 	 * Number of blocks to cache.
 	 */
-	private static final int NUMBER_OF_BLOCKS_TO_CACHE = 10;
+	private static final int NUMBER_OF_BLOCKS_TO_CACHE = 20;
 
 	/**
 	 * Pause between imports.
@@ -24,10 +26,6 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 	 */
 	private static final String PREFIX = "Cache batch";
 
-	/**
-	 * Higher block in cache.
-	 */
-	private long highestBlockInCache = 0;
 
 	/**
 	 * Returns the logger prefix to display in each logger.
@@ -48,13 +46,13 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 	public void process() {
 		final long currentBlockBeingImported = getBlockRepository().count();
 
+		System.out.println("==> Cache !!!");
+
 		// We load in cache several blocks ahead.
-		int i = 0;
-		while ((highestBlockInCache - currentBlockBeingImported) < NUMBER_OF_BLOCKS_TO_CACHE) {
+		for (long i = 0; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
 			try {
 				getBlockDataFromBitcoind(currentBlockBeingImported + i);
-				highestBlockInCache = currentBlockBeingImported + i;
-				i++;
+				System.out.println("==> Cache " + i);
 			} catch (Exception e) {
 				getLogger().error("Error while loading cache " + e.getMessage());
 			}
