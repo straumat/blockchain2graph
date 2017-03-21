@@ -15,14 +15,17 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Collections;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -36,7 +39,6 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BitcoinImportTest {
 
 	/**
@@ -93,6 +95,12 @@ public class BitcoinImportTest {
 	private BitcoindMock bitcoindMock;
 
 	/**
+	 * Neo4j session.
+	 */
+	@Autowired
+	private Session session;
+
+	/**
 	 * Importing the data.
 	 *
 	 * @throws Exception exception
@@ -102,6 +110,13 @@ public class BitcoinImportTest {
 		int iterations = 0;
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();
+
+		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
+		// Indexes.
+		session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 
 		// Launching import.
 		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) != NUMBERS_OF_BLOCK_TO_IMPORT) {
@@ -117,6 +132,16 @@ public class BitcoinImportTest {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Cleaning the data.
+	 *
+	 * @throws Exception exception.
+	 */
+	@After
+	public void tearDown() throws Exception {
+
 	}
 
 	/**
@@ -290,6 +315,9 @@ public class BitcoinImportTest {
 		// Testing if an address has correct outputs and inputs.
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
+		System.out.println("=> " + a1);
+		System.out.println("=> " + a1.getAddress());
+		System.out.println("=> " + a1.getInputTransactions().size() + " - " + a1.getOutputTransactions().size());
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());

@@ -11,7 +11,6 @@ import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -120,7 +119,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@Cacheable(cacheNames = "blockHashs", unless = "#result.getError() != null")
+	//@Cacheable(cacheNames = "blockHashs", unless = "#result.getError() != null")
 	@SuppressWarnings("checkstyle:designforextension")
 	public GetBlockHashResponse getBlockHash(final long blockHeight) {
 		// Setting parameters
@@ -138,7 +137,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@Cacheable(cacheNames = "blocks", unless = "#result.getError() != null")
+	//@Cacheable(cacheNames = "blocks", unless = "#result.getError() != null")
 	@SuppressWarnings("checkstyle:designforextension")
 	public GetBlockResponse getBlock(final String blockHash) {
 		// Setting parameters
@@ -156,7 +155,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@Cacheable(cacheNames = "rawTransactions", unless = "#result.getError() != null")
+	//@Cacheable(cacheNames = "rawTransactions", unless = "#result.getError() != null")
 	@SuppressWarnings("checkstyle:designforextension")
 	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
 		// Setting parameters
