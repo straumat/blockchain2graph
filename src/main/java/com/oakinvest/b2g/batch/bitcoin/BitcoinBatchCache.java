@@ -46,13 +46,10 @@ public class BitcoinBatchCache extends BitcoinBatchTemplate {
 	public void process() {
 		final long currentBlockBeingImported = getBlockRepository().count();
 
-		System.out.println("==> Cache !!!");
-
 		// We load in cache several blocks ahead.
 		for (long i = 0; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
 			try {
 				getBlockDataFromBitcoind(currentBlockBeingImported + i);
-				System.out.println("==> Cache " + i);
 			} catch (Exception e) {
 				getLogger().error("Error while loading cache " + e.getMessage());
 			}

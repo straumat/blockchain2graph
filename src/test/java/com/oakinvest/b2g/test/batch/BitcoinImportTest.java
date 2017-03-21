@@ -15,7 +15,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -132,16 +131,6 @@ public class BitcoinImportTest {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Cleaning the data.
-	 *
-	 * @throws Exception exception.
-	 */
-	@After
-	public void tearDown() throws Exception {
-
 	}
 
 	/**
@@ -315,9 +304,9 @@ public class BitcoinImportTest {
 		// Testing if an address has correct outputs and inputs.
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
-		System.out.println("=> " + a1);
-		System.out.println("=> " + a1.getAddress());
-		System.out.println("=> " + a1.getInputTransactions().size() + " - " + a1.getOutputTransactions().size());
+		//System.out.println("=> " + a1);
+		//System.out.println("=> " + a1.getAddress());
+		//System.out.println("=> " + a1.getInputTransactions().size() + " - " + a1.getOutputTransactions().size());
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
