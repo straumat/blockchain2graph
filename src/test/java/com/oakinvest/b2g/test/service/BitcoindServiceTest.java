@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.configuration.BitcoindMock;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
@@ -11,6 +10,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import com.oakinvest.b2g.util.bitcoin.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

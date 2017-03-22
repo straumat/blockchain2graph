@@ -24,6 +24,11 @@ public class BitcoinBatch {
 	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
+	 * Number of blocks to cache.
+	 */
+	private static final long BLOCK_TO_CACHE = 100;
+
+	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
 	 */
 	private static final int TIME_BEFORE_A_NEW_BITCOIN_BLOCK = 10 * 60 * 1000;
@@ -61,6 +66,12 @@ public class BitcoinBatch {
 	 */
 	@Autowired
 	private BitcoinBatchRelations batchRelations;
+
+	/**
+	 * Batch cache loader.
+	 */
+	@Autowired
+	private BitcoinBatchCacheLoader batchCacheLoader;
 
 	/**
 	 * Status service.
@@ -113,6 +124,7 @@ public class BitcoinBatch {
 			// Importing the next available block.
 			final long start = System.currentTimeMillis();
 			try {
+				batchCacheLoader.loadInCache(batchBlocks, importedBlockCount + BLOCK_TO_CACHE);
 				batchBlocks.process();
 				batchAddresses.process();
 				batchTransactions.process();
