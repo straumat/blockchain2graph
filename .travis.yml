@@ -6,7 +6,6 @@ cache:
   directories:
     - $HOME/.m2
 script:
-    - mvn test
     - mvn package
     - curl http://www.jpm4j.org/install/script > jpmInstall.sh
     - sudo sh jpmInstall.sh
