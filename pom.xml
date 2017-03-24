@@ -90,6 +90,9 @@
 		<!-- Javascript lib releases configuration -->
 		<jquery.version>3.1.1</jquery.version>
 
+		<!-- Docker -->
+		<docker.image.prefix>oakinvest</docker.image.prefix>
+
 	</properties>
 	<!-- =========================================================================================================== -->
 
@@ -207,6 +210,7 @@
 	<!-- =========================================================================================================== -->
 	<!-- Build configuration -->
 	<build>
+		<finalName>blockchain2graph</finalName>
 
 		<!-- Plugins -->
 		<plugins>
@@ -288,6 +292,24 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<addResources>true</addResources>
+				</configuration>
+			</plugin>
+
+			<!-- Docker -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.11</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
 				</configuration>
 			</plugin>
 
