@@ -13,6 +13,8 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.util.bitcoin.BitcoindMock;
 import org.junit.Before;
@@ -88,6 +90,19 @@ public class BitcoinImportTest {
 	private BitcoinBatchRelations batchRelations;
 
 	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinTransactionOutputRepository btor;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
+	private BitcoinTransactionInputRepository btir;
+
+
+	/**
 	 * Bitcoind mock.
 	 */
 	@Autowired
@@ -118,12 +133,16 @@ public class BitcoinImportTest {
 		session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 
 		// Launching import.
-		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) != NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.process();
+				System.out.println("batchBlocks");
 				batchAddresses.process();
+				System.out.println("batchAddresses");
 				batchTransactions.process();
+				System.out.println("batchTransactions");
 				batchRelations.process();
+				System.out.println("batchRelations");
 				iterations++;
 			} catch (Exception e) {
 				if (iterations >= maxIteration) {
@@ -131,6 +150,7 @@ public class BitcoinImportTest {
 				}
 			}
 		}
+		System.out.println("FIN");
 	}
 
 	/**
@@ -304,12 +324,21 @@ public class BitcoinImportTest {
 		// Testing if an address has correct outputs and inputs.
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
-		//System.out.println("=> " + a1);
-		//System.out.println("=> " + a1.getAddress());
-		//System.out.println("=> " + a1.getInputTransactions().size() + " - " + a1.getOutputTransactions().size());
+		System.out.println("====> " + t.getOutputs());
+		System.out.println("====> " + t.getOutputs().size());
+		a1.getWithdrawals().stream().forEach(t1 -> {
+			System.out.println("=> " + t1.getTxId());
+			btir.findOne(t1.getId());
+		});
+
+		a1.getWithdrawals().stream().forEach(t1 -> System.out.println("=> " + t1.getTxId() + " : " + t1.getTransactionOutput().getId()));
+
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
+		// Fetch all data
+		a1.getWithdrawals().stream().forEach(i -> i = btir.findOne(i.getId()));
+
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti2 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be")).findFirst().get();
@@ -320,9 +349,15 @@ public class BitcoinImportTest {
 		assertEquals("Wrong transaction value", 29.0f, bti4.getTransactionOutput().getValue());
 		BitcoinTransactionInput bti5 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe")).findFirst().get();
 		assertEquals("Wrong transaction value", 28.0f, bti5.getTransactionOutput().getValue());
+
 		// Testing deposits.
 		final int a1NumberOfDeposits = 6;
 		assertEquals("Wrong number of output", a1NumberOfDeposits, a1.getDeposits().size());
+
+		// Fetch all data.
+		a1.getDeposits().stream().forEach(o -> o = btor.findOne(o.getId()));
+		a1.getWithdrawals().stream().forEach(i -> i = btir.findOne(i.getId()));
+
 		BitcoinTransactionOutput bto1 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bto1.getValue());
 		BitcoinTransactionOutput bto2 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
@@ -335,20 +370,6 @@ public class BitcoinImportTest {
 		assertEquals("Wrong transaction value", 28.0f, bto5.getValue());
 		BitcoinTransactionOutput bto6 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe")).findFirst().get();
 		assertEquals("Wrong transaction value", 18.0f, bto6.getValue());
-
-		// Another test on another address.
-		// https://blockchain.info/address/1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg
-		BitcoinAddress a2 = bar.findByAddress("1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg");
-		// Testing withdrawals.
-		BitcoinTransactionInput a2Bti1 = a2.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("a3b0e9e7cddbbe78270fa4182a7675ff00b92872d8df7d14265a2b1e379a9d33")).findFirst().get();
-		assertEquals("Wrong to address", "1BBz9Z15YpELQ4QP5sEKb1SwxkcmPb5TMs", a2Bti1.getTransaction().getOutputs().iterator().next().getAddresses().iterator().next());
-		assertEquals("Wrong from address", "1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg", a2Bti1.getTransactionOutput().getAddresses().iterator().next());
-		assertEquals("Wrong transaction value", 10.0f, a2Bti1.getTransactionOutput().getValue());
-		// Testing deposits.
-		BitcoinTransactionOutput a2bto1 = a2.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe")).findFirst().get();
-		assertEquals("Wrong to address", "1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg", a2bto1.getAddresses().iterator().next());
-		assertEquals("Wrong from address", "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S", a2bto1.getTransaction().getInputs().iterator().next().getTransactionOutput().getAddresses().iterator().next());
-		assertEquals("Wrong transaction value", 10.0f, a2bto1.getValue());
 
 		// Test to check that coin creation is taken into account.
 		// https://blockchain.info/fr/tx/ec2ba1a3784dacd6962d53e9266d08d6cca40cce60240954bb3448c6acdf568f

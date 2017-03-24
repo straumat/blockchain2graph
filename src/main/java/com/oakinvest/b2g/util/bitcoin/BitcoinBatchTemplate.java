@@ -6,6 +6,8 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
@@ -63,16 +65,28 @@ public abstract class BitcoinBatchTemplate {
 	private BitcoindToDomainMapper mapper;
 
 	/**
-	 * Bitcoin block repository.
+	 * BitcoinBlock repository.
 	 */
 	@Autowired
 	private BitcoinBlockRepository blockRepository;
 
 	/**
-	 * Bitcoin block repository.
+	 * BitcoinBlock repository.
 	 */
 	@Autowired
 	private BitcoinAddressRepository addressRepository;
+
+	/**
+	 * BitcoinTransactionInputRepository repository.
+	 */
+	@Autowired
+	private BitcoinTransactionInputRepository transactionInputRepository;
+
+	/**
+	 * BitcoinTransactionOutputRepository repository.
+	 */
+	@Autowired
+	private BitcoinTransactionOutputRepository transactionOutputRepository;
 
 	/**
 	 * Bitcoin block repository.
@@ -291,4 +305,39 @@ public abstract class BitcoinBatchTemplate {
 		transactionRepository = newBtr;
 	}
 
+	/**
+	 * Getter de la propriété transactionInputRepository.
+	 *
+	 * @return transactionInputRepository
+	 */
+	public final BitcoinTransactionInputRepository getTransactionInputRepository() {
+		return transactionInputRepository;
+	}
+
+	/**
+	 * Setter de la propriété transactionInputRepository.
+	 *
+	 * @param newTransactionInputRepository the transactionInputRepository to set
+	 */
+	public final void setTransactionInputRepository(final BitcoinTransactionInputRepository newTransactionInputRepository) {
+		transactionInputRepository = newTransactionInputRepository;
+	}
+
+	/**
+	 * Getter de la propriété transactionOutputRepository.
+	 *
+	 * @return transactionOutputRepository
+	 */
+	public final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+		return transactionOutputRepository;
+	}
+
+	/**
+	 * Setter de la propriété transactionOutputRepository.
+	 *
+	 * @param newTransactionOutputRepository the transactionOutputRepository to set
+	 */
+	public final void setTransactionOutputRepository(final BitcoinTransactionOutputRepository newTransactionOutputRepository) {
+		transactionOutputRepository = newTransactionOutputRepository;
+	}
 }

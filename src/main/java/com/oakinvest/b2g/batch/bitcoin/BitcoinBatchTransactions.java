@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -9,6 +10,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	 * Import data.
 	 */
 	@Override
+	@Transactional
 	//@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void process() {
@@ -65,48 +68,68 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 						// Success.
 						try {
 							// Saving the transaction in the database.
-							BitcoinTransaction bt = getMapper().rawTransactionResultToBitcoinTransaction(entry.getValue());
+							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(entry.getValue());
+							getTransactionRepository().save(transaction);
 							addLog("Treating transaction " + entry.getKey());
 
 							// For each Vin.
-							Iterator<BitcoinTransactionInput> vins = bt.getInputs().iterator();
+							Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
 							while (vins.hasNext()) {
 								BitcoinTransactionInput vin = vins.next();
-								bt.getInputs().add(vin);
-								vin.setTransaction(bt);
+								transaction.getInputs().add(vin);
+								vin.setTransaction(transaction);
+
 								if (vin.getTxId() != null) {
 									// Not coinbase. We retrieve the original transaction.
 									Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
 									if (originTransactionOutput.isPresent()) {
-										vin.setTransactionOutput(originTransactionOutput.get());
 										// We set the addresses "from" if it's not a coinbase transaction.
-										originTransactionOutput.get().getAddresses().forEach(a -> (getAddressRepository().findByAddress(a)).getInputTransactions().add(vin));
+										vin.setTransactionOutput(originTransactionOutput.get());
+
+										// We set all the addresses linked to this input
+										originTransactionOutput.get().getAddresses()
+												.stream().filter(a -> a != null)
+												.forEach(a -> {
+													BitcoinAddress address = getAddressRepository().findByAddress(a);
+													address.getInputTransactions().add(vin);
+													getAddressRepository().save(address);
+												});
+
+										getTransactionInputRepository().save(vin);
+
 										addLog(" - Done treating vin : " + vin);
 									} else {
 										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 										return;
 									}
 								}
+								getTransactionInputRepository().save(vin);
 							}
 
-							Iterator<BitcoinTransactionOutput> vouts = bt.getOutputs().iterator();
+							Iterator<BitcoinTransactionOutput> vouts = transaction.getOutputs().iterator();
 							while (vouts.hasNext()) {
 								BitcoinTransactionOutput vout = vouts.next();
-								bt.getOutputs().add(vout);
-								vout.setTransaction(bt);
+								transaction.getOutputs().add(vout);
+								vout.setTransaction(transaction);
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
-										.forEach(a -> (getAddressRepository().findByAddress(a)).getOutputTransactions().add(vout));
+										.forEach(a -> {
+											BitcoinAddress address = getAddressRepository().findByAddress(a);
+											address.getOutputTransactions().add(vout);
+											getAddressRepository().save(address);
+										});
+								getTransactionOutputRepository().save(vout);
 								addLog(" - Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
-							getTransactionRepository().save(bt);
-							addLog("Transaction " + entry.getKey() + " saved (id=" + bt.getId() + ")");
-							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + bt.getId() + ")");
+							getTransactionRepository().save(transaction);
+							addLog("Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
+							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + transaction.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
-							getLogger().error(e.getStackTrace().toString());
+							getLogger().error("Error treating transaction " + e.getStackTrace());
+							e.printStackTrace();
 							return;
 						}
 					}

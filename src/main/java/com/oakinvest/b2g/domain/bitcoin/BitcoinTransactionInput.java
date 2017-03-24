@@ -21,7 +21,7 @@ public class BitcoinTransactionInput {
 	/**
 	 * Transaction.
 	 */
-	@Relationship(type = "IN_TRANSACTION")
+	@Relationship(type = "INPUT_IN_TRANSACTION")
 	private BitcoinTransaction transaction;
 
 	/**
@@ -236,4 +236,5 @@ public class BitcoinTransactionInput {
 	public final void setTransaction(final BitcoinTransaction newTransaction) {
 		transaction = newTransaction;
 	}
+
 }

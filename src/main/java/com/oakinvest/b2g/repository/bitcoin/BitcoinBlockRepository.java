@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Bitcoinblock repository.
+ * BitcoinBlock repository.
  * Created by straumat on 09/09/16.
  */
 @Repository

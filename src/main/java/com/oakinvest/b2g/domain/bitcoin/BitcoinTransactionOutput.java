@@ -25,7 +25,7 @@ public class BitcoinTransactionOutput {
 	/**
 	 * Transaction.
 	 */
-	@Relationship(type = "IN_TRANSACTION")
+	@Relationship(type = "OUTPUT_IN_TRANSACTION")
 	private BitcoinTransaction transaction;
 
 	/**
@@ -272,4 +272,5 @@ public class BitcoinTransactionOutput {
 	public final void setScriptPubKeyHex(final String newScriptPubKeyHex) {
 		scriptPubKeyHex = newScriptPubKeyHex;
 	}
+
 }

@@ -5,6 +5,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountRes
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Bitcoin import blocks batch.
@@ -30,6 +31,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * Import data.
 	 */
 	@Override
+	@Transactional
 	//@Scheduled(initialDelay = BLOCK_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void process() {
