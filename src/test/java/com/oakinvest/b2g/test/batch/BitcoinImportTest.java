@@ -136,13 +136,9 @@ public class BitcoinImportTest {
 		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.process();
-				System.out.println("batchBlocks");
 				batchAddresses.process();
-				System.out.println("batchAddresses");
 				batchTransactions.process();
-				System.out.println("batchTransactions");
 				batchRelations.process();
-				System.out.println("batchRelations");
 				iterations++;
 			} catch (Exception e) {
 				if (iterations >= maxIteration) {
@@ -150,7 +146,6 @@ public class BitcoinImportTest {
 				}
 			}
 		}
-		System.out.println("FIN");
 	}
 
 	/**
@@ -324,15 +319,6 @@ public class BitcoinImportTest {
 		// Testing if an address has correct outputs and inputs.
 		// https://blockchain.info/address/12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S
 		BitcoinAddress a1 = bar.findByAddress("12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S");
-		System.out.println("====> " + t.getOutputs());
-		System.out.println("====> " + t.getOutputs().size());
-		a1.getWithdrawals().stream().forEach(t1 -> {
-			System.out.println("=> " + t1.getTxId());
-			btir.findOne(t1.getId());
-		});
-
-		a1.getWithdrawals().stream().forEach(t1 -> System.out.println("=> " + t1.getTxId() + " : " + t1.getTransactionOutput().getId()));
-
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
