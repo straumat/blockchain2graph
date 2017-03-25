@@ -12,6 +12,7 @@ import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -128,8 +129,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + transaction.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
-							getLogger().error("Error treating transaction " + e.getStackTrace());
-							e.printStackTrace();
+							getLogger().error("Error treating transactions " + Arrays.toString(e.getStackTrace()));
 							return;
 						}
 					}

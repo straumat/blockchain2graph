@@ -78,19 +78,19 @@ public class BitcoinTransactionOutput {
 
 	@Override
 	public final String toString() {
-		String description = getValue() + " -> ";
+		StringBuilder description = new StringBuilder(getValue() + " -> ");
 		if (getAddresses() == null || getAddresses().size() == 0) {
-			description += "No address";
+			description.append("No address");
 		} else {
 			Iterator<String> it = getAddresses().iterator();
 			while (it.hasNext()) {
-				description += it.next();
+				description.append(it.next());
 				if (it.hasNext()) {
-					description += ", ";
+					description.append(", ");
 				}
 			}
 		}
-		return description;
+		return description.toString();
 	}
 
 	/**

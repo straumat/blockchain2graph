@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -184,7 +185,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 			request.put(PARAMETER_PARAMS, params);
 		} catch (JSONException e) {
 			log.error("Error while building the request " + e);
-			log.error("Error : " + e);
+			log.error("Error : " + Arrays.toString(e.getStackTrace()));
 		}
 		return request;
 	}

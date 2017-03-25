@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -334,9 +335,9 @@ public class BitcoindMock {
 			in.close();
 			fileIn.close();
 		} catch (IOException e) {
-			log.error("Error (IOException) : " + e);
+			log.error("Error (IOException) : " + Arrays.toString(e.getStackTrace()));
 		} catch (ClassNotFoundException c) {
-			log.error("Error (ClassNotFoundException) : " + c);
+			log.error("Error (ClassNotFoundException) : " + Arrays.toString(c.getStackTrace()));
 		}
 		return o;
 	}

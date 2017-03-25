@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,7 +71,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Gson.
 	 */
-	private Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
 	/**
 	 * Status service.
@@ -174,7 +175,7 @@ public class StatusHandler extends TextWebSocketHandler {
 			}
 		} catch (Exception e) {
 			log.error("Error sending message " + e);
-			log.error("Error : " + e);
+			log.error("Error : " + Arrays.toString(e.getStackTrace()));
 		}
 	}
 

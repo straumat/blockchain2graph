@@ -119,7 +119,7 @@ public class BitcoinBlock {
 	private BitcoinBlockState state = BitcoinBlockState.BLOCK_IMPORTED;
 
 	/**
-	 * Getter de la propriété state.
+	 * Getter state.
 	 *
 	 * @return state
 	 */
@@ -128,7 +128,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété state.
+	 * Setter state.
 	 *
 	 * @param newState the state to set
 	 */

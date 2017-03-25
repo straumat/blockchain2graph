@@ -15,7 +15,7 @@ public class BitcoindBlockData {
 	/**
 	 * Bitcoin block.
 	 */
-	private GetBlockResult block;
+	private final GetBlockResult block;
 
 	/**
 	 * Bitcoin transactions.

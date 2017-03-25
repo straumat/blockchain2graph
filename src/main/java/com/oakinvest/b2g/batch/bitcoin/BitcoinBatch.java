@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 /**
  * Temporary batch used because multi threading doesn't work.
  * Created by straumat on 02/03/17.
@@ -131,7 +133,7 @@ public class BitcoinBatch {
 				batchRelations.process();
 			} catch (Exception e) {
 				status.addError("Error in the batch processes : " + e.getMessage());
-				log.error("Error : " + e);
+				log.error("Error in main batch : " + Arrays.toString(e.getStackTrace()));
 			} finally {
 				session.clear();
 			}

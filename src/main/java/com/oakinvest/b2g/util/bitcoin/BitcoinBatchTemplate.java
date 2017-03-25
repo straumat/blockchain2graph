@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -153,7 +154,7 @@ public abstract class BitcoinBatchTemplate {
 			}
 		} catch (Exception e) {
 			status.addError("Error getting the block data of block n°" + getFormattedBlock(blockNumber) + " : " + e.getMessage());
-			getLogger().error(e.getStackTrace().toString());
+			getLogger().error("Error in treating data from bitcoind : " + Arrays.toString(e.getStackTrace()));
 			return null;
 		}
 	}
@@ -306,7 +307,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété transactionInputRepository.
+	 * Getter transactionInputRepository.
 	 *
 	 * @return transactionInputRepository
 	 */
@@ -315,7 +316,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Setter de la propriété transactionInputRepository.
+	 * Setter transactionInputRepository.
 	 *
 	 * @param newTransactionInputRepository the transactionInputRepository to set
 	 */
@@ -324,7 +325,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété transactionOutputRepository.
+	 * Getter transactionOutputRepository.
 	 *
 	 * @return transactionOutputRepository
 	 */
@@ -333,7 +334,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Setter de la propriété transactionOutputRepository.
+	 * Setter transactionOutputRepository.
 	 *
 	 * @param newTransactionOutputRepository the transactionOutputRepository to set
 	 */

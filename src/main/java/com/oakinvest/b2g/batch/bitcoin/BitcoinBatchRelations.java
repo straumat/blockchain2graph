@@ -7,6 +7,8 @@ import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 /**
  * Bitcoin import relations batch.
  * Created by straumat on 27/02/17.
@@ -67,7 +69,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 			} catch (Exception e) {
 				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
-				getLogger().error(e.getStackTrace().toString());
+				getLogger().error("Error in treating relations : " + Arrays.toString(e.getStackTrace()));
 			}
 		} else {
 			addLog("Nothing to do");
