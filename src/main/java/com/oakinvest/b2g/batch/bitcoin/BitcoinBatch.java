@@ -3,6 +3,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
@@ -82,6 +83,12 @@ public class BitcoinBatch {
 	private StatusService status;
 
 	/**
+	 * Bitcoin statistic service.
+	 */
+	@Autowired
+	private BitcoinStatisticService bitcoinStatisticService;
+
+	/**
 	 * Neo4j session.
 	 */
 	@Autowired
@@ -139,7 +146,7 @@ public class BitcoinBatch {
 			}
 
 			// Adding a statistic on duration.
-			status.addBlockImportDurationStatistic((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
+			bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
 		}
 
 	}

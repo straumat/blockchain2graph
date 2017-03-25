@@ -78,7 +78,7 @@ public class Application extends SpringBootServletInitializer {
 		status.setImportedBlockCount(bbr.countBlockByState(BitcoinBlockState.IMPORTED));
 		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
-		// Create unique constraints in neo4j for blocks, transactions, addresses.
+		// Create unique constraints in neo4j for blocks, transactions, addresses & index on block state.
 		try {
 			// Constraints.
 			session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
@@ -89,7 +89,6 @@ public class Application extends SpringBootServletInitializer {
 			session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 		} catch (Exception e) {
 			log.error("Error while creating constraints in neo4j : " + e.getMessage());
-			log.error("Error : " + e);
 		}
 	}
 

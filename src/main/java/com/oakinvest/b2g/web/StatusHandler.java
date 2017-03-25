@@ -2,6 +2,7 @@ package com.oakinvest.b2g.web;
 
 import com.google.gson.Gson;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	@Autowired
 	private StatusService status;
 
+	/**
+	 * Bitcoin statistic service.
+	 */
+	@Autowired
+	private BitcoinStatisticService bitcoinStatisticService;
+
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
@@ -86,7 +93,7 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(status.getTotalBlockCount());
 		updateError(status.getLastErrorMessage());
 		updateLog(status.getLastLogMessage());
-		updateAverageBlockImportDuration(status.getAverageBlockImportDuration());
+		updateAverageBlockImportDuration(bitcoinStatisticService.getAverageBlockImportDuration());
 	}
 
 	/**
