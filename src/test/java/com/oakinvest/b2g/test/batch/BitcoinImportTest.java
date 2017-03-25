@@ -23,10 +23,13 @@ import org.junit.runner.RunWith;
 import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -46,6 +49,17 @@ public class BitcoinImportTest {
 	 * Number of blocs to import.
 	 */
 	private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
+
+	/**
+	 * setup is done.
+	 */
+	private static boolean setupIsDone = false;
+
+	/**
+	 * Spring context.
+	 */
+	@Autowired
+	private ApplicationContext ctx;
 
 	/**
 	 * Bitcoin block repository.
@@ -101,7 +115,6 @@ public class BitcoinImportTest {
 	@Autowired
 	private BitcoinTransactionInputRepository btir;
 
-
 	/**
 	 * Bitcoind mock.
 	 */
@@ -121,6 +134,15 @@ public class BitcoinImportTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		// Reseting the database.
+		if (!setupIsDone) {
+			Map<String, GraphRepository> graphRepositories = ctx.getBeansOfType(GraphRepository.class);
+			for (GraphRepository graphRepository : graphRepositories.values()) {
+				graphRepository.deleteAll();
+			}
+			setupIsDone = true;
+		}
+
 		int iterations = 0;
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();
