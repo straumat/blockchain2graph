@@ -10,7 +10,6 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -41,7 +40,6 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	 * Import data.
 	 */
 	@Override
-	@Transactional
 	//@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void process() {
@@ -94,10 +92,10 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 												.forEach(a -> {
 													BitcoinAddress address = getAddressRepository().findByAddress(a);
 													address.getInputTransactions().add(vin);
-													getAddressRepository().save(address);
+													//getAddressRepository().save(address);
 												});
 
-										getTransactionInputRepository().save(vin);
+										//getTransactionInputRepository().save(vin);
 
 										addLog(" - Done treating vin : " + vin);
 									} else {
@@ -105,7 +103,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 										return;
 									}
 								}
-								getTransactionInputRepository().save(vin);
+								//getTransactionInputRepository().save(vin);
 							}
 
 							Iterator<BitcoinTransactionOutput> vouts = transaction.getOutputs().iterator();
@@ -118,15 +116,15 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 										.forEach(a -> {
 											BitcoinAddress address = getAddressRepository().findByAddress(a);
 											address.getOutputTransactions().add(vout);
-											getAddressRepository().save(address);
+											//getAddressRepository().save(address);
 										});
-								getTransactionOutputRepository().save(vout);
+								//getTransactionOutputRepository().save(vout);
 								addLog(" - Done treating vout : " + vout);
 							}
 
 							// Saving the transaction.
 							getTransactionRepository().save(transaction);
-							addLog("Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
+							addLog(" - Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
 							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + transaction.getId() + ")");
 						} catch (Exception e) {
 							addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
