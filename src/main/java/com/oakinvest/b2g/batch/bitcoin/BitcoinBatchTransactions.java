@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -88,9 +89,11 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 										// We set all the addresses linked to this input
 										originTransactionOutput.get().getAddresses()
 												.stream().filter(a -> a != null)
-												.forEach(a -> getAddressRepository().findByAddress(a).getInputTransactions().add(vin));
-
-										//getTransactionInputRepository().save(vin);
+												.forEach(a -> {
+													BitcoinAddress address = getAddressRepository().findByAddress(a);
+													address.getInputTransactions().add(vin);
+													getAddressRepository().save(address);
+												});                                        //getTransactionInputRepository().save(vin);
 
 										addLog(" - Done treating vin : " + vin);
 									} else {
@@ -108,8 +111,11 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 								vout.setTransaction(transaction);
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
-										.forEach(a -> getAddressRepository().findByAddress(a).getOutputTransactions().add(vout));
-								//getTransactionOutputRepository().save(vout);
+										.forEach(a -> {
+											BitcoinAddress address = getAddressRepository().findByAddress(a);
+											address.getOutputTransactions().add(vout);
+											getAddressRepository().save(address);
+										});                                //getTransactionOutputRepository().save(vout);
 								addLog(" - Done treating vout : " + vout);
 							}
 
