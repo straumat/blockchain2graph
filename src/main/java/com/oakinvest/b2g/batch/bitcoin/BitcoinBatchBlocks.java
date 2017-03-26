@@ -70,6 +70,9 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 					final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 					addLog("Block n°" + getFormattedBlock(blockToTreat) + " treated in " + elapsedTime + " secs");
 					getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " treated in " + elapsedTime + " secs");
+
+					// Clear session.
+					getSession().clear();
 				}
 			} else {
 				addLog("No response from bitcoind - block n°" + blockToTreat + " NOT imported");

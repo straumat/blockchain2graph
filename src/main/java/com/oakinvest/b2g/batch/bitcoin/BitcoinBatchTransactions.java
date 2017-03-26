@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -89,11 +88,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 										// We set all the addresses linked to this input
 										originTransactionOutput.get().getAddresses()
 												.stream().filter(a -> a != null)
-												.forEach(a -> {
-													BitcoinAddress address = getAddressRepository().findByAddress(a);
-													address.getInputTransactions().add(vin);
-													//getAddressRepository().save(address);
-												});
+												.forEach(a -> getAddressRepository().findByAddress(a).getInputTransactions().add(vin));
 
 										//getTransactionInputRepository().save(vin);
 
@@ -113,11 +108,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 								vout.setTransaction(transaction);
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
-										.forEach(a -> {
-											BitcoinAddress address = getAddressRepository().findByAddress(a);
-											address.getOutputTransactions().add(vout);
-											//getAddressRepository().save(address);
-										});
+										.forEach(a -> getAddressRepository().findByAddress(a).getOutputTransactions().add(vout));
 								//getTransactionOutputRepository().save(vout);
 								addLog(" - Done treating vout : " + vout);
 							}
@@ -139,6 +130,9 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				// We log.
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
+
+				// Clear session.
+				getSession().clear();
 			} else {
 				addLog("No response from bitcoind - transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
 			}

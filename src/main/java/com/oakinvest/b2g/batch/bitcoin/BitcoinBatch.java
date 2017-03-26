@@ -5,7 +5,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
-import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,12 +88,6 @@ public class BitcoinBatch {
 	private BitcoinStatisticService bitcoinStatisticService;
 
 	/**
-	 * Neo4j session.
-	 */
-	@Autowired
-	private Session session;
-
-	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
@@ -141,8 +134,6 @@ public class BitcoinBatch {
 			} catch (Exception e) {
 				status.addError("Error in the batch processes : " + e.getMessage());
 				log.error("Error in main batch : " + Arrays.toString(e.getStackTrace()));
-			} finally {
-				session.clear();
 			}
 
 			// Adding a statistic on duration.

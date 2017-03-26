@@ -67,6 +67,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+
+				// Clear session.
+				getSession().clear();
 			} catch (Exception e) {
 				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
 				getLogger().error("Error in treating relations : " + Arrays.toString(e.getStackTrace()));

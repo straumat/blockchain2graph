@@ -11,6 +11,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,21 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	@Autowired
 	private BitcoinTransactionRepository transactionRepository;
+
+	/**
+	 * Neo4j session.
+	 */
+	@Autowired
+	private Session session;
+
+	/**
+	 * Getter de la propriété session.
+	 *
+	 * @return session
+	 */
+	public final Session getSession() {
+		return session;
+	}
 
 	/**
 	 * Returns the block height in a formatted way.
