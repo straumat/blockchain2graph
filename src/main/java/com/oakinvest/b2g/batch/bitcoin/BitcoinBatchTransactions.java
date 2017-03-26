@@ -63,6 +63,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				// ---------------------------------------------------------------------------------------------------------
 				// Creating all the addresses.
 				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
+					int i = 1;
 					// -----------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get and save the informations.
 					if ((getTransactionRepository().findByTxId(entry.getKey()) == null) && !entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
@@ -71,7 +72,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							// Saving the transaction in the database.
 							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(entry.getValue());
 							getTransactionRepository().save(transaction);
-							addLog("Treating transaction " + entry.getKey());
+							addLog("Treating transaction " + entry.getKey() + " (" + i + "/" + blockData.getTransactions().size() + ")");
 
 							// For each Vin.
 							Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
