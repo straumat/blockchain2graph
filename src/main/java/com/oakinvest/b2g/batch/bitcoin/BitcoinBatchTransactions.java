@@ -128,6 +128,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							getLogger().error("Error treating transactions " + Arrays.toString(e.getStackTrace()));
 							return;
 						}
+						i++;
 					}
 				}
 				blockToTreat.setState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
