@@ -2,6 +2,7 @@ package com.oakinvest.b2g.web;
 
 import com.google.gson.Gson;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,13 +72,19 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Gson.
 	 */
-	private Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
 	/**
 	 * Status service.
 	 */
 	@Autowired
 	private StatusService status;
+
+	/**
+	 * Bitcoin statistic service.
+	 */
+	@Autowired
+	private BitcoinStatisticService bitcoinStatisticService;
 
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
@@ -85,7 +93,7 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(status.getTotalBlockCount());
 		updateError(status.getLastErrorMessage());
 		updateLog(status.getLastLogMessage());
-		updateAverageBlockImportDuration(status.getAverageBlockImportDuration());
+		updateAverageBlockImportDuration(bitcoinStatisticService.getAverageBlockImportDuration());
 	}
 
 	/**
@@ -174,7 +182,7 @@ public class StatusHandler extends TextWebSocketHandler {
 			}
 		} catch (Exception e) {
 			log.error("Error sending message " + e);
-			log.error(e.getStackTrace().toString());
+			log.error("Error : " + Arrays.toString(e.getStackTrace()));
 		}
 	}
 

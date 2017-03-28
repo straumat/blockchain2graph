@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Bitcoin address repository.
+ * BitcoinAddress repository.
  * Created by straumat on 10/09/16.
  */
 @Repository

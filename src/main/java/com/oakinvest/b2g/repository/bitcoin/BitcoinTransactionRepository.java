@@ -4,7 +4,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 /**
- * Bitcoin transaction.
+ * BitcoinTransaction repository.
  * Created by straumat on 27/09/16.
  */
 public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTransaction> {

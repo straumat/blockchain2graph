@@ -35,6 +35,18 @@ public class BitcoinBlock {
 	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
+	 * Previous block.
+	 */
+	@Relationship(type = "PREVIOUS_BLOCK", direction = "OUTGOING")
+	private BitcoinBlock previousBlock;
+
+	/**
+	 * Next block.
+	 */
+	@Relationship(type = "NEXT_BLOCK", direction = "OUTGOING")
+	private BitcoinBlock nextBlock;
+
+	/**
 	 * Block height.
 	 */
 	@Property(name = "height")
@@ -113,28 +125,28 @@ public class BitcoinBlock {
 	private ArrayList<String> tx = new ArrayList<>();
 
 	/**
-	 * Addresses imported.
+	 * B2G block state.
 	 */
-	@Property(name = "addressesImported")
-	private boolean addressesImported = false;
+	@Property(name = "state")
+	private BitcoinBlockState state = BitcoinBlockState.BLOCK_IMPORTED;
 
 	/**
-	 * Transactions imported.
+	 * Getter state.
+	 *
+	 * @return state
 	 */
-	@Property(name = "transactionsImported")
-	private boolean transactionsImported = false;
+	public final BitcoinBlockState getState() {
+		return state;
+	}
 
 	/**
-	 * Relations imported.
+	 * Setter state.
+	 *
+	 * @param newState the state to set
 	 */
-	@Property(name = "relationsImported")
-	private boolean relationsImported = false;
-
-	/**
-	 * Indicates that the bloc is fully imported.
-	 */
-	@Property(name = "imported")
-	private boolean imported = false;
+	public final void setState(final BitcoinBlockState newState) {
+		state = newState;
+	}
 
 	/**
 	 * For display.
@@ -143,7 +155,7 @@ public class BitcoinBlock {
 	 */
 	@Override
 	public final String toString() {
-		return "BitcoinBlock{hash = '" + hash + '\'' + ", height=" + height + '}';
+		return "Height = " + height + " - BitcoinBlock{hash = {'" + hash + '}';
 	}
 
 	/**
@@ -418,78 +430,6 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter of imported.
-	 *
-	 * @return imported
-	 */
-	public final boolean isImported() {
-		return imported;
-	}
-
-	/**
-	 * Setter of imported.
-	 *
-	 * @param newImported the imported to set
-	 */
-	public final void setImported(final boolean newImported) {
-		imported = newImported;
-	}
-
-	/**
-	 * Getter addressesImported.
-	 *
-	 * @return addressesImported
-	 */
-	public final boolean isAddressesImported() {
-		return addressesImported;
-	}
-
-	/**
-	 * Setter addressesImported.
-	 *
-	 * @param newAddressesImported the addressesImported to set
-	 */
-	public final void setAddressesImported(final boolean newAddressesImported) {
-		addressesImported = newAddressesImported;
-	}
-
-	/**
-	 * Getter transactionsImported.
-	 *
-	 * @return transactionsImported
-	 */
-	public final boolean isTransactionsImported() {
-		return transactionsImported;
-	}
-
-	/**
-	 * Setter transactionsImported.
-	 *
-	 * @param newTransactionsImported the transactionsImported to set
-	 */
-	public final void setTransactionsImported(final boolean newTransactionsImported) {
-		transactionsImported = newTransactionsImported;
-	}
-
-	/**
-	 * Getter relationsImported.
-	 *
-	 * @return relationsImported
-	 */
-	public final boolean isRelationsImported() {
-		return relationsImported;
-	}
-
-	/**
-	 * Setter relationsImported.
-	 *
-	 * @param newRelationsImported the relationsImported to set
-	 */
-	public final void setRelationsImported(final boolean newRelationsImported) {
-		relationsImported = newRelationsImported;
-	}
-
-	/**
 	 * Getter tx.
 	 *
 	 * @return tx
@@ -505,6 +445,42 @@ public class BitcoinBlock {
 	 */
 	public final void setTx(final ArrayList<String> newTx) {
 		tx = newTx;
+	}
+
+	/**
+	 * Getter de la propriété previousBlock.
+	 *
+	 * @return previousBlock
+	 */
+	public final BitcoinBlock getPreviousBlock() {
+		return previousBlock;
+	}
+
+	/**
+	 * Setter de la propriété previousBlock.
+	 *
+	 * @param newPreviousBlock the previousBlock to set
+	 */
+	public final void setPreviousBlock(final BitcoinBlock newPreviousBlock) {
+		previousBlock = newPreviousBlock;
+	}
+
+	/**
+	 * Getter de la propriété nextBlock.
+	 *
+	 * @return nextBlock
+	 */
+	public final BitcoinBlock getNextBlock() {
+		return nextBlock;
+	}
+
+	/**
+	 * Setter de la propriété nextBlock.
+	 *
+	 * @param newNextBlock the nextBlock to set
+	 */
+	public final void setNextBlock(final BitcoinBlock newNextBlock) {
+		nextBlock = newNextBlock;
 	}
 
 	/**
@@ -536,4 +512,5 @@ public class BitcoinBlock {
 	public final int hashCode() {
 		return getHash().hashCode();
 	}
+
 }

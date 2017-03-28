@@ -5,8 +5,6 @@ import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Neo4j configuration.
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableNeo4jRepositories(basePackages = "com.oakinvest.b2g")
-@EnableTransactionManagement
 public class Neo4jConfiguration {
 
 	/**
@@ -27,18 +24,6 @@ public class Neo4jConfiguration {
 	@SuppressWarnings("checkstyle:designforextension")
 	public Session getSession() throws Exception {
 		return new SessionFactory("com.oakinvest.b2g").openSession();
-	}
-
-	/**
-	 * The transaction manager.
-	 *
-	 * @return transaction manager
-	 * @throws Exception exception
-	 */
-	@Bean
-	@SuppressWarnings("checkstyle:designforextension")
-	public Neo4jTransactionManager getTransactionManager() throws Exception {
-		return new Neo4jTransactionManager(getSession());
 	}
 
 }

@@ -27,7 +27,7 @@ public class StatusServiceTest {
 	 * Status service.
 	 */
 	@Autowired
-	private StatusService ss;
+	private StatusService statusService;
 
 	/**
 	 * Test for getTotalBlockCount().
@@ -35,8 +35,8 @@ public class StatusServiceTest {
 	@Test
 	public final void getTotalBlockCountTest() {
 		final long expectedTotalBlockCount = 150;
-		ss.setTotalBlockCount(expectedTotalBlockCount);
-		assertEquals("Wrong total block count", expectedTotalBlockCount, ss.getTotalBlockCount());
+		statusService.setTotalBlockCount(expectedTotalBlockCount);
+		assertEquals("Wrong total block count", expectedTotalBlockCount, statusService.getTotalBlockCount());
 	}
 
 	/**
@@ -45,8 +45,8 @@ public class StatusServiceTest {
 	@Test
 	public final void getLastBlockIntegratedTest() {
 		final long expectedImportedBlockCount = 140;
-		ss.setImportedBlockCount(expectedImportedBlockCount);
-		assertEquals("Wrong last block integrated", expectedImportedBlockCount, ss.getImportedBlockCount());
+		statusService.setImportedBlockCount(expectedImportedBlockCount);
+		assertEquals("Wrong last block integrated", expectedImportedBlockCount, statusService.getImportedBlockCount());
 	}
 
 	/**
@@ -54,8 +54,8 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastLogMessageTest() {
-		ss.addLog("Hi !");
-		assertTrue("Wrong last log message after setting it", ss.getLastLogMessage().contains("Hi !"));
+		statusService.addLog("Hi !");
+		assertTrue("Wrong last log message after setting it", statusService.getLastLogMessage().contains("Hi !"));
 	}
 
 	/**
@@ -63,27 +63,8 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
-		ss.addError("Error !");
-		assertTrue("Wrong last error message after setting it", ss.getLastErrorMessage().contains("Error !"));
-	}
-
-	/**
-	 * Test for addBlockImportDurationStatistic().
-	 */
-	@Test
-	public final void getStatisticsTest() {
-		// Simple test with twi values
-		assertEquals(1f, ss.addBlockImportDurationStatistic(1f), 0f);
-		assertEquals(1.5f, ss.addBlockImportDurationStatistic(2f), 0f);
-
-		// Adding 100 values to see if the two previous number are disappearing.
-		for (int i = 0; i < 100; i++) {
-			ss.addBlockImportDurationStatistic(4);
-		}
-		assertEquals(4f, ss.addBlockImportDurationStatistic(4f), 0f);
-
-		// Adding another value.
-		assertEquals(5f, ss.addBlockImportDurationStatistic(104f), 0f);
+		statusService.addError("Error !");
+		assertTrue("Wrong last error message after setting it", statusService.getLastErrorMessage().contains("Error !"));
 	}
 
 }

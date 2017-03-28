@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- =========================================================================================================== -->
 	<!-- Project information -->
 	<groupId>com.oakinvest.b2g</groupId>
 	<artifactId>blockchain2graph</artifactId>
+	<
+	<
+	<
+	<
+	<
+	<
+	< HEAD
 	<version>0.3</version>
+	=======
+	<version>0.4</version>
+	>>>>>>> refs/heads/release-0.4
 	<packaging>war</packaging>
 	<name>blockchain2graph</name>
 	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
@@ -74,8 +85,19 @@
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 
 		<!-- Java lib -->
+		<
+		<
+		<
+		<
+		<
+		<
+		< HEAD
 		<neo4j-embedded-driver.version>2.0.5</neo4j-embedded-driver.version>
 		<neo4j-bolt-driver.version>2.0.5</neo4j-bolt-driver.version>
+		=======
+		<neo4j-embedded-driver.version>2.0.6</neo4j-embedded-driver.version>
+		<neo4j-bolt-driver.version>2.0.6</neo4j-bolt-driver.version>
+		>>>>>>> refs/heads/release-0.4
 		<mapstruct.version>1.1.0.Final</mapstruct.version>
 		<gson.version>2.8.0</gson.version>
 		<caffeine.version>2.4.0</caffeine.version>
@@ -88,6 +110,9 @@
 
 		<!-- Javascript lib releases configuration -->
 		<jquery.version>3.1.1</jquery.version>
+
+		<!-- Docker -->
+		<docker.image.prefix>oakinvest</docker.image.prefix>
 
 	</properties>
 	<!-- =========================================================================================================== -->
@@ -206,6 +231,7 @@
 	<!-- =========================================================================================================== -->
 	<!-- Build configuration -->
 	<build>
+		<finalName>blockchain2graph</finalName>
 
 		<!-- Plugins -->
 		<plugins>
@@ -287,6 +313,24 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<addResources>true</addResources>
+				</configuration>
+			</plugin>
+
+			<!-- Docker -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.11</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
 				</configuration>
 			</plugin>
 

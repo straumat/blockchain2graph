@@ -62,19 +62,4 @@ public interface StatusService {
 	 */
 	void addError(String newErrorMessage);
 
-	/**
-	 * Add an execution time statistics and return the execution mean.
-	 *
-	 * @param newTime new execution time.
-	 * @return mean time
-	 */
-	float addBlockImportDurationStatistic(float newTime);
-
-	/**
-	 * Return execution time mean.
-	 *
-	 * @return execution time mean
-	 */
-	float getAverageBlockImportDuration();
-
 }
