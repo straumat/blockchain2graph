@@ -43,19 +43,31 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// If there is a block to work on.
 		if (blockToTreat != null) {
 			try {
-				// ---------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------------
 				// Getting the block informations.
 				addLog(LOG_SEPARATOR);
 				addLog("Starting to import relations from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
-				// ---------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
-				blockToTreat.getTx().stream().filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+				blockToTreat.getTx().stream()
+						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 						.forEach(t -> {
 							BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
 							bt.setBlock(blockToTreat);
 							blockToTreat.getTransactions().add(bt);
 						});
+
+				// -----------------------------------------------------------------------------------------------------
+				// We set the previous and the next block.
+				BitcoinBlock previousBlock = getBlockRepository().findByHash(blockToTreat.getPreviousBlockHash());
+				blockToTreat.setPreviousBlock(previousBlock);
+
+				if (previousBlock != null) {
+					previousBlock.setNextBlock(blockToTreat);
+					getBlockRepository().save(previousBlock);
+				}
+
 				// ---------------------------------------------------------------------------------------------------------
 				// We update the block to say everything went fine.
 				blockToTreat.setState(BitcoinBlockState.IMPORTED);
@@ -75,7 +87,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		} else {
 			addLog("Nothing to do");
 		}
-
 	}
 
 }

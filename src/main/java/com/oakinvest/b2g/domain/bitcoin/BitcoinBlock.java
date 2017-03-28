@@ -35,6 +35,18 @@ public class BitcoinBlock {
 	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
+	 * Previous block.
+	 */
+	@Relationship(type = "PREVIOUS_BLOCK", direction = "OUTGOING")
+	private BitcoinBlock previousBlock;
+
+	/**
+	 * Next block.
+	 */
+	@Relationship(type = "NEXT_BLOCK", direction = "OUTGOING")
+	private BitcoinBlock nextBlock;
+
+	/**
 	 * Block height.
 	 */
 	@Property(name = "height")
@@ -143,7 +155,7 @@ public class BitcoinBlock {
 	 */
 	@Override
 	public final String toString() {
-		return "BitcoinBlock{hash = '" + hash + '\'' + ", height=" + height + '}';
+		return "Height = " + height + " - BitcoinBlock{hash = {'" + hash + '}';
 	}
 
 	/**
@@ -433,6 +445,42 @@ public class BitcoinBlock {
 	 */
 	public final void setTx(final ArrayList<String> newTx) {
 		tx = newTx;
+	}
+
+	/**
+	 * Getter de la propriété previousBlock.
+	 *
+	 * @return previousBlock
+	 */
+	public final BitcoinBlock getPreviousBlock() {
+		return previousBlock;
+	}
+
+	/**
+	 * Setter de la propriété previousBlock.
+	 *
+	 * @param newPreviousBlock the previousBlock to set
+	 */
+	public final void setPreviousBlock(final BitcoinBlock newPreviousBlock) {
+		previousBlock = newPreviousBlock;
+	}
+
+	/**
+	 * Getter de la propriété nextBlock.
+	 *
+	 * @return nextBlock
+	 */
+	public final BitcoinBlock getNextBlock() {
+		return nextBlock;
+	}
+
+	/**
+	 * Setter de la propriété nextBlock.
+	 *
+	 * @param newNextBlock the nextBlock to set
+	 */
+	public final void setNextBlock(final BitcoinBlock newNextBlock) {
+		nextBlock = newNextBlock;
 	}
 
 	/**

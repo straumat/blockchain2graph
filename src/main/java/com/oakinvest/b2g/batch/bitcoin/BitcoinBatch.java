@@ -28,7 +28,7 @@ public class BitcoinBatch {
 	/**
 	 * Number of blocks to cache.
 	 */
-	private static final long BLOCK_TO_CACHE = 100;
+	private static final long BLOCK_TO_CACHE = 10;
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).

@@ -384,6 +384,23 @@ public class BitcoinImportTest {
 		BitcoinAddress a3 = bar.findByAddress("1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW");
 		assertEquals("No coinbase transaction found", 1, a3.getDeposits().size());
 		assertEquals("Wrong coinbase about", 50f, a3.getDeposits().stream().findFirst().get().getValue());
+
+		// Test relations between blocks (previous block & next block).
+		BitcoinBlock b1 = bbr.findByHeight(1L);
+		assertNull("B1 previous block is not empty", b1.getPreviousBlock());
+		assertNotNull("B1 next block is empty", b1.getNextBlock());
+		assertEquals("B1 next block is not the good one", 2L, b1.getNextBlock().getHeight());
+
+		BitcoinBlock b2 = bbr.findByHeight(6L);
+		assertNotNull("B2 previous block is empty", b2.getPreviousBlock());
+		assertEquals("B2 previous block is not the good one", 5L, b2.getPreviousBlock().getHeight());
+		assertEquals("B2 next block is not the good one", 7L, b2.getNextBlock().getHeight());
+
+		BitcoinBlock b3 = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT);
+		assertNotNull("B3 previous block is empty", b3.getPreviousBlock());
+		assertNull("B3 next block is not empty", b3.getNextBlock());
+
+
 	}
 
 }
