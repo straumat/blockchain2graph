@@ -86,7 +86,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				// We log.
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
-				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
+				getLogger().info(getLogPrefix() + " - Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 
 				// Clear session
 				getSession().clear();

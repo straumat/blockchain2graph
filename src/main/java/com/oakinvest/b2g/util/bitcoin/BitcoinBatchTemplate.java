@@ -31,7 +31,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Log separator.
 	 */
-	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
+	protected static final String LOG_SEPARATOR = "---";
 
 	/**
 	 * How many milli seconds in one second.

@@ -1,20 +1,16 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.Future;
 
 /**
  * Bitcoin import transactions batch.
@@ -24,9 +20,25 @@ import java.util.Optional;
 public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 
 	/**
+	 * Pause between calls for checking if all transactions ar done.
+	 */
+	public static final int PAUSE_BETWEEN_THREADS_CHECK = 1000;
+
+	/**
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Transactions batch";
+
+	/**
+	 * Number of seconds before displaying threads statistics.
+	 */
+	private static final int PAUSE_BEFORE_DISPLAYING_STATISTICS = 5;
+
+	/**
+	 * Transaction process thread.
+	 */
+	@Autowired
+	private BitcoinBatchTransactionsThread transactionProcessThread;
 
 	/**
 	 * Returns the log prefix to display in each log.
@@ -58,80 +70,77 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			// If we have the data
 			if (blockData != null) {
 
-				// ---------------------------------------------------------------------------------------------------------
-				// Creating all the addresses.
+				// -----------------------------------------------------------------------------------------------------
+				// Creating one thread to treat one transaction..
 				int i = 1;
+				int numberOfTransactions = blockData.getTransactions().size();
+				HashMap<String, Future<Boolean>> threads = new HashMap<>();
 				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
-					// -----------------------------------------------------------------------------------------------------
+					// -------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get and save the informations.
-					if ((getTransactionRepository().findByTxId(entry.getKey()) == null) && !entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
-						// Success.
-						try {
-							// Saving the transaction in the database.
-							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(entry.getValue());
-							//getTransactionRepository().save(transaction);
-							addLog("Treating transaction " + entry.getKey() + " (" + i + "/" + blockData.getTransactions().size() + ")");
-
-							// For each Vin.
-							Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
-							while (vins.hasNext()) {
-								BitcoinTransactionInput vin = vins.next();
-								transaction.getInputs().add(vin);
-								vin.setTransaction(transaction);
-
-								if (vin.getTxId() != null) {
-									// Not coinbase. We retrieve the original transaction.
-									Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
-									if (originTransactionOutput.isPresent()) {
-										// We set the addresses "from" if it's not a coinbase transaction.
-										vin.setTransactionOutput(originTransactionOutput.get());
-
-										// We set all the addresses linked to this input
-										originTransactionOutput.get().getAddresses()
-												.stream().filter(a -> a != null)
-												.forEach(a -> {
-													BitcoinAddress address = getAddressRepository().findByAddress(a);
-													address.getInputTransactions().add(vin);
-													getAddressRepository().save(address);
-												});                                        //getTransactionInputRepository().save(vin);
-
-										addLog(" - Done treating vin : " + vin);
-									} else {
-										addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
-										return;
-									}
-								}
-								//getTransactionInputRepository().save(vin);
-							}
-
-							Iterator<BitcoinTransactionOutput> vouts = transaction.getOutputs().iterator();
-							while (vouts.hasNext()) {
-								BitcoinTransactionOutput vout = vouts.next();
-								transaction.getOutputs().add(vout);
-								vout.setTransaction(transaction);
-								vout.getAddresses().stream()
-										.filter(a -> a != null)
-										.forEach(a -> {
-											BitcoinAddress address = getAddressRepository().findByAddress(a);
-											address.getOutputTransactions().add(vout);
-											getAddressRepository().save(address);
-										});                                //getTransactionOutputRepository().save(vout);
-								addLog(" - Done treating vout : " + vout);
-							}
-
-							// Saving the transaction.
-							getTransactionRepository().save(transaction);
-							addLog(" - Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
-							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + transaction.getId() + ")");
-						} catch (Exception e) {
-							addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
-							getLogger().error("Error treating transactions " + Arrays.toString(e.getStackTrace()));
-							return;
-						}
-
+					if (!entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
+						threads.put(entry.getKey(), transactionProcessThread.process(entry.getValue()));
+						addLog("> Created a thread for transaction " + entry.getKey() + " (" + i + "/" + numberOfTransactions + ")");
 					}
 					i++;
 				}
+
+				// -------------------------------------------------------------------------------------------------
+				// Waiting for all the transactions to be done.
+				boolean allThreadsDone = false;
+				while (!allThreadsDone) {
+					// Statistics.
+					int threadsWithoutError = 0;
+					int threadsWithErrors = 0;
+					int threadsNotYetDone = 0;
+
+					// We see if we have all the results we expected.
+					for (Map.Entry<String, Future<Boolean>> t : threads.entrySet()) {
+						if (t.getValue().isDone()) {
+							// Work is done. Is the result ok ?
+							Boolean executionResult;
+							try {
+								executionResult = t.getValue().get();
+							} catch (Exception e) {
+								getLogger().error("error in getting result from thread " + e.getMessage());
+								executionResult = false;
+							}
+							// If the result is ok.
+							if (executionResult) {
+								threadsWithoutError++;
+							} else {
+								// If it's done and it's null, an error occured so we restart it.
+								threadsWithErrors++;
+								addLog("Thread for transaction " + t.getKey() + " had an error");
+								// We launch again a thread task on this transaction hash.
+								threads.put(t.getKey(), transactionProcessThread.process(blockData.getTransactions().get(t.getKey())));
+							}
+						} else {
+							// If the transaction work is not yet done.
+							threadsNotYetDone++;
+						}
+					}
+
+					// Everything is imported if all the transactions are imported without errors.
+					allThreadsDone = (threadsWithoutError == blockData.getTransactions().size());
+
+					// If not has been imported, we log statics if we are already running for 2 secs.
+					if (!allThreadsDone & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > PAUSE_BEFORE_DISPLAYING_STATISTICS) {
+						String message = "Block n°" + blockToTreat.getHeight() + " statistics on threads :";
+						message += threadsWithoutError + " ok / ";
+						message += threadsWithErrors + " not ok / ";
+						message += threadsNotYetDone + " not done";
+						addLog(message);
+
+						// And we wait a bit to let time for the threads to finish before testing again.
+						try {
+							Thread.sleep(PAUSE_BETWEEN_THREADS_CHECK);
+						} catch (InterruptedException e) {
+							getLogger().error("Error while waiting : " + e.getMessage());
+						}
+					}
+				}
+
 				blockToTreat.setState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
 				getBlockRepository().save(blockToTreat);
 
