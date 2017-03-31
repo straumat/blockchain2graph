@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.configuration;
 
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
@@ -9,6 +10,7 @@ import java.util.concurrent.Executor;
  * Async configuration.
  * Created by straumat on 22/03/17.
  */
+@EnableAsync
 public class AsyncConfiguration extends AsyncConfigurerSupport {
 
 	/**
@@ -18,10 +20,13 @@ public class AsyncConfiguration extends AsyncConfigurerSupport {
 	 */
 	@Override
 	public final Executor getAsyncExecutor() {
+		// Configuration
+		final int maxPoolSize = 5;
+
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(2);
-		executor.setMaxPoolSize(2);
-		executor.setThreadNamePrefix("blockData-cache-");
+		executor.setMaxPoolSize(maxPoolSize);
+		executor.setThreadNamePrefix("transaction-thread-");
 		executor.initialize();
 		return executor;
 	}
