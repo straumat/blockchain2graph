@@ -50,8 +50,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 				// -----------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
-				blockToTreat.getTx().stream()
-						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+				blockToTreat.getTx()
 						.forEach(t -> {
 							BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
 							bt.setBlock(blockToTreat);

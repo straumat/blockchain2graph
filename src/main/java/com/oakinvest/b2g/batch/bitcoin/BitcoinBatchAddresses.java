@@ -3,9 +3,9 @@ package com.oakinvest.b2g.batch.bitcoin;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
-import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -46,7 +46,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 		if (blockToTreat != null) {
 			addLog(LOG_SEPARATOR);
 			addLog("Starting to import addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()));
-			BitcoindBlockData blockData = getBlockDataFromBitcoind(blockToTreat.getHeight());
+			BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat.getHeight());
 
 			// ---------------------------------------------------------------------------------------------------------
 			// If we have the data
@@ -56,29 +56,28 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
 					// -------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get all the addresses in vout.
-					if (!entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
-						entry.getValue().getVout().stream().filter(v -> v != null)
-								.forEach(v -> v.getScriptPubKey()
-										.getAddresses().stream()
-										.filter(a -> a != null)
-										.forEach(address -> {
-											BitcoinAddress a = getAddressRepository().findByAddress(address);
-											if (a == null) {
-												// Address creation.
-												try {
-													a = new BitcoinAddress(address);
-													getAddressRepository().save(a);
-												} catch (Exception e) {
-													a = getAddressRepository().findByAddress(address);
-												}
-												addLog("Address " + address + " created  with id " + a.getId());
-												getLogger().info(getLogPrefix() + " - Address " + address + " created  with id " + a.getId());
-											} else {
-												addLog("Address " + address + " already exists with id " + a.getId());
-												getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());
+					entry.getValue().getVout().stream().filter(v -> v != null)
+							.forEach(v -> v.getScriptPubKey()
+									.getAddresses().stream()
+									.filter(a -> a != null)
+									.forEach(address -> {
+										BitcoinAddress a = getAddressRepository().findByAddress(address);
+										if (a == null) {
+											// Address creation.
+											try {
+												a = new BitcoinAddress(address);
+												getAddressRepository().save(a);
+											} catch (Exception e) {
+												a = getAddressRepository().findByAddress(address);
 											}
-										}));
-					}
+											addLog("Address " + address + " created  with id " + a.getId());
+											getLogger().info(getLogPrefix() + " - Address " + address + " created  with id " + a.getId());
+										} else {
+											addLog("Address " + address + " already exists with id " + a.getId());
+											getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());
+										}
+									}));
+
 				}
 				blockToTreat.setState(BitcoinBlockState.ADDRESSES_IMPORTED);
 				getBlockRepository().save(blockToTreat);

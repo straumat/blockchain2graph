@@ -25,10 +25,6 @@ public class BitcoinBatch {
 	 */
 	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
 
-	/**
-	 * Number of blocks to cache.
-	 */
-	private static final long BLOCK_TO_CACHE = 10;
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
@@ -39,6 +35,11 @@ public class BitcoinBatch {
 	 * Pause between imports.
 	 */
 	private static final int PAUSE_BETWEEN_IMPORTS = 100;
+
+	/**
+	 * Initial delay before imports.
+	 */
+	private static final int INITIAL_DELAY_BEFORE_IMPORTS = 10 * 1000;
 
 	/**
 	 * Logger.
@@ -102,7 +103,7 @@ public class BitcoinBatch {
 	/**
 	 * Import data.
 	 */
-	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
+	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS, initialDelay = INITIAL_DELAY_BEFORE_IMPORTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
 		// Update block statistics.
@@ -126,7 +127,6 @@ public class BitcoinBatch {
 			// Importing the next available block.
 			final long start = System.currentTimeMillis();
 			try {
-				batchCacheLoader.loadInCache(batchBlocks, importedBlockCount + BLOCK_TO_CACHE);
 				batchBlocks.process();
 				batchAddresses.process();
 				batchTransactions.process();
@@ -139,7 +139,6 @@ public class BitcoinBatch {
 			// Adding a statistic on duration.
 			bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
 		}
-
 	}
 
 }

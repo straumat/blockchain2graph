@@ -2,9 +2,9 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
-import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +65,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			addLog(LOG_SEPARATOR);
 			addLog("Starting to import transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
-			BitcoindBlockData blockData = getBlockDataFromBitcoind(blockToTreat.getHeight());
+			BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat.getHeight());
 			// ---------------------------------------------------------------------------------------------------------
 			// If we have the data
 			if (blockData != null) {
@@ -78,10 +78,8 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
 					// -------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get and save the informations.
-					if (!entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
-						threads.put(entry.getKey(), transactionProcessThread.process(entry.getValue()));
-						addLog("> Created a thread for transaction " + entry.getKey() + " (" + i + "/" + numberOfTransactions + ")");
-					}
+					threads.put(entry.getKey(), transactionProcessThread.process(entry.getValue()));
+					addLog("> Created a thread for transaction " + entry.getKey() + " (" + i + "/" + numberOfTransactions + ")");
 					i++;
 				}
 
