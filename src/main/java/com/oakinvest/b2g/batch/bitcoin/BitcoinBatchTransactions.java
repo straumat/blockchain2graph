@@ -124,7 +124,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 
 					// If not has been imported, we log statics if we are already running for 2 secs.
 					if (!allThreadsDone & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > PAUSE_BEFORE_DISPLAYING_STATISTICS) {
-						String message = "Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " statistics on threads :";
+						String message = "Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " statistics on threads : ";
 						message += threadsWithoutError + " ok / ";
 						message += threadsWithErrors + " not ok / ";
 						message += threadsNotYetDone + " not done";

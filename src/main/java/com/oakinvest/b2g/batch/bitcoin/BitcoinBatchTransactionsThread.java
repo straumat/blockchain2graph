@@ -86,7 +86,12 @@ public class BitcoinBatchTransactionsThread {
 
 					if (vin.getTxId() != null) {
 						// Not coinbase. We retrieve the original transaction.
-						Optional<BitcoinTransactionOutput> originTransactionOutput = transactionRepository.findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+						BitcoinTransaction originTransaction = transactionRepository.findByTxId(vin.getTxId());
+						if (originTransaction == null) {
+							// Origin transaction not yet in database.
+							return new AsyncResult<>(false);
+						}
+						Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
 						if (originTransactionOutput.isPresent()) {
 							// We set the addresses "from" if it's not a coinbase transaction.
 							vin.setTransactionOutput(originTransactionOutput.get());
