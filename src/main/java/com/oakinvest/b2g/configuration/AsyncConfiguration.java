@@ -17,6 +17,12 @@ import java.util.concurrent.Executor;
 public class AsyncConfiguration extends AsyncConfigurerSupport {
 
 	/**
+	 * Transactions core pool size.
+	 */
+	@Value("${blockchain2graph.import.transactions.threads.core-pool-size}")
+	private int transactionsCorePoolSize;
+
+	/**
 	 * Transactions thread max pool size.
 	 */
 	@Value("${blockchain2graph.import.transactions.threads.max-pool-size}")
@@ -30,7 +36,7 @@ public class AsyncConfiguration extends AsyncConfigurerSupport {
 	@Override
 	public final Executor getAsyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
+		executor.setCorePoolSize(transactionsCorePoolSize);
 		executor.setMaxPoolSize(transactionsMaxPoolSize);
 		executor.setThreadNamePrefix("transaction-thread-");
 		executor.initialize();
