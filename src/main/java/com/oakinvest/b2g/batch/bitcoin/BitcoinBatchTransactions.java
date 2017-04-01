@@ -22,7 +22,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	/**
 	 * Pause between calls for checking if all transactions ar done.
 	 */
-	public static final int PAUSE_BETWEEN_THREADS_CHECK = 1000;
+	private static final int PAUSE_BETWEEN_THREADS_CHECK = 5 * 1000;
 
 	/**
 	 * Log prefix.
@@ -124,7 +124,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 
 					// If not has been imported, we log statics if we are already running for 2 secs.
 					if (!allThreadsDone & ((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS) > PAUSE_BEFORE_DISPLAYING_STATISTICS) {
-						String message = "Block n°" + blockToTreat.getHeight() + " statistics on threads :";
+						String message = "Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " statistics on threads :";
 						message += threadsWithoutError + " ok / ";
 						message += threadsWithErrors + " not ok / ";
 						message += threadsNotYetDone + " not done";

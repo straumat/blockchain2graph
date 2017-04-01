@@ -2,6 +2,7 @@ package com.oakinvest.b2g.configuration;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Cache configuration.
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableCaching
+@Profile("!test")
 public class CacheConfiguration {
 
 }

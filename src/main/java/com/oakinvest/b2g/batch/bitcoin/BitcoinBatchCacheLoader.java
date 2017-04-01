@@ -20,7 +20,7 @@ public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 	/**
 	 * Pause between load in cache.
 	 */
-	private static final int PAUSE_BETWEEN_LOAD_IN_CACHE = 10;
+	private static final int PAUSE_BETWEEN_LOAD_IN_CACHE = 1000;
 
 	/**
 	 * Load a block in cache.

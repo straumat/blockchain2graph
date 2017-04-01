@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
  * Thread that deal with a transaction.
  * Created by straumat on 29/03/17.
  */
-@Component
+@Service
 public class BitcoinBatchTransactionsThread {
 
 	/**
@@ -64,7 +64,8 @@ public class BitcoinBatchTransactionsThread {
 	 * @return BitcoinTransaction created
 	 */
 	@Async
-	public final Future<Boolean> process(final GetRawTransactionResult transactionData) {
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	public Future<Boolean> process(final GetRawTransactionResult transactionData) {
 		BitcoinTransaction transaction = transactionRepository.findByTxId(transactionData.getHash());
 		if (transaction != null) {
 			// If the transaction already exists in the database, we return it.

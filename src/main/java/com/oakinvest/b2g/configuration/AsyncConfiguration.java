@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -11,6 +12,7 @@ import java.util.concurrent.Executor;
  * Async configuration.
  * Created by straumat on 22/03/17.
  */
+@Configuration
 @EnableAsync
 public class AsyncConfiguration extends AsyncConfigurerSupport {
 
