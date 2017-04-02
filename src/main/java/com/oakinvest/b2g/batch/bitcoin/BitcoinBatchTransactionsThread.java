@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -64,6 +65,7 @@ public class BitcoinBatchTransactionsThread {
 	 * @return BitcoinTransaction created
 	 */
 	@Async
+	@Transactional
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public Future<Boolean> process(final GetRawTransactionResult transactionData) {
 		BitcoinTransaction transaction = transactionRepository.findByTxId(transactionData.getHash());
@@ -89,6 +91,7 @@ public class BitcoinBatchTransactionsThread {
 						BitcoinTransaction originTransaction = transactionRepository.findByTxId(vin.getTxId());
 						if (originTransaction == null) {
 							// Origin transaction not yet in database.
+							log.error("==> ERROR : origin transaction of " + vin.getTxId() + " not found.");
 							return new AsyncResult<>(false);
 						}
 						Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
