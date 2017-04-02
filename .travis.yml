@@ -5,12 +5,14 @@ sudo: required
 cache:
   directories:
     - $HOME/.m2
+before_install:
+  - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
+  - java -jar jpm4j.jar -u init
+  - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
 script:
     - mvn package
-    - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >t.jar
-    - java -jar t.jar init
-    - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
-    - codacy-coverage-reporter -l Java -r target/site/jacoco/jacoco.xml
+after_success:
+  - ~/jpm/bin/codacy-coverage-reporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
 addons:
   artifacts:
     paths:
