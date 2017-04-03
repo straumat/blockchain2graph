@@ -3,6 +3,7 @@ package com.oakinvest.b2g.dto.ext.bitcoin.bitcoind;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -10,7 +11,7 @@ import java.util.LinkedHashMap;
  * Bitcoind block data.
  * Created by straumat on 16/03/17.
  */
-public class BitcoindBlockData {
+public class BitcoindBlockData implements Serializable {
 
 	/**
 	 * Bitcoin block.

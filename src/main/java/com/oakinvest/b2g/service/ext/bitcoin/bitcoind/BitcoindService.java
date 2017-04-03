@@ -19,7 +19,7 @@ public interface BitcoindService {
 	 * @param blockNumber block number
 	 * @return block data or null if a problem occurred.
 	 */
-	BitcoindBlockData getBlockData(final long blockNumber);
+	BitcoindBlockData getBlockData(long blockNumber);
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.

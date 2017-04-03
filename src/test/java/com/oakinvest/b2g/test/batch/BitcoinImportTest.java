@@ -147,6 +147,7 @@ public class BitcoinImportTest {
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();
 
+		// Constraints
 		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
 		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
 		session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());

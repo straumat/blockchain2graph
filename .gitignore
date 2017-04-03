@@ -106,3 +106,4 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 Supprimerait release.properties
+/data/
