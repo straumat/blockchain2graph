@@ -131,11 +131,9 @@ public class BitcoinBatchTransactionsThread {
 
 				// Saving the transaction.
 				transactionRepository.save(transaction);
-				//addLog(" - Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
 				log.info(" - Transaction " + transactionData.getHash() + " saved (id=" + transaction.getId() + ")");
 				return new AsyncResult<>(true);
 			} catch (Exception e) {
-				//addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
 				log.error("Error treating transaction " + transactionData.getHash() + " : " + Arrays.toString(e.getStackTrace()));
 				return new AsyncResult<>(false);
 			}
