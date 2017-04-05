@@ -1,12 +1,16 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Bitcoin import relations batch.
@@ -66,7 +70,41 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 					getBlockRepository().save(previousBlock);
 				}
 
-				// ---------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------------
+				// We set the transaction output of each non coinbase vin.
+				for (BitcoinTransaction bt : blockToTreat.getTransactions()) {
+					// we pass throw all transactions.
+					for (BitcoinTransactionInput vin : bt.getInputs()) {
+						if (vin.getTxId() != null) {
+							// Not coinbase. We retrieve the original transaction.
+							BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+							if (originTransaction == null) {
+								// Origin transaction not yet in database.
+								addError("Origin transaction " + vin.getTxId() + " not found");
+								throw new Exception("Origin transaction " + vin.getTxId() + " not found");
+							}
+							Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
+							if (originTransactionOutput.isPresent()) {
+								// We set the addresses "from" if it's not a coinbase transaction.
+								vin.setTransactionOutput(originTransactionOutput.get());
+
+								// We set all the addresses linked to this input
+								originTransactionOutput.get().getAddresses()
+										.stream().filter(a -> a != null)
+										.forEach(a -> {
+											BitcoinAddress address = getAddressRepository().findByAddress(a);
+											address.getInputTransactions().add(vin);
+											getAddressRepository().save(address);
+										});
+
+								getLogger().info(bt.getHash() + " - Done treating vin : " + vin);
+							}
+						}
+					}
+
+				}
+
+				// -----------------------------------------------------------------------------------------------------
 				// We update the block to say everything went fine.
 				blockToTreat.setState(BitcoinBlockState.IMPORTED);
 				getBlockRepository().save(blockToTreat);

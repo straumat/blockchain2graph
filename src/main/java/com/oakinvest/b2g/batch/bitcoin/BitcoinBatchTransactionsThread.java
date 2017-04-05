@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
@@ -80,40 +79,21 @@ public class BitcoinBatchTransactionsThread {
 				transaction = mapper.rawTransactionResultToBitcoinTransaction(transactionData);
 
 				// For each Vin.
+				int i = 1;
+				int vinsSize = transaction.getInputs().size();
 				Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
 				while (vins.hasNext()) {
 					BitcoinTransactionInput vin = vins.next();
 					transaction.getInputs().add(vin);
 					vin.setTransaction(transaction);
-
-					if (vin.getTxId() != null) {
-						// Not coinbase. We retrieve the original transaction.
-						BitcoinTransaction originTransaction = transactionRepository.findByTxId(vin.getTxId());
-						if (originTransaction == null) {
-							// Origin transaction not yet in database.
-							log.error("==> ERROR : origin transaction of " + vin.getTxId() + " not found.");
-							return new AsyncResult<>(false);
-						}
-						Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
-						if (originTransactionOutput.isPresent()) {
-							// We set the addresses "from" if it's not a coinbase transaction.
-							vin.setTransactionOutput(originTransactionOutput.get());
-
-							// We set all the addresses linked to this input
-							originTransactionOutput.get().getAddresses()
-									.stream().filter(a -> a != null)
-									.forEach(a -> {
-										BitcoinAddress address = addressRepository.findByAddress(a);
-										address.getInputTransactions().add(vin);
-										addressRepository.save(address);
-									});
-
-							log.info(transactionData.getHash() + " - Done treating vin : " + vin);
-						}
-					}
+					log.info(transactionData.getHash() + " - Done treating vin : " + vin + " (" + i + "/" + vinsSize + ")");
 				}
+				i++;
+
 
 				// For each Vout.
+				int j = 1;
+				int voutsSize = transaction.getInputs().size();
 				Iterator<BitcoinTransactionOutput> vouts = transaction.getOutputs().iterator();
 				while (vouts.hasNext()) {
 					BitcoinTransactionOutput vout = vouts.next();
@@ -126,7 +106,8 @@ public class BitcoinBatchTransactionsThread {
 								address.getOutputTransactions().add(vout);
 								addressRepository.save(address);
 							});
-					log.info(transactionData.getHash() + " - Done treating vout : " + vout);
+					log.info(transactionData.getHash() + " - Done treating vout : " + vout + " (" + j + "/" + voutsSize + ")");
+					j++;
 				}
 
 				// Saving the transaction.

@@ -107,7 +107,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							if (executionResult) {
 								threadsWithoutError++;
 							} else {
-								// If it's done and it's null, an error occured so we restart it.
+								// If it's done and it's null, an error occurred so we restart it.
 								threadsWithErrors++;
 								addLog("Thread for transaction " + t.getKey() + " had an error");
 								// We launch again a thread task on this transaction hash.
