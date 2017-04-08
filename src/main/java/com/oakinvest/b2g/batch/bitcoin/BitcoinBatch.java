@@ -1,9 +1,9 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
-import com.oakinvest.b2g.batch.bitcoin.step1.BitcoinBatchBlocks;
-import com.oakinvest.b2g.batch.bitcoin.step2.BitcoinBatchAddresses;
-import com.oakinvest.b2g.batch.bitcoin.step3.BitcoinBatchTransactions;
-import com.oakinvest.b2g.batch.bitcoin.step4.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
+import com.oakinvest.b2g.batch.bitcoin.step3.transactions.BitcoinBatchTransactions;
+import com.oakinvest.b2g.batch.bitcoin.step4.relations.BitcoinBatchRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;

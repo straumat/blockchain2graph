@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step1;
+package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;

@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step4;
+package com.oakinvest.b2g.batch.bitcoin.step4.relations;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
