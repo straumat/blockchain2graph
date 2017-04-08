@@ -3,7 +3,7 @@ package com.oakinvest.b2g.batch.bitcoin.step3;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.util.bitcoin.BitcoindToDomainMapper;
+import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.mock;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;

@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.batch.bitcoin.cache;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
+import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

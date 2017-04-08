@@ -10,7 +10,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
-import com.oakinvest.b2g.util.bitcoin.BitcoindMock;
+import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

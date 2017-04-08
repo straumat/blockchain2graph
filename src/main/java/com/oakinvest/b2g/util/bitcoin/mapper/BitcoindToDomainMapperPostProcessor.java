@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.mapper;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
  * Created by straumat on 08/04/17.
  */
 @Mapper
-public abstract class BitcoinTransactionPostProcessor {
+public abstract class BitcoindToDomainMapperPostProcessor {
 
 	/**
 	 * Link vin & vout to transaction.

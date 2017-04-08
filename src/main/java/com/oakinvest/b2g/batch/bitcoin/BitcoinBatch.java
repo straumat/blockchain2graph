@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
-import com.oakinvest.b2g.batch.bitcoin.cache.BitcoinBatchCacheLoader;
 import com.oakinvest.b2g.batch.bitcoin.step1.BitcoinBatchBlocks;
 import com.oakinvest.b2g.batch.bitcoin.step2.BitcoinBatchAddresses;
 import com.oakinvest.b2g.batch.bitcoin.step3.BitcoinBatchTransactions;
@@ -28,7 +27,7 @@ public class BitcoinBatch {
 	/**
 	 * How many milli seconds in one second.
 	 */
-	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
+	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
@@ -75,12 +74,6 @@ public class BitcoinBatch {
 	private BitcoinBatchRelations batchRelations;
 
 	/**
-	 * Batch cache loader.
-	 */
-	@Autowired
-	private BitcoinBatchCacheLoader batchCacheLoader;
-
-	/**
 	 * Status service.
 	 */
 	@Autowired
@@ -96,13 +89,13 @@ public class BitcoinBatch {
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository bbr;
+	private BitcoinBlockRepository blockRepository;
 
 	/**
 	 * Bitcoind service.
 	 */
 	@Autowired
-	private BitcoindService bds;
+	private BitcoindService bitcoindService;
 
 	/**
 	 * Import data.
@@ -111,8 +104,8 @@ public class BitcoinBatch {
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
 		// Update block statistics.
-		long importedBlockCount = bbr.countBlockByState(BitcoinBlockState.IMPORTED);
-		long totalBlockCount = bds.getBlockCount().getResult();
+		long importedBlockCount = blockRepository.countBlockByState(BitcoinBlockState.IMPORTED);
+		long totalBlockCount = bitcoindService.getBlockCount().getResult();
 
 		// Update status.
 		status.setImportedBlockCount(importedBlockCount);
