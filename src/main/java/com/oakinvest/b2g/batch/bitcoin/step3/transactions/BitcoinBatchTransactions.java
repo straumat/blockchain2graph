@@ -75,11 +75,11 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				int i = 1;
 				int numberOfTransactions = blockData.getTransactions().size();
 				HashMap<String, Future<Boolean>> threads = new HashMap<>();
-				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
+				for (GetRawTransactionResult rawTransactionResult : blockData.getTransactions()) {
 					// -------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get and save the informations.
-					threads.put(entry.getKey(), transactionProcessThread.process(entry.getValue()));
-					addLog("> Created a thread for transaction " + entry.getKey() + " (" + i + "/" + numberOfTransactions + ")");
+					threads.put(rawTransactionResult.getTxid(), transactionProcessThread.process(rawTransactionResult));
+					addLog("> Created a thread for transaction " + rawTransactionResult.getTxid() + " (" + i + "/" + numberOfTransactions + ")");
 					i++;
 				}
 
@@ -110,7 +110,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 								// If it's done and it's null, an error occurred so we restart it.
 								threadsWithErrors++;
 								addLog("Thread for transaction " + t.getKey() + " had an error");
-								threads.put(t.getKey(), transactionProcessThread.process(blockData.getTransactions().get(t.getKey())));
+								threads.put(t.getKey(), transactionProcessThread.process(blockData.getRawTransactionResult(t.getKey()).get()));
 							}
 						} else {
 							// If the transaction work is not yet done.

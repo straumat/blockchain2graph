@@ -57,7 +57,6 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				// We retrieve all the addresses.
 				final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
 				blockData.getTransactions()
-						.values()
 						.parallelStream()
 						.forEach(grt -> {
 							grt.getVout()

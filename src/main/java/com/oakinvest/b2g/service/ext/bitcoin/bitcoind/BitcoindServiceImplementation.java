@@ -23,9 +23,8 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -133,13 +132,13 @@ public class BitcoindServiceImplementation implements BitcoindService {
 				if (blockResponse.getError() == null) {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the transactions data...
-					final HashMap<String, GetRawTransactionResult> transactions = new LinkedHashMap<>();
+					final List<GetRawTransactionResult> transactions = new LinkedList<>();
 					for (Iterator<String> transactionsHashs = blockResponse.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
 						String t = transactionsHashs.next();
 						if (!t.equals(GENESIS_BLOCK_TRANSACTION)) {
 							GetRawTransactionResponse r = getRawTransaction(t);
 							if (r.getError() == null) {
-								transactions.put(t, getRawTransaction(t).getResult());
+								transactions.add(getRawTransaction(t).getResult());
 							} else {
 								log.error("Error getting transaction n°" + t + " informations : " + r.getError());
 								return null;
