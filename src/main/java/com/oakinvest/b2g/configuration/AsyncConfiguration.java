@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -34,7 +35,9 @@ public class AsyncConfiguration extends AsyncConfigurerSupport {
 	 * @return configuration
 	 */
 	@Override
-	public final Executor getAsyncExecutor() {
+	@Bean(name = "transactionPoolTaskExecutor")
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	public Executor getAsyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(transactionsCorePoolSize);
 		executor.setMaxPoolSize(transactionsMaxPoolSize);

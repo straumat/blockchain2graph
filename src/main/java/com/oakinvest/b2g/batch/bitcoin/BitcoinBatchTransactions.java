@@ -71,7 +71,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			if (blockData != null) {
 
 				// -----------------------------------------------------------------------------------------------------
-				// Creating one thread to treat one transaction..
+				// Creating one thread per transaction to treat.
 				int i = 1;
 				int numberOfTransactions = blockData.getTransactions().size();
 				HashMap<String, Future<Boolean>> threads = new HashMap<>();
@@ -110,7 +110,6 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 								// If it's done and it's null, an error occurred so we restart it.
 								threadsWithErrors++;
 								addLog("Thread for transaction " + t.getKey() + " had an error");
-								// We launch again a thread task on this transaction hash.
 								threads.put(t.getKey(), transactionProcessThread.process(blockData.getTransactions().get(t.getKey())));
 							}
 						} else {

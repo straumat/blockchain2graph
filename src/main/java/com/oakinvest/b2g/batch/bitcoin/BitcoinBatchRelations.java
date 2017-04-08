@@ -73,6 +73,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				// -----------------------------------------------------------------------------------------------------
 				// We set the transaction output of each non coinbase vin.
 				for (BitcoinTransaction bt : blockToTreat.getTransactions()) {
+					getLogger().info("Treating transaction " + bt.getHash());
 					// we pass throw all transactions.
 					for (BitcoinTransactionInput vin : bt.getInputs()) {
 						if (vin.getTxId() != null) {
@@ -100,6 +101,18 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 								getLogger().info(bt.getHash() + " - Done treating vin : " + vin);
 							}
 						}
+					}
+
+					// For each Vout.
+					for (BitcoinTransactionOutput vout : bt.getOutputs()) {
+						vout.getAddresses().stream()
+								.filter(a -> a != null)
+								.forEach(a -> {
+									BitcoinAddress address = getAddressRepository().findByAddress(a);
+									address.getOutputTransactions().add(vout);
+									getAddressRepository().save(address);
+								});
+						getLogger().info(bt.getHash() + " - Done treating vout : " + vout);
 					}
 
 				}

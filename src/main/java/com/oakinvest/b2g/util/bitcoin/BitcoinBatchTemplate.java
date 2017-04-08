@@ -7,6 +7,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +51,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Mapper.
 	 */
-	@Autowired
-	private BitcoindToDomainMapper mapper;
+	private BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * BitcoinBlock repository.
