@@ -60,6 +60,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							bt.setBlock(blockToTreat);
 							blockToTreat.getTransactions().add(bt);
 						});
+				getBlockRepository().save(blockToTreat);
+				getSession().clear();
 
 				// -----------------------------------------------------------------------------------------------------
 				// We set the previous and the next block.
@@ -69,6 +71,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 					previousBlock.setNextBlock(blockToTreat);
 					getBlockRepository().save(previousBlock);
 				}
+				getBlockRepository().save(blockToTreat);
+				getSession().clear();
 
 				// -----------------------------------------------------------------------------------------------------
 				// We set the transaction output of each non coinbase vin.
