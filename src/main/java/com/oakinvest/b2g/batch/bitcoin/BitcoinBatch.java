@@ -1,5 +1,10 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
+import com.oakinvest.b2g.batch.bitcoin.cache.BitcoinBatchCacheLoader;
+import com.oakinvest.b2g.batch.bitcoin.step1.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.step2.BitcoinBatchAddresses;
+import com.oakinvest.b2g.batch.bitcoin.step3.BitcoinBatchTransactions;
+import com.oakinvest.b2g.batch.bitcoin.step4.BitcoinBatchRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
@@ -24,7 +29,6 @@ public class BitcoinBatch {
 	 * How many milli seconds in one second.
 	 */
 	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
-
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).

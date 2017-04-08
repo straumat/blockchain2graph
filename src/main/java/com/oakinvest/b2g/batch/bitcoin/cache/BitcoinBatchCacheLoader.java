@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin;
+package com.oakinvest.b2g.batch.bitcoin.cache;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
@@ -32,7 +32,7 @@ public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 		try {
 			long importedBlockCount = getBlockRepository().countBlockByState(BitcoinBlockState.IMPORTED);
 
-			// Set in cache NUMBER_OF_BLOCKS_TO_CACHE ahead.
+			// Set in cache NUMBER_OF_BLOCKS_TO_CACHE blocks ahead.
 			for (int i = 1; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
 				getBitcoindService().getBlockData(importedBlockCount + i);
 			}
