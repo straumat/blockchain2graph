@@ -195,15 +195,6 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Setter mapper.
-	 *
-	 * @param newMapper the mapper to set
-	 */
-	public final void setMapper(final BitcoindToDomainMapper newMapper) {
-		mapper = newMapper;
-	}
-
-	/**
 	 * Getter blockRepository.
 	 *
 	 * @return blockRepository

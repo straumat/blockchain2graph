@@ -175,7 +175,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getblockCount with " + request);
+		log.debug("Calling getblockCount with " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
 	}
 
@@ -193,7 +193,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getblockHash on block " + request);
+		log.debug("Calling getblockHash on block " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
 	}
 
@@ -211,7 +211,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getblock on block " + request);
+		log.debug("Calling getblock on block " + request);
 		return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
 	}
 
@@ -230,7 +230,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 		// Making the call.
 		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.info("Calling getrawtransaction on transaction " + request);
+		log.debug("Calling getrawtransaction on transaction " + request);
 		return restTemplate.postForObject(getURL(), entity, GetRawTransactionResponse.class);
 	}
 

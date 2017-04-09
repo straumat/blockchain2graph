@@ -20,14 +20,14 @@ import java.util.concurrent.Future;
 public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 
 	/**
-	 * Pause between calls for checking if all transactions ar done.
-	 */
-	private static final int PAUSE_BETWEEN_THREADS_CHECK = 5 * 1000;
-
-	/**
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Transactions batch";
+
+	/**
+	 * Pause between calls for checking if all threads ar done.
+	 */
+	private static final int PAUSE_BETWEEN_THREADS_CHECK = 5 * 1000;
 
 	/**
 	 * Number of seconds before displaying threads statistics.
@@ -84,7 +84,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				}
 
 				// -------------------------------------------------------------------------------------------------
-				// Waiting for all the transactions to be done.
+				// Waiting for all the threads to be done.
 				boolean allThreadsDone = false;
 				while (!allThreadsDone) {
 					// Statistics.

@@ -30,18 +30,45 @@ public class AsyncConfiguration extends AsyncConfigurerSupport {
 	private int transactionsMaxPoolSize;
 
 	/**
-	 * Async configuration.
+	 * Transactions core pool size.
+	 */
+	@Value("${blockchain2graph.import.transaction-relations.threads.core-pool-size}")
+	private int transactionRelationsCorePoolSize;
+
+	/**
+	 * Transactions thread max pool size.
+	 */
+	@Value("${blockchain2graph.import.transaction-relations.threads.max-pool-size}")
+	private int transactionsRelationsMaxPoolSize;
+
+	/**
+	 * Async configuration for transactions treatment.
 	 *
 	 * @return configuration
 	 */
-	@Override
 	@Bean(name = "transactionPoolTaskExecutor")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public Executor getAsyncExecutor() {
+	public Executor getTransactionsExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(transactionsCorePoolSize);
 		executor.setMaxPoolSize(transactionsMaxPoolSize);
 		executor.setThreadNamePrefix("transaction-thread-");
+		executor.initialize();
+		return executor;
+	}
+
+	/**
+	 * Async configuration for transaction relations treatment.
+	 *
+	 * @return pool
+	 */
+	@Bean(name = "transactionRelationsPoolTaskExecutor")
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	public Executor getTransactionRelationsExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(transactionRelationsCorePoolSize);
+		executor.setMaxPoolSize(transactionsRelationsMaxPoolSize);
+		executor.setThreadNamePrefix("transaction-relation-thread-");
 		executor.initialize();
 		return executor;
 	}

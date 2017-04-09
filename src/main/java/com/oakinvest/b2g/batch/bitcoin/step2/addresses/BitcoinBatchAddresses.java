@@ -70,7 +70,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 				// -----------------------------------------------------------------------------------------------------
 				// We create all the addresses.
-				addresses.stream()
+				addresses.parallelStream()
 						.filter(a -> a != null)
 						.distinct()
 						.forEach(address -> {
@@ -81,10 +81,10 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 									a = new BitcoinAddress(address);
 									getAddressRepository().save(a);
 								} catch (Exception e) {
-									a = getAddressRepository().findByAddress(address);
+									return;
 								}
-								addLog("Address " + address + " created  with id " + a.getId());
-								getLogger().info(getLogPrefix() + " - Address " + address + " created  with id " + a.getId());
+								addLog("Address " + address + " created with id " + a.getId());
+								getLogger().info(getLogPrefix() + " - Address " + address + " created with id " + a.getId());
 							} else {
 								addLog("Address " + address + " already exists with id " + a.getId());
 								getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());

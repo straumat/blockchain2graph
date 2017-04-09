@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.concurrent.Future;
 
 /**
- * Thread that deal with a transaction.
+ * Thread that deals with a transaction.
  * Created by straumat on 29/03/17.
  */
 @Service
@@ -47,22 +47,22 @@ public class BitcoinBatchTransactionsThread {
 	@Async("transactionPoolTaskExecutor")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public Future<Boolean> process(final GetRawTransactionResult transactionData) {
-		BitcoinTransaction transaction = transactionRepository.findByTxId(transactionData.getHash());
-		if (transaction != null) {
-			// If the transaction already exists in the database, we return it.
-			log.info("Transaction " + transactionData.getHash() + " is already in the database");
-			return new AsyncResult<>(true);
-		} else {
-			try {
+		try {
+			BitcoinTransaction transaction = transactionRepository.findByTxId(transactionData.getHash());
+			if (transaction != null) {
+				// If the transaction already exists in the database, we return it.
+				log.info("Transaction " + transactionData.getHash() + " is already in the database");
+				return new AsyncResult<>(true);
+			} else {
 				// If the transaction is not in the database, we create it.
 				transaction = mapper.rawTransactionResultToBitcoinTransaction(transactionData);
 				transactionRepository.save(transaction);
 				log.info("Transaction " + transactionData.getHash() + " saved (id=" + transaction.getId() + ")");
 				return new AsyncResult<>(true);
-			} catch (Exception e) {
-				log.error("Error treating transaction " + transactionData.getHash() + " : " + Arrays.toString(e.getStackTrace()));
-				return new AsyncResult<>(false);
 			}
+		} catch (Exception e) {
+			log.error("Error treating transaction " + transactionData.getHash() + " : " + Arrays.toString(e.getStackTrace()));
+			return new AsyncResult<>(false);
 		}
 	}
 
