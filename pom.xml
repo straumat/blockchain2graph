@@ -82,13 +82,13 @@
 		<caffeine.version>2.4.0</caffeine.version>
 
 		<!-- webjars -->
-		<webjars-locator.version>0.32</webjars-locator.version>
+		<webjars-locator.version>0.32-1</webjars-locator.version>
 
 		<!-- CSS lib releases configuration -->
 		<bootstrap.version>3.3.7-1</bootstrap.version>
 
 		<!-- Javascript lib releases configuration -->
-		<jquery.version>3.1.1</jquery.version>
+		<jquery.version>3.2.1</jquery.version>
 
 		<!-- Docker -->
 		<docker.image.prefix>oakinvest</docker.image.prefix>
