@@ -28,7 +28,7 @@ public class BitcoinBatchRelationsThread {
 	/**
 	 * Logger.
 	 */
-	private Logger log = LoggerFactory.getLogger(BitcoinBatchTransactionsThread.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinBatchTransactionsThread.class);
 
 	/**
 	 * Bitcoin block repository.

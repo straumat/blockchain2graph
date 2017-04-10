@@ -103,6 +103,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 										});
 
 								getLogger().info(bt.getHash() + " - Done treating vin : " + vin);
+							} else {
+								addError("Origin transaction output " + vin.getTxId() + " not found");
+								throw new Exception("Origin transaction output " + vin.getTxId() + " not found");
 							}
 						}
 					}

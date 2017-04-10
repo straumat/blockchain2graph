@@ -70,7 +70,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 				// -----------------------------------------------------------------------------------------------------
 				// We create all the addresses.
-				addresses.parallelStream()
+				addresses.stream()
 						.filter(a -> a != null)
 						.distinct()
 						.forEach(address -> {

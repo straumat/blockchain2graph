@@ -25,18 +25,18 @@ public class BitcoinBatchTransactionsThread {
 	/**
 	 * Logger.
 	 */
-	private Logger log = LoggerFactory.getLogger(BitcoinBatchTransactionsThread.class);
+	private final Logger log = LoggerFactory.getLogger(BitcoinBatchTransactionsThread.class);
+
+	/**
+	 * Mapper.
+	 */
+	private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
 	private BitcoinTransactionRepository transactionRepository;
-
-	/**
-	 * Mapper.
-	 */
-	private BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * Treat transaction.

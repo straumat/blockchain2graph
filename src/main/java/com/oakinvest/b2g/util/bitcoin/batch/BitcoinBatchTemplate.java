@@ -38,6 +38,11 @@ public abstract class BitcoinBatchTemplate {
 	private final Logger logger = LoggerFactory.getLogger(BitcoinBatchTemplate.class);
 
 	/**
+	 * Mapper.
+	 */
+	private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
+
+	/**
 	 * Status service.
 	 */
 	@Autowired
@@ -48,11 +53,6 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	@Autowired
 	private BitcoindService bitcoindService;
-
-	/**
-	 * Mapper.
-	 */
-	private BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * BitcoinBlock repository.
@@ -91,7 +91,7 @@ public abstract class BitcoinBatchTemplate {
 	private Session session;
 
 	/**
-	 * Getter de la propriété session.
+	 * Getter session.
 	 *
 	 * @return session
 	 */
