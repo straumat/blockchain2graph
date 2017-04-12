@@ -131,7 +131,6 @@ public class BitcoinBatch {
 			// Importing the next available block.
 			final long start = System.currentTimeMillis();
 			try {
-				batchCacheLoader.loadInCache(batchBlocks, importedBlockCount + BLOCK_TO_CACHE);
 				batchBlocks.process();
 				batchAddresses.process();
 				batchTransactions.process();

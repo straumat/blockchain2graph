@@ -1,9 +1,8 @@
 package com.oakinvest.b2g.batch.bitcoin.cache;
 
-import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,27 +10,45 @@ import org.springframework.stereotype.Service;
  * Created by straumat on 20/03/17.
  */
 @Service
-public class BitcoinBatchCacheLoader {
+public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 
 	/**
-	 * Logger.
+	 * Number of blocks to cache.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinBatchCacheLoader.class);
+	private static final long NUMBER_OF_BLOCKS_TO_CACHE = 10;
+
+	/**
+	 * Pause between load in cache.
+	 */
+	private static final int PAUSE_BETWEEN_LOAD_IN_CACHE = 1000;
 
 	/**
 	 * Load a block in cache.
-	 *
-	 * @param batchBlocks bat   ch block.
-	 * @param blockNumber block number.
 	 */
-	@Async
+	@Override
+	@Scheduled(fixedDelay = PAUSE_BETWEEN_LOAD_IN_CACHE)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void loadInCache(final BitcoinBatchBlocks batchBlocks, final long blockNumber) {
+	public void process() {
 		try {
-			batchBlocks.getBlockDataFromBitcoind(blockNumber);
+			long importedBlockCount = getBlockRepository().countBlockByState(BitcoinBlockState.IMPORTED);
+
+			// Set in cache NUMBER_OF_BLOCKS_TO_CACHE blocks ahead.
+			for (int i = 1; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
+				getBitcoindService().getBlockData(importedBlockCount + i);
+			}
 		} catch (Exception e) {
-			log.debug("Error in loading block " + blockNumber + " in cache");
+			getLogger().debug("Error in loading block in cache");
 		}
+	}
+
+	/**
+	 * Returns the logger prefix to display in each logger.
+	 *
+	 * @return logger prefix
+	 */
+	@Override
+	protected final String getLogPrefix() {
+		return "cache";
 	}
 
 }

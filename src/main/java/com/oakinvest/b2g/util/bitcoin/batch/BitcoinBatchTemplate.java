@@ -1,10 +1,5 @@
 package com.oakinvest.b2g.util.bitcoin.batch;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
@@ -18,12 +13,6 @@ import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -121,60 +110,6 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	protected final String getFormattedBlock(final long blockHeight) {
 		return String.format("%09d", blockHeight);
-	}
-
-	/**
-	 * Returns the block data from bitcoind.
-	 *
-	 * @param blockNumber block number
-	 * @return block data or null if a problem occurred.
-	 */
-	@Cacheable(value = "blockData", unless = "#result != null")
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public BitcoindBlockData getBlockDataFromBitcoind(final long blockNumber) {
-		try {
-			// ---------------------------------------------------------------------------------------------------------
-			// We retrieve the block hash...
-			GetBlockHashResponse blockHashResponse = bitcoindService.getBlockHash(blockNumber);
-			if (blockHashResponse.getError() == null) {
-				// -----------------------------------------------------------------------------------------------------
-				// Then we retrieve the block data...
-				String blockHash = blockHashResponse.getResult();
-				final GetBlockResponse blockResponse = bitcoindService.getBlock(blockHash);
-				if (blockResponse.getError() == null) {
-					// -------------------------------------------------------------------------------------------------
-					// Then we retrieve the transactions data...
-					final HashMap<String, GetRawTransactionResult> transactions = new LinkedHashMap<>();
-					for (Iterator<String> transactionsHashs = blockResponse.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
-						String t = transactionsHashs.next();
-						if (!t.equals(GENESIS_BLOCK_TRANSACTION)) {
-							GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
-							if (r.getError() == null) {
-								transactions.put(t, bitcoindService.getRawTransaction(t).getResult());
-							} else {
-								status.addError("Error getting transaction n°" + t + " informations : " + r.getError());
-								return null;
-							}
-						}
-					}
-					// -------------------------------------------------------------------------------------------------
-					// And we end up returning all the block data all at once.
-					return new BitcoindBlockData(blockResponse.getResult(), transactions);
-				} else {
-					// Error while retrieving the block informations.
-					status.addError("Error getting block n°" + getFormattedBlock(blockNumber) + " informations : " + blockResponse.getError());
-					return null;
-				}
-			} else {
-				// Error while retrieving the block hash.
-				status.addError("Error getting the hash of block n°" + getFormattedBlock(blockNumber) + " : " + blockHashResponse.getError());
-				return null;
-			}
-		} catch (Exception e) {
-			status.addError("Error getting the block data of block n°" + getFormattedBlock(blockNumber) + " : " + e.getMessage());
-			getLogger().error("Error in treating data from bitcoind : " + Arrays.toString(e.getStackTrace()));
-			return null;
-		}
 	}
 
 	/**

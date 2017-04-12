@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,7 +52,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			addLog(LOG_SEPARATOR);
 			addLog("Starting to import transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()));
 
-			BitcoindBlockData blockData = getBlockDataFromBitcoind(blockToTreat.getHeight());
+			BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat.getHeight());
 			// ---------------------------------------------------------------------------------------------------------
 			// If we have the data
 			if (blockData != null) {
@@ -61,16 +60,16 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				// ---------------------------------------------------------------------------------------------------------
 				// Creating all the addresses.
 				int i = 1;
-				for (Map.Entry<String, GetRawTransactionResult> entry : blockData.getTransactions().entrySet()) {
+				for (GetRawTransactionResult transactionResult : blockData.getTransactions()) {
 					// -----------------------------------------------------------------------------------------------------
 					// For every transaction hash, we get and save the informations.
-					if ((getTransactionRepository().findByTxId(entry.getKey()) == null) && !entry.getKey().equals(GENESIS_BLOCK_TRANSACTION)) {
+					if ((getTransactionRepository().findByTxId(transactionResult.getTxid()) == null)) {
 						// Success.
 						try {
 							// Saving the transaction in the database.
-							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(entry.getValue());
+							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(transactionResult);
 							getTransactionRepository().save(transaction);
-							addLog("Treating transaction " + entry.getKey() + " (" + i + "/" + blockData.getTransactions().size() + ")");
+							addLog("Treating transaction " + transactionResult.getTxid() + " (" + i + "/" + blockData.getTransactions().size() + ")");
 
 							// For each Vin.
 							Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
@@ -121,10 +120,10 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 
 							// Saving the transaction.
 							getTransactionRepository().save(transaction);
-							addLog(" - Transaction " + entry.getKey() + " saved (id=" + transaction.getId() + ")");
-							getLogger().info(getLogPrefix() + " - Transaction " + entry.getKey() + " (id=" + transaction.getId() + ")");
+							addLog(" - Transaction " + transaction.getTxId() + " saved (id=" + transaction.getId() + ")");
+							getLogger().info(getLogPrefix() + " - Transaction " + transaction.getTxId() + " (id=" + transaction.getId() + ")");
 						} catch (Exception e) {
-							addError("Error treating transaction " + entry.getKey() + " : " + e.getMessage());
+							addError("Error treating transaction " + transactionResult.getTxid() + " : " + e.getMessage());
 							getLogger().error("Error treating transactions " + Arrays.toString(e.getStackTrace()));
 							return;
 						}

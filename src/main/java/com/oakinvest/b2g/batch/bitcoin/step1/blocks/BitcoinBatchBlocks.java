@@ -44,7 +44,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			// If there are still blocks to import...
 			final long totalBlockCount = getBitcoindService().getBlockCount().getResult();
 			if (blockToTreat <= totalBlockCount) {
-				BitcoindBlockData blockData = getBlockDataFromBitcoind(blockToTreat);
+				BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat);
 				// ---------------------------------------------------------------------------------------------------------
 				// If we have the data
 				if (blockData != null) {
