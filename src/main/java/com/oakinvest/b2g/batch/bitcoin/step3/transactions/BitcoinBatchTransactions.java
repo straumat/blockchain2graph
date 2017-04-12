@@ -76,8 +76,8 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							Iterator<BitcoinTransactionInput> vins = transaction.getInputs().iterator();
 							while (vins.hasNext()) {
 								BitcoinTransactionInput vin = vins.next();
-								transaction.getInputs().add(vin);
-								vin.setTransaction(transaction);
+								//transaction.getInputs().add(vin);
+								//vin.setTransaction(transaction);
 
 								if (vin.getTxId() != null) {
 									// Not coinbase. We retrieve the original transaction.
@@ -107,8 +107,8 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							Iterator<BitcoinTransactionOutput> vouts = transaction.getOutputs().iterator();
 							while (vouts.hasNext()) {
 								BitcoinTransactionOutput vout = vouts.next();
-								transaction.getOutputs().add(vout);
-								vout.setTransaction(transaction);
+//								transaction.getOutputs().add(vout);
+//								vout.setTransaction(transaction);
 								vout.getAddresses().stream()
 										.filter(a -> a != null)
 										.forEach(a -> {
