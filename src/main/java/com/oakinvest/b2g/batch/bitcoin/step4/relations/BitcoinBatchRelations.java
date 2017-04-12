@@ -1,9 +1,9 @@
-package com.oakinvest.b2g.batch.bitcoin;
+package com.oakinvest.b2g.batch.bitcoin.step4.relations;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
+import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

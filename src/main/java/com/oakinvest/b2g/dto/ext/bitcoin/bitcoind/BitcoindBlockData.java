@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.dto.ext.bitcoin.bitcoind;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;

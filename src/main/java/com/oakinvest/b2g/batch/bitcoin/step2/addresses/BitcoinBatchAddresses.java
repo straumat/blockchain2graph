@@ -1,11 +1,11 @@
-package com.oakinvest.b2g.batch.bitcoin;
+package com.oakinvest.b2g.batch.bitcoin.step2.addresses;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
-import com.oakinvest.b2g.util.bitcoin.BitcoinBatchTemplate;
-import com.oakinvest.b2g.util.bitcoin.BitcoindBlockData;
+import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

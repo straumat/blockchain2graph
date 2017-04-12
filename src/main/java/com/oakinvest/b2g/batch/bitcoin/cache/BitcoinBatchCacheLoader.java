@@ -1,5 +1,6 @@
-package com.oakinvest.b2g.batch.bitcoin;
+package com.oakinvest.b2g.batch.bitcoin.cache;
 
+import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;

@@ -1,5 +1,6 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.batch;
 
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
@@ -11,6 +12,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

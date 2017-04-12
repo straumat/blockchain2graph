@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.mapper;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
