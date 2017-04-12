@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin.rest;
+package com.oakinvest.b2g.util.bitcoin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

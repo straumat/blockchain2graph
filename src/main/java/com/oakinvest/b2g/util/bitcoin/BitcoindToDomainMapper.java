@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin.mapper;
+package com.oakinvest.b2g.util.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -17,7 +17,7 @@ import org.mapstruct.Mappings;
  * Mapper from bitcoind to domain.
  * Created by straumat on 09/09/16.
  */
-@Mapper(uses = { BitcoindToDomainMapperPostProcessor.class })
+@Mapper(componentModel = "spring")
 public interface BitcoindToDomainMapper {
 
 	/**

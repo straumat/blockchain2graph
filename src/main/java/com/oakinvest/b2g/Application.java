@@ -35,13 +35,13 @@ public class Application extends SpringBootServletInitializer {
 	 * Bitcoind service.
 	 */
 	@Autowired
-	private BitcoindService bitcoindService;
+	private BitcoindService bds;
 
 	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository bitcoinBlockRepository;
+	private BitcoinBlockRepository bbr;
 
 	/**
 	 * Status service.
@@ -75,8 +75,8 @@ public class Application extends SpringBootServletInitializer {
 	@PostConstruct
 	public final void initApplication() {
 		// Update status.
-		status.setImportedBlockCount(bitcoinBlockRepository.countBlockByState(BitcoinBlockState.IMPORTED));
-		status.setTotalBlockCount(bitcoindService.getBlockCount().getResult());
+		status.setImportedBlockCount(bbr.countBlockByState(BitcoinBlockState.IMPORTED));
+		status.setTotalBlockCount(bds.getBlockCount().getResult());
 
 		// Create unique constraints in neo4j for blocks, transactions, addresses & index on block state.
 		try {

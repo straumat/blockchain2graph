@@ -1,10 +1,10 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
-import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
-import com.oakinvest.b2g.batch.bitcoin.step3.transactions.BitcoinBatchTransactions;
-import com.oakinvest.b2g.batch.bitcoin.step4.relations.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchAddresses;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchTransactions;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -16,7 +16,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
+import com.oakinvest.b2g.util.bitcoin.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -147,7 +147,6 @@ public class BitcoinImportTest {
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();
 
-		// Constraints
 		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
 		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
 		session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
