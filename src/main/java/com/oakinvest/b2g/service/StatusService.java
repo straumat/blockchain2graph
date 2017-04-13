@@ -59,7 +59,8 @@ public interface StatusService {
 	 * Add an error message.
 	 *
 	 * @param newErrorMessage error message
+	 * @param e               exception raised
 	 */
-	void addError(String newErrorMessage);
+	void addError(String newErrorMessage, Exception e);
 
 }

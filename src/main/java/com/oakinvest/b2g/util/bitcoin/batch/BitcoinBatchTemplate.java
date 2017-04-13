@@ -23,7 +23,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Log separator.
 	 */
-	protected static final String LOG_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
+	protected static final String LOG_SEPARATOR = "---";
 
 	/**
 	 * How many milli seconds in one second.
@@ -139,16 +139,17 @@ public abstract class BitcoinBatchTemplate {
 	 * @param message message
 	 */
 	protected final void addError(final String message) {
-		status.addError(getLogPrefix() + " - " + message);
+		status.addError(getLogPrefix() + " - " + message, null);
 	}
 
 	/**
-	 * Getter logger.
+	 * Add an error to the status and the logs.
 	 *
-	 * @return logger
+	 * @param message message
+	 * @param e       exception raised.
 	 */
-	protected final Logger getLogger() {
-		return logger;
+	protected final void addError(final String message, final Exception e) {
+		status.addError(getLogPrefix() + " - " + message, e);
 	}
 
 	/**

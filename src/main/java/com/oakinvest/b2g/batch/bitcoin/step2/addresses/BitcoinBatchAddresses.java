@@ -79,7 +79,6 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 								BitcoinAddress a = new BitcoinAddress(address);
 								getAddressRepository().save(a);
 								addLog("Address " + address + " created with id " + a.getId());
-								getLogger().info(getLogPrefix() + " - Address " + address + " created with id " + a.getId());
 							} catch (Exception e) {
 								throw new RuntimeException("Error creating address " + address, e);
 							}
@@ -93,12 +92,11 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				// We log.
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
-				getLogger().info(getLogPrefix() + " - Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
 
 				// Clear session
 				getSession().clear();
 			} else {
-				addLog("No response from bitcoind - addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
+				addError("No response from bitcoind - addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
 			}
 		} else {
 			addLog("Nothing to do");

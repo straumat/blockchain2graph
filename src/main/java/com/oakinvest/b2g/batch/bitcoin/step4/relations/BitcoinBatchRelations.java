@@ -8,7 +8,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -100,7 +99,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 																	address.getInputTransactions().add(vin);
 																	getAddressRepository().save(address);
 																});
-														addLog(" - Done treating vin : " + vin);
 													} else {
 														addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 														throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
@@ -122,8 +120,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 															address.getOutputTransactions().add(vout);
 															getAddressRepository().save(address);
 														});
-												addLog(" - Done treating vout : " + vout);
+
 											});
+									addLog("Relations of transaction " + t.getTxId() + " treated");
 								}
 						);
 
@@ -135,13 +134,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				// We log.
 				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
 				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
-				getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat.getHeight() + " treated in " + elapsedTime + " secs");
 
 				// Clear session.
 				getSession().clear();
 			} catch (Exception e) {
-				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage());
-				getLogger().error("Error in treating relations : " + Arrays.toString(e.getStackTrace()));
+				addError("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " raised an exception " + e.getMessage(), e);
 			}
 		} else {
 			addLog("Nothing to do");

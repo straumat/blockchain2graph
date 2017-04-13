@@ -45,7 +45,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			final long totalBlockCount = getBitcoindService().getBlockCount().getResult();
 			if (blockToTreat <= totalBlockCount) {
 				BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat);
-				// ---------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------------
 				// If we have the data
 				if (blockData != null) {
 					// -------------------------------------------------------------------------------------------------
@@ -53,27 +53,25 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 					addLog(LOG_SEPARATOR);
 					addLog("Starting to import block n°" + getFormattedBlock(blockToTreat) + " (" + blockData.getBlock().getHash() + ")");
 
-					// ---------------------------------------------------------------------------------------------
+					// -------------------------------------------------------------------------------------------------
 					// Then, if the block doesn't exists, we save it.
 					BitcoinBlock block = getBlockRepository().findByHash(blockData.getBlock().getHash());
 					if (block == null) {
 						block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
 						getBlockRepository().save(block);
-						addLog("Block n°" + getFormattedBlock(blockToTreat) + " saved with id " + block.getId());
+						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+						addLog("Block n°" + getFormattedBlock(blockToTreat) + " saved with id " + block.getId() + " (treated in " + elapsedTime + " secs)");
 					} else {
-						addLog("Block n°" + getFormattedBlock(blockToTreat) + " already saved with id " + block.getId());
+						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
+						addLog("Block n°" + getFormattedBlock(blockToTreat) + " already saved with id " + block.getId() + " (treated in " + elapsedTime + " secs)");
 					}
 
-					// We log.
-					final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-					addLog("Block n°" + getFormattedBlock(blockToTreat) + " treated in " + elapsedTime + " secs");
-					getLogger().info(getLogPrefix() + " - Block n°" + blockToTreat + " treated in " + elapsedTime + " secs");
-
+					// -------------------------------------------------------------------------------------------------
 					// Clear session.
 					getSession().clear();
 				}
 			} else {
-				addLog("No response from bitcoind - block n°" + blockToTreat + " NOT imported");
+				addError("No response from bitcoind - block n°" + blockToTreat + " NOT imported");
 			}
 		} else {
 			// Error while retrieving the number of blocks in bitcoind.

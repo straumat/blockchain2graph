@@ -60,9 +60,9 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							try {
 								BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
 								getTransactionRepository().save(transaction);
-								addLog(" - Transaction " + transaction.getTxId() + " (id=" + transaction.getId() + ")");
+								addLog(" - Transaction " + transaction.getTxId() + " created (id=" + transaction.getId() + ")");
 							} catch (Exception e) {
-								addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
+								addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage(), e);
 								throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
 							}
 						});
@@ -76,7 +76,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				// Clear session.
 				getSession().clear();
 			} else {
-				addLog("No response from bitcoind - transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
+				addError("No response from bitcoind - transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
 			}
 
 		} else {

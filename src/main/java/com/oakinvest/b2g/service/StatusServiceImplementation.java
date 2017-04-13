@@ -116,6 +116,7 @@ public class StatusServiceImplementation implements StatusService {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastLogMessage = "[" + date + "] " + newLogMessage;
 		statusHandler.updateLog("[" + date + "] " + newLogMessage);
+		log.info(newLogMessage);
 	}
 
 	/**
@@ -132,14 +133,19 @@ public class StatusServiceImplementation implements StatusService {
 	 * Add an error message.
 	 *
 	 * @param newErrorMessage error message
+	 * @param e               exception raised.
 	 */
 	@Override
-	public final void addError(final String newErrorMessage) {
+	public final void addError(final String newErrorMessage, final Exception e) {
 		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
 		lastErrorMessage = "[" + date + "] " + newErrorMessage;
 		statusHandler.updateLog("[" + date + "] " + newErrorMessage);
 		statusHandler.updateError("[" + date + "] " + newErrorMessage);
-		log.error(lastErrorMessage);
+		if (e == null) {
+			log.error(lastErrorMessage);
+		} else {
+			log.error(lastErrorMessage, e);
+		}
 	}
 
 }

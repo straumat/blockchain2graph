@@ -37,7 +37,7 @@ public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 				getBitcoindService().getBlockData(importedBlockCount + i);
 			}
 		} catch (Exception e) {
-			getLogger().debug("Error in loading block in cache");
+			addLog("Error in loading block in cache");
 		}
 	}
 

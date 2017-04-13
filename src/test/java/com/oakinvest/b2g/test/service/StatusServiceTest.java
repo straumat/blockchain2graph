@@ -63,7 +63,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
-		statusService.addError("Error !");
+		statusService.addError("Error !", null);
 		assertTrue("Wrong last error message after setting it", statusService.getLastErrorMessage().contains("Error !"));
 	}
 
