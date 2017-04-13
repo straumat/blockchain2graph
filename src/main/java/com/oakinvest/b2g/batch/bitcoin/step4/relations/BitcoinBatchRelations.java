@@ -5,6 +5,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -100,10 +101,16 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 																	getAddressRepository().save(address);
 																});
 													} else {
+														GetRawTransactionResponse rawTransaction = getBitcoindService().getRawTransaction(originTransaction.getTxId());
+														BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(rawTransaction.getResult());
+														getTransactionRepository().save(transaction);
 														addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 														throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 													}
 												} else {
+													GetRawTransactionResponse rawTransaction = getBitcoindService().getRawTransaction(originTransaction.getTxId());
+													BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(rawTransaction.getResult());
+													getTransactionRepository().save(transaction);
 													addError("Impossible to find the original transaction " + vin.getTxId());
 													throw new RuntimeException("Impossible to find the original transaction " + vin.getTxId());
 												}
