@@ -33,7 +33,7 @@ public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 			long importedBlockCount = getBlockRepository().countBlockByState(BitcoinBlockState.IMPORTED);
 
 			// Set in cache NUMBER_OF_BLOCKS_TO_CACHE blocks ahead.
-			for (int i = 1; i < NUMBER_OF_BLOCKS_TO_CACHE; i++) {
+			for (int i = 1; i <= NUMBER_OF_BLOCKS_TO_CACHE; i++) {
 				getBitcoindService().getBlockData(importedBlockCount + i);
 			}
 		} catch (Exception e) {
