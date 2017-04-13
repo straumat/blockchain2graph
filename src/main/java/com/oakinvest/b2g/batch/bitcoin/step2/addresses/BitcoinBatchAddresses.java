@@ -57,7 +57,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				// We retrieve all the addresses.
 				final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
 				blockData.getTransactions()
-						.parallelStream()
+						.stream()
 						.forEach(grt -> {
 							grt.getVout()
 									.parallelStream()
@@ -71,23 +71,17 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 				// -----------------------------------------------------------------------------------------------------
 				// We create all the addresses.
 				addresses.stream()
-						.filter(a -> a != null)
 						.distinct()
+						// If the address doesn't exists
+						.filter(address -> getAddressRepository().findByAddress(address) == null)
 						.forEach(address -> {
-							BitcoinAddress a = getAddressRepository().findByAddress(address);
-							if (a == null) {
-								// Address creation.
-								try {
-									a = new BitcoinAddress(address);
-									getAddressRepository().save(a);
-								} catch (Exception e) {
-									return;
-								}
+							try {
+								BitcoinAddress a = new BitcoinAddress(address);
+								getAddressRepository().save(a);
 								addLog("Address " + address + " created with id " + a.getId());
 								getLogger().info(getLogPrefix() + " - Address " + address + " created with id " + a.getId());
-							} else {
-								addLog("Address " + address + " already exists with id " + a.getId());
-								getLogger().info(getLogPrefix() + " - Address " + address + " already exists with id " + a.getId());
+							} catch (Exception e) {
+								throw new RuntimeException("Error creating address " + address, e);
 							}
 						});
 

@@ -1,12 +1,15 @@
 package com.oakinvest.b2g.batch.bitcoin.step4.relations;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Bitcoin import relations batch.
@@ -50,7 +53,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 				// -----------------------------------------------------------------------------------------------------
 				// Setting the relationship between blocks and transactions.
-				blockToTreat.getTx().stream()
+				blockToTreat.getTx()
+						.stream()
 						.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 						.forEach(t -> {
 							BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
@@ -66,6 +70,62 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 					previousBlock.setNextBlock(blockToTreat);
 					getBlockRepository().save(previousBlock);
 				}
+
+				// -----------------------------------------------------------------------------------------------------
+				// we link the addresses to the input and the origin transaction.
+				blockToTreat.getTransactions()
+						.parallelStream()
+						.forEach(
+								t -> {
+									// For each Vin.
+									t.getInputs()
+											.stream()
+											// If the txid set in the VIN is null, it's a coinbase transaction.
+											.filter(vin -> vin.getTxId() != null)
+											.forEach(vin -> {
+												// We retrieve the original transaction.
+												BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+												if (originTransaction != null) {
+													// We retrieve the original transaction output.
+													Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+													if (originTransactionOutput.isPresent()) {
+														// We set the addresses "from" if it's not a coinbase transaction.
+														vin.setTransactionOutput(originTransactionOutput.get());
+
+														// We set all the addresses linked to this input
+														originTransactionOutput.get().getAddresses()
+																.stream().filter(a -> a != null)
+																.forEach(a -> {
+																	BitcoinAddress address = getAddressRepository().findByAddress(a);
+																	address.getInputTransactions().add(vin);
+																	getAddressRepository().save(address);
+																});
+														addLog(" - Done treating vin : " + vin);
+													} else {
+														addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+														throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+													}
+												} else {
+													addError("Impossible to find the original transaction " + vin.getTxId());
+													throw new RuntimeException("Impossible to find the original transaction " + vin.getTxId());
+												}
+											});
+
+									// For each Vout.
+									t.getOutputs()
+											.stream()
+											.forEach(vout -> {
+												vout.getAddresses().stream()
+														.filter(a -> a != null)
+														.forEach(a -> {
+															BitcoinAddress address = getAddressRepository().findByAddress(a);
+															address.getOutputTransactions().add(vout);
+															getAddressRepository().save(address);
+														});
+												addLog(" - Done treating vout : " + vout);
+											});
+								}
+						);
 
 				// ---------------------------------------------------------------------------------------------------------
 				// We update the block to say everything went fine.

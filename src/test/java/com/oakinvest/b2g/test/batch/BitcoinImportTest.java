@@ -134,7 +134,7 @@ public class BitcoinImportTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		// Reseting the database.
+		// Resetting the database.
 		if (!setupIsDone) {
 			Map<String, GraphRepository> graphRepositories = ctx.getBeansOfType(GraphRepository.class);
 			for (GraphRepository graphRepository : graphRepositories.values()) {
