@@ -85,7 +85,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 						try {
 							BitcoinAddress a = new BitcoinAddress(address);
 							getAddressRepository().save(a);
-							addLog("Address " + address + " created with id " + a.getId());
+							addLog("- Address " + address + " created with id " + a.getId());
 						} catch (Exception e) {
 							throw new RuntimeException("Error creating address " + address, e);
 						}

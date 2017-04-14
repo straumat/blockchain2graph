@@ -64,6 +64,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 					bt.setBlock(blockToTreat);
 					blockToTreat.getTransactions().add(bt);
 				});
+		getBlockRepository().save(blockToTreat);
+		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
 		// We set the previous and the next block.
@@ -73,6 +75,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 			previousBlock.setNextBlock(blockToTreat);
 			getBlockRepository().save(previousBlock);
 		}
+		getBlockRepository().save(blockToTreat);
+		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
@@ -126,9 +130,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 												});
 
 									});
-							addLog("Relations of transaction " + t.getTxId() + " treated");
+							addLog("- Relations of transaction " + t.getTxId() + " treated");
 						}
 				);
+		getBlockRepository().save(blockToTreat);
+		getSession().clear();
+
 		return blockToTreat;
 	}
 
