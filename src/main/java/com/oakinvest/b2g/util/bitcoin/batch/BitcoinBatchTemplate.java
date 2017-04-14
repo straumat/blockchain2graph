@@ -1,5 +1,7 @@
 package com.oakinvest.b2g.util.bitcoin.batch;
 
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
@@ -10,8 +12,6 @@ import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -34,11 +34,6 @@ public abstract class BitcoinBatchTemplate {
 	 * Genesis transaction hash.
 	 */
 	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
-
-	/**
-	 * Logger.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(BitcoinBatchTemplate.class);
 
 	/**
 	 * Status service.
@@ -94,6 +89,11 @@ public abstract class BitcoinBatchTemplate {
 	private Session session;
 
 	/**
+	 * time of the start of the batch.
+	 */
+	private long batchStartTime;
+
+	/**
 	 * Getter de la propriété session.
 	 *
 	 * @return session
@@ -103,13 +103,12 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Returns the block height in a formatted way.
+	 * Returns the elapsted time of the batch.
 	 *
-	 * @param blockHeight block height
-	 * @return formatted block height
+	 * @return elapsed time of the batch.
 	 */
-	protected final String getFormattedBlock(final long blockHeight) {
-		return String.format("%09d", blockHeight);
+	protected final float getElapsedTime() {
+		return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
 	}
 
 	/**
@@ -120,9 +119,68 @@ public abstract class BitcoinBatchTemplate {
 	protected abstract String getLogPrefix();
 
 	/**
-	 * Import data.
+	 * Execute the batch.
 	 */
-	public abstract void process();
+	public final void execute() {
+		addLog(LOG_SEPARATOR);
+		batchStartTime = System.currentTimeMillis();
+		try {
+			// We retrieve the block to treat.
+			Long blockNumberToTreat = getBlockToTreat();
+
+			// If there is a block to treat.
+			if (blockNumberToTreat != null) {
+				addLog("Starting to treat block " + getFormattedBlock(blockNumberToTreat));
+				BitcoinBlock blockToTreat = treatBlock(blockNumberToTreat);
+				if (blockToTreat != null) {
+					// If the block has been well treated, we change the state.
+					blockToTreat.setState(getNewStateOfTreatedBlock());
+					getBlockRepository().save(blockToTreat);
+					addLog("Block " + blockToTreat.getFormattedHeight() + " treated in " + getElapsedTime() + " secs");
+				}
+			} else {
+				// If there is nothing to treat.
+				addLog("No block to treat");
+			}
+
+		} catch (Exception e) {
+			addError("An error occurred while treating block : " + e.getMessage(), e);
+		} finally {
+			getSession().clear();
+		}
+	}
+
+	/**
+	 * Return the block to treat.
+	 *
+	 * @return block to treat.
+	 */
+	protected abstract Long getBlockToTreat();
+
+	/**
+	 * Treat block.
+	 *
+	 * @param blockNumber block number to treat.
+	 * @return the block treated
+	 */
+	protected abstract BitcoinBlock treatBlock(long blockNumber);
+
+	/**
+	 * Return the state to set to the block that has been treated.
+	 *
+	 * @return state to set of the block that has been treated.
+	 */
+	protected abstract BitcoinBlockState getNewStateOfTreatedBlock();
+
+	/**
+	 * Returns the block height in a formatted way.
+	 *
+	 * @param blockHeight block height
+	 * @return formatted block height
+	 */
+	protected final String getFormattedBlock(final long blockHeight) {
+		return String.format("%09d", blockHeight);
+	}
 
 	/**
 	 * Add a logger to the status and the logs.

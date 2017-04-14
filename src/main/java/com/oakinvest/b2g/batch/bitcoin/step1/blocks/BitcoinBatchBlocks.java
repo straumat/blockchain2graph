@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
@@ -27,57 +28,77 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Import data.
+	 * Return the block to treat.
+	 *
+	 * @return block to treat.
 	 */
 	@Override
-	//@Scheduled(initialDelay = BLOCK_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void process() {
-		final long start = System.currentTimeMillis();
-		// Block to import.
-		final long blockToTreat = getBlockRepository().count() + 1;
+	protected final Long getBlockToTreat() {
+		// We retrieve the next block to treat.
+		Long blockToTreat = getBlockRepository().count() + 1;
 
-		// We retrieve the total number of blocks in bitcoind.
-		GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
-		if (blockCountResponse.getError() == null) {
-			// ---------------------------------------------------------------------------------------------------------
-			// If there are still blocks to import...
-			final long totalBlockCount = getBitcoindService().getBlockCount().getResult();
-			if (blockToTreat <= totalBlockCount) {
-				BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat);
-				// -----------------------------------------------------------------------------------------------------
-				// If we have the data
-				if (blockData != null) {
-					// -------------------------------------------------------------------------------------------------
-					// Then we retrieve the block data...
-					addLog(LOG_SEPARATOR);
-					addLog("Starting to import block n°" + getFormattedBlock(blockToTreat) + " (" + blockData.getBlock().getHash() + ")");
-
-					// -------------------------------------------------------------------------------------------------
-					// Then, if the block doesn't exists, we save it.
-					BitcoinBlock block = getBlockRepository().findByHash(blockData.getBlock().getHash());
-					if (block == null) {
-						block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
-						getBlockRepository().save(block);
-						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-						addLog("Block n°" + getFormattedBlock(blockToTreat) + " saved with id " + block.getId() + " (treated in " + elapsedTime + " secs)");
-					} else {
-						final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-						addLog("Block n°" + getFormattedBlock(blockToTreat) + " already saved with id " + block.getId() + " (treated in " + elapsedTime + " secs)");
-					}
-
-					// -------------------------------------------------------------------------------------------------
-					// Clear session.
-					getSession().clear();
+		// -------------------------------------------------------------------------------------------------------------
+		// We check if that next block exists by retrieving the block count.
+		try {
+			GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
+			if (blockCountResponse.getError() == null) {
+				final long totalBlockCount = blockCountResponse.getResult();
+				if (blockToTreat <= totalBlockCount) {
+					// If there is still block after this one, we continue.
+					return blockToTreat;
+				} else {
+					return null;
 				}
 			} else {
-				addError("No response from bitcoind - block n°" + blockToTreat + " NOT imported");
+				// Error while retrieving the number of blocks in bitcoind.
+				addError("Error getting the number of blocks : " + blockCountResponse.getError());
+				return null;
 			}
-		} else {
+		} catch (Exception e) {
 			// Error while retrieving the number of blocks in bitcoind.
-			addError("Error getting the number of blocks : " + blockCountResponse.getError());
+			addError("Error getting the number of blocks : " + e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Treat block.
+	 *
+	 * @param blockNumber block number to treat.
+	 */
+	@Override
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	protected final BitcoinBlock treatBlock(final long blockNumber) {
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
+		// -----------------------------------------------------------------------------------------------------
+		// If we have the data
+		if (blockData != null) {
+			// -------------------------------------------------------------------------------------------------
+			// Then, if the block doesn't exists, we save it.
+			BitcoinBlock block = getBlockRepository().findByHash(blockData.getBlock().getHash());
+			if (block == null) {
+				block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
+			}
+
+			// -------------------------------------------------------------------------------------------------
+			// We return the block.
+			return block;
+		} else {
+			// Or nothing if we did not retrieve the data.
+			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
+			return null;
 		}
 
+	}
+
+	/**
+	 * Return the state to set to the block that has been treated.
+	 *
+	 * @return state to set of the block that has been treated.
+	 */
+	@Override
+	protected final BitcoinBlockState getNewStateOfTreatedBlock() {
+		return BitcoinBlockState.BLOCK_IMPORTED;
 	}
 
 }

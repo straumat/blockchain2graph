@@ -32,76 +32,79 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Import data.
+	 * Return the block to treat.
+	 *
+	 * @return block to treat.
 	 */
 	@Override
-	//@Scheduled(initialDelay = BLOCK_ADDRESSES_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void process() {
-		final long start = System.currentTimeMillis();
-		// Block to import.
-		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.BLOCK_IMPORTED);
-
-		// -------------------------------------------------------------------------------------------------------------
-		// If there is a block to work on.
+	protected final Long getBlockToTreat() {
+		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.BLOCK_IMPORTED);
 		if (blockToTreat != null) {
-			addLog(LOG_SEPARATOR);
-			addLog("Starting to import addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()));
-			BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat.getHeight());
-
-			// ---------------------------------------------------------------------------------------------------------
-			// If we have the data
-			if (blockData != null) {
-
-				// -----------------------------------------------------------------------------------------------------
-				// We retrieve all the addresses.
-				final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
-				blockData.getTransactions()
-						.stream()
-						.forEach(grt -> {
-							grt.getVout()
-									.parallelStream()
-									.filter(v -> v != null)
-									.forEach(v -> v.getScriptPubKey()
-											.getAddresses().stream()
-											.filter(a -> a != null)
-											.forEach(address -> addresses.add(address)));
-						});
-
-				// -----------------------------------------------------------------------------------------------------
-				// We create all the addresses.
-				addresses.stream()
-						.distinct()
-						// If the address doesn't exists
-						.filter(address -> getAddressRepository().findByAddress(address) == null)
-						.forEach(address -> {
-							try {
-								BitcoinAddress a = new BitcoinAddress(address);
-								getAddressRepository().save(a);
-								addLog("Address " + address + " created with id " + a.getId());
-							} catch (Exception e) {
-								throw new RuntimeException("Error creating address " + address, e);
-							}
-						});
-
-				// -----------------------------------------------------------------------------------------------------
-				// We save the block state.
-				blockToTreat.setState(BitcoinBlockState.ADDRESSES_IMPORTED);
-				getBlockRepository().save(blockToTreat);
-
-				// We log.
-				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
-
-				// Clear session
-				getSession().clear();
-			} else {
-				addError("No response from bitcoind - addresses from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
-			}
+			return blockToTreat.getHeight();
 		} else {
-			addLog("Nothing to do");
+			return null;
 		}
+	}
 
+	/**
+	 * Treat block.
+	 *
+	 * @param blockNumber block number to treat.
+	 */
+	@Override
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	protected final BitcoinBlock treatBlock(final long blockNumber) {
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
+
+		// ---------------------------------------------------------------------------------------------------------
+		// If we have the data
+		if (blockData != null) {
+
+			// -----------------------------------------------------------------------------------------------------
+			// We retrieve all the addresses.
+			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
+			blockData.getTransactions()
+					.parallelStream()
+					.forEach(grt -> {
+						grt.getVout()
+								.parallelStream()
+								.filter(v -> v != null)
+								.forEach(v -> v.getScriptPubKey()
+										.getAddresses().stream()
+										.filter(a -> a != null)
+										.forEach(address -> addresses.add(address)));
+					});
+
+			// -----------------------------------------------------------------------------------------------------
+			// We create all the addresses.
+			addresses.parallelStream()
+					.distinct()
+					// If the address doesn't exists
+					.filter(address -> getAddressRepository().findByAddress(address) == null)
+					.forEach(address -> {
+						try {
+							BitcoinAddress a = new BitcoinAddress(address);
+							getAddressRepository().save(a);
+							addLog("Address " + address + " created with id " + a.getId());
+						} catch (Exception e) {
+							throw new RuntimeException("Error creating address " + address, e);
+						}
+					});
+			return getBlockRepository().findByHeight(blockNumber);
+		} else {
+			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
+			return null;
+		}
+	}
+
+	/**
+	 * Return the state to set to the block that has been treated.
+	 *
+	 * @return state to set of the block that has been treated.
+	 */
+	@Override
+	protected final BitcoinBlockState getNewStateOfTreatedBlock() {
+		return BitcoinBlockState.ADDRESSES_IMPORTED;
 	}
 
 }

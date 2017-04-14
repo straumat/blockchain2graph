@@ -213,6 +213,15 @@ public class BitcoinBlock {
 	}
 
 	/**
+	 * Returns the block height in a formatted way.
+	 *
+	 * @return formatted block height
+	 */
+	public final String getFormattedHeight() {
+		return String.format("%09d", getHeight());
+	}
+
+	/**
 	 * Getter of size.
 	 *
 	 * @return size

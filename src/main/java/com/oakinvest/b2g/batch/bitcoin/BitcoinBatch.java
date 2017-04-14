@@ -129,10 +129,10 @@ public class BitcoinBatch {
 			// Importing the next available block.
 			final long start = System.currentTimeMillis();
 			try {
-				batchBlocks.process();
-				batchAddresses.process();
-				batchTransactions.process();
-				batchRelations.process();
+				batchBlocks.execute();
+				batchAddresses.execute();
+				batchTransactions.execute();
+				batchRelations.execute();
 			} catch (Exception e) {
 				status.addError("Error in the batch processes : " + e.getMessage(), e);
 			}

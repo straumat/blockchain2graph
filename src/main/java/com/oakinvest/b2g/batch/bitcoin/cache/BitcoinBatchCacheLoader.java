@@ -1,16 +1,20 @@
 package com.oakinvest.b2g.batch.bitcoin.cache;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * This batch loads block data from bitcoind ahead of the import process.
+ * This batch loads block data from bitcoind ahead of the import loadInCache.
  * Created by straumat on 20/03/17.
  */
 @Service
-public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
+public class BitcoinBatchCacheLoader {
 
 	/**
 	 * Number of blocks to cache.
@@ -23,32 +27,71 @@ public class BitcoinBatchCacheLoader extends BitcoinBatchTemplate {
 	private static final int PAUSE_BETWEEN_LOAD_IN_CACHE = 1000;
 
 	/**
-	 * Load a block in cache.
+	 * Logger.
 	 */
-	@Override
+	private final Logger log = LoggerFactory.getLogger(BitcoinBatchCacheLoader.class);
+
+	/**
+	 * Bitcoind service.
+	 */
+	@Autowired
+	private BitcoindService bitcoindService;
+
+	/**
+	 * BitcoinBlock repository.
+	 */
+	@Autowired
+	private BitcoinBlockRepository blockRepository;
+
+	/**
+	 * Load a block in cache. Set in cache NUMBER_OF_BLOCKS_TO_CACHE blocks ahead.
+	 */
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_LOAD_IN_CACHE)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void process() {
+	public void loadInCache() {
 		try {
 			long importedBlockCount = getBlockRepository().countBlockByState(BitcoinBlockState.IMPORTED);
-
-			// Set in cache NUMBER_OF_BLOCKS_TO_CACHE blocks ahead.
 			for (int i = 1; i <= NUMBER_OF_BLOCKS_TO_CACHE; i++) {
 				getBitcoindService().getBlockData(importedBlockCount + i);
 			}
 		} catch (Exception e) {
-			addLog("Error in loading block in cache");
+			log.error("Error loading cache " + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * Returns the logger prefix to display in each logger.
+	 * Getter de la propriété bitcoindService.
 	 *
-	 * @return logger prefix
+	 * @return bitcoindService
 	 */
-	@Override
-	protected final String getLogPrefix() {
-		return "cache";
+	public final BitcoindService getBitcoindService() {
+		return bitcoindService;
 	}
 
+	/**
+	 * Setter de la propriété bitcoindService.
+	 *
+	 * @param newBitcoindService the bitcoindService to set
+	 */
+	public final void setBitcoindService(final BitcoindService newBitcoindService) {
+		bitcoindService = newBitcoindService;
+	}
+
+	/**
+	 * Getter de la propriété blockRepository.
+	 *
+	 * @return blockRepository
+	 */
+	public final BitcoinBlockRepository getBlockRepository() {
+		return blockRepository;
+	}
+
+	/**
+	 * Setter de la propriété blockRepository.
+	 *
+	 * @param newBlockRepository the blockRepository to set
+	 */
+	public final void setBlockRepository(final BitcoinBlockRepository newBlockRepository) {
+		blockRepository = newBlockRepository;
+	}
 }

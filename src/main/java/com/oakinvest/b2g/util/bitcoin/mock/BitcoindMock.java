@@ -179,7 +179,7 @@ public class BitcoindMock {
 	/**
 	 * getBlockData() advice.
 	 *
-	 * @param pjp         process.
+	 * @param pjp         loadInCache.
 	 * @param blockNumber block number.
 	 * @return value.
 	 * @throws Throwable exception.
@@ -206,7 +206,7 @@ public class BitcoindMock {
 	/**
 	 * getBlockCount() advice.
 	 *
-	 * @param pjp process.
+	 * @param pjp loadInCache.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
@@ -243,7 +243,7 @@ public class BitcoindMock {
 	/**
 	 * getBlockHash() advice.
 	 *
-	 * @param pjp         process.
+	 * @param pjp         loadInCache.
 	 * @param blockHeight block height.
 	 * @return value.
 	 * @throws Throwable exception.
@@ -277,7 +277,7 @@ public class BitcoindMock {
 	/**
 	 * getBlock() advice.
 	 *
-	 * @param pjp       process.
+	 * @param pjp       loadInCache.
 	 * @param blockHash block hash.
 	 * @return value.
 	 * @throws Throwable exception.
@@ -311,7 +311,7 @@ public class BitcoindMock {
 	/**
 	 * getRawTransaction() advice.
 	 *
-	 * @param pjp             process.
+	 * @param pjp             loadInCache.
 	 * @param transactionHash transaction hash.
 	 * @return value.
 	 * @throws Throwable exception.

@@ -28,61 +28,64 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Import data.
+	 * Return the block to treat.
+	 *
+	 * @return block to treat.
 	 */
 	@Override
-	//@Scheduled(initialDelay = BLOCK_TRANSACTIONS_IMPORT_INITIAL_DELAY, fixedDelay = PAUSE_BETWEEN_IMPORTS)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void process() {
-		final long start = System.currentTimeMillis();
-		// Block to import.
-		final BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
-
-		// -------------------------------------------------------------------------------------------------------------
-		// If there is a block to work on.
+	protected final Long getBlockToTreat() {
+		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
 		if (blockToTreat != null) {
-			addLog(LOG_SEPARATOR);
-			addLog("Starting to import transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()));
-
-			BitcoindBlockData blockData = getBitcoindService().getBlockData(blockToTreat.getHeight());
-			// ---------------------------------------------------------------------------------------------------------
-			// If we have the data
-			if (blockData != null) {
-
-				// ---------------------------------------------------------------------------------------------------------
-				// Creating all the transactions.
-				blockData.getTransactions()
-						.parallelStream()
-						// Only if the transaction is not already in the database.
-						.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
-						// We save it in the database.
-						.forEach(t -> {
-							try {
-								BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
-								getTransactionRepository().save(transaction);
-								addLog(" - Transaction " + transaction.getTxId() + " created (id=" + transaction.getId() + ")");
-							} catch (Exception e) {
-								addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage(), e);
-								throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
-							}
-						});
-				blockToTreat.setState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
-				getBlockRepository().save(blockToTreat);
-
-				// We log.
-				final float elapsedTime = (System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS;
-				addLog("Block n°" + getFormattedBlock(blockToTreat.getHeight()) + " treated in " + elapsedTime + " secs");
-
-				// Clear session.
-				getSession().clear();
-			} else {
-				addError("No response from bitcoind - transactions from block n°" + getFormattedBlock(blockToTreat.getHeight()) + " NOT imported");
-			}
-
+			return blockToTreat.getHeight();
 		} else {
-			addLog("Nothing to do");
+			return null;
 		}
+	}
 
+	/**
+	 * Treat block.
+	 *
+	 * @param blockNumber block number to treat.
+	 */
+	@Override
+	protected final BitcoinBlock treatBlock(final long blockNumber) {
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
+		// -------------------------------------------------------------------------------------------------------------
+		// If we have the data
+		if (blockData != null) {
+
+			// ---------------------------------------------------------------------------------------------------------
+			// Creating all the transactions.
+			blockData.getTransactions()
+					.parallelStream()
+					// Only if the transaction is not already in the database.
+					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
+					// We save it in the database.
+					.forEach(t -> {
+						try {
+							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
+							getTransactionRepository().save(transaction);
+							addLog(" - Transaction " + transaction.getTxId() + " created (id=" + transaction.getId() + ")");
+						} catch (Exception e) {
+							addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage(), e);
+							throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
+						}
+					});
+			return getBlockRepository().findByHeight(blockNumber);
+		} else {
+			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
+			return null;
+		}
+	}
+
+	/**
+	 * Return the state to set to the block that has been treated.
+	 *
+	 * @return state to set of the block that has been treated.
+	 */
+	@Override
+	protected final BitcoinBlockState getNewStateOfTreatedBlock() {
+		return BitcoinBlockState.TRANSACTIONS_IMPORTED;
 	}
 
 }
