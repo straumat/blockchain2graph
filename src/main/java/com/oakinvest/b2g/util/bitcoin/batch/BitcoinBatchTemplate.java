@@ -4,8 +4,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
@@ -21,19 +19,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class BitcoinBatchTemplate {
 
 	/**
-	 * Log separator.
+	 * Genesis transaction hash.
 	 */
-	protected static final String LOG_SEPARATOR = "---";
+	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * How many milli seconds in one second.
 	 */
-	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
+	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
-	 * Genesis transaction hash.
+	 * Log separator.
 	 */
-	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
+	private static final String LOG_SEPARATOR = "---";
+
+	/**
+	 * BitcoinBlock repository.
+	 */
+	@Autowired
+	private BitcoinBlockRepository blockRepository;
 
 	/**
 	 * Status service.
@@ -56,25 +60,7 @@ public abstract class BitcoinBatchTemplate {
 	 * BitcoinBlock repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository blockRepository;
-
-	/**
-	 * BitcoinBlock repository.
-	 */
-	@Autowired
 	private BitcoinAddressRepository addressRepository;
-
-	/**
-	 * BitcoinTransactionInputRepository repository.
-	 */
-	@Autowired
-	private BitcoinTransactionInputRepository transactionInputRepository;
-
-	/**
-	 * BitcoinTransactionOutputRepository repository.
-	 */
-	@Autowired
-	private BitcoinTransactionOutputRepository transactionOutputRepository;
 
 	/**
 	 * Bitcoin block repository.
@@ -98,7 +84,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return session
 	 */
-	public final Session getSession() {
+	protected final Session getSession() {
 		return session;
 	}
 
@@ -107,7 +93,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return elapsed time of the batch.
 	 */
-	protected final float getElapsedTime() {
+	private float getElapsedTime() {
 		return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
 	}
 
@@ -135,7 +121,7 @@ public abstract class BitcoinBatchTemplate {
 				if (blockToTreat != null) {
 					// If the block has been well treated, we change the state.
 					blockToTreat.setState(getNewStateOfTreatedBlock());
-					getBlockRepository().save(blockToTreat);
+					blockRepository.save(blockToTreat);
 					addLog("Block " + blockToTreat.getFormattedHeight() + " treated in " + getElapsedTime() + " secs");
 				}
 			} else {
@@ -211,21 +197,21 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
+	 * Getter blockRepository.
+	 *
+	 * @return blockRepository
+	 */
+	public final BitcoinBlockRepository getBlockRepository() {
+		return blockRepository;
+	}
+
+	/**
 	 * Getter status.
 	 *
 	 * @return status
 	 */
 	public final StatusService getStatus() {
 		return status;
-	}
-
-	/**
-	 * Setter status.
-	 *
-	 * @param newStatus the status to set
-	 */
-	public final void setStatus(final StatusService newStatus) {
-		status = newStatus;
 	}
 
 	/**
@@ -238,48 +224,12 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Setter bitcoindService.
-	 *
-	 * @param newBds the bitcoindService to set
-	 */
-	public final void setBitcoindService(final BitcoindService newBds) {
-		bitcoindService = newBds;
-	}
-
-	/**
 	 * Getter mapper.
 	 *
 	 * @return mapper
 	 */
 	public final BitcoindToDomainMapper getMapper() {
 		return mapper;
-	}
-
-	/**
-	 * Setter mapper.
-	 *
-	 * @param newMapper the mapper to set
-	 */
-	public final void setMapper(final BitcoindToDomainMapper newMapper) {
-		mapper = newMapper;
-	}
-
-	/**
-	 * Getter blockRepository.
-	 *
-	 * @return blockRepository
-	 */
-	public final BitcoinBlockRepository getBlockRepository() {
-		return blockRepository;
-	}
-
-	/**
-	 * Setter blockRepository.
-	 *
-	 * @param newBbr the blockRepository to set
-	 */
-	public final void setBlockRepository(final BitcoinBlockRepository newBbr) {
-		blockRepository = newBbr;
 	}
 
 	/**
@@ -292,15 +242,6 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Setter addressRepository.
-	 *
-	 * @param newBar the addressRepository to set
-	 */
-	public final void setAddressRepository(final BitcoinAddressRepository newBar) {
-		addressRepository = newBar;
-	}
-
-	/**
 	 * Getter transactionRepository.
 	 *
 	 * @return transactionRepository
@@ -309,48 +250,4 @@ public abstract class BitcoinBatchTemplate {
 		return transactionRepository;
 	}
 
-	/**
-	 * Setter transactionRepository.
-	 *
-	 * @param newBtr the transactionRepository to set
-	 */
-	public final void setTransactionRepository(final BitcoinTransactionRepository newBtr) {
-		transactionRepository = newBtr;
-	}
-
-	/**
-	 * Getter transactionInputRepository.
-	 *
-	 * @return transactionInputRepository
-	 */
-	public final BitcoinTransactionInputRepository getTransactionInputRepository() {
-		return transactionInputRepository;
-	}
-
-	/**
-	 * Setter transactionInputRepository.
-	 *
-	 * @param newTransactionInputRepository the transactionInputRepository to set
-	 */
-	public final void setTransactionInputRepository(final BitcoinTransactionInputRepository newTransactionInputRepository) {
-		transactionInputRepository = newTransactionInputRepository;
-	}
-
-	/**
-	 * Getter transactionOutputRepository.
-	 *
-	 * @return transactionOutputRepository
-	 */
-	public final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
-		return transactionOutputRepository;
-	}
-
-	/**
-	 * Setter transactionOutputRepository.
-	 *
-	 * @param newTransactionOutputRepository the transactionOutputRepository to set
-	 */
-	public final void setTransactionOutputRepository(final BitcoinTransactionOutputRepository newTransactionOutputRepository) {
-		transactionOutputRepository = newTransactionOutputRepository;
-	}
 }

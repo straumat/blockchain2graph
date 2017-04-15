@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
-import com.oakinvest.b2g.batch.bitcoin.cache.BitcoinBatchCacheLoader;
 import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
 import com.oakinvest.b2g.batch.bitcoin.step3.transactions.BitcoinBatchTransactions;
@@ -71,12 +70,6 @@ public class BitcoinBatch {
 	 */
 	@Autowired
 	private BitcoinBatchRelations batchRelations;
-
-	/**
-	 * Batch cache loader.
-	 */
-	@Autowired
-	private BitcoinBatchCacheLoader batchCacheLoader;
 
 	/**
 	 * Status service.
