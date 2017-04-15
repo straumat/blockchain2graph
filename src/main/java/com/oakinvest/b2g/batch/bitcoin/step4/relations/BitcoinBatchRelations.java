@@ -57,7 +57,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// Setting the relationship between blocks and transactions.
 		blockToTreat.getTx()
-				.parallelStream()
+				.stream()
 				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 				.forEach(t -> {
 					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
@@ -81,7 +81,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		blockToTreat.getTransactions()
-				.parallelStream()
+				.stream()
 				.forEach(
 						t -> {
 							// For each Vin.
