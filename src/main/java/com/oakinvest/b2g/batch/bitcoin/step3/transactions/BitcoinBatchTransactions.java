@@ -65,13 +65,6 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 						try {
 							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
 							getTransactionRepository().save(transaction);
-
-							BitcoinTransaction temp = getTransactionRepository().findByTxId(transaction.getTxId());
-							if (temp.getInputs().size() == 0 || temp.getOutputs().size() == 0) {
-								System.out.println("===> ERROR 4");
-								System.exit(-1);
-							}
-
 							addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
 						} catch (Exception e) {
 							addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage(), e);

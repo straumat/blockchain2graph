@@ -139,13 +139,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 							GetRawTransactionResponse r = getRawTransaction(t);
 							if (r.getError() == null) {
 								transactions.add(getRawTransaction(t).getResult());
-								if (getRawTransaction(t).getResult().getVout().size() == 0 || getRawTransaction(t).getResult().getVin().size() == 0) {
-									System.out.println("===> ERROR 1");
-									System.exit(-1);
-								}
-								if ("591e91f809d716912ca1d4a9295e70c3e78bab077683f79350f101da64588073".equals(t)) {
-									System.out.println("===> INFO 3 " + getRawTransaction(t).getResult().getVout().size());
-								}
 							} else {
 								log.error("Error getting transaction n°" + t + " informations : " + r.getError());
 								return null;

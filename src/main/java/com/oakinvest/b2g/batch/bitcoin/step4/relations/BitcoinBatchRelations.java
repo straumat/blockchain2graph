@@ -108,10 +108,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 															getAddressRepository().save(address);
 														});
 											} else {
-												System.out.println("==> " + originTransaction.getOutputs().size());
-												System.out.println("==> " + originTransaction.getInputs().size());
 												addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
-												System.exit(-1);
 												throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 											}
 										} else {

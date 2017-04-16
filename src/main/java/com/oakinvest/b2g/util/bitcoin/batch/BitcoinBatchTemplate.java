@@ -201,7 +201,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return blockRepository
 	 */
-	public final BitcoinBlockRepository getBlockRepository() {
+	protected final BitcoinBlockRepository getBlockRepository() {
 		return blockRepository;
 	}
 
@@ -210,7 +210,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return status
 	 */
-	public final StatusService getStatus() {
+	protected final StatusService getStatus() {
 		return status;
 	}
 
@@ -219,7 +219,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return bitcoindService
 	 */
-	public final BitcoindService getBitcoindService() {
+	protected final BitcoindService getBitcoindService() {
 		return bitcoindService;
 	}
 
@@ -228,7 +228,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return mapper
 	 */
-	public final BitcoindToDomainMapper getMapper() {
+	protected final BitcoindToDomainMapper getMapper() {
 		return mapper;
 	}
 
@@ -237,7 +237,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return addressRepository
 	 */
-	public final BitcoinAddressRepository getAddressRepository() {
+	protected final BitcoinAddressRepository getAddressRepository() {
 		return addressRepository;
 	}
 
@@ -246,7 +246,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return transactionRepository
 	 */
-	public final BitcoinTransactionRepository getTransactionRepository() {
+	protected final BitcoinTransactionRepository getTransactionRepository() {
 		return transactionRepository;
 	}
 

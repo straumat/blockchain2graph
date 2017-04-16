@@ -25,12 +25,7 @@ public class BitcoinBatch {
 	/**
 	 * How many milli seconds in one second.
 	 */
-	protected static final float MILLISECONDS_IN_SECONDS = 1000F;
-
-	/**
-	 * Number of blocks to cache.
-	 */
-	private static final long BLOCK_TO_CACHE = 10;
+	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * How much time it takes to create a new block for bitcoin (10 minutes).
@@ -87,13 +82,13 @@ public class BitcoinBatch {
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository bbr;
+	private BitcoinBlockRepository blockRepository;
 
 	/**
 	 * Bitcoind service.
 	 */
 	@Autowired
-	private BitcoindService bds;
+	private BitcoindService bitcoindService;
 
 	/**
 	 * Import data.
@@ -102,8 +97,8 @@ public class BitcoinBatch {
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
 		// Update block statistics.
-		long importedBlockCount = bbr.countBlockByState(BitcoinBlockState.IMPORTED);
-		long totalBlockCount = bds.getBlockCount().getResult();
+		long importedBlockCount = blockRepository.countBlockByState(BitcoinBlockState.IMPORTED);
+		long totalBlockCount = bitcoindService.getBlockCount().getResult();
 
 		// Update status.
 		status.setImportedBlockCount(importedBlockCount);
@@ -133,7 +128,6 @@ public class BitcoinBatch {
 			// Adding a statistic on duration.
 			bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
 		}
-
 	}
 
 }
