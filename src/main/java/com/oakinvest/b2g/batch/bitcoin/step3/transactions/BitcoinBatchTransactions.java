@@ -57,7 +57,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
 			blockData.getTransactions()
-					.stream()
+					.parallelStream()
 					// Only if the transaction is not already in the database.
 					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
 					// We save it in the database.
@@ -72,7 +72,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 								System.exit(-1);
 							}
 
-							addLog(" - Transaction " + transaction.getTxId() + " created (id=" + transaction.getId() + ")");
+							addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
 						} catch (Exception e) {
 							addError("Error treating transaction " + t.getTxid() + " : " + e.getMessage(), e);
 							throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());

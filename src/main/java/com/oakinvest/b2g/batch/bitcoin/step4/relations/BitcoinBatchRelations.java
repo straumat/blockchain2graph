@@ -57,7 +57,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// Setting the relationship between blocks and transactions.
 		blockToTreat.getTx()
-				.stream()
+				.parallelStream()
 				.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
 				.forEach(t -> {
 					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
@@ -81,12 +81,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		blockToTreat.getTransactions()
-				.stream()
+				.parallelStream()
 				.forEach(
 						t -> {
 							// For each Vin.
 							t.getInputs()
-									.stream()
+									.parallelStream()
 									// If the txid set in the VIN is null, it's a coinbase transaction.
 									.filter(vin -> vin.getTxId() != null)
 									.forEach(vin -> {
@@ -101,7 +101,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 												// We set all the addresses linked to this input
 												originTransactionOutput.get().getAddresses()
-														.stream().filter(a -> a != null)
+														.parallelStream().filter(a -> a != null)
 														.forEach(a -> {
 															BitcoinAddress address = getAddressRepository().findByAddress(a);
 															address.getInputTransactions().add(vin);
@@ -122,9 +122,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 							// For each Vout.
 							t.getOutputs()
-									.stream()
+									.parallelStream()
 									.forEach(vout -> {
-										vout.getAddresses().stream()
+										vout.getAddresses().parallelStream()
 												.filter(a -> a != null)
 												.forEach(a -> {
 													BitcoinAddress address = getAddressRepository().findByAddress(a);
