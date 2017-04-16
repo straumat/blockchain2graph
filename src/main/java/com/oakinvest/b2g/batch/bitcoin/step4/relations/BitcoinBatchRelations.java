@@ -94,7 +94,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 										BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
 										if (originTransaction != null) {
 											// We retrieve the original transaction output.
-											Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+											Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
 											if (originTransactionOutput.isPresent()) {
 												// We set the addresses "from" if it's not a coinbase transaction.
 												vin.setTransactionOutput(originTransactionOutput.get());
@@ -108,7 +108,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 															getAddressRepository().save(address);
 														});
 											} else {
+												System.out.println("==> " + originTransaction.getOutputs().size());
+												System.out.println("==> " + originTransaction.getInputs().size());
 												addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+												System.exit(-1);
 												throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 											}
 										} else {

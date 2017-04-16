@@ -41,7 +41,7 @@ public class BitcoinBatchCacheLoader {
 	/**
 	 * Load a block in cache. Set in cache NUMBER_OF_BLOCKS_TO_LOAD_IN_CACHE blocks ahead.
 	 */
-	@Scheduled
+	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void loadInCache() {
 		try {

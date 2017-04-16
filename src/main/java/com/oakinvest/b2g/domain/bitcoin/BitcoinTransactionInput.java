@@ -21,13 +21,13 @@ public class BitcoinTransactionInput {
 	/**
 	 * Transaction.
 	 */
-	@Relationship(type = "INPUT_IN_TRANSACTION")
+	@Relationship(type = "INPUT_IN_TRANSACTION", direction = Relationship.INCOMING)
 	private BitcoinTransaction transaction;
 
 	/**
 	 * Transaction output.
 	 */
-	@Relationship(type = "TRANSACTION_OUTPUT")
+	@Relationship(type = "TRANSACTION_OUTPUT", direction = Relationship.INCOMING)
 	private BitcoinTransactionOutput transactionOutput;
 
 	/**
