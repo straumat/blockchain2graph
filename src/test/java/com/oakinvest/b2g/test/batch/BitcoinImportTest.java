@@ -345,7 +345,7 @@ public class BitcoinImportTest {
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
 		// Fetch all data
-		a1.getWithdrawals().stream().forEach(i -> i = btir.findOne(i.getId()));
+		a1.getWithdrawals().forEach(i -> i = btir.findOne(i.getId()));
 
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bti1.getTransactionOutput().getValue());
@@ -363,8 +363,8 @@ public class BitcoinImportTest {
 		assertEquals("Wrong number of output", a1NumberOfDeposits, a1.getDeposits().size());
 
 		// Fetch all data.
-		a1.getDeposits().stream().forEach(o -> o = btor.findOne(o.getId()));
-		a1.getWithdrawals().stream().forEach(i -> i = btir.findOne(i.getId()));
+		a1.getDeposits().forEach(o -> o = btor.findOne(o.getId()));
+		a1.getWithdrawals().forEach(i -> i = btir.findOne(i.getId()));
 
 		BitcoinTransactionOutput bto1 = a1.getDeposits().stream().filter(o -> o.getTransaction().getTxId().equals("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9")).findFirst().get();
 		assertEquals("Wrong transaction value", 50.0f, bto1.getValue());

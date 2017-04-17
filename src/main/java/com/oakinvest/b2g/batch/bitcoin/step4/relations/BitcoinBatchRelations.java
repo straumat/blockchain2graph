@@ -81,7 +81,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		blockToTreat.getTransactions()
-				.stream()
 				.forEach(
 						t -> {
 							// For each Vin.
@@ -120,7 +119,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 							// For each Vout.
 							t.getOutputs()
-									.stream()
 									.forEach(vout -> {
 										vout.getAddresses().stream()
 												.filter(a -> a != null)

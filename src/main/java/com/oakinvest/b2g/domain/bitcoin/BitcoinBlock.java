@@ -457,7 +457,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété previousBlock.
+	 * Getter previousBlock.
 	 *
 	 * @return previousBlock
 	 */
@@ -466,7 +466,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété previousBlock.
+	 * Setter previousBlock.
 	 *
 	 * @param newPreviousBlock the previousBlock to set
 	 */
@@ -475,7 +475,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété nextBlock.
+	 * Getter nextBlock.
 	 *
 	 * @return nextBlock
 	 */
@@ -484,7 +484,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété nextBlock.
+	 * Setter nextBlock.
 	 *
 	 * @param newNextBlock the nextBlock to set
 	 */

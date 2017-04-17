@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -133,18 +132,19 @@ public class BitcoindServiceImplementation implements BitcoindService {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the transactions data...
 					final List<GetRawTransactionResult> transactions = new LinkedList<>();
-					for (Iterator<String> transactionsHashs = blockResponse.getResult().getTx().iterator(); transactionsHashs.hasNext(); ) {
-						String t = transactionsHashs.next();
-						if (!t.equals(GENESIS_BLOCK_TRANSACTION)) {
-							GetRawTransactionResponse r = getRawTransaction(t);
-							if (r.getError() == null) {
-								transactions.add(getRawTransaction(t).getResult());
-							} else {
-								log.error("Error getting transaction n°" + t + " informations : " + r.getError());
-								return null;
-							}
-						}
-					}
+					blockResponse.getResult().getTx()
+							.stream()
+							.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+							.forEach(t -> {
+								GetRawTransactionResponse r = getRawTransaction(t);
+								if (r.getError() == null) {
+									transactions.add(getRawTransaction(t).getResult());
+								} else {
+									log.error("Error getting transaction n°" + t + " informations : " + r.getError());
+									throw new RuntimeException(r.getError().toString());
+								}
+							});
+
 					// -------------------------------------------------------------------------------------------------
 					// And we end up returning all the block data all at once.
 					return new BitcoindBlockData(blockResponse.getResult(), transactions);

@@ -39,6 +39,11 @@ public abstract class BitcoinBatchTemplate {
 	private static final String LOG_SEPARATOR = "---";
 
 	/**
+	 * Mapper.
+	 */
+	private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
+
+	/**
 	 * BitcoinBlock repository.
 	 */
 	@Autowired
@@ -55,11 +60,6 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	@Autowired
 	private BitcoindService bitcoindService;
-
-	/**
-	 * Mapper.
-	 */
-	private BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
 	 * BitcoinBlock repository.
