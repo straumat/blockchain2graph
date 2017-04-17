@@ -116,7 +116,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * @param blockNumber block number
 	 * @return block data or null if a problem occurred.
 	 */
-	@Cacheable(value = "blockData", unless = "#result == null")
+	@Cacheable(value = "blockData", unless = "#result == null", sync = true)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public BitcoindBlockData getBlockData(final long blockNumber) {
 		try {
