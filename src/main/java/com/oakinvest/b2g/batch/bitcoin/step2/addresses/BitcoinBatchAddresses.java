@@ -67,17 +67,18 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 					.parallelStream()
 					.forEach(grt -> {
 						grt.getVout()
-								.parallelStream()
+								.stream()
 								.filter(v -> v != null)
 								.forEach(v -> v.getScriptPubKey()
-										.getAddresses().parallelStream()
+										.getAddresses().stream()
 										.filter(a -> a != null)
 										.forEach(address -> addresses.add(address)));
 					});
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.
-			addresses.parallelStream()
+			addresses
+					.stream()
 					.distinct()
 					// If the address doesn't exists
 					.filter(address -> getAddressRepository().findByAddress(address) == null)

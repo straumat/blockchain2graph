@@ -29,6 +29,11 @@ public abstract class BitcoinBatchTemplate {
 	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
+	 * Pause between imports.
+	 */
+	private static final int PAUSE_BETWEEN_TREATMENTS = 100;
+
+	/**
 	 * Log separator.
 	 */
 	private static final String LOG_SEPARATOR = "---";

@@ -35,7 +35,7 @@ public class BitcoinBatch {
 	/**
 	 * Pause between imports.
 	 */
-	private static final int PAUSE_BETWEEN_IMPORTS = 100;
+	private static final int PAUSE_BETWEEN_TREATMENTS = 100;
 
 	/**
 	 * Logger.
@@ -93,7 +93,7 @@ public class BitcoinBatch {
 	/**
 	 * Import data.
 	 */
-	@Scheduled(fixedDelay = PAUSE_BETWEEN_IMPORTS)
+	@Scheduled(fixedDelay = PAUSE_BETWEEN_TREATMENTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
 		// Update block statistics.
