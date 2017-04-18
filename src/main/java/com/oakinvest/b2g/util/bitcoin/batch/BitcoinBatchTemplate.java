@@ -11,6 +11,7 @@ import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -112,7 +113,9 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Execute the batch.
 	 */
-	public final void execute() {
+	@Transactional
+	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	public void execute() {
 		addLog(LOG_SEPARATOR);
 		batchStartTime = System.currentTimeMillis();
 		try {
