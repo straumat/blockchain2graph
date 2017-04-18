@@ -53,7 +53,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	@Override
 	protected final BitcoinBlock treatBlock(final long blockNumber) {
 		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockNumber);
-
 		// -----------------------------------------------------------------------------------------------------
 		// Setting the relationship between blocks and transactions.
 		blockToTreat.getTx()
@@ -81,6 +80,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		blockToTreat.getTransactions()
+				.stream()
 				.forEach(
 						t -> {
 							// For each Vin.
@@ -107,6 +107,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 															address.getInputTransactions().add(vin);
 															getAddressRepository().save(address);
 														});
+												addLog(" - Done treating vin : " + vin);
 											} else {
 												addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 												throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
@@ -115,6 +116,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 											addError("Impossible to find the original transaction " + vin.getTxId());
 											throw new RuntimeException("Impossible to find the original transaction " + vin.getTxId());
 										}
+										addLog("");
 									});
 
 							// For each Vout.
@@ -127,7 +129,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 													address.getOutputTransactions().add(vout);
 													getAddressRepository().save(address);
 												});
-
+										addLog(" - Done treating vout : " + vout);
 									});
 							addLog("- Relations of transaction " + t.getTxId() + " treated");
 						}

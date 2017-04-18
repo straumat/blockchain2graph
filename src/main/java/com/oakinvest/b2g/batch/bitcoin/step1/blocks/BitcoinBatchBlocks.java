@@ -34,7 +34,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final Long getBlockToTreat() {
-		// We retrieve the next block to treat.
+		// We retrieve the next block to treat according to the database.
 		Long blockToTreat = getBlockRepository().count() + 1;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -70,17 +70,17 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock treatBlock(final long blockNumber) {
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
-		// -----------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData != null) {
-			// -------------------------------------------------------------------------------------------------
-			// Then, if the block doesn't exists, we save it.
+			// ---------------------------------------------------------------------------------------------------------
+			// Then, if the block doesn't exists, we map it to save it.
 			BitcoinBlock block = getBlockRepository().findByHash(blockData.getBlock().getHash());
 			if (block == null) {
 				block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
 			}
 
-			// -------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;
 		} else {
@@ -88,7 +88,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
 			return null;
 		}
-
 	}
 
 	/**

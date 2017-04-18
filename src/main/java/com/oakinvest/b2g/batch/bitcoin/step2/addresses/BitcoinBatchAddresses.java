@@ -55,11 +55,9 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock treatBlock(final long blockNumber) {
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
-
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData != null) {
-
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
@@ -80,6 +78,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 			addresses.parallelStream()
 					.distinct()
 					// If the address doesn't exists
+					.filter(address -> address != null)
 					.filter(address -> getAddressRepository().findByAddress(address) == null)
 					.forEach(address -> {
 						try {
@@ -90,6 +89,9 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 							throw new RuntimeException("Error creating address " + address, e);
 						}
 					});
+
+			// ---------------------------------------------------------------------------------------------------------
+			// We return the block.
 			return getBlockRepository().findByHeight(blockNumber);
 		} else {
 			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));

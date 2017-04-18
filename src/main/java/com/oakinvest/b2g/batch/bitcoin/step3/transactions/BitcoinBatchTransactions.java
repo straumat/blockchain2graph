@@ -53,7 +53,6 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData != null) {
-
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
 			blockData.getTransactions()
@@ -71,6 +70,9 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 							throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
 						}
 					});
+
+			// ---------------------------------------------------------------------------------------------------------
+			// We return the block.
 			return getBlockRepository().findByHeight(blockNumber);
 		} else {
 			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
