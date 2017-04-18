@@ -77,8 +77,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.
-			addresses
-					.stream()
+			addresses.parallelStream()
 					.distinct()
 					// If the address doesn't exists
 					.filter(address -> getAddressRepository().findByAddress(address) == null)
