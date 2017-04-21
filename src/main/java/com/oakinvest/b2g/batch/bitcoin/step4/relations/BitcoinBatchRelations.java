@@ -83,6 +83,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				.stream()
 				.forEach(
 						t -> {
+							addLog("- Transaction " + t.getTxId());
 							// For each Vin.
 							t.getInputs()
 									.stream()
@@ -107,7 +108,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 															address.getInputTransactions().add(vin);
 															getAddressRepository().save(address);
 														});
-												addLog(" - Done treating vin : " + vin);
+												addLog("-- Done treating vin : " + vin);
 											} else {
 												addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 												throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
@@ -129,9 +130,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 													address.getOutputTransactions().add(vout);
 													getAddressRepository().save(address);
 												});
-										addLog(" - Done treating vout : " + vout);
+										addLog("-- Done treating vout : " + vout);
 									});
-							addLog("- Relations of transaction " + t.getTxId() + " treated");
+							addLog("-- Transaction " + t.getTxId() + " relations treated");
 						}
 				);
 		getBlockRepository().save(blockToTreat);

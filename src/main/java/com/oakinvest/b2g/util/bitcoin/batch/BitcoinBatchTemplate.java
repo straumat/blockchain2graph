@@ -32,7 +32,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Log separator.
 	 */
-	private static final String LOG_SEPARATOR = "---";
+	private static final String LOG_SEPARATOR = "=====";
 
 	/**
 	 * Mapper.
@@ -81,7 +81,7 @@ public abstract class BitcoinBatchTemplate {
 	private long batchStartTime;
 
 	/**
-	 * Getter de la propriété session.
+	 * Getter session.
 	 *
 	 * @return session
 	 */
@@ -131,7 +131,6 @@ public abstract class BitcoinBatchTemplate {
 				// If there is nothing to treat.
 				addLog("No block to treat");
 			}
-
 		} catch (Exception e) {
 			addError("An error occurred while treating block : " + e.getMessage(), e);
 		} finally {

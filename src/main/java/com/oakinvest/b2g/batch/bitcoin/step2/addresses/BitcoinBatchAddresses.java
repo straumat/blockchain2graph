@@ -78,7 +78,6 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 			addresses.parallelStream()
 					.distinct()
 					// If the address doesn't exists
-					.filter(address -> address != null)
 					.filter(address -> getAddressRepository().findByAddress(address) == null)
 					.forEach(address -> {
 						try {
