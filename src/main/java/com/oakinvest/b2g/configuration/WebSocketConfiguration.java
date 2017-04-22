@@ -17,7 +17,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	/**
 	 * Status handler.
 	 */
-	private StatusHandler statusHandler;
+	private final StatusHandler statusHandler;
 
 	/**
 	 * Constructor.
