@@ -87,7 +87,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							t.getInputs()
 									.stream()
 									// If the txid set in the VIN is null, it's a coinbase transaction.
-									.filter(vin -> vin.getTxId() != null)
+									.filter(vin -> !vin.isCoinbase())
 									.forEach(vin -> {
 										// We retrieve the original transaction.
 										BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());

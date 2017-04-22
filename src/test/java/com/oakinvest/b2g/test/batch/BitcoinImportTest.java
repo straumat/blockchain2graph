@@ -11,6 +11,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutputType;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
@@ -293,7 +294,7 @@ public class BitcoinImportTest {
 		final String expectedVout1ScriptPubKeyAsm = "04ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84c OP_CHECKSIG";
 		final String expectedVout1ScriptPubKeyHex = "4104ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84cac";
 		final long expectedVout1ScriptPubKeyReqSigs = 1L;
-		final String expectedVout1ScriptPubKeyType = "pubkey";
+		final BitcoinTransactionOutputType expectedVout1ScriptPubKeyType = BitcoinTransactionOutputType.pubkey;
 		final String expectedVout1ScriptPubKeyAddress = "1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3";
 		assertEquals("Wrong vout1 value", expectedVout1Value, vout1.getValue());
 		assertEquals("Wrong vout1 n", expectedVout1N, vout1.getN());
@@ -310,7 +311,7 @@ public class BitcoinImportTest {
 		final String expectedVout2ScriptPubKeyAsm = "0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3 OP_CHECKSIG";
 		final String expectedVout2ScriptPubKeyHex = "410411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3ac";
 		final long expectedVout2ScriptPubKeyReqSigs = 1L;
-		final String expectedVout2ScriptPubKeyType = "pubkey";
+		final BitcoinTransactionOutputType expectedVout2ScriptPubKeyType = BitcoinTransactionOutputType.pubkey;
 		final String expectedVout2ScriptPubKeyAddress = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
 		assertEquals("Wrong vout2 value", expectedVout2Value, vout2.getValue());
 		assertEquals("Wrong vout2 n", expectedVout2N, vout2.getN());

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Bitcoind block data.
+ * Bitcoind block data - not a bitcoind object - created for b2g.
  * Created by straumat on 16/03/17.
  */
 public class BitcoindBlockData implements Serializable {
