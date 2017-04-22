@@ -60,13 +60,9 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
 					// We save it in the database.
 					.forEach(t -> {
-						try {
-							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
-							getTransactionRepository().save(transaction);
-							addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
-						} catch (Exception e) {
-							throw new RuntimeException("Error treating transaction " + t.getTxid() + " : " + e.getMessage());
-						}
+						BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
+						getTransactionRepository().save(transaction);
+						addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
 					});
 
 			// ---------------------------------------------------------------------------------------------------------

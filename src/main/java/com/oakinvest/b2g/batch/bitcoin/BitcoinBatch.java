@@ -8,10 +8,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
-import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,67 +24,65 @@ public class BitcoinBatch {
 	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
-	 * How much time it takes to create a new block for bitcoin (10 minutes).
-	 */
-	private static final int TIME_BEFORE_A_NEW_BITCOIN_BLOCK = 10 * 60 * 1000;
-
-	/**
 	 * Pause between imports.
 	 */
 	private static final int PAUSE_BETWEEN_TREATMENTS = 100;
 
 	/**
-	 * Logger.
+	 * Import batch.
 	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoinBatch.class);
+	private final BitcoinBatchBlocks batchBlocks;
 
 	/**
 	 * Import batch.
 	 */
-	@Autowired
-	private BitcoinBatchBlocks batchBlocks;
+	private final BitcoinBatchAddresses batchAddresses;
 
 	/**
 	 * Import batch.
 	 */
-	@Autowired
-	private BitcoinBatchAddresses batchAddresses;
+	private final BitcoinBatchTransactions batchTransactions;
 
 	/**
 	 * Import batch.
 	 */
-	@Autowired
-	private BitcoinBatchTransactions batchTransactions;
-
-	/**
-	 * Import batch.
-	 */
-	@Autowired
-	private BitcoinBatchRelations batchRelations;
+	private final BitcoinBatchRelations batchRelations;
 
 	/**
 	 * Status service.
 	 */
-	@Autowired
-	private StatusService status;
+	private final StatusService status;
 
 	/**
 	 * Bitcoin statistic service.
 	 */
-	@Autowired
-	private BitcoinStatisticService bitcoinStatisticService;
+	private final BitcoinStatisticService bitcoinStatisticService;
 
 	/**
 	 * Bitcoin block repository.
 	 */
-	@Autowired
-	private BitcoinBlockRepository blockRepository;
+	private final BitcoinBlockRepository blockRepository;
 
 	/**
-	 * Bitcoind service.
+	 * Constructor.
+	 *
+	 * @param newBatchBlocks             batchBlocks
+	 * @param newBatchAddresses          batchAddresses
+	 * @param newBatchTransactions       batchTransactions
+	 * @param newBatchRelations          batchRelations
+	 * @param newStatus                  status
+	 * @param newBitcoinStatisticService bitcoinStatisticService
+	 * @param newBlockRepository         blockRepository
 	 */
-	@Autowired
-	private BitcoindService bitcoindService;
+	public BitcoinBatch(final BitcoinBatchBlocks newBatchBlocks, final BitcoinBatchAddresses newBatchAddresses, final BitcoinBatchTransactions newBatchTransactions, final BitcoinBatchRelations newBatchRelations, final StatusService newStatus, final BitcoinStatisticService newBitcoinStatisticService, final BitcoinBlockRepository newBlockRepository) {
+		this.batchBlocks = newBatchBlocks;
+		this.batchAddresses = newBatchAddresses;
+		this.batchTransactions = newBatchTransactions;
+		this.batchRelations = newBatchRelations;
+		this.status = newStatus;
+		this.bitcoinStatisticService = newBitcoinStatisticService;
+		this.blockRepository = newBlockRepository;
+	}
 
 	/**
 	 * Import data.
@@ -96,38 +90,23 @@ public class BitcoinBatch {
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_TREATMENTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
-		// Update block statistics.
+		// Retrieve the number of block we have and update the status.
 		long importedBlockCount = blockRepository.countBlockByState(BitcoinBlockState.IMPORTED);
-		long totalBlockCount = bitcoindService.getBlockCount().getResult();
-
-		// Update status.
 		status.setImportedBlockCount(importedBlockCount);
-		if (totalBlockCount != status.getTotalBlockCount()) {
-			status.setTotalBlockCount(totalBlockCount);
+
+		// Importing the next available block.
+		final long start = System.currentTimeMillis();
+		try {
+			batchBlocks.execute();
+			batchAddresses.execute();
+			batchTransactions.execute();
+			batchRelations.execute();
+		} catch (Exception e) {
+			status.addError("Error in the batch processes : " + e.getMessage(), e);
 		}
 
-		// Make a pause if there is nothing to do (If we are up to date with the blockchain last block)
-		if (importedBlockCount == totalBlockCount) {
-			try {
-				Thread.sleep(TIME_BEFORE_A_NEW_BITCOIN_BLOCK);
-			} catch (InterruptedException e) {
-				log.error("Error while pause : " + e.getMessage());
-			}
-		} else {
-			// Importing the next available block.
-			final long start = System.currentTimeMillis();
-			try {
-				batchBlocks.execute();
-				batchAddresses.execute();
-				batchTransactions.execute();
-				batchRelations.execute();
-			} catch (Exception e) {
-				status.addError("Error in the batch processes : " + e.getMessage(), e);
-			}
-
-			// Adding a statistic on duration.
-			bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
-		}
+		// Adding a statistic on duration.
+		bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
 	}
 
 }

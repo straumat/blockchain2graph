@@ -8,6 +8,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -78,7 +79,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
-		blockToTreat.getTransactions().stream()
+		blockToTreat.getTransactions()
 				.forEach(
 						t -> {
 							addLog("- Transaction " + t.getTxId());
@@ -100,7 +101,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 												// We set all the addresses linked to this input
 												originTransactionOutput.get().getAddresses()
 														.stream()
-														.filter(a -> a != null)
+														.filter(Objects::nonNull)
 														.forEach(a -> {
 															BitcoinAddress address = getAddressRepository().findByAddress(a);
 															address.getInputTransactions().add(vin);
@@ -122,7 +123,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							t.getOutputs()
 									.forEach(vout -> {
 										vout.getAddresses().stream()
-												.filter(a -> a != null)
+												.filter(Objects::nonNull)
 												.forEach(a -> {
 													BitcoinAddress address = getAddressRepository().findByAddress(a);
 													address.getOutputTransactions().add(vout);
@@ -135,7 +136,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				);
 		getBlockRepository().save(blockToTreat);
 		getSession().clear();
-
 		return blockToTreat;
 	}
 

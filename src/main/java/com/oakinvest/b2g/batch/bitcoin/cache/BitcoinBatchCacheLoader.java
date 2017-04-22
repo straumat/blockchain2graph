@@ -5,7 +5,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +28,23 @@ public class BitcoinBatchCacheLoader {
 	/**
 	 * Bitcoind service.
 	 */
-	@Autowired
-	private BitcoindService bitcoindService;
+	private final BitcoindService bitcoindService;
 
 	/**
 	 * BitcoinBlock repository.
 	 */
-	@Autowired
-	private BitcoinBlockRepository blockRepository;
+	private final BitcoinBlockRepository blockRepository;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param newBitcoindService bitcoindService
+	 * @param newBlockRepository blockRepository
+	 */
+	public BitcoinBatchCacheLoader(final BitcoindService newBitcoindService, final BitcoinBlockRepository newBlockRepository) {
+		this.bitcoindService = newBitcoindService;
+		this.blockRepository = newBlockRepository;
+	}
 
 	/**
 	 * Load a block in cache. Set in cache NUMBER_OF_BLOCKS_TO_LOAD_IN_CACHE blocks ahead.

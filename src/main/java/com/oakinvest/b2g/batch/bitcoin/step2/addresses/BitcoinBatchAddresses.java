@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Bitcoin import addresses batch.
@@ -62,15 +63,13 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 			// We retrieve all the addresses.
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
 			blockData.getTransactions().parallelStream()
-					.forEach(grt -> {
-						grt.getVout()
-								.stream()
-								.filter(v -> v != null)
-								.forEach(v -> v.getScriptPubKey()
-										.getAddresses().stream()
-										.filter(a -> a != null)
-										.forEach(address -> addresses.add(address)));
-					});
+					.forEach(grt -> grt.getVout()
+							.stream()
+							.filter(Objects::nonNull)
+							.forEach(v -> v.getScriptPubKey()
+									.getAddresses().stream()
+									.filter(Objects::nonNull)
+									.forEach(addresses::add)));
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.
@@ -80,13 +79,9 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 					.filter(address -> getAddressRepository().findByAddress(address) == null)
 					// We save all the addresses.
 					.forEach(address -> {
-						try {
-							BitcoinAddress a = new BitcoinAddress(address);
-							getAddressRepository().save(a);
-							addLog("- Address " + address + " created with id " + a.getId());
-						} catch (Exception e) {
-							throw new RuntimeException("Error creating address " + address, e);
-						}
+						BitcoinAddress a = new BitcoinAddress(address);
+						getAddressRepository().save(a);
+						addLog("- Address " + address + " created with id " + a.getId());
 					});
 
 			// ---------------------------------------------------------------------------------------------------------

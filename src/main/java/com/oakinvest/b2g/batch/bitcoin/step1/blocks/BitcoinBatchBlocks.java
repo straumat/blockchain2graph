@@ -43,6 +43,12 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
 			if (blockCountResponse.getError() == null) {
 				final long totalBlockCount = blockCountResponse.getResult();
+				// We update the global status.
+				if (totalBlockCount != getStatus().getTotalBlockCount()) {
+					getStatus().setTotalBlockCount(totalBlockCount);
+				}
+
+				// We return the block to treat.
 				if (blockToTreat <= totalBlockCount) {
 					// If there is still block after this one, we continue.
 					return blockToTreat;
