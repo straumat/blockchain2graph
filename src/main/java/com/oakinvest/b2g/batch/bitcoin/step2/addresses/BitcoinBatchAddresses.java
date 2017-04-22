@@ -78,6 +78,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 					.distinct()
 					// If the address doesn't exists
 					.filter(address -> getAddressRepository().findByAddress(address) == null)
+					// We save all the addresses.
 					.forEach(address -> {
 						try {
 							BitcoinAddress a = new BitcoinAddress(address);
