@@ -139,6 +139,15 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
+	 * Returns true if it's a coinbase transaction.
+	 *
+	 * @return coinbase.
+	 */
+	public final boolean isCoinbase() {
+		return getCoinbase() != null;
+	}
+
+	/**
 	 * Setter of coinbase.
 	 *
 	 * @param newCoinbase the coinbase to set
