@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.configuration;
 
 import com.oakinvest.b2g.web.StatusHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -18,8 +17,16 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	/**
 	 * Status handler.
 	 */
-	@Autowired
 	private StatusHandler statusHandler;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param newStatusHandler statusHandler
+	 */
+	public WebSocketConfiguration(final StatusHandler newStatusHandler) {
+		this.statusHandler = newStatusHandler;
+	}
 
 	/**
 	 * Register.
