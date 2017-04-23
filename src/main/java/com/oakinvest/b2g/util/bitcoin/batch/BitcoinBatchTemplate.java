@@ -41,32 +41,32 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * BitcoinBlock repository.
 	 */
-	private BitcoinBlockRepository blockRepository;
+	private final BitcoinBlockRepository blockRepository;
 
 	/**
 	 * BitcoinBlock repository.
 	 */
-	private BitcoinAddressRepository addressRepository;
+	private final BitcoinAddressRepository addressRepository;
 
 	/**
 	 * Bitcoin block repository.
 	 */
-	private BitcoinTransactionRepository transactionRepository;
+	private final BitcoinTransactionRepository transactionRepository;
 
 	/**
 	 * Bitcoind service.
 	 */
-	private BitcoindService bitcoindService;
+	private final BitcoindService bitcoindService;
 
 	/**
 	 * Status service.
 	 */
-	private StatusService status;
+	private final StatusService status;
 
 	/**
 	 * Neo4j session.
 	 */
-	private Session session;
+	private final Session session;
 
 	/**
 	 * time of the start of the batch.
@@ -202,7 +202,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété mapper.
+	 * Getter mapper.
 	 *
 	 * @return mapper
 	 */
@@ -211,7 +211,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété blockRepository.
+	 * Getter blockRepository.
 	 *
 	 * @return blockRepository
 	 */
@@ -220,7 +220,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété addressRepository.
+	 * Getter addressRepository.
 	 *
 	 * @return addressRepository
 	 */
@@ -229,7 +229,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété transactionRepository.
+	 * Getter transactionRepository.
 	 *
 	 * @return transactionRepository
 	 */
@@ -238,7 +238,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété bitcoindService.
+	 * Getter bitcoindService.
 	 *
 	 * @return bitcoindService
 	 */
@@ -247,7 +247,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété status.
+	 * Getter status.
 	 *
 	 * @return status
 	 */
@@ -256,7 +256,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter de la propriété session.
+	 * Getter session.
 	 *
 	 * @return session
 	 */

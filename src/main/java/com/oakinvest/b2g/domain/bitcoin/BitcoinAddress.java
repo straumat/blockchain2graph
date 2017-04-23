@@ -40,21 +40,6 @@ public class BitcoinAddress {
 	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
 
 	/**
-	 * Default constructor.
-	 */
-	public BitcoinAddress() {
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param newAddress bitcoin newAddress
-	 */
-	public BitcoinAddress(final String newAddress) {
-		this.address = newAddress;
-	}
-
-	/**
 	 * Getter inputTransactions.
 	 *
 	 * @return inputTransactions

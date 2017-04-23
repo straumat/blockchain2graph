@@ -108,6 +108,6 @@ public interface BitcoindToDomainMapper {
 	@Mappings({
 			@Mapping(source = "address", target = "address")
 	})
-	BitcoinAddress bitcoinAddress(String address);
+	BitcoinAddress toBitcoinAddress(String address);
 
 }
