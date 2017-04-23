@@ -22,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -113,16 +112,16 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Returns the block data from bitcoind.
 	 *
-	 * @param blockNumber block number
+	 * @param blockHeight block number
 	 * @return block data or null if a problem occurred.
 	 */
 	@Cacheable(value = "blockData", unless = "#result == null")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public BitcoindBlockData getBlockData(final long blockNumber) {
+	public BitcoindBlockData getBlockData(final long blockHeight) {
 		try {
 			// ---------------------------------------------------------------------------------------------------------
 			// We retrieve the block hash...
-			GetBlockHashResponse blockHashResponse = getBlockHash(blockNumber);
+			GetBlockHashResponse blockHashResponse = getBlockHash(blockHeight);
 			if (blockHashResponse.getError() == null) {
 				// -----------------------------------------------------------------------------------------------------
 				// Then we retrieve the block data...
@@ -150,16 +149,16 @@ public class BitcoindServiceImplementation implements BitcoindService {
 					return new BitcoindBlockData(blockResponse.getResult(), transactions);
 				} else {
 					// Error while retrieving the block informations.
-					log.error("Error getting block n°" + blockNumber + " informations : " + blockResponse.getError());
+					log.error("Error getting block n°" + blockHeight + " informations : " + blockResponse.getError());
 					return null;
 				}
 			} else {
 				// Error while retrieving the block hash.
-				log.error("Error getting the hash of block n°" + blockNumber + " : " + blockHashResponse.getError());
+				log.error("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError());
 				return null;
 			}
 		} catch (Exception e) {
-			log.error("Error getting the block data of block n°" + blockNumber + " : " + e.getMessage());
+			log.error("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
 			return null;
 		}
 	}
@@ -247,8 +246,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 			request.put(PARAMETER_METHOD, command);
 			request.put(PARAMETER_PARAMS, params);
 		} catch (JSONException e) {
-			log.error("Error while building the request " + e);
-			log.error("Error : " + Arrays.toString(e.getStackTrace()));
+			log.error("Error while building the request : " + e.getMessage(), e);
 		}
 		return request;
 	}

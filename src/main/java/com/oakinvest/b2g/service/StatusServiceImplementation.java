@@ -3,7 +3,6 @@ package com.oakinvest.b2g.service;
 import com.oakinvest.b2g.web.StatusHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,26 +22,25 @@ public class StatusServiceImplementation implements StatusService {
 	private final Logger log = LoggerFactory.getLogger(StatusService.class);
 
 	/**
+	 * Status handler.
+	 */
+	private final StatusHandler statusHandler;
+
+	/**
 	 * Date format.
 	 */
 	@Value("${blockchain2graph.date.format}")
 	private String dateFormat;
 
 	/**
-	 * Status handler.
-	 */
-	@Autowired
-	private StatusHandler statusHandler;
-
-	/**
 	 * Last log message.
 	 */
-	private String lastLogMessage = "";
+	private String lastLog = "";
 
 	/**
 	 * Last error message.
 	 */
-	private String lastErrorMessage = "";
+	private String lastError = "";
 
 	/**
 	 * Total block count.
@@ -53,6 +51,24 @@ public class StatusServiceImplementation implements StatusService {
 	 * Imported block count.
 	 */
 	private long importedBlockCount = 0;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param newStatusHandler statusHandler
+	 */
+	public StatusServiceImplementation(final StatusHandler newStatusHandler) {
+		this.statusHandler = newStatusHandler;
+	}
+
+	/**
+	 * Returns the current date with the configured format.
+	 *
+	 * @return date formatted
+	 */
+	private String getFormattedCurrentDate() {
+		return new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
+	}
 
 	/**
 	 * Returns the total number of blocks in the blockchain.
@@ -73,6 +89,16 @@ public class StatusServiceImplementation implements StatusService {
 	public final void setTotalBlockCount(final long newTotalBlockCount) {
 		totalBlockCount = newTotalBlockCount;
 		statusHandler.updateTotalBlockCount(totalBlockCount);
+	}
+
+	/**
+	 * Set the average block import duration.
+	 *
+	 * @param averageBlockImportDuration averageBlockImportDuration
+	 */
+	@Override
+	public final void setAverageBlockImportDuration(final float averageBlockImportDuration) {
+		statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
 	}
 
 	/**
@@ -102,21 +128,21 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return last log message.
 	 */
 	@Override
-	public final String getLastLogMessage() {
-		return lastLogMessage;
+	public final String getLastLog() {
+		return lastLog;
 	}
 
 	/**
 	 * Add a log message.
 	 *
-	 * @param newLogMessage log message
+	 * @param logMessage log message
 	 */
 	@Override
-	public final void addLog(final String newLogMessage) {
-		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
-		lastLogMessage = "[" + date + "] " + newLogMessage;
-		statusHandler.updateLog("[" + date + "] " + newLogMessage);
-		log.info(newLogMessage);
+	public final void addLog(final String logMessage) {
+		String date = getFormattedCurrentDate();
+		lastLog = "[" + date + "] " + logMessage;
+		statusHandler.updateLog("[" + date + "] " + logMessage);
+		log.info(logMessage);
 	}
 
 	/**
@@ -125,26 +151,26 @@ public class StatusServiceImplementation implements StatusService {
 	 * @return last error message.
 	 */
 	@Override
-	public final String getLastErrorMessage() {
-		return lastErrorMessage;
+	public final String getLastError() {
+		return lastError;
 	}
 
 	/**
 	 * Add an error message.
 	 *
-	 * @param newErrorMessage error message
+	 * @param errorMessage error message
 	 * @param e               exception raised.
 	 */
 	@Override
-	public final void addError(final String newErrorMessage, final Exception e) {
-		String date = new SimpleDateFormat(dateFormat).format(Calendar.getInstance().getTime());
-		lastErrorMessage = "[" + date + "] " + newErrorMessage;
-		statusHandler.updateLog("[" + date + "] " + newErrorMessage);
-		statusHandler.updateError("[" + date + "] " + newErrorMessage);
+	public final void addError(final String errorMessage, final Exception e) {
+		String date = getFormattedCurrentDate();
+		lastError = "[" + date + "] " + errorMessage;
+		statusHandler.updateLog("[" + date + "] " + errorMessage);
+		statusHandler.updateError("[" + date + "] " + errorMessage);
 		if (e == null) {
-			log.error(lastErrorMessage);
+			log.error(lastError);
 		} else {
-			log.error(lastErrorMessage, e);
+			log.error(lastError, e);
 		}
 	}
 

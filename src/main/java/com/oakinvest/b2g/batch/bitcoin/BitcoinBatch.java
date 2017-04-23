@@ -19,11 +19,6 @@ import org.springframework.stereotype.Component;
 public class BitcoinBatch {
 
 	/**
-	 * How many milli seconds in one second.
-	 */
-	private static final float MILLISECONDS_IN_SECONDS = 1000F;
-
-	/**
 	 * Pause between imports.
 	 */
 	private static final int PAUSE_BETWEEN_TREATMENTS = 100;
@@ -106,7 +101,8 @@ public class BitcoinBatch {
 		}
 
 		// Adding a statistic on duration.
-		bitcoinStatisticService.addBlockImportDuration((System.currentTimeMillis() - start) / MILLISECONDS_IN_SECONDS);
+		float averageBlockImportDuration = bitcoinStatisticService.addBlockImportDuration(System.currentTimeMillis() - start);
+		status.setAverageBlockImportDuration(averageBlockImportDuration);
 	}
 
 }

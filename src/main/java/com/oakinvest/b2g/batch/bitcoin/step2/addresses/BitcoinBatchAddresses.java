@@ -50,12 +50,12 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	/**
 	 * Treat block.
 	 *
-	 * @param blockNumber block number to treat.
+	 * @param blockHeight block number to treat.
 	 */
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	protected final BitcoinBlock treatBlock(final long blockNumber) {
-		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockNumber);
+	protected final BitcoinBlock treatBlock(final long blockHeight) {
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData != null) {
@@ -86,9 +86,9 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return getBlockRepository().findByHeight(blockNumber);
+			return getBlockRepository().findByHeight(blockHeight);
 		} else {
-			addError("No response from bitcoind for block n°" + getFormattedBlock(blockNumber));
+			addError("No response from bitcoind for block n°" + getFormattedBlock(blockHeight));
 			return null;
 		}
 	}

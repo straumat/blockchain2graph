@@ -50,21 +50,21 @@ public class StatusServiceTest {
 	}
 
 	/**
-	 * Test for getLastLogMessage().
+	 * Test for getLastLog().
 	 */
 	@Test
 	public final void getLastLogMessageTest() {
 		statusService.addLog("Hi !");
-		assertTrue("Wrong last log message after setting it", statusService.getLastLogMessage().contains("Hi !"));
+		assertTrue("Wrong last log message after setting it", statusService.getLastLog().contains("Hi !"));
 	}
 
 	/**
-	 * Test for getLastErrorMessage().
+	 * Test for getLastError().
 	 */
 	@Test
 	public final void getLastErrorMessageTest() {
 		statusService.addError("Error !", null);
-		assertTrue("Wrong last error message after setting it", statusService.getLastErrorMessage().contains("Error !"));
+		assertTrue("Wrong last error message after setting it", statusService.getLastError().contains("Error !"));
 	}
 
 }

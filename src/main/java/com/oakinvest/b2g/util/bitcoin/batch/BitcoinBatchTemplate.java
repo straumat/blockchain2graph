@@ -115,12 +115,12 @@ public abstract class BitcoinBatchTemplate {
 		batchStartTime = System.currentTimeMillis();
 		try {
 			// We retrieve the block to treat.
-			Long blockNumberToTreat = getBlockToTreat();
+			Long blockHeightToTreat = getBlockToTreat();
 
 			// If there is a block to treat.
-			if (blockNumberToTreat != null) {
-				addLog("Starting to treat block " + getFormattedBlock(blockNumberToTreat));
-				BitcoinBlock blockToTreat = treatBlock(blockNumberToTreat);
+			if (blockHeightToTreat != null) {
+				addLog("Starting to treat block " + getFormattedBlock(blockHeightToTreat));
+				BitcoinBlock blockToTreat = treatBlock(blockHeightToTreat);
 				if (blockToTreat != null) {
 					// If the block has been well treated, we change the state.
 					blockToTreat.setState(getNewStateOfTreatedBlock());
@@ -148,10 +148,10 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Treat block.
 	 *
-	 * @param blockNumber block number to treat.
+	 * @param blockHeight block number to treat.
 	 * @return the block treated
 	 */
-	protected abstract BitcoinBlock treatBlock(long blockNumber);
+	protected abstract BitcoinBlock treatBlock(long blockHeight);
 
 	/**
 	 * Return the state to set to the block that has been treated.

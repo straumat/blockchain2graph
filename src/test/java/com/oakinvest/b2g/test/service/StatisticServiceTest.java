@@ -34,18 +34,19 @@ public class StatisticServiceTest {
 	 */
 	@Test
 	public final void getStatisticsTest() {
-		// Simple test with twi values
-		assertEquals(1f, bitcoinStatisticService.addBlockImportDuration(1f), 0f);
-		assertEquals(1.5f, bitcoinStatisticService.addBlockImportDuration(2f), 0f);
+		// Simple test with two values
+		assertEquals(1F, bitcoinStatisticService.addBlockImportDuration(1000L), 0L);
+		assertEquals(1.5, bitcoinStatisticService.addBlockImportDuration(2000L), 0L);
 
 		// Adding 100 values to see if the two previous number are disappearing.
 		for (int i = 0; i < 100; i++) {
-			bitcoinStatisticService.addBlockImportDuration(4);
+			bitcoinStatisticService.addBlockImportDuration(4000);
 		}
-		assertEquals(4f, bitcoinStatisticService.addBlockImportDuration(4f), 0f);
+		assertEquals(4f, bitcoinStatisticService.addBlockImportDuration(4000L), 0f);
 
 		// Adding another value.
-		assertEquals(5f, bitcoinStatisticService.addBlockImportDuration(104f), 0f);
+		assertEquals(5f, bitcoinStatisticService.addBlockImportDuration(104000L), 0f);
+		assertEquals(5f, bitcoinStatisticService.getAverageBlockImportDuration(), 0f);
 	}
 
 }

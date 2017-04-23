@@ -16,10 +16,10 @@ public interface BitcoindService {
 	 * Returns the block data from bitcoind.
 	 * Util method - not in bitcoind.
 	 *
-	 * @param blockNumber block number
+	 * @param blockHeight block number
 	 * @return block data or null if a problem occurred.
 	 */
-	BitcoindBlockData getBlockData(long blockNumber);
+	BitcoindBlockData getBlockData(long blockHeight);
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.

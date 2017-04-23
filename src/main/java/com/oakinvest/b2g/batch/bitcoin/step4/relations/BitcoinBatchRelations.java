@@ -49,11 +49,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	/**
 	 * Treat block.
 	 *
-	 * @param blockNumber block number to treat.
+	 * @param blockHeight block number to treat.
 	 */
 	@Override
-	protected final BitcoinBlock treatBlock(final long blockNumber) {
-		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockNumber);
+	protected final BitcoinBlock treatBlock(final long blockHeight) {
+		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
 		// -----------------------------------------------------------------------------------------------------
 		// Setting the relationship between blocks and transactions.
 		blockToTreat.getTx().stream()

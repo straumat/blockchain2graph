@@ -7,17 +7,17 @@ package com.oakinvest.b2g.service.bitcoin;
 public interface BitcoinStatisticService {
 
 	/**
-	 * Add an execution time statistics and return the execution mean.
+	 * Add an execution time statistics and return the average execution time.
 	 *
-	 * @param newDuration new execution time.
-	 * @return mean time
+	 * @param newDuration new duration in milliseconds.
+	 * @return average time in seconds
 	 */
-	float addBlockImportDuration(float newDuration);
+	float addBlockImportDuration(long newDuration);
 
 	/**
-	 * Return execution time mean.
+	 * Return average execution time.
 	 *
-	 * @return execution time mean
+	 * @return average execution
 	 */
 	float getAverageBlockImportDuration();
 

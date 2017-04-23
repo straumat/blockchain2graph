@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -180,21 +179,21 @@ public class BitcoindMock {
 	 * getBlockData() advice.
 	 *
 	 * @param pjp         loadInCache.
-	 * @param blockNumber block number.
+	 * @param blockHeight block number.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockData(..)) && args(blockNumber)")
-	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockNumber) throws Throwable {
+	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockData(..)) && args(blockHeight)")
+	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockData()");
 		BitcoindBlockData blockData;
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.
-		File response = new File(getBlockDataDirectory.getPath() + "/response-" + blockNumber + ".ser");
+		File response = new File(getBlockDataDirectory.getPath() + "/response-" + blockHeight + ".ser");
 		if (!response.exists()) {
-			blockData = (BitcoindBlockData) pjp.proceed(new Object[]{ blockNumber });
+			blockData = (BitcoindBlockData) pjp.proceed(new Object[]{ blockHeight });
 			if (blockData != null) {
-				writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockNumber + ".ser", blockData);
+				writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", blockData);
 			}
 		} else {
 			blockData = (BitcoindBlockData) loadObjectFromFile(response);
@@ -356,7 +355,7 @@ public class BitcoindMock {
 			out.close();
 			fileOut.close();
 		} catch (IOException e) {
-			log.error("Error (IOException) : " + e);
+			log.error("Error (IOException) : " + e.getMessage(), e);
 		}
 	}
 
@@ -375,9 +374,9 @@ public class BitcoindMock {
 			in.close();
 			fileIn.close();
 		} catch (IOException e) {
-			log.error("Error (IOException) : " + Arrays.toString(e.getStackTrace()));
+			log.error("Error (IOException) : " + e.getMessage(), e);
 		} catch (ClassNotFoundException c) {
-			log.error("Error (ClassNotFoundException) : " + Arrays.toString(c.getStackTrace()));
+			log.error("Error (ClassNotFoundException) : " + c.getMessage(), c);
 		}
 		return o;
 	}

@@ -39,28 +39,36 @@ public interface StatusService {
 	 *
 	 * @return last log message.
 	 */
-	String getLastLogMessage();
+	String getLastLog();
 
 	/**
 	 * Add a log message.
 	 *
-	 * @param newLogMessage log message
+	 * @param logMessage log message
 	 */
-	void addLog(String newLogMessage);
+	void addLog(String logMessage);
 
 	/**
 	 * Returns the last error message.
 	 *
 	 * @return last error message.
 	 */
-	String getLastErrorMessage();
+	String getLastError();
 
 	/**
 	 * Add an error message.
 	 *
-	 * @param newErrorMessage error message
+	 * @param errorMessage error message
 	 * @param e               exception raised
 	 */
-	void addError(String newErrorMessage, Exception e);
+	void addError(String errorMessage, Exception e);
+
+
+	/**
+	 * Set the average block import duration.
+	 *
+	 * @param averageBlockImportDuration averageBlockImportDuration
+	 */
+	void setAverageBlockImportDuration(float averageBlockImportDuration);
 
 }
