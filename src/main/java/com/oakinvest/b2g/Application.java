@@ -7,7 +7,6 @@ import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -34,26 +33,37 @@ public class Application extends SpringBootServletInitializer {
 	/**
 	 * Bitcoind service.
 	 */
-	@Autowired
-	private BitcoindService bitcoindService;
+	private final BitcoindService bitcoindService;
 
 	/**
 	 * Bitcoin block repository.
 	 */
-	@Autowired
-	private BitcoinBlockRepository bitcoinBlockRepository;
+	private final BitcoinBlockRepository bitcoinBlockRepository;
 
 	/**
 	 * Status service.
 	 */
-	@Autowired
-	private StatusService status;
+	private final StatusService status;
 
 	/**
 	 * Neo4j session.
 	 */
-	@Autowired
-	private Session session;
+	private final Session session;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param newBitcoindService        bitcoindService
+	 * @param newBitcoinBlockRepository bitcoinBlockRepository
+	 * @param newStatus                 status
+	 * @param newSession                session
+	 */
+	public Application(final BitcoindService newBitcoindService, final BitcoinBlockRepository newBitcoinBlockRepository, final StatusService newStatus, final Session newSession) {
+		this.bitcoindService = newBitcoindService;
+		this.bitcoinBlockRepository = newBitcoinBlockRepository;
+		this.status = newStatus;
+		this.session = newSession;
+	}
 
 	/**
 	 * Application launcher.
