@@ -85,7 +85,7 @@ public class BitcoinBatch {
 	@Scheduled(fixedDelay = PAUSE_BETWEEN_TREATMENTS)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void importData() {
-		// Retrieve the number of block we have and update the status.
+		// Retrieve the number of blocks we have and update the status.
 		long importedBlockCount = blockRepository.countBlockByState(BitcoinBlockState.IMPORTED);
 		status.setImportedBlockCount(importedBlockCount);
 

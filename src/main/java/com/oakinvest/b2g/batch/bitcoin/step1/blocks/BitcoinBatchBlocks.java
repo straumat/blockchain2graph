@@ -4,7 +4,13 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
+import org.neo4j.ogm.session.Session;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +26,20 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	private static final String PREFIX = "Blocks batch";
 
 	/**
+	 * Constructor.
+	 *
+	 * @param newBlockRepository       blockRepository
+	 * @param newAddressRepository     addressRepository
+	 * @param newTransactionRepository transactionRepository
+	 * @param newBitcoindService       bitcoindService
+	 * @param newStatus                status
+	 * @param newSession               session
+	 */
+	public BitcoinBatchBlocks(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
+		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus, newSession);
+	}
+
+	/**
 	 * Returns the log prefix to display in each log.
 	 */
 	@Override
@@ -28,14 +48,14 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Return the block to treat.
+	 * Return the block to process.
 	 *
-	 * @return block to treat.
+	 * @return block to process.
 	 */
 	@Override
-	protected final Long getBlockToTreat() {
-		// We retrieve the next block to treat according to the database.
-		Long blockToTreat = getBlockRepository().count() + 1;
+	protected final Long getBlockHeightToProcess() {
+		// We retrieve the next block to process according to the database.
+		Long blockToProcess = getBlockRepository().count() + 1;
 
 		// -------------------------------------------------------------------------------------------------------------
 		// We check if that next block exists by retrieving the block count.
@@ -48,10 +68,10 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 					getStatus().setTotalBlockCount(totalBlockCount);
 				}
 
-				// We return the block to treat.
-				if (blockToTreat <= totalBlockCount) {
+				// We return the block to process.
+				if (blockToProcess <= totalBlockCount) {
 					// If there is still block after this one, we continue.
-					return blockToTreat;
+					return blockToProcess;
 				} else {
 					return null;
 				}
@@ -68,13 +88,13 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Treat block.
+	 * Process block.
 	 *
-	 * @param blockHeight block number to treat.
+	 * @param blockHeight block height to process.
 	 */
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	protected final BitcoinBlock treatBlock(final long blockHeight) {
+	protected final BitcoinBlock processBlock(final long blockHeight) {
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
@@ -91,18 +111,18 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			return block;
 		} else {
 			// Or nothing if we did not retrieve the data.
-			addError("No response from bitcoind for block n°" + getFormattedBlock(blockHeight));
+			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
 			return null;
 		}
 	}
 
 	/**
-	 * Return the state to set to the block that has been treated.
+	 * Return the state to set to the block that has been processed.
 	 *
-	 * @return state to set of the block that has been treated.
+	 * @return state to set of the block that has been processed.
 	 */
 	@Override
-	protected final BitcoinBlockState getNewStateOfTreatedBlock() {
+	protected final BitcoinBlockState getNewStateOfProcessedBlock() {
 		return BitcoinBlockState.BLOCK_IMPORTED;
 	}
 

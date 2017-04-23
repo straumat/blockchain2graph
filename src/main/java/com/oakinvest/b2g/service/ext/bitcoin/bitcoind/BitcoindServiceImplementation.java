@@ -112,7 +112,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	/**
 	 * Returns the block data from bitcoind.
 	 *
-	 * @param blockHeight block number
+	 * @param blockHeight block height
 	 * @return block data or null if a problem occurred.
 	 */
 	@Cacheable(value = "blockData", unless = "#result == null")

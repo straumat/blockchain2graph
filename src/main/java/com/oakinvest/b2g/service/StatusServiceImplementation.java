@@ -102,9 +102,9 @@ public class StatusServiceImplementation implements StatusService {
 	}
 
 	/**
-	 * Returns the number of the last block integrated.
+	 * Returns the height of the last block integrated.
 	 *
-	 * @return block number.
+	 * @return block height.
 	 */
 	@Override
 	public final long getImportedBlockCount() {

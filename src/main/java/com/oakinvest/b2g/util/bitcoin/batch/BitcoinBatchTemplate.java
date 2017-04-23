@@ -10,7 +10,6 @@ import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -42,37 +41,31 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * BitcoinBlock repository.
 	 */
-	@Autowired
 	private BitcoinBlockRepository blockRepository;
-
-	/**
-	 * Status service.
-	 */
-	@Autowired
-	private StatusService status;
-
-	/**
-	 * Bitcoind service.
-	 */
-	@Autowired
-	private BitcoindService bitcoindService;
 
 	/**
 	 * BitcoinBlock repository.
 	 */
-	@Autowired
 	private BitcoinAddressRepository addressRepository;
 
 	/**
 	 * Bitcoin block repository.
 	 */
-	@Autowired
 	private BitcoinTransactionRepository transactionRepository;
+
+	/**
+	 * Bitcoind service.
+	 */
+	private BitcoindService bitcoindService;
+
+	/**
+	 * Status service.
+	 */
+	private StatusService status;
 
 	/**
 	 * Neo4j session.
 	 */
-	@Autowired
 	private Session session;
 
 	/**
@@ -81,12 +74,22 @@ public abstract class BitcoinBatchTemplate {
 	private long batchStartTime;
 
 	/**
-	 * Getter session.
+	 * Constructor.
 	 *
-	 * @return session
+	 * @param newBlockRepository       blockRepository
+	 * @param newAddressRepository     addressRepository
+	 * @param newTransactionRepository transactionRepository
+	 * @param newBitcoindService       bitcoindService
+	 * @param newStatus                status
+	 * @param newSession               session
 	 */
-	protected final Session getSession() {
-		return session;
+	public BitcoinBatchTemplate(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
+		this.blockRepository = newBlockRepository;
+		this.addressRepository = newAddressRepository;
+		this.transactionRepository = newTransactionRepository;
+		this.bitcoindService = newBitcoindService;
+		this.status = newStatus;
+		this.session = newSession;
 	}
 
 	/**
@@ -114,51 +117,51 @@ public abstract class BitcoinBatchTemplate {
 		addLog(LOG_SEPARATOR);
 		batchStartTime = System.currentTimeMillis();
 		try {
-			// We retrieve the block to treat.
-			Long blockHeightToTreat = getBlockToTreat();
+			// We retrieve the block to process.
+			Long blockHeightToProcess = getBlockHeightToProcess();
 
-			// If there is a block to treat.
-			if (blockHeightToTreat != null) {
-				addLog("Starting to treat block " + getFormattedBlock(blockHeightToTreat));
-				BitcoinBlock blockToTreat = treatBlock(blockHeightToTreat);
-				if (blockToTreat != null) {
-					// If the block has been well treated, we change the state.
-					blockToTreat.setState(getNewStateOfTreatedBlock());
-					blockRepository.save(blockToTreat);
-					addLog("Block " + blockToTreat.getFormattedHeight() + " treated in " + getElapsedTime() + " secs");
+			// If there is a block to process.
+			if (blockHeightToProcess != null) {
+				addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess));
+				BitcoinBlock blockToProcess = processBlock(blockHeightToProcess);
+				if (blockToProcess != null) {
+					// If the block has been well processed, we change the state.
+					blockToProcess.setState(getNewStateOfProcessedBlock());
+					blockRepository.save(blockToProcess);
+					addLog("Block " + blockToProcess.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 				}
 			} else {
-				// If there is nothing to treat.
-				addLog("No block to treat");
+				// If there is nothing to process.
+				addLog("No block to process");
 			}
 		} catch (Exception e) {
-			addError("An error occurred while treating block : " + e.getMessage(), e);
+			addError("An error occurred while processing block : " + e.getMessage(), e);
 		} finally {
 			getSession().clear();
 		}
 	}
 
 	/**
-	 * Return the block to treat.
+	 * Return the block to process.
 	 *
-	 * @return block to treat.
+	 * @return block to process.
 	 */
-	protected abstract Long getBlockToTreat();
+	protected abstract Long getBlockHeightToProcess();
 
 	/**
 	 * Treat block.
 	 *
-	 * @param blockHeight block number to treat.
-	 * @return the block treated
+	 * @param blockHeight block height to process.
+	 * @return the block processed
 	 */
-	protected abstract BitcoinBlock treatBlock(long blockHeight);
+	protected abstract BitcoinBlock processBlock(long blockHeight);
 
 	/**
-	 * Return the state to set to the block that has been treated.
+	 * Return the state to set to the block that has been processed.
 	 *
-	 * @return state to set of the block that has been treated.
+	 * @return state to set of the block that has been processed.
 	 */
-	protected abstract BitcoinBlockState getNewStateOfTreatedBlock();
+	protected abstract BitcoinBlockState getNewStateOfProcessedBlock();
 
 	/**
 	 * Returns the block height in a formatted way.
@@ -166,7 +169,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height
 	 * @return formatted block height
 	 */
-	protected final String getFormattedBlock(final long blockHeight) {
+	protected final String getFormattedBlockHeight(final long blockHeight) {
 		return String.format("%09d", blockHeight);
 	}
 
@@ -199,34 +202,7 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter blockRepository.
-	 *
-	 * @return blockRepository
-	 */
-	protected final BitcoinBlockRepository getBlockRepository() {
-		return blockRepository;
-	}
-
-	/**
-	 * Getter status.
-	 *
-	 * @return status
-	 */
-	protected final StatusService getStatus() {
-		return status;
-	}
-
-	/**
-	 * Getter bitcoindService.
-	 *
-	 * @return bitcoindService
-	 */
-	protected final BitcoindService getBitcoindService() {
-		return bitcoindService;
-	}
-
-	/**
-	 * Getter mapper.
+	 * Getter de la propriété mapper.
 	 *
 	 * @return mapper
 	 */
@@ -235,7 +211,16 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter addressRepository.
+	 * Getter de la propriété blockRepository.
+	 *
+	 * @return blockRepository
+	 */
+	protected final BitcoinBlockRepository getBlockRepository() {
+		return blockRepository;
+	}
+
+	/**
+	 * Getter de la propriété addressRepository.
 	 *
 	 * @return addressRepository
 	 */
@@ -244,12 +229,39 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter transactionRepository.
+	 * Getter de la propriété transactionRepository.
 	 *
 	 * @return transactionRepository
 	 */
 	protected final BitcoinTransactionRepository getTransactionRepository() {
 		return transactionRepository;
+	}
+
+	/**
+	 * Getter de la propriété bitcoindService.
+	 *
+	 * @return bitcoindService
+	 */
+	protected final BitcoindService getBitcoindService() {
+		return bitcoindService;
+	}
+
+	/**
+	 * Getter de la propriété status.
+	 *
+	 * @return status
+	 */
+	protected final StatusService getStatus() {
+		return status;
+	}
+
+	/**
+	 * Getter de la propriété session.
+	 *
+	 * @return session
+	 */
+	protected final Session getSession() {
+		return session;
 	}
 
 }
