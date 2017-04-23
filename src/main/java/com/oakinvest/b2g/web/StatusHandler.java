@@ -8,9 +8,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -177,20 +175,13 @@ public class StatusHandler extends TextWebSocketHandler {
 	 */
 	private void sendMessage(final String message) {
 		try {
-			// First, we clean all sessions that are closed.
-			List<WebSocketSession> sessionsToRemove = new ArrayList<>();
-			for (WebSocketSession session : this.sessions) {
-				if (!session.isOpen()) {
-					sessionsToRemove.add(session);
-				}
-			}
-			this.sessions.removeAll(sessionsToRemove);
-
-			// Then we send the messages to all opened sessions.
+			// We send the messages to all opened sessions. We delete the one that are closed
 			for (WebSocketSession session : this.sessions) {
 				synchronized (session) {
 					if (session.isOpen()) {
 						session.sendMessage(new TextMessage(message));
+					} else {
+						sessions.remove(session);
 					}
 				}
 			}
