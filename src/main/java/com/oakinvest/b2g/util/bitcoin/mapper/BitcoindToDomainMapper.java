@@ -47,7 +47,7 @@ public interface BitcoindToDomainMapper {
 	/**
 	 * Maps a raw transaction to a transaction.
 	 *
-	 * @param grtr getRawTransactionResult result
+	 * @param getRawTransactionResult getRawTransactionResult result
 	 * @return domain transaction
 	 */
 	@Mappings({
@@ -64,12 +64,12 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "vin", target = "inputs"),
 			@Mapping(source = "vout", target = "outputs")
 	})
-	BitcoinTransaction rawTransactionResultToBitcoinTransaction(GetRawTransactionResult grtr);
+	BitcoinTransaction rawTransactionResultToBitcoinTransaction(GetRawTransactionResult getRawTransactionResult);
 
 	/**
-	 * maprs a vin.
+	 * maps a vin.
 	 *
-	 * @param grtvin vin
+	 * @param getRawTransactionVIn vin
 	 * @return domain transaction input
 	 */
 	@Mappings({
@@ -80,12 +80,12 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "scriptSig.hex", target = "scriptSigHex"),
 			@Mapping(source = "sequence", target = "sequence")
 	})
-	BitcoinTransactionInput rawTransactionVIn(GetRawTransactionVIn grtvin);
+	BitcoinTransactionInput rawTransactionVIn(GetRawTransactionVIn getRawTransactionVIn);
 
 	/**
 	 * Maps a vout.
 	 *
-	 * @param grtvout vout
+	 * @param getRawTransactionVOut vout
 	 * @return domain transaction output
 	 */
 	@Mappings({
@@ -97,7 +97,7 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "scriptPubKey.type", target = "scriptPubKeyType"),
 			@Mapping(source = "scriptPubKey.addresses", target = "addresses")
 	})
-	BitcoinTransactionOutput rawTransactionVout(GetRawTransactionVOut grtvout);
+	BitcoinTransactionOutput rawTransactionVout(GetRawTransactionVOut getRawTransactionVOut);
 
 	/**
 	 * Maps a string to a bitcoin address.

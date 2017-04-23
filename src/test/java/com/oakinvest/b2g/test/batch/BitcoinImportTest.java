@@ -32,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Collections;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -241,6 +242,7 @@ public class BitcoinImportTest {
 		final String existingAddress = "1C1ENNWdkPMyhZ7xTEM4Kwq1FTUifZNCRd";
 		final String nonExistingAddress = "TOTO";
 		assertNotNull("The address should exists", bar.findByAddress(existingAddress));
+		assertTrue("This is not the good address", existingAddress.equals(bar.findByAddress(existingAddress).getAddress()));
 		assertNull("The address should exists", bar.findByAddress(nonExistingAddress));
 	}
 
@@ -384,7 +386,7 @@ public class BitcoinImportTest {
 		// https://blockchain.info/fr/tx/ec2ba1a3784dacd6962d53e9266d08d6cca40cce60240954bb3448c6acdf568f
 		BitcoinAddress a3 = bar.findByAddress("1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW");
 		assertEquals("No coinbase transaction found", 1, a3.getDeposits().size());
-		assertEquals("Wrong coinbase about", 50f, a3.getDeposits().stream().findFirst().get().getValue());
+		assertEquals("Wrong coinbase amount", 50f, a3.getDeposits().stream().findFirst().get().getValue());
 
 		// Test relations between blocks (previous block & next block).
 		BitcoinBlock b1 = bbr.findByHeight(1L);

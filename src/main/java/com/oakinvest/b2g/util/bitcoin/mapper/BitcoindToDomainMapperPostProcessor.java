@@ -18,12 +18,12 @@ public abstract class BitcoindToDomainMapperPostProcessor {
 	/**
 	 * Link vin & vout to transaction.
 	 *
-	 * @param grtr        GetRawTransactionResult
-	 * @param transaction BitcoinTransaction
+	 * @param getRawTransactionResult GetRawTransactionResult
+	 * @param transaction             BitcoinTransaction
 	 */
 	@AfterMapping
 	@SuppressWarnings({ "checkstyle:designforextension" })
-	protected void afterTransactionMapping(final GetRawTransactionResult grtr, @MappingTarget final BitcoinTransaction transaction) {
+	protected void afterTransactionMapping(final GetRawTransactionResult getRawTransactionResult, @MappingTarget final BitcoinTransaction transaction) {
 		// For each Vin.
 		for (BitcoinTransactionInput vin : transaction.getInputs()) {
 			vin.setTransaction(transaction);
