@@ -28,7 +28,7 @@
 	<script th:inline="javascript">
 		/*global url:true*/
 		/*eslint no-undef: "error"*/
-		const url = [[${url}]] + '/' + [[${#httpServletRequest.contextPath}]];
+		const url = [[${url}]] + [[${#httpServletRequest.contextPath}]];
 	</script>
 	<script src="../static/js/console.js" th:src="@{/js/console.js}"></script>
 
