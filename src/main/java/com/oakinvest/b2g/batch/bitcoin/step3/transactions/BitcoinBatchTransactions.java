@@ -75,7 +75,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 		if (blockData != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
-			blockData.getTransactions().stream()
+			blockData.getTransactions().parallelStream()
 					// Only if the transaction is not already in the database.
 					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
 					// We save it in the database.
