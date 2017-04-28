@@ -75,7 +75,8 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 		if (blockData != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
-			blockData.getTransactions().parallelStream()
+			blockData.getTransactions()
+					.stream()
 					// Only if the transaction is not already in the database.
 					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
 					// We save it in the database.
@@ -98,7 +99,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	 * Return the state to set to the block that has been processed.
 	 *
 	 * @return state to set of the block that has been 	 * Return the state to set to the block that has been processed.
-	.
+	 * .
 	 */
 	@Override
 	protected final BitcoinBlockState getNewStateOfProcessedBlock() {
