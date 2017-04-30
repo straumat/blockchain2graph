@@ -92,16 +92,6 @@ public class StatusServiceImplementation implements StatusService {
 	}
 
 	/**
-	 * Set the average block import duration.
-	 *
-	 * @param averageBlockImportDuration averageBlockImportDuration
-	 */
-	@Override
-	public final void setAverageBlockImportDuration(final float averageBlockImportDuration) {
-		statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
-	}
-
-	/**
 	 * Returns the height of the last block integrated.
 	 *
 	 * @return block height.
@@ -159,7 +149,7 @@ public class StatusServiceImplementation implements StatusService {
 	 * Add an error message.
 	 *
 	 * @param errorMessage error message
-	 * @param e               exception raised.
+	 * @param e            exception raised.
 	 */
 	@Override
 	public final void addError(final String errorMessage, final Exception e) {

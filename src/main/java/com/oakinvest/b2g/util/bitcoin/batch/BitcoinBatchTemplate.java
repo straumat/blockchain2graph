@@ -10,6 +10,8 @@ import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -17,11 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by straumat on 27/02/17.
  */
 public abstract class BitcoinBatchTemplate {
-
-	/**
-	 * Genesis transaction hash.
-	 */
-	protected static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * How many milli seconds in one second.
@@ -32,6 +29,11 @@ public abstract class BitcoinBatchTemplate {
 	 * Log separator.
 	 */
 	private static final String LOG_SEPARATOR = "=====";
+
+	/**
+	 * Pause to make when there is no block to process.
+	 */
+	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 5 * 1000;
 
 	/**
 	 * Mapper.
@@ -81,19 +83,18 @@ public abstract class BitcoinBatchTemplate {
 	 * @param newTransactionRepository transactionRepository
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
-	 * @param newSession               session
 	 */
-	public BitcoinBatchTemplate(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
+	public BitcoinBatchTemplate(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
 		this.blockRepository = newBlockRepository;
 		this.addressRepository = newAddressRepository;
 		this.transactionRepository = newTransactionRepository;
 		this.bitcoindService = newBitcoindService;
 		this.status = newStatus;
-		this.session = newSession;
+		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
 	}
 
 	/**
-	 * Returns the elapsted time of the batch.
+	 * Returns the elapsed time of the batch.
 	 *
 	 * @return elapsed time of the batch.
 	 */
@@ -112,6 +113,7 @@ public abstract class BitcoinBatchTemplate {
 	 * Execute the batch.
 	 */
 	@Transactional
+	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void execute() {
 		addLog(LOG_SEPARATOR);
@@ -129,10 +131,15 @@ public abstract class BitcoinBatchTemplate {
 					blockToProcess.setState(getNewStateOfProcessedBlock());
 					blockRepository.save(blockToProcess);
 					addLog("Block " + blockToProcess.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
+					// If we are in the status "block imported", we add where we are
+					if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
+						status.setImportedBlockCount(blockToProcess.getHeight());
+					}
 				}
 			} else {
 				// If there is nothing to process.
 				addLog("No block to process");
+				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
 		} catch (Exception e) {
 			addError("An error occurred while processing block : " + e.getMessage(), e);

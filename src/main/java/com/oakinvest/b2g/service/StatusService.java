@@ -59,16 +59,8 @@ public interface StatusService {
 	 * Add an error message.
 	 *
 	 * @param errorMessage error message
-	 * @param e               exception raised
+	 * @param e            exception raised
 	 */
 	void addError(String errorMessage, Exception e);
-
-
-	/**
-	 * Set the average block import duration.
-	 *
-	 * @param averageBlockImportDuration averageBlockImportDuration
-	 */
-	void setAverageBlockImportDuration(float averageBlockImportDuration);
 
 }

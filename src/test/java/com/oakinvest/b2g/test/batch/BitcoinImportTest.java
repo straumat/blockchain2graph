@@ -29,7 +29,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Collections;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -148,13 +147,6 @@ public class BitcoinImportTest {
 		int iterations = 0;
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();
-
-		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
-		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
-		session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
-		session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
-		// Indexes.
-		session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
 
 		// Launching import.
 		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
@@ -288,6 +280,7 @@ public class BitcoinImportTest {
 		assertEquals("Wrong vin1 asm", expectedVin1ScriptSigAsm, vin1.getScriptSigAsm());
 		assertEquals("Wrong vin1 hex", expectedVin1ScriptSigHex, vin1.getScriptSigHex());
 		assertEquals("Wrong vin1 sequence", expectedVin1Sequence, vin1.getSequence());
+		assertNull("Coinbase is not null", vin1.getCoinbase());
 
 		// VOut 1.
 		BitcoinTransactionOutput vout1 = t.getOutputByIndex(0).get();

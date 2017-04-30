@@ -49,11 +49,6 @@ public class StatusHandler extends TextWebSocketHandler {
 	private static final String TYPE_ERROR = "error";
 
 	/**
-	 * Execution time.
-	 */
-	private static final String TYPE_AVERAGE_BLOCK_DURATION = "averageBlockImportDuration";
-
-	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
@@ -81,17 +76,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Total block count.
 	 */
-	private long lastTotalBlockCount = 0;
+	private long lastTotalBlockCount = -1;
 
 	/**
 	 * Imported block count.
 	 */
-	private long lastImportedBlockCount = 0;
-
-	/**
-	 * Average block import duration.
-	 */
-	private float lastAverageBlockImportDuration = 0;
+	private long lastImportedBlockCount = -1;
 
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
@@ -100,7 +90,6 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(lastTotalBlockCount);
 		updateError(lastErrorMessage);
 		updateLog(lastLogMessage);
-		updateAverageBlockImportDuration(lastAverageBlockImportDuration);
 	}
 
 	/**
@@ -156,19 +145,6 @@ public class StatusHandler extends TextWebSocketHandler {
 	}
 
 	/**
-	 * Update execution time statistic.
-	 *
-	 * @param averageBlockImportDuration new execution time statistics.
-	 */
-	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
-		lastAverageBlockImportDuration = averageBlockImportDuration;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_DURATION);
-		information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
-		sendMessage(gson.toJson(information));
-	}
-
-	/**
 	 * Send a message message to all sessions.
 	 *
 	 * @param message message
@@ -177,12 +153,10 @@ public class StatusHandler extends TextWebSocketHandler {
 		try {
 			// We send the messages to all opened sessions. We delete the one that are closed
 			for (WebSocketSession session : this.sessions) {
-				synchronized (session) {
-					if (session.isOpen()) {
-						session.sendMessage(new TextMessage(message));
-					} else {
-						sessions.remove(session);
-					}
+				if (session.isOpen()) {
+					session.sendMessage(new TextMessage(message));
+				} else {
+					sessions.remove(session);
 				}
 			}
 		} catch (Exception e) {

@@ -12,13 +12,22 @@ connection.onmessage = function (e) {
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "importedBlockCount":
-			$(document).prop("title", "b2g - " + response.messageValue.toLocaleString() + " blocks imported");
-			$("#importedBlockCount").text(response.messageValue.toLocaleString());
+			if (response.messageValue != -1) {
+				$(document).prop("title", "b2g - " + response.messageValue.toLocaleString() + " blocks imported");
+				$("#importedBlockCount").text(response.messageValue.toLocaleString());
+			} else {
+				$("#importedBlockCount").text("-");
+			}
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "totalBlockCount":
-			$("#totalBlockCount").text(response.messageValue.toLocaleString());
+			;
+			if (response.messageValue != -1) {
+				$("#totalBlockCount").text(response.messageValue.toLocaleString());
+			} else {
+				$("#totalBlockCount").text("-");
+			}
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -57,11 +66,6 @@ connection.onmessage = function (e) {
 		// -------------------------------------------------------------------------------------------------------------
 		case "error":
 			$("#lastErrorMessage").text(response.messageValue);
-			break;
-
-		// -------------------------------------------------------------------------------------------------------------
-		case "averageBlockImportDuration":
-			$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
 			break;
 	}
 

@@ -131,19 +131,22 @@ public class BitcoindServiceImplementation implements BitcoindService {
 					// -------------------------------------------------------------------------------------------------
 					// Then we retrieve the transactions data...
 					final List<GetRawTransactionResult> transactions = new LinkedList<>();
-					blockResponse.getResult().getTx()
-							.stream()
-							.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
-							.forEach(t -> {
-								GetRawTransactionResponse r = getRawTransaction(t);
-								if (r.getError() == null) {
-									transactions.add(getRawTransaction(t).getResult());
-								} else {
-									log.error("Error getting transaction n°" + t + " informations : " + r.getError());
-									throw new RuntimeException(r.getError().toString());
-								}
-							});
-
+					try {
+						blockResponse.getResult().getTx()
+								.stream()
+								.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+								.forEach(t -> {
+									GetRawTransactionResponse r = getRawTransaction(t);
+									if (r.getError() == null) {
+										transactions.add(getRawTransaction(t).getResult());
+									} else {
+										log.error("Error getting transaction n°" + t + " informations : " + r.getError());
+										throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
+									}
+								});
+					} catch (Exception e) {
+						return null;
+					}
 					// -------------------------------------------------------------------------------------------------
 					// And we end up returning all the block data all at once.
 					return new BitcoindBlockData(blockResponse.getResult(), transactions);

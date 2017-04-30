@@ -10,7 +10,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
-import org.neo4j.ogm.session.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -38,10 +37,9 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 * @param newTransactionRepository transactionRepository
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
-	 * @param newSession               session
 	 */
-	public BitcoinBatchAddresses(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus, newSession);
+	public BitcoinBatchAddresses(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
+		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
 	}
 
 	/**

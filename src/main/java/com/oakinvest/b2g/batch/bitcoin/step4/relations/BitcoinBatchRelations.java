@@ -12,7 +12,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
-import org.neo4j.ogm.session.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -38,10 +37,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 * @param newTransactionRepository transactionRepository
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
-	 * @param newSession               session
 	 */
-	public BitcoinBatchRelations(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus, newSession);
+	public BitcoinBatchRelations(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
+		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
 	}
 
 	/**
@@ -50,6 +48,32 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	@Override
 	public final String getLogPrefix() {
 		return PREFIX;
+	}
+
+	/**
+	 * Fix a random bug. Sometimes, transactions are saved without vin & vout.
+	 *
+	 * @param txid transaction id
+	 */
+	private void fixEmptyTransaction(final String txid) {
+		addError("fixEmptyTransaction on transaction " + txid);
+		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
+
+		// We get the block where the transaction is.
+		BitcoinBlock originBlock = originTransaction.getBlock();
+
+		// We retrieve the original data from bitcoind.
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(originBlock.getHeight());
+
+		// We delete the badly recorded transaction.
+		originBlock.getTransactions().remove(originTransaction);
+		getBlockRepository().save(originBlock);
+		getTransactionRepository().delete(originTransaction.getId());
+
+		// We save the transaction in the correct block.
+		BitcoinTransaction correctTransaction = getMapper().rawTransactionResultToBitcoinTransaction(blockData.getRawTransactionResult(txid).get());
+		correctTransaction.setBlock(originBlock);
+		getTransactionRepository().save(correctTransaction);
 	}
 
 	/**
@@ -75,17 +99,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	@Override
 	protected final BitcoinBlock processBlock(final long blockHeight) {
 		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
-		// -----------------------------------------------------------------------------------------------------
-		// Setting the relationship between blocks and transactions.
-		blockToTreat.getTx()
-				.stream()
-				.forEach(t -> {
-					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
-					bt.setBlock(blockToTreat);
-					blockToTreat.getTransactions().add(bt);
-				});
-		getBlockRepository().save(blockToTreat);
-		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
 		// We set the previous and the next block.
@@ -101,19 +114,25 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		blockToTreat.getTransactions()
-				.stream()
 				.forEach(
 						t -> {
 							addLog("- Transaction " + t.getTxId());
 							// For each Vin.
 							t.getInputs()
 									.stream()
-									// If the txid set in the VIN is null, it's a coinbase transaction.
+									// If it's NOT a coinbase transaction.
 									.filter(vin -> !vin.isCoinbase())
 									.forEach(vin -> {
 										// We retrieve the original transaction.
 										BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
 										if (originTransaction != null) {
+											// Random bug - empty inputs and outputs.
+											if (originTransaction.getInputs().size() == 0 || originTransaction.getOutputs().size() == 0) {
+												String txid = originTransaction.getTxId();
+												fixEmptyTransaction(txid);
+												originTransaction = getTransactionRepository().findByTxId(txid);
+											}
+
 											// We retrieve the original transaction output.
 											Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
 											if (originTransactionOutput.isPresent()) {
@@ -131,16 +150,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 														});
 												addLog("-- Done processing vin : " + vin);
 											} else {
-												// We try to recreate the transaction and its vins & vouts.
-												getTransactionRepository().findByTxId(originTransaction.getTxId());
-												BitcoinBlock originBlock = originTransaction.getBlock();
-												getTransactionRepository().delete(originTransaction.getId());
-
-												BitcoindBlockData blockData = getBitcoindService().getBlockData(originBlock.getHeight());
-												BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(blockData.getRawTransactionResult(originTransaction.getTxId()).get());
-												transaction.setBlock(originBlock);
-												getTransactionRepository().save(transaction);
-
 												addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 												throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
 											}
@@ -165,8 +174,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							addLog("-- Transaction " + t.getTxId() + " relations processed");
 						}
 				);
-		getBlockRepository().save(blockToTreat);
-		getSession().clear();
 		return blockToTreat;
 	}
 

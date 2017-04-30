@@ -10,7 +10,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
-import org.neo4j.ogm.session.Session;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,10 +32,9 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	 * @param newTransactionRepository transactionRepository
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
-	 * @param newSession               session
 	 */
-	public BitcoinBatchTransactions(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final Session newSession) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus, newSession);
+	public BitcoinBatchTransactions(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
+		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
 	}
 
 	/**
@@ -69,6 +67,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final BitcoinBlock processBlock(final long blockHeight) {
+		BitcoinBlock block = getBlockRepository().findByHeight(blockHeight);
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
@@ -82,13 +81,16 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 					// We save it in the database.
 					.forEach(t -> {
 						BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
+						block.getTransactions().add(transaction);
+						transaction.setBlock(block);
+						// TODO Maybe a single save on the block would be enough ?
 						getTransactionRepository().save(transaction);
 						addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
 					});
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return getBlockRepository().findByHeight(blockHeight);
+			return block;
 		} else {
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
 			return null;
