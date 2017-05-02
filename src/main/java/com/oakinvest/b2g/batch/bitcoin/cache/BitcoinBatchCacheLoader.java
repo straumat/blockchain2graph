@@ -5,7 +5,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,7 +48,7 @@ public class BitcoinBatchCacheLoader {
 	/**
 	 * Load a block in cache. Set in cache NUMBER_OF_BLOCKS_TO_LOAD_IN_CACHE blocks ahead.
 	 */
-	@Scheduled(fixedDelay = 1)
+//	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void loadInCache() {
 		try {

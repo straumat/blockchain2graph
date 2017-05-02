@@ -61,6 +61,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
 
 		// We retrieve the original data from bitcoind.
+		System.out.println("=> " + getBitcoindService());
+		System.out.println("==> " + originTransaction);
+		System.out.println("===> " + originTransaction.getBlock());
+		System.out.println("====> " + originTransaction.getBlock().getHeight());
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(originTransaction.getBlock().getHeight());
 
 		// If we have the data of the origin transaction.
