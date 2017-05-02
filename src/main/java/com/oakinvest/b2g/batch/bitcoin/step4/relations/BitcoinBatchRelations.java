@@ -4,6 +4,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
@@ -59,21 +60,32 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		addError("fixEmptyTransaction on transaction " + txid);
 		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
 
-		// We get the block where the transaction is.
-		BitcoinBlock originBlock = originTransaction.getBlock();
-
 		// We retrieve the original data from bitcoind.
-		BitcoindBlockData blockData = getBitcoindService().getBlockData(originBlock.getHeight());
+		BitcoindBlockData blockData = getBitcoindService().getBlockData(originTransaction.getBlock().getHeight());
 
-		// We delete the badly recorded transaction.
-		originBlock.getTransactions().remove(originTransaction);
-		getBlockRepository().save(originBlock);
-		getTransactionRepository().delete(originTransaction.getId());
+		// If we have the data of the origin transaction.
+		if (blockData.getRawTransactionResult(txid).isPresent()) {
+			// Treating all vin.
+			blockData.getRawTransactionResult(txid).get().getVin()
+					.forEach(vin -> {
+						BitcoinTransactionInput bti = getMapper().rawTransactionVIn(vin);
+						originTransaction.getInputs().add(bti);
+						bti.setTransaction(originTransaction);
+					});
 
-		// We save the transaction in the correct block.
-		BitcoinTransaction correctTransaction = getMapper().rawTransactionResultToBitcoinTransaction(blockData.getRawTransactionResult(txid).get());
-		correctTransaction.setBlock(originBlock);
-		getTransactionRepository().save(correctTransaction);
+			// Treating all vout.
+			blockData.getRawTransactionResult(txid).get().getVout()
+					.forEach(vout -> {
+						BitcoinTransactionOutput bto = getMapper().rawTransactionVout(vout);
+						originTransaction.getOutputs().add(bto);
+						bto.setTransaction(originTransaction);
+					});
+
+			// We save.
+			getTransactionRepository().save(originTransaction);
+		} else {
+			addError("fixEmptyTransaction failed because transaction " + txid + " was not found");
+		}
 	}
 
 	/**
@@ -130,7 +142,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 											if (originTransaction.getInputs().size() == 0 || originTransaction.getOutputs().size() == 0) {
 												String txid = originTransaction.getTxId();
 												fixEmptyTransaction(txid);
-												originTransaction = getTransactionRepository().findByTxId(txid);
 											}
 
 											// We retrieve the original transaction output.
