@@ -326,8 +326,7 @@ public class BitcoinImportTest {
 	public final void importBlockRelationsTest() throws Exception {
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final String transactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-		final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
-		BitcoinBlock b = bbr.findByHash(expectedHash);
+		BitcoinBlock b = bbr.findByHash(expectedBlockHash);
 		BitcoinTransaction t = btr.findByTxId(transactionHash);
 
 		// testing relationships between blocks and transactions.
@@ -340,7 +339,7 @@ public class BitcoinImportTest {
 		// Testing withdrawals.
 		final int a1NumberOfWithdrawals = 5;
 		assertEquals("Wrong number of inputs", a1NumberOfWithdrawals, a1.getWithdrawals().size());
-		// Fetch all data
+		// Fetch all data.
 		a1.getWithdrawals().forEach(i -> i = btir.findOne(i.getId()));
 
 		BitcoinTransactionInput bti1 = a1.getWithdrawals().stream().filter(i -> i.getTransaction().getTxId().equals("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16")).findFirst().get();
@@ -395,8 +394,6 @@ public class BitcoinImportTest {
 		BitcoinBlock b3 = bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT);
 		assertNotNull("B3 previous block is empty", b3.getPreviousBlock());
 		assertNull("B3 next block is not empty", b3.getNextBlock());
-
-
 	}
 
 }
