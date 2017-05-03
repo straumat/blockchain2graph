@@ -21,7 +21,6 @@ import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -123,12 +122,6 @@ public class BitcoinImportTest {
 	private BitcoindMock bitcoindMock;
 
 	/**
-	 * Neo4j session.
-	 */
-	@Autowired
-	private Session session;
-
-	/**
 	 * Importing the data.
 	 *
 	 * @throws Exception exception
@@ -162,6 +155,31 @@ public class BitcoinImportTest {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Test for no empty block.
+	 */
+	@Test
+	public void testNonEmptyData() {
+		// Test all blocks.
+		bbr.findAll().forEach(b -> {
+			if (b.getTransactions().size() == 0) {
+				fail("Block " + b.getHeight() + " is empty");
+			}
+		});
+		// Test all transactions.
+		btr.findAll().forEach(t -> {
+			if (t.getInputs().size() == 0 || t.getOutputs().size() == 0) {
+				fail("Transaction " + t.getTxId() + " is empty");
+			}
+		});
+		// Test all addresses.
+		bar.findAll().forEach(a -> {
+			if (a.getDeposits().size() == 0) {
+				fail("Address " + a.getAddress() + " deposits is empty");
+			}
+		});
 	}
 
 	/**

@@ -95,7 +95,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	protected final BitcoinBlock processBlock(final long blockHeight) {
 		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
-		// If we have the data
+		// If we have the data.
 		if (blockData != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Then, if the block doesn't exists, we map it to save it.
@@ -103,7 +103,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			if (block == null) {
 				block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
 			}
-
+			addLog("This block has " + block.getTransactions().size() + " transactions");
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;

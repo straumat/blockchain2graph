@@ -56,11 +56,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 *
 	 * @param txid transaction id
 	 */
-	public final void fixEmptyTransaction(final String txid) {
+	private void fixEmptyTransaction(final String txid) {
 		addError("fixEmptyTransaction on transaction " + txid);
 		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
 
-		// We retrieve the original data from bitcoind.
+		// We retrieve the original transaction data from bitcoind.
 		GetRawTransactionResult getRawTransactionResult = getBitcoindService().getRawTransaction(txid).getResult();
 
 		// Treating all vin.
@@ -106,6 +106,17 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	@Override
 	protected final BitcoinBlock processBlock(final long blockHeight) {
 		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
+		// -----------------------------------------------------------------------------------------------------
+		// Setting the relationship between blocks and transactions.
+		blockToTreat.getTx()
+				.stream()
+				.forEach(t -> {
+					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
+					bt.setBlock(blockToTreat);
+					blockToTreat.getTransactions().add(bt);
+				});
+		getBlockRepository().save(blockToTreat);
+		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
 		// We set the previous and the next block.

@@ -74,20 +74,21 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 		if (blockData != null) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
-			blockData.getTransactions()
-					.stream()
-					// Only if the transaction is not already in the database.
-					.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
-					// We save it in the database.
-					.forEach(t -> {
-						BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
-						block.getTransactions().add(transaction);
-						transaction.setBlock(block);
-						// TODO Maybe a single save on the block would be enough ?
-						getTransactionRepository().save(transaction);
-						addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
-					});
-
+			try {
+				blockData.getTransactions()
+						.stream()
+						// Only if the transaction is not already in the database.
+						.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
+						// We save it in the database.
+						.forEach(t -> {
+							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
+							getTransactionRepository().save(transaction);
+							addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
+						});
+			} catch (Exception e) {
+				addError("Error treating transaction : " + e.getMessage(), e);
+				return null;
+			}
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;
