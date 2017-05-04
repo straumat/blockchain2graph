@@ -103,7 +103,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			if (block == null) {
 				block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
 			}
-			addLog("This block has " + block.getTransactions().size() + " transactions");
+			addLog("This block has " + block.getTx().size() + " transaction(s)");
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;

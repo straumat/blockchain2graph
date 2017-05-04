@@ -21,6 +21,7 @@ import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +29,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -122,6 +124,12 @@ public class BitcoinImportTest {
 	private BitcoindMock bitcoindMock;
 
 	/**
+	 * Session.
+	 */
+	@Autowired
+	private Session session;
+
+	/**
 	 * Importing the data.
 	 *
 	 * @throws Exception exception
@@ -137,6 +145,14 @@ public class BitcoinImportTest {
 			setupIsDone = true;
 		}
 
+		// Indexes.
+		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
+		session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
+
+		// Resetting errors.
 		int iterations = 0;
 		final int maxIteration = 1000;
 		bitcoindMock.resetErrorCounters();

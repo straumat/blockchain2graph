@@ -75,6 +75,10 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
 			try {
+/*				addLog("=====> " + blockData.getTransactions().size());
+				if (blockData.getTransactions().size() == 0) {
+					System.exit(-1);
+				}*/
 				blockData.getTransactions()
 						.stream()
 						// Only if the transaction is not already in the database.
@@ -82,9 +86,15 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 						// We save it in the database.
 						.forEach(t -> {
 							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
+							//transaction.setBlock(block);
+							//block.getTransactions().add(transaction);
 							getTransactionRepository().save(transaction);
-							addLog(" - Transaction " + transaction.getTxId() + " created with id " + transaction.getId());
+							addLog(" - Transaction " + transaction.getTxId() + " added");
 						});
+/*				if (block.getTransactions().size() == 0) {
+					System.out.println("BOUH");
+					System.exit(-1);
+				}*/
 			} catch (Exception e) {
 				addError("Error treating transaction : " + e.getMessage(), e);
 				return null;

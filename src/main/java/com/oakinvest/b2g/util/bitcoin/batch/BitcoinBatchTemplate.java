@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -111,6 +112,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Execute the batch.
 	 */
+	@Transactional
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void execute() {
@@ -140,7 +142,7 @@ public abstract class BitcoinBatchTemplate {
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
 		} catch (Exception e) {
-			addError("An error occurred while processing block : " + e.getMessage(), e);
+			addError("An error occurred while processing block " + getBlockHeightToProcess() + " : " + e.getMessage(), e);
 		} finally {
 			getSession().clear();
 		}

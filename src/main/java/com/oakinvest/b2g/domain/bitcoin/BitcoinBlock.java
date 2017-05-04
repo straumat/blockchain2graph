@@ -31,19 +31,19 @@ public class BitcoinBlock {
 	/**
 	 * Transactions in the block.
 	 */
-	@Relationship(type = "TRANSACTIONS")
+	@Relationship(type = "TRANSACTIONS", direction = Relationship.INCOMING)
 	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
 	 * Previous block.
 	 */
-	@Relationship(type = "PREVIOUS_BLOCK", direction = "OUTGOING")
+	@Relationship(type = "PREVIOUS_BLOCK", direction = Relationship.OUTGOING)
 	private BitcoinBlock previousBlock;
 
 	/**
 	 * Next block.
 	 */
-	@Relationship(type = "NEXT_BLOCK", direction = "OUTGOING")
+	@Relationship(type = "NEXT_BLOCK", direction = Relationship.OUTGOING)
 	private BitcoinBlock nextBlock;
 
 	/**

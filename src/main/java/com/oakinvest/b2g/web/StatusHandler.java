@@ -153,10 +153,12 @@ public class StatusHandler extends TextWebSocketHandler {
 		try {
 			// We send the messages to all opened sessions. We delete the one that are closed
 			for (WebSocketSession session : this.sessions) {
-				if (session.isOpen()) {
-					session.sendMessage(new TextMessage(message));
-				} else {
-					sessions.remove(session);
+				synchronized (session) {
+					if (session.isOpen()) {
+						session.sendMessage(new TextMessage(message));
+					} else {
+						sessions.remove(session);
+					}
 				}
 			}
 		} catch (Exception e) {

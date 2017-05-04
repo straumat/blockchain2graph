@@ -131,6 +131,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
+		if (blockToTreat.getTransactions().size() == 0) {
+			addError("Block " + blockToTreat.getHeight() + " has no transactions");
+		}
 		blockToTreat.getTransactions()
 				.forEach(
 						t -> {
@@ -163,7 +166,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 														.forEach(a -> {
 															BitcoinAddress address = getAddressRepository().findByAddress(a);
 															address.getInputTransactions().add(vin);
-															getAddressRepository().save(address);
+															//getAddressRepository().save(address);
 														});
 												addLog("-- Done processing vin : " + vin);
 											} else {
@@ -179,12 +182,13 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							// For each Vout.
 							t.getOutputs()
 									.forEach(vout -> {
+										System.out.println("VOUT");
 										vout.getAddresses().stream()
 												.filter(Objects::nonNull)
 												.forEach(a -> {
 													BitcoinAddress address = getAddressRepository().findByAddress(a);
 													address.getOutputTransactions().add(vout);
-													getAddressRepository().save(address);
+													//getAddressRepository().save(address);
 												});
 										addLog("-- Done processing vout : " + vout);
 									});
