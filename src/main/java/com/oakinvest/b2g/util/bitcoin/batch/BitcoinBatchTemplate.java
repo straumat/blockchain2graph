@@ -12,7 +12,6 @@ import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -33,7 +32,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Pause to make when there is no block to process.
 	 */
-	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 5 * 1000;
+	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 3 * 1000;
 
 	/**
 	 * Mapper.
@@ -112,7 +111,6 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Execute the batch.
 	 */
-	@Transactional
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void execute() {

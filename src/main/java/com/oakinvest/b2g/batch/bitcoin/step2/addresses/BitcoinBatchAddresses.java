@@ -94,7 +94,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 			addresses.stream()
 					.distinct()
 					// If the address doesn't exists
-					.filter(address -> getAddressRepository().findByAddress(address) == null)
+					.filter(address -> !getAddressRepository().exists(address))
 					// We save all the addresses.
 					.forEach(address -> {
 						BitcoinAddress a = getMapper().toBitcoinAddress(address);

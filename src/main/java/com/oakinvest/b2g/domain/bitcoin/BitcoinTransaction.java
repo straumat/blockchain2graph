@@ -110,6 +110,11 @@ public class BitcoinTransaction {
 		return getOutputs().stream().filter(o -> o.getN() == n).findFirst();
 	}
 
+	@Override
+	public final String toString() {
+		return "BitcoinTransaction{" + "txId='" + txId + '}';
+	}
+
 	/**
 	 * Getter of blockHash.
 	 *

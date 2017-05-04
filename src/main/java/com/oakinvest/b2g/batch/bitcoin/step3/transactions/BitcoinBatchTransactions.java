@@ -78,7 +78,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				blockData.getTransactions()
 						.stream()
 						// Only if the transaction is not already in the database.
-						.filter(t -> getTransactionRepository().findByTxId(t.getTxid()) == null)
+						.filter(t -> !getTransactionRepository().exists(t.getTxid()))
 						// We save it in the database.
 						.forEach(t -> {
 							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
@@ -89,6 +89,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 				addError("Error treating transaction : " + e.getMessage(), e);
 				return null;
 			}
+
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;
