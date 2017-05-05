@@ -17,7 +17,7 @@ import org.mapstruct.Mappings;
  * Mapper from bitcoind to domain.
  * Created by straumat on 09/09/16.
  */
-@Mapper(uses = { BitcoindToDomainMapperPostProcessor.class })
+@Mapper
 public interface BitcoindToDomainMapper {
 
 	/**

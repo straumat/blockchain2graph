@@ -91,13 +91,13 @@ public class BitcoinTransaction {
 	/**
 	 * Inputs.
 	 */
-	@Relationship(type = "INPUTS", direction = Relationship.INCOMING)
+	@Relationship(type = "INPUTS", direction = Relationship.UNDIRECTED)
 	private Set<BitcoinTransactionInput> inputs = new HashSet<>();
 
 	/**
 	 * Outputs.
 	 */
-	@Relationship(type = "OUTPUTS", direction = Relationship.INCOMING)
+	@Relationship(type = "OUTPUTS", direction = Relationship.UNDIRECTED)
 	private Set<BitcoinTransactionOutput> outputs = new HashSet<>();
 
 	/**

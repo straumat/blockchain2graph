@@ -29,12 +29,6 @@ public class BitcoinTransactionOutput {
 	private Long id;
 
 	/**
-	 * Transaction.
-	 */
-	@Relationship(type = "OUTPUT_IN_TRANSACTION", direction = Relationship.INCOMING)
-	private BitcoinTransaction transaction;
-
-	/**
 	 * The value in BTC.
 	 */
 	@Property(name = "value")
@@ -91,24 +85,6 @@ public class BitcoinTransactionOutput {
 			}
 		}
 		return description.toString();
-	}
-
-	/**
-	 * Getter of transaction.
-	 *
-	 * @return transaction
-	 */
-	public final BitcoinTransaction getTransaction() {
-		return transaction;
-	}
-
-	/**
-	 * Setter of transaction.
-	 *
-	 * @param newTransaction the transaction to set
-	 */
-	public final void setTransaction(final BitcoinTransaction newTransaction) {
-		transaction = newTransaction;
 	}
 
 	/**

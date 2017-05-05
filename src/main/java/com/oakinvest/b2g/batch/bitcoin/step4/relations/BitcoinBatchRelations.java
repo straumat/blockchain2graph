@@ -68,7 +68,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				.forEach(vin -> {
 					BitcoinTransactionInput bti = getMapper().rawTransactionVIn(vin);
 					originTransaction.getInputs().add(bti);
-					bti.setTransaction(originTransaction);
 				});
 
 		// Treating all vout.
@@ -76,7 +75,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 				.forEach(vout -> {
 					BitcoinTransactionOutput bto = getMapper().rawTransactionVout(vout);
 					originTransaction.getOutputs().add(bto);
-					bto.setTransaction(originTransaction);
 				});
 
 		// We save.
