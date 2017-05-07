@@ -49,6 +49,11 @@ public class StatusHandler extends TextWebSocketHandler {
 	private static final String TYPE_ERROR = "error";
 
 	/**
+	 * Execution time.
+	 */
+	private static final String TYPE_AVERAGE_BLOCK_IMPORT_DURATION = "averageBlockImportDuration";
+
+	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
@@ -83,6 +88,11 @@ public class StatusHandler extends TextWebSocketHandler {
 	 */
 	private long lastImportedBlockCount = -1;
 
+	/**
+	 * Last average block import duration.
+	 */
+	private float lastAverageBlockImportDuration = -1;
+
 	@Override
 	public final void afterConnectionEstablished(final WebSocketSession newSession) {
 		this.sessions.add(newSession);
@@ -90,6 +100,9 @@ public class StatusHandler extends TextWebSocketHandler {
 		updateTotalBlockCount(lastTotalBlockCount);
 		updateError(lastErrorMessage);
 		updateLog(lastLogMessage);
+		if (lastAverageBlockImportDuration != -1) {
+			updateAverageBlockImportDuration(lastAverageBlockImportDuration);
+		}
 	}
 
 	/**
@@ -141,6 +154,19 @@ public class StatusHandler extends TextWebSocketHandler {
 		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
 		information.put(PARAM_MESSAGE_VALUE, errorMessage);
+		sendMessage(gson.toJson(information));
+	}
+
+	/**
+	 * Update execution time statistic.
+	 *
+	 * @param averageBlockImportDuration new execution time statistics.
+	 */
+	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
+		lastAverageBlockImportDuration = averageBlockImportDuration;
+		HashMap<Object, Object> information = new HashMap<>();
+		information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_IMPORT_DURATION);
+		information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
 		sendMessage(gson.toJson(information));
 	}
 

@@ -64,6 +64,11 @@ connection.onmessage = function (e) {
 			break;
 
 		// -------------------------------------------------------------------------------------------------------------
+		case "averageBlockImportDuration":
+			$("#executionTimeStatistic").text("Average block import duration : " + response.messageValue + " secs");
+			break;
+
+		// -------------------------------------------------------------------------------------------------------------
 		case "error":
 			$("#lastErrorMessage").text(response.messageValue);
 			break;

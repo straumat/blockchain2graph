@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.service;
 
+import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
 import com.oakinvest.b2g.web.StatusHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,11 @@ public class StatusServiceImplementation implements StatusService {
 	 * Status handler.
 	 */
 	private final StatusHandler statusHandler;
+
+	/**
+	 * Bitcoin statistic service.
+	 */
+	private final BitcoinStatisticService bitcoinStatisticService;
 
 	/**
 	 * Date format.
@@ -53,12 +59,20 @@ public class StatusServiceImplementation implements StatusService {
 	private long importedBlockCount = 0;
 
 	/**
+	 * Time between two block importation.
+	 */
+	private long timeSinceLastImport;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param newStatusHandler statusHandler
+	 * @param newStatusHandler           statusHandler
+	 * @param newBitcoinStatisticService bitcoinStatisticService
 	 */
-	public StatusServiceImplementation(final StatusHandler newStatusHandler) {
+	public StatusServiceImplementation(final StatusHandler newStatusHandler, final BitcoinStatisticService newBitcoinStatisticService) {
 		this.statusHandler = newStatusHandler;
+		this.bitcoinStatisticService = newBitcoinStatisticService;
+		timeSinceLastImport = System.currentTimeMillis();
 	}
 
 	/**
@@ -108,8 +122,16 @@ public class StatusServiceImplementation implements StatusService {
 	 */
 	@Override
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
-		importedBlockCount = newImportedBlockCount;
-		statusHandler.updateImportedBlockCount(importedBlockCount);
+		if (newImportedBlockCount != importedBlockCount) {
+			// Set statistic time and reset clock.
+			float averageBlockImportDuration = bitcoinStatisticService.addBlockImportDuration(System.currentTimeMillis() - timeSinceLastImport);
+			timeSinceLastImport = System.currentTimeMillis();
+			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
+
+			// Update status.
+			importedBlockCount = newImportedBlockCount;
+			statusHandler.updateImportedBlockCount(importedBlockCount);
+		}
 	}
 
 	/**
