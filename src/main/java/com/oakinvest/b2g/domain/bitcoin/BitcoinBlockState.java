@@ -22,6 +22,11 @@ public enum BitcoinBlockState {
 	TRANSACTIONS_IMPORTED,
 
 	/**
+	 * State 4 - Empty transaction fixed.
+	 */
+	EMPTY_TRANSACTIONS_FIXED,
+
+	/**
 	 * Final State - Imported.
 	 */
 	IMPORTED

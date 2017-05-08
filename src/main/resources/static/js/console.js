@@ -22,7 +22,6 @@ connection.onmessage = function (e) {
 
 		// -------------------------------------------------------------------------------------------------------------
 		case "totalBlockCount":
-			;
 			if (response.messageValue != -1) {
 				$("#totalBlockCount").text(response.messageValue.toLocaleString());
 			} else {

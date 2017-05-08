@@ -1,12 +1,10 @@
-package com.oakinvest.b2g.batch.bitcoin.step4.relations;
+package com.oakinvest.b2g.batch.bitcoin.step5.relations;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
@@ -52,43 +50,13 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Fix a random bug. Sometimes, transactions are saved without vin & vout.
-	 *
-	 * @param txid transaction id
-	 */
-	private void fixEmptyTransaction(final String txid) {
-		addError("fixEmptyTransaction on transaction " + txid);
-		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
-
-		// We retrieve the original transaction data from bitcoind.
-		GetRawTransactionResult getRawTransactionResult = getBitcoindService().getRawTransaction(txid).getResult();
-
-		// Treating all vin.
-		getRawTransactionResult.getVin()
-				.forEach(vin -> {
-					BitcoinTransactionInput bti = getMapper().rawTransactionVIn(vin);
-					originTransaction.getInputs().add(bti);
-				});
-
-		// Treating all vout.
-		getRawTransactionResult.getVout()
-				.forEach(vout -> {
-					BitcoinTransactionOutput bto = getMapper().rawTransactionVout(vout);
-					originTransaction.getOutputs().add(bto);
-				});
-
-		// We save.
-		getTransactionRepository().save(originTransaction);
-	}
-
-	/**
 	 * Return the block to process.
 	 *
 	 * @return block to process.
 	 */
 	@Override
 	protected final Long getBlockHeightToProcess() {
-		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
+		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.EMPTY_TRANSACTIONS_FIXED);
 		if (blockToTreat != null) {
 			return blockToTreat.getHeight();
 		} else {
@@ -145,11 +113,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 										// We retrieve the original transaction.
 										BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
 										if (originTransaction != null) {
-											// Random bug - empty inputs and outputs.
+											/*// Random bug - empty inputs and outputs.
 											if (originTransaction.getInputs().size() == 0 || originTransaction.getOutputs().size() == 0) {
 												String txid = originTransaction.getTxId();
 												fixEmptyTransaction(txid);
-											}
+											}*/
 
 											// We retrieve the original transaction output.
 											Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());

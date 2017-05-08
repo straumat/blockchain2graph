@@ -68,7 +68,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Neo4j session.
 	 */
-	private final Session session;
+	private Session session;
 
 	/**
 	 * time of the start of the batch.
@@ -143,6 +143,7 @@ public abstract class BitcoinBatchTemplate {
 			}
 		} catch (Exception e) {
 			addError("An error occurred while processing block " + getBlockHeightToProcess() + " : " + e.getMessage(), e);
+			session = new SessionFactory("com.oakinvest.b2g").openSession();
 		} finally {
 			getSession().clear();
 		}
