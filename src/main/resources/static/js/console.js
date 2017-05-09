@@ -9,8 +9,8 @@ function configure(url) {
 		let logs = $("#logs");
 
 		// We parse the response.
-		let r = {messageType: "", messageValue: ""};
-		response = jQuery.extend(r, JSON.parse(e.data));
+		let responseModel = {messageType: "", messageValue: ""};
+		response = jQuery.extend(responseModel, JSON.parse(e.data));
 
 		// Switch on message type.
 		switch (response.messageType) {
