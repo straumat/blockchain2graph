@@ -21,7 +21,7 @@ import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.EMPTY_TRANSACTI
  * Created by straumat on 08/05/17.
  */
 @Component
-public class BitcoinEmptyTransaction extends BitcoinBatchTemplate {
+public class BitcoinBatchEmptyTransaction extends BitcoinBatchTemplate {
 
 	/**
 	 * Constructor.
@@ -32,7 +32,7 @@ public class BitcoinEmptyTransaction extends BitcoinBatchTemplate {
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
 	 */
-	public BitcoinEmptyTransaction(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
+	public BitcoinBatchEmptyTransaction(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
 		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
 	}
 

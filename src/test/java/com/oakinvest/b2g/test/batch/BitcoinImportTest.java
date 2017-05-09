@@ -4,6 +4,7 @@ import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
 import com.oakinvest.b2g.batch.bitcoin.step3.transactions.BitcoinBatchTransactions;
+import com.oakinvest.b2g.batch.bitcoin.step4.fix.BitcoinBatchEmptyTransaction;
 import com.oakinvest.b2g.batch.bitcoin.step5.relations.BitcoinBatchRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -98,19 +99,25 @@ public class BitcoinImportTest {
 	 * Import batch.
 	 */
 	@Autowired
+	private BitcoinBatchEmptyTransaction batchEmptyTransaction;
+
+	/**
+	 * Import batch.
+	 */
+	@Autowired
 	private BitcoinBatchRelations batchRelations;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinTransactionOutputRepository btor;
+	private BitcoinTransactionOutputRepository bitcoinTransactionOutputRepository;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinTransactionInputRepository btir;
+	private BitcoinTransactionInputRepository bitcoinTransactionInputRepository;
 
 	/**
 	 * Bitcoind mock.
@@ -145,6 +152,7 @@ public class BitcoinImportTest {
 				batchBlocks.execute();
 				batchAddresses.execute();
 				batchTransactions.execute();
+				batchEmptyTransaction.execute();
 				batchRelations.execute();
 				iterations++;
 				if (iterations >= maxIteration) {
@@ -190,6 +198,7 @@ public class BitcoinImportTest {
 		try {
 			batchAddresses.execute();
 			batchTransactions.execute();
+			batchEmptyTransaction.execute();
 			batchRelations.execute();
 		} catch (Exception e) {
 			fail("Recovery after crash did not work " + e.getMessage());
@@ -382,7 +391,7 @@ public class BitcoinImportTest {
 		assertThat(address1).as("Address").isNotNull();
 
 		// Testing withdrawals.
-		address1.getWithdrawals().forEach(i -> i = btir.findOne(i.getId()));
+		address1.getWithdrawals().forEach(i -> i = bitcoinTransactionInputRepository.findOne(i.getId()));
 		assertThat(address1.getWithdrawals()).as("Withdrawals count").hasSize(a1NumberOfWithdrawals);
 		assertThat(address1.getWithdrawals())
 				.as("Withdrawals")
@@ -394,7 +403,7 @@ public class BitcoinImportTest {
 				.contains(28f);
 
 		// Testing deposits.
-		address1.getDeposits().forEach(o -> o = btor.findOne(o.getId()));
+		address1.getDeposits().forEach(o -> o = bitcoinTransactionOutputRepository.findOne(o.getId()));
 		assertThat(address1.getDeposits()).as("Deposits count").hasSize(a1NumberOfDeposits);
 		assertThat(address1.getDeposits())
 				.as("Deposits")
