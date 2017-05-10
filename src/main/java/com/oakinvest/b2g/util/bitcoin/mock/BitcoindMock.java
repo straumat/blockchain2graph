@@ -183,7 +183,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockData(..)) && args(blockHeight)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockData(..)) && args(blockHeight)")
 	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockData()");
 		BitcoindBlockData blockData;
@@ -209,7 +209,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockCount())")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockCount())")
 	public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
 		log.debug("Using cache for getBlockCount()");
 		GetBlockCountResponse getBlockCountResponse;
@@ -247,7 +247,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockHash(..)) && args(blockHeight)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
 	public final Object getBlockHash(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse getBlockHashResponse;
@@ -281,7 +281,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlock(..)) && args(blockHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
 	public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
 		GetBlockResponse getBlockResponse;
@@ -315,7 +315,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
 	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse getRawTransactionResponse;

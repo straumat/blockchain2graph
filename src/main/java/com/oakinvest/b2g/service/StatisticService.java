@@ -1,10 +1,10 @@
-package com.oakinvest.b2g.service.bitcoin;
+package com.oakinvest.b2g.service;
 
 /**
- * Bitcoin statistic service.
+ * Statistic service.
  * Created by straumat on 25/03/17.
  */
-public interface BitcoinStatisticService {
+public interface StatisticService {
 
 	/**
 	 * Add an execution time statistics and return the average execution time.

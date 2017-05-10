@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
+import com.oakinvest.b2g.service.StatisticService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class StatisticServiceTest {
 	 * Bitcoin statistic service.
 	 */
 	@Autowired
-	private BitcoinStatisticService bitcoinStatisticService;
+	private StatisticService statisticService;
 
 	/**
 	 * Test for addBlockImportDuration().
@@ -35,28 +35,28 @@ public class StatisticServiceTest {
 	@Test
 	public final void getStatisticsTest() {
 		// Simple test with two values
-		assertThat(bitcoinStatisticService.addBlockImportDuration(1000L))
+		assertThat(statisticService.addBlockImportDuration(1000L))
 				.as("First statistic")
 				.isEqualTo(1);
 
-		assertThat(bitcoinStatisticService.addBlockImportDuration(2000L))
+		assertThat(statisticService.addBlockImportDuration(2000L))
 				.as("Second statistic")
 				.isEqualTo(1.5F);
 
 		// Adding 100 values to see if the two previous number are disappearing.
 		for (int i = 0; i < 100; i++) {
-			bitcoinStatisticService.addBlockImportDuration(4000);
+			statisticService.addBlockImportDuration(4000);
 		}
-		assertThat(bitcoinStatisticService.addBlockImportDuration(4000L))
+		assertThat(statisticService.addBlockImportDuration(4000L))
 				.as("After 100 new statistics")
 				.isEqualTo(4F);
 
 		// Adding another value.
-		assertThat(bitcoinStatisticService.addBlockImportDuration(104000L))
+		assertThat(statisticService.addBlockImportDuration(104000L))
 				.as("Another one")
 				.isEqualTo(5F);
 
-		assertThat(bitcoinStatisticService.getAverageBlockImportDuration())
+		assertThat(statisticService.getAverageBlockImportDuration())
 				.as("Just getting value")
 				.isEqualTo(5F);
 	}

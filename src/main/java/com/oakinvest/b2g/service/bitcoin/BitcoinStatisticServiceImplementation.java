@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
+import com.oakinvest.b2g.service.StatisticService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -9,7 +10,7 @@ import java.util.LinkedList;
  * Created by straumat on 25/03/17.
  */
 @Service
-public class BitcoinStatisticServiceImplementation implements BitcoinStatisticService {
+public class BitcoinStatisticServiceImplementation implements StatisticService {
 
 	/**
 	 * How many milli seconds in one second.

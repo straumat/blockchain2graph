@@ -6,7 +6,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;

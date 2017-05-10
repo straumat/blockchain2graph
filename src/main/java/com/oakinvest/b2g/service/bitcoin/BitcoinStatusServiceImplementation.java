@@ -1,6 +1,7 @@
-package com.oakinvest.b2g.service;
+package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
+import com.oakinvest.b2g.service.StatisticService;
+import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.web.StatusHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.Calendar;
  * Created by straumat on 28/10/16.
  */
 @Service
-public class StatusServiceImplementation implements StatusService {
+public class BitcoinStatusServiceImplementation implements StatusService {
 
 	/**
 	 * Logger.
@@ -30,7 +31,7 @@ public class StatusServiceImplementation implements StatusService {
 	/**
 	 * Bitcoin statistic service.
 	 */
-	private final BitcoinStatisticService bitcoinStatisticService;
+	private final StatisticService statisticService;
 
 	/**
 	 * Date format.
@@ -67,11 +68,11 @@ public class StatusServiceImplementation implements StatusService {
 	 * Constructor.
 	 *
 	 * @param newStatusHandler           statusHandler
-	 * @param newBitcoinStatisticService bitcoinStatisticService
+	 * @param newStatisticService bitcoinStatisticService
 	 */
-	public StatusServiceImplementation(final StatusHandler newStatusHandler, final BitcoinStatisticService newBitcoinStatisticService) {
+	public BitcoinStatusServiceImplementation(final StatusHandler newStatusHandler, final StatisticService newStatisticService) {
 		this.statusHandler = newStatusHandler;
-		this.bitcoinStatisticService = newBitcoinStatisticService;
+		this.statisticService = newStatisticService;
 		timeSinceLastImport = System.currentTimeMillis();
 	}
 
@@ -124,7 +125,7 @@ public class StatusServiceImplementation implements StatusService {
 	public final void setImportedBlockCount(final long newImportedBlockCount) {
 		if (newImportedBlockCount != importedBlockCount) {
 			// Set statistic time and reset clock.
-			float averageBlockImportDuration = bitcoinStatisticService.addBlockImportDuration(System.currentTimeMillis() - timeSinceLastImport);
+			float averageBlockImportDuration = statisticService.addBlockImportDuration(System.currentTimeMillis() - timeSinceLastImport);
 			timeSinceLastImport = System.currentTimeMillis();
 			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
 
