@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -25,6 +26,7 @@ public class BitcoinBlock {
 	/**
 	 * Block hash.
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "hash")
 	private String hash;
 
@@ -49,6 +51,7 @@ public class BitcoinBlock {
 	/**
 	 * Block height.
 	 */
+	@Index
 	@Property(name = "height")
 	private long height;
 
@@ -127,6 +130,7 @@ public class BitcoinBlock {
 	/**
 	 * B2G block state.
 	 */
+	@Index
 	@Property(name = "state")
 	private BitcoinBlockState state = BitcoinBlockState.BLOCK_IMPORTED;
 

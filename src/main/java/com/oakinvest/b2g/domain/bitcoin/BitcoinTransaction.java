@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -43,6 +44,7 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction hash (differs from txId for witness transactions).
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "hash")
 	private String hash;
 

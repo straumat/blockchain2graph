@@ -28,6 +28,8 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -382,9 +384,10 @@ public class BitcoinImportTest {
 		assertThat(address1).as("Address").isNotNull();
 
 		// Testing withdrawals.
-		address1.getWithdrawals().forEach(i -> i = bitcoinTransactionInputRepository.findOne(i.getId()));
-		assertThat(address1.getWithdrawals()).as("Withdrawals count").hasSize(a1NumberOfWithdrawals);
-		assertThat(address1.getWithdrawals())
+		List<BitcoinTransactionInput> withdrawals = new LinkedList<>();
+		address1.getWithdrawals().forEach(i -> withdrawals.add(bitcoinTransactionInputRepository.findOne(i.getId())));
+		assertThat(withdrawals).as("Withdrawals count").hasSize(a1NumberOfWithdrawals);
+		assertThat(withdrawals)
 				.as("Withdrawals")
 				.extracting("transactionOutput.value")
 				.contains(50f)

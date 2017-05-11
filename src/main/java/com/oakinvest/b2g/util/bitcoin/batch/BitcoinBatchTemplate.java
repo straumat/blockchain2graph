@@ -41,17 +41,17 @@ public abstract class BitcoinBatchTemplate {
 	private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
 	/**
-	 * BitcoinBlock repository.
+	 * Bitcoin block repository.
 	 */
 	private final BitcoinBlockRepository blockRepository;
 
 	/**
-	 * BitcoinBlock repository.
+	 * Bitcoin address repository.
 	 */
 	private final BitcoinAddressRepository addressRepository;
 
 	/**
-	 * Bitcoin block repository.
+	 * Bitcoin transaction repository.
 	 */
 	private final BitcoinTransactionRepository transactionRepository;
 

@@ -114,6 +114,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 										// We retrieve the original transaction.
 										BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
 										if (originTransaction != null) {
+
 											// Random bug - empty inputs and outputs.
 											if (originTransaction.getInputs().size() == 0 || originTransaction.getOutputs().size() == 0) {
 												String txid = originTransaction.getTxId();
@@ -133,7 +134,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 														.forEach(a -> {
 															BitcoinAddress address = getAddressRepository().findByAddress(a);
 															address.getInputTransactions().add(vin);
-															//getAddressRepository().save(address);
+															getAddressRepository().save(address);
 														});
 												addLog("-- Done processing vin : " + vin);
 											} else {
@@ -149,13 +150,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 							// For each Vout.
 							t.getOutputs()
 									.forEach(vout -> {
-										System.out.println("VOUT");
 										vout.getAddresses().stream()
 												.filter(Objects::nonNull)
 												.forEach(a -> {
 													BitcoinAddress address = getAddressRepository().findByAddress(a);
 													address.getOutputTransactions().add(vout);
-													//getAddressRepository().save(address);
+													getAddressRepository().save(address);
 												});
 										addLog("-- Done processing vout : " + vout);
 									});

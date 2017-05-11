@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -24,19 +25,20 @@ public class BitcoinAddress {
 	/**
 	 * Bitcoin address.
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "address")
 	private String address;
 
 	/**
 	 * Input transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_INPUTS")
+	@Relationship(type = "IN_TRANSACTION_INPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<>();
 
 	/**
 	 * Output transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_OUTPUTS")
+	@Relationship(type = "IN_TRANSACTION_OUTPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
 
 	/**
