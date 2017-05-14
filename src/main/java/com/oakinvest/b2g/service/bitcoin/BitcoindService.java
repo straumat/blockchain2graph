@@ -6,6 +6,8 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountRes
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
 
+import java.util.Optional;
+
 /**
  * Provides an easy access to bitcoind server data.
  * Created by straumat on 25/08/16.
@@ -19,7 +21,7 @@ public interface BitcoindService {
 	 * @param blockHeight block number
 	 * @return block data or null if a problem occurred.
 	 */
-	BitcoindBlockData getBlockData(long blockHeight);
+	Optional<BitcoindBlockData> getBlockData(long blockHeight);
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.

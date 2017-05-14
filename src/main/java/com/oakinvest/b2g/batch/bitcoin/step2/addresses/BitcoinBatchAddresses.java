@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Bitcoin import addresses batch.
@@ -73,14 +74,14 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
-		if (blockData != null) {
+		if (blockData.isPresent()) {
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
-			blockData.getTransactions()
+			blockData.get().getTransactions()
 					.forEach(grt -> grt.getVout()
 							.stream()
 							.filter(Objects::nonNull)

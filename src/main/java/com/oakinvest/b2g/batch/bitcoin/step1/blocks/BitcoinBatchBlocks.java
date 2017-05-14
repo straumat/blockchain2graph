@@ -12,6 +12,8 @@ import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * Bitcoin import blocks batch.
  * Created by straumat on 27/02/17.
@@ -93,17 +95,27 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
-		if (blockData != null) {
+		if (blockData.isPresent()) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Then, if the block doesn't exists, we map it to save it.
-			BitcoinBlock block = getBlockRepository().findByHash(blockData.getBlock().getHash());
+			BitcoinBlock block = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
 			if (block == null) {
-				block = getMapper().blockResultToBitcoinBlock(blockData.getBlock());
+				block = getMapper().blockResultToBitcoinBlock(blockData.get().getBlock());
 			}
 			addLog("This block has " + block.getTx().size() + " transaction(s)");
+
+			// -----------------------------------------------------------------------------------------------------
+			// We set the previous and the next block.
+			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
+			block.setPreviousBlock(previousBlock);
+			if (previousBlock != null) {
+				previousBlock.setNextBlock(block);
+				getBlockRepository().save(previousBlock);
+			}
+
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return block;

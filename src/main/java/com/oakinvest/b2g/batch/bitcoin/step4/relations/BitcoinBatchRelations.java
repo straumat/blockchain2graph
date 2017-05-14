@@ -86,17 +86,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
-		// We set the previous and the next block.
-		BitcoinBlock previousBlock = getBlockRepository().findByHash(blockToTreat.getPreviousBlockHash());
-		blockToTreat.setPreviousBlock(previousBlock);
-		if (previousBlock != null) {
-			previousBlock.setNextBlock(blockToTreat);
-			getBlockRepository().save(previousBlock);
-		}
-		getBlockRepository().save(blockToTreat);
-		getSession().clear();
-
-		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
 		if (blockToTreat.getTransactions().size() == 0) {
 			addError("Block " + blockToTreat.getHeight() + " has no transactions");
@@ -181,7 +170,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 * @param txid transaction id
 	 */
 	private void fixEmptyTransaction(final String txid) {
-		addLog("fixEmptyTransaction on transaction " + txid);
+		addError("fixEmptyTransaction on transaction " + txid);
 		BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(txid);
 
 		// We retrieve the original transaction data from bitcoind.

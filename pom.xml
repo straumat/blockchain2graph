@@ -75,11 +75,10 @@
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 
 		<!-- Java lib -->
-		<neo4j-embedded-driver.version>2.1.1</neo4j-embedded-driver.version>
+		<neo4j-embedded-driver.version>2.1.2</neo4j-embedded-driver.version>
 		<neo4j-bolt-driver.version>2.0.6</neo4j-bolt-driver.version>
 		<mapstruct.version>1.1.0.Final</mapstruct.version>
 		<gson.version>2.8.0</gson.version>
-		<caffeine.version>2.4.0</caffeine.version>
 		<assertj.version>3.6.2</assertj.version>
 
 		<!-- webjars -->
@@ -148,16 +147,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-neo4j</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-http-driver</artifactId>
+			<version>${neo4j-embedded-driver.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-embedded-driver</artifactId>
 			<version>${neo4j-embedded-driver.version}</version>
-			<scope>provided</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-bolt-driver</artifactId>
 			<version>${neo4j-bolt-driver.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Java utils -->
@@ -170,11 +176,6 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>${gson.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!-- Webjar locator -->

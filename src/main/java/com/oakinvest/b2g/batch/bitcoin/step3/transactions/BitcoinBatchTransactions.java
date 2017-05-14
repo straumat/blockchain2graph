@@ -12,6 +12,8 @@ import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * Bitcoin import transactions batch.
  * Created by straumat on 27/02/17.
@@ -68,14 +70,14 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	@Override
 	protected final BitcoinBlock processBlock(final long blockHeight) {
 		BitcoinBlock block = getBlockRepository().findByHeight(blockHeight);
-		BitcoindBlockData blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
-		if (blockData != null) {
+		if (blockData.isPresent()) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Creating all the transactions.
 			try {
-				blockData.getTransactions()
+				blockData.get().getTransactions()
 						.stream()
 						// Only if the transaction is not already in the database.
 						.filter(t -> !getTransactionRepository().exists(t.getTxid()))

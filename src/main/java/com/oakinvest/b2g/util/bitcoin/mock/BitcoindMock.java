@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -186,17 +187,17 @@ public class BitcoindMock {
 	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockData(..)) && args(blockHeight)")
 	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockData()");
-		BitcoindBlockData blockData;
+		Optional<BitcoindBlockData> blockData;
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		File response = new File(getBlockDataDirectory.getPath() + "/response-" + blockHeight + ".ser");
 		if (!response.exists()) {
-			blockData = (BitcoindBlockData) pjp.proceed(new Object[]{ blockHeight });
+			blockData = (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
 			if (blockData != null) {
-				writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", blockData);
+				writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", blockData.get());
 			}
 		} else {
-			blockData = (BitcoindBlockData) loadObjectFromFile(response);
+			blockData = Optional.of((BitcoindBlockData) loadObjectFromFile(response));
 		}
 
 		return blockData;
