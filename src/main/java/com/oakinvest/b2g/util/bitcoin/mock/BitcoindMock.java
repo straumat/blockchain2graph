@@ -193,9 +193,7 @@ public class BitcoindMock {
 		File response = new File(getBlockDataDirectory.getPath() + "/response-" + blockHeight + ".ser");
 		if (!response.exists()) {
 			blockData = (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
-			if (blockData != null) {
-				writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", blockData.get());
-			}
+			blockData.ifPresent(bitcoindBlockData -> writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", bitcoindBlockData));
 		} else {
 			blockData = Optional.of((BitcoindBlockData) loadObjectFromFile(response));
 		}

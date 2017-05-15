@@ -335,33 +335,32 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public void updateBuffer() {
-		// We are going to work on the buffer only if getBlockData has already been called.
-		// Without it, we don't know where to start so we don't start :)
-		if (lastBlockHeightRequested != 0) {
-			long temp = lastBlockHeightRequested;
+		try {
+			// We are going to work on the buffer only if getBlockData has already been called.
+			// Without it, we don't know where to start so we don't start :)
+			if (lastBlockHeightRequested != 0) {
+				if (buffer.isEmpty()) {
+					Optional<BitcoindBlockData> blockData = getBlockData(lastBlockHeightRequested + BUFFER_SIZE);
+					blockData.ifPresent(buffer::add);
+				}
 
-			if (buffer.isEmpty()) {
-				Optional<BitcoindBlockData> blockData = getBlockData(lastBlockHeightRequested + BUFFER_SIZE);
-				if (blockData.isPresent()) {
-					buffer.add(blockData.get());
+				// From the last block in the buffer to thr new
+				for (long i = buffer.last().getBlock().getHeight() + 1; i < lastBlockHeightRequested + BUFFER_SIZE; i++) {
+					Optional<BitcoindBlockData> blockData = getBlockDataFromBitcoind(i);
+					if (blockData.isPresent()) {
+						buffer.add(blockData.get());
+					} else {
+						return;
+					}
+				}
+
+				// We remove the old entries until we go back to BUFFER_SIZE.
+				while (buffer.size() > BUFFER_SIZE + BUFFER_HISTORY) {
+					buffer.pollFirst();
 				}
 			}
-
-			// From the last block in the buffer to thr new
-			for (long i = buffer.last().getBlock().getHeight() + 1; i < lastBlockHeightRequested + BUFFER_SIZE; i++) {
-				Optional<BitcoindBlockData> blockData = getBlockDataFromBitcoind(i);
-				if (blockData.isPresent()) {
-					buffer.add(blockData.get());
-				} else {
-					return;
-				}
-			}
-
-			// We remove the old entries until we go back to BUFFER_SIZE.
-			while (buffer.size() > BUFFER_SIZE + BUFFER_HISTORY) {
-				buffer.pollFirst();
-			}
-
+		} catch (Exception e) {
+			log.info("Error updating cache : " + e.getMessage(), e);
 		}
 	}
 
