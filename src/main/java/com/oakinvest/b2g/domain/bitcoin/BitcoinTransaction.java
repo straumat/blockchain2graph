@@ -32,6 +32,7 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction id (same as provided).
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "txid")
 	private String txId;
 
@@ -44,7 +45,6 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction hash (differs from txId for witness transactions).
 	 */
-	@Index(unique = true, primary = true)
 	@Property(name = "hash")
 	private String hash;
 
