@@ -1,5 +1,6 @@
-package com.oakinvest.b2g.util.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.mock;
 
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
@@ -19,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -72,6 +73,11 @@ public class BitcoindMock {
 	private static final String BITCOIND_CACHE_DIRECTORY = "target/cache";
 
 	/**
+	 * getblockdata directory.
+	 */
+	private static final String GET_BLOCK_DATA_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getblockdata";
+
+	/**
 	 * getblock directory.
 	 */
 	private static final String GET_BLOCK_CACHE_DIRECTORY = BITCOIND_CACHE_DIRECTORY + "/getblock";
@@ -95,6 +101,11 @@ public class BitcoindMock {
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(BitcoindMock.class);
+
+	/**
+	 * getblockdata directory.
+	 */
+	private final File getBlockDataDirectory = new File(GET_BLOCK_DATA_CACHE_DIRECTORY);
 
 	/**
 	 * getblock directory.
@@ -139,6 +150,9 @@ public class BitcoindMock {
 		if (!bitcoindDirectory.exists() && !bitcoindDirectory.mkdir()) {
 			log.error("Impossible to create " + bitcoindDirectory.getAbsolutePath());
 		}
+		if (!getBlockDataDirectory.exists() && !getBlockDataDirectory.mkdir()) {
+			log.error("Impossible to create " + getBlockDataDirectory.getAbsolutePath());
+		}
 		if (!getBlockDirectory.exists() && !getBlockDirectory.mkdir()) {
 			log.error("Impossible to create " + getBlockDirectory.getAbsolutePath());
 		}
@@ -163,24 +177,49 @@ public class BitcoindMock {
 	}
 
 	/**
-	 * getBlockCount() advice.
+	 * getBlockData() advice.
 	 *
-	 * @param pjp process.
+	 * @param pjp         loadInCache.
+	 * @param blockHeight block height.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockCount())")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockData(..)) && args(blockHeight)")
+	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
+		log.debug("Using cache for getBlockData()");
+		Optional<BitcoindBlockData> blockData;
+
+		// if the file doesn't exists, we call the bitcoind server and save the file.
+		File response = new File(getBlockDataDirectory.getPath() + "/response-" + blockHeight + ".ser");
+		if (!response.exists()) {
+			blockData = (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
+			blockData.ifPresent(bitcoindBlockData -> writeObjectToFile(getBlockDataDirectory.getPath(), "response-" + blockHeight + ".ser", bitcoindBlockData));
+		} else {
+			blockData = Optional.of((BitcoindBlockData) loadObjectFromFile(response));
+		}
+
+		return blockData;
+	}
+
+	/**
+	 * getBlockCount() advice.
+	 *
+	 * @param pjp loadInCache.
+	 * @return value.
+	 * @throws Throwable exception.
+	 */
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockCount())")
 	public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
 		log.debug("Using cache for getBlockCount()");
-		GetBlockCountResponse gbcr;
+		GetBlockCountResponse getBlockCountResponse;
 		File response = new File(getBlockCountDirectory.getPath() + "/response.ser");
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		if (!response.exists()) {
-			gbcr = (GetBlockCountResponse) pjp.proceed(new Object[]{ });
-			writeObjectToFile(getBlockCountDirectory.getPath(), "response.ser", gbcr);
+			getBlockCountResponse = (GetBlockCountResponse) pjp.proceed(new Object[]{ });
+			writeObjectToFile(getBlockCountDirectory.getPath(), "response.ser", getBlockCountResponse);
 		} else {
-			gbcr = (GetBlockCountResponse) loadObjectFromFile(response);
+			getBlockCountResponse = (GetBlockCountResponse) loadObjectFromFile(response);
 		}
 
 		// We will generate an error on a random basis.
@@ -192,25 +231,25 @@ public class BitcoindMock {
 			BitcoindResponseError error = new BitcoindResponseError();
 			error.setCode(0);
 			error.setMessage("Mock error on getBlockCount");
-			gbcr.setResult(0);
-			gbcr.setError(error);
+			getBlockCountResponse.setResult(0);
+			getBlockCountResponse.setError(error);
 		}
 
-		return gbcr;
+		return getBlockCountResponse;
 	}
 
 	/**
 	 * getBlockHash() advice.
 	 *
-	 * @param pjp         process.
+	 * @param pjp         loadInCache.
 	 * @param blockHeight block height.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlockHash(..)) && args(blockHeight)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
 	public final Object getBlockHash(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
-		GetBlockHashResponse gbhr;
+		GetBlockHashResponse getBlockHashResponse;
 
 		// blockHeightValue is the value to get.
 		long blockHeightValue = blockHeight;
@@ -224,27 +263,27 @@ public class BitcoindMock {
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeightValue + ".ser");
 		if (!response.exists()) {
-			gbhr = (GetBlockHashResponse) pjp.proceed(new Object[]{ blockHeightValue });
-			writeObjectToFile(getBlockHashDirectory.getPath(), "response-" + blockHeightValue + ".ser", gbhr);
+			getBlockHashResponse = (GetBlockHashResponse) pjp.proceed(new Object[]{ blockHeightValue });
+			writeObjectToFile(getBlockHashDirectory.getPath(), "response-" + blockHeightValue + ".ser", getBlockHashResponse);
 		} else {
-			gbhr = (GetBlockHashResponse) loadObjectFromFile(response);
+			getBlockHashResponse = (GetBlockHashResponse) loadObjectFromFile(response);
 		}
 
-		return gbhr;
+		return getBlockHashResponse;
 	}
 
 	/**
 	 * getBlock() advice.
 	 *
-	 * @param pjp       process.
+	 * @param pjp       loadInCache.
 	 * @param blockHash block hash.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getBlock(..)) && args(blockHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
 	public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
-		GetBlockResponse gbr;
+		GetBlockResponse getBlockResponse;
 
 		// blockHash is the value to get.
 		String blockHashValue = blockHash;
@@ -258,27 +297,27 @@ public class BitcoindMock {
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		File response = new File(getBlockDirectory.getPath() + "/response-" + blockHashValue + ".ser");
 		if (!response.exists()) {
-			gbr = (GetBlockResponse) pjp.proceed(new Object[]{ blockHashValue });
-			writeObjectToFile(getBlockDirectory.getPath(), "response-" + blockHashValue + ".ser", gbr);
+			getBlockResponse = (GetBlockResponse) pjp.proceed(new Object[]{ blockHashValue });
+			writeObjectToFile(getBlockDirectory.getPath(), "response-" + blockHashValue + ".ser", getBlockResponse);
 		} else {
-			gbr = (GetBlockResponse) loadObjectFromFile(response);
+			getBlockResponse = (GetBlockResponse) loadObjectFromFile(response);
 		}
 
-		return gbr;
+		return getBlockResponse;
 	}
 
 	/**
 	 * getRawTransaction() advice.
 	 *
-	 * @param pjp             process.
+	 * @param pjp             loadInCache.
 	 * @param transactionHash transaction hash.
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.ext.bitcoin.bitcoind.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
 	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
-		GetRawTransactionResponse grtr;
+		GetRawTransactionResponse getRawTransactionResponse;
 
 		// blockHash is the value to get.
 		String transactionHashValue = transactionHash;
@@ -288,17 +327,16 @@ public class BitcoindMock {
 			transactionHashValue = NON_EXISTING_TRANSACTION_HASH;
 			getRawTransactionErrors++;
 		}
-
 		File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser");
 		// if the file doesn't exists, we call the bitcoind server and save the file.
 		if (!response.exists()) {
-			grtr = (GetRawTransactionResponse) pjp.proceed(new Object[]{ transactionHashValue });
-			writeObjectToFile(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser", grtr);
+			getRawTransactionResponse = (GetRawTransactionResponse) pjp.proceed(new Object[]{ transactionHashValue });
+			writeObjectToFile(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser", getRawTransactionResponse);
 		} else {
-			grtr = (GetRawTransactionResponse) loadObjectFromFile(response);
+			getRawTransactionResponse = (GetRawTransactionResponse) loadObjectFromFile(response);
 		}
 
-		return grtr;
+		return getRawTransactionResponse;
 	}
 
 	/**
@@ -316,7 +354,7 @@ public class BitcoindMock {
 			out.close();
 			fileOut.close();
 		} catch (IOException e) {
-			log.error("Error (IOException) : " + e);
+			log.error("Error (IOException) : " + e.getMessage(), e);
 		}
 	}
 
@@ -335,9 +373,9 @@ public class BitcoindMock {
 			in.close();
 			fileIn.close();
 		} catch (IOException e) {
-			log.error("Error (IOException) : " + Arrays.toString(e.getStackTrace()));
+			log.error("Error (IOException) : " + e.getMessage(), e);
 		} catch (ClassNotFoundException c) {
-			log.error("Error (ClassNotFoundException) : " + Arrays.toString(c.getStackTrace()));
+			log.error("Error (ClassNotFoundException) : " + c.getMessage(), c);
 		}
 		return o;
 	}

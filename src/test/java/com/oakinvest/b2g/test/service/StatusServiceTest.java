@@ -10,8 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the status service.
@@ -36,35 +35,47 @@ public class StatusServiceTest {
 	public final void getTotalBlockCountTest() {
 		final long expectedTotalBlockCount = 150;
 		statusService.setTotalBlockCount(expectedTotalBlockCount);
-		assertEquals("Wrong total block count", expectedTotalBlockCount, statusService.getTotalBlockCount());
+		// Test.
+		assertThat(statusService.getTotalBlockCount())
+				.as("Check total block count")
+				.isEqualTo(expectedTotalBlockCount);
 	}
 
 	/**
 	 * Test for getImportedBlockCount().
 	 */
 	@Test
-	public final void getLastBlockIntegratedTest() {
+	public final void getImportedBlockCountTest() {
 		final long expectedImportedBlockCount = 140;
 		statusService.setImportedBlockCount(expectedImportedBlockCount);
-		assertEquals("Wrong last block integrated", expectedImportedBlockCount, statusService.getImportedBlockCount());
+		// Test.
+		assertThat(statusService.getImportedBlockCount())
+				.as("Check imported block count")
+				.isEqualTo(expectedImportedBlockCount);
 	}
 
 	/**
-	 * Test for getLastLogMessage().
+	 * Test for getLastLog().
 	 */
 	@Test
-	public final void getLastLogMessageTest() {
+	public final void getLastLogTest() {
 		statusService.addLog("Hi !");
-		assertTrue("Wrong last log message after setting it", statusService.getLastLogMessage().contains("Hi !"));
+		// Test.
+		assertThat(statusService.getLastLog())
+				.as("Check last log")
+				.endsWith("Hi !");
 	}
 
 	/**
-	 * Test for getLastErrorMessage().
+	 * Test for getLastError().
 	 */
 	@Test
-	public final void getLastErrorMessageTest() {
-		statusService.addError("Error !");
-		assertTrue("Wrong last error message after setting it", statusService.getLastErrorMessage().contains("Error !"));
+	public final void getLastErrorTest() {
+		statusService.addError("Error !", null);
+		// Test.
+		assertThat(statusService.getLastError())
+				.as("Check last error")
+				.endsWith("Error !");
 	}
 
 }

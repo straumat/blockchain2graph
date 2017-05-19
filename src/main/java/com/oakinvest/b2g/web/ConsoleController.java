@@ -15,7 +15,7 @@ public class ConsoleController {
 	/**
 	 * Console view.
 	 */
-	public static final String CONSOLE_VIEW = "console";
+	private static final String CONSOLE_VIEW = "console";
 
 	/**
 	 * Server address.

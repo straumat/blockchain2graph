@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -31,6 +32,7 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction id (same as provided).
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "txid")
 	private String txId;
 
@@ -91,13 +93,13 @@ public class BitcoinTransaction {
 	/**
 	 * Inputs.
 	 */
-	@Relationship(type = "INPUTS")
+	@Relationship(type = "INPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionInput> inputs = new HashSet<>();
 
 	/**
 	 * Outputs.
 	 */
-	@Relationship(type = "OUTPUTS")
+	@Relationship(type = "OUTPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionOutput> outputs = new HashSet<>();
 
 	/**
@@ -108,6 +110,11 @@ public class BitcoinTransaction {
 	 */
 	public final Optional<BitcoinTransactionOutput> getOutputByIndex(final int n) {
 		return getOutputs().stream().filter(o -> o.getN() == n).findFirst();
+	}
+
+	@Override
+	public final String toString() {
+		return "BitcoinTransaction{" + "txId='" + txId + '}';
 	}
 
 	/**

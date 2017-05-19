@@ -17,16 +17,16 @@ import java.util.Set;
 public class BitcoinTransactionOutput {
 
 	/**
+	 * Addresses.
+	 */
+	@Relationship(type = "FOR_ADDRESS")
+	private final Set<BitcoinAddress> bitcoinAddresses = new HashSet<>();
+
+	/**
 	 * ID.
 	 */
 	@GraphId
 	private Long id;
-
-	/**
-	 * Transaction.
-	 */
-	@Relationship(type = "OUTPUT_IN_TRANSACTION")
-	private BitcoinTransaction transaction;
 
 	/**
 	 * The value in BTC.
@@ -62,19 +62,13 @@ public class BitcoinTransactionOutput {
 	 * The type, eg 'pubkeyhash'.
 	 */
 	@Property(name = "type")
-	private String scriptPubKeyType;
+	private BitcoinTransactionOutputType scriptPubKeyType;
 
 	/**
 	 * Addresses.
 	 */
 	@Property(name = "addresses")
 	private Set<String> addresses = new HashSet<>();
-
-	/**
-	 * Addresses.
-	 */
-	@Relationship(type = "FOR_ADDRESS")
-	private Set<BitcoinAddress> bitcoinAddresses = new HashSet<>();
 
 	@Override
 	public final String toString() {
@@ -91,24 +85,6 @@ public class BitcoinTransactionOutput {
 			}
 		}
 		return description.toString();
-	}
-
-	/**
-	 * Getter of transaction.
-	 *
-	 * @return transaction
-	 */
-	public final BitcoinTransaction getTransaction() {
-		return transaction;
-	}
-
-	/**
-	 * Setter of transaction.
-	 *
-	 * @param newTransaction the transaction to set
-	 */
-	public final void setTransaction(final BitcoinTransaction newTransaction) {
-		transaction = newTransaction;
 	}
 
 	/**
@@ -134,7 +110,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @return scriptPubKeyType
 	 */
-	public final String getScriptPubKeyType() {
+	public final BitcoinTransactionOutputType getScriptPubKeyType() {
 		return scriptPubKeyType;
 	}
 
@@ -143,7 +119,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @param newScriptPubKeyType the scriptPubKeyType to set
 	 */
-	public final void setScriptPubKeyType(final String newScriptPubKeyType) {
+	public final void setScriptPubKeyType(final BitcoinTransactionOutputType newScriptPubKeyType) {
 		scriptPubKeyType = newScriptPubKeyType;
 	}
 
@@ -172,15 +148,6 @@ public class BitcoinTransactionOutput {
 	 */
 	public final Set<BitcoinAddress> getBitcoinAddresses() {
 		return bitcoinAddresses;
-	}
-
-	/**
-	 * Setter of bitcoinAddresses.
-	 *
-	 * @param newBitcoinAddresses the bitcoinAddresses to set
-	 */
-	public final void setBitcoinAddresses(final Set<BitcoinAddress> newBitcoinAddresses) {
-		bitcoinAddresses = newBitcoinAddresses;
 	}
 
 	/**

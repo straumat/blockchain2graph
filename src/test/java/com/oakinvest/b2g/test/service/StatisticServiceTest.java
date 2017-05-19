@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.service.bitcoin.BitcoinStatisticService;
+import com.oakinvest.b2g.service.StatisticService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * Statistic service test.
@@ -27,25 +27,38 @@ public class StatisticServiceTest {
 	 * Bitcoin statistic service.
 	 */
 	@Autowired
-	private BitcoinStatisticService bitcoinStatisticService;
+	private StatisticService statisticService;
 
 	/**
 	 * Test for addBlockImportDuration().
 	 */
 	@Test
 	public final void getStatisticsTest() {
-		// Simple test with twi values
-		assertEquals(1f, bitcoinStatisticService.addBlockImportDuration(1f), 0f);
-		assertEquals(1.5f, bitcoinStatisticService.addBlockImportDuration(2f), 0f);
+		// Simple test with two values
+		assertThat(statisticService.addBlockImportDuration(1000L))
+				.as("First statistic")
+				.isEqualTo(1);
+
+		assertThat(statisticService.addBlockImportDuration(2000L))
+				.as("Second statistic")
+				.isEqualTo(1.5F);
 
 		// Adding 100 values to see if the two previous number are disappearing.
 		for (int i = 0; i < 100; i++) {
-			bitcoinStatisticService.addBlockImportDuration(4);
+			statisticService.addBlockImportDuration(4000);
 		}
-		assertEquals(4f, bitcoinStatisticService.addBlockImportDuration(4f), 0f);
+		assertThat(statisticService.addBlockImportDuration(4000L))
+				.as("After 100 new statistics")
+				.isEqualTo(4F);
 
 		// Adding another value.
-		assertEquals(5f, bitcoinStatisticService.addBlockImportDuration(104f), 0f);
+		assertThat(statisticService.addBlockImportDuration(104000L))
+				.as("Another one")
+				.isEqualTo(5F);
+
+		assertThat(statisticService.getAverageBlockImportDuration())
+				.as("Just getting value")
+				.isEqualTo(5F);
 	}
 
 }

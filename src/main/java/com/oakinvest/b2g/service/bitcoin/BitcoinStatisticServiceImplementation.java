@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.web.StatusHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.oakinvest.b2g.service.StatisticService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -11,7 +10,12 @@ import java.util.LinkedList;
  * Created by straumat on 25/03/17.
  */
 @Service
-public class BitcoinStatisticServiceImplementation implements BitcoinStatisticService {
+public class BitcoinStatisticServiceImplementation implements StatisticService {
+
+	/**
+	 * How many milli seconds in one second.
+	 */
+	private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
 	/**
 	 * How many digits for the statistics.
@@ -26,7 +30,7 @@ public class BitcoinStatisticServiceImplementation implements BitcoinStatisticSe
 	/**
 	 * Execution time statistics.
 	 */
-	private final LinkedList<Float> blockImportDurations = new LinkedList<>();
+	private final LinkedList<Long> blockImportDurations = new LinkedList<>();
 
 	/**
 	 * Executed time statistic.
@@ -34,19 +38,13 @@ public class BitcoinStatisticServiceImplementation implements BitcoinStatisticSe
 	private float averageBlockImportDuration = 0;
 
 	/**
-	 * Status handler.
-	 */
-	@Autowired
-	private StatusHandler statusHandler;
-
-	/**
-	 * Add an execution time statistics and return the execution mean.
+	 * Add an execution time statistics and return the average execution time.
 	 *
-	 * @param newDuration new execution time.
-	 * @return mean time
+	 * @param newDuration new duration in milliseconds.
+	 * @return average time in seconds
 	 */
 	@Override
-	public final float addBlockImportDuration(final float newDuration) {
+	public final float addBlockImportDuration(final long newDuration) {
 		// If we reach the maximum number of execution times, we remove the first one.
 		while (blockImportDurations.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
 			blockImportDurations.removeFirst();
@@ -55,15 +53,14 @@ public class BitcoinStatisticServiceImplementation implements BitcoinStatisticSe
 		// We add the statistics.
 		blockImportDurations.add(newDuration);
 
-		// Calculate the mean.
+		// Calculate the average duration.
 		if (blockImportDurations.size() > 0) {
 			int n;
 			float totalAmountOfTime = 0;
 			for (n = 0; n < blockImportDurations.size(); n++) {
 				totalAmountOfTime += blockImportDurations.get(n);
 			}
-			averageBlockImportDuration = (float) Math.round((totalAmountOfTime / n) * ROUND_DIGITS) / ROUND_DIGITS;
-			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
+			averageBlockImportDuration = (float) Math.round(((totalAmountOfTime / n) / MILLISECONDS_IN_SECONDS) * ROUND_DIGITS) / ROUND_DIGITS;
 			return averageBlockImportDuration;
 		} else {
 			// Nothing to make a statistic, we return 0.
@@ -72,9 +69,9 @@ public class BitcoinStatisticServiceImplementation implements BitcoinStatisticSe
 	}
 
 	/**
-	 * Return execution time mean.
+	 * Return average execution time.
 	 *
-	 * @return execution time mean
+	 * @return average execution
 	 */
 	@Override
 	public final float getAverageBlockImportDuration() {

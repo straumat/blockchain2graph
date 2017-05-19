@@ -19,15 +19,9 @@ public class BitcoinTransactionInput {
 	private Long id;
 
 	/**
-	 * Transaction.
-	 */
-	@Relationship(type = "INPUT_IN_TRANSACTION")
-	private BitcoinTransaction transaction;
-
-	/**
 	 * Transaction output.
 	 */
-	@Relationship(type = "TRANSACTION_OUTPUT")
+	@Relationship(type = "TRANSACTION_OUTPUT", direction = Relationship.INCOMING)
 	private BitcoinTransactionOutput transactionOutput;
 
 	/**
@@ -139,6 +133,15 @@ public class BitcoinTransactionInput {
 	}
 
 	/**
+	 * Returns true if it's a coinbase transaction.
+	 *
+	 * @return coinbase.
+	 */
+	public final boolean isCoinbase() {
+		return getCoinbase() != null;
+	}
+
+	/**
 	 * Setter of coinbase.
 	 *
 	 * @param newCoinbase the coinbase to set
@@ -217,24 +220,6 @@ public class BitcoinTransactionInput {
 	 */
 	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
-	}
-
-	/**
-	 * Getter of transaction.
-	 *
-	 * @return transaction
-	 */
-	public final BitcoinTransaction getTransaction() {
-		return transaction;
-	}
-
-	/**
-	 * Setter of transaction.
-	 *
-	 * @param newTransaction the transaction to set
-	 */
-	public final void setTransaction(final BitcoinTransaction newTransaction) {
-		transaction = newTransaction;
 	}
 
 }

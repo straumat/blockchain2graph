@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Repository;
 public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress> {
 
 	/**
-	 * Returns the number of blocks.
+	 * Returns 1 if the address is already in the database.
 	 *
-	 * @return count
+	 * @param address address
+	 * @return 1 if the address exists.
 	 */
-	long count();
+	@Query("MATCH (a:BitcoinAddress) WHERE a.address = {0} return count(*) = 1")
+	boolean exists(String address);
 
 	/**
 	 * Find an address.

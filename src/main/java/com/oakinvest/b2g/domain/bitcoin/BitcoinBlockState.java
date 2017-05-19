@@ -22,11 +22,6 @@ public enum BitcoinBlockState {
 	TRANSACTIONS_IMPORTED,
 
 	/**
-	 * State 4 - Relations imported.
-	 */
-	RELATIONS_IMPORTED,
-
-	/**
 	 * Final State - Imported.
 	 */
 	IMPORTED

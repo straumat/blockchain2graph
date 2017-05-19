@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -25,30 +26,32 @@ public class BitcoinBlock {
 	/**
 	 * Block hash.
 	 */
+	@Index(unique = true, primary = true)
 	@Property(name = "hash")
 	private String hash;
 
 	/**
 	 * Transactions in the block.
 	 */
-	@Relationship(type = "TRANSACTIONS")
+	@Relationship(type = "TRANSACTIONS", direction = Relationship.INCOMING)
 	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
 	 * Previous block.
 	 */
-	@Relationship(type = "PREVIOUS_BLOCK", direction = "OUTGOING")
+	@Relationship(type = "PREVIOUS_BLOCK", direction = Relationship.OUTGOING)
 	private BitcoinBlock previousBlock;
 
 	/**
 	 * Next block.
 	 */
-	@Relationship(type = "NEXT_BLOCK", direction = "OUTGOING")
+	@Relationship(type = "NEXT_BLOCK", direction = Relationship.OUTGOING)
 	private BitcoinBlock nextBlock;
 
 	/**
 	 * Block height.
 	 */
+	@Index
 	@Property(name = "height")
 	private long height;
 
@@ -127,6 +130,7 @@ public class BitcoinBlock {
 	/**
 	 * B2G block state.
 	 */
+	@Index
 	@Property(name = "state")
 	private BitcoinBlockState state = BitcoinBlockState.BLOCK_IMPORTED;
 
@@ -210,6 +214,15 @@ public class BitcoinBlock {
 	 */
 	public final void setHeight(final long newIndex) {
 		height = newIndex;
+	}
+
+	/**
+	 * Returns the block height in a formatted way.
+	 *
+	 * @return formatted block height
+	 */
+	public final String getFormattedHeight() {
+		return String.format("%09d", getHeight());
 	}
 
 	/**
@@ -448,7 +461,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété previousBlock.
+	 * Getter previousBlock.
 	 *
 	 * @return previousBlock
 	 */
@@ -457,7 +470,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété previousBlock.
+	 * Setter previousBlock.
 	 *
 	 * @param newPreviousBlock the previousBlock to set
 	 */
@@ -466,7 +479,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Getter de la propriété nextBlock.
+	 * Getter nextBlock.
 	 *
 	 * @return nextBlock
 	 */
@@ -475,7 +488,7 @@ public class BitcoinBlock {
 	}
 
 	/**
-	 * Setter de la propriété nextBlock.
+	 * Setter nextBlock.
 	 *
 	 * @param newNextBlock the nextBlock to set
 	 */
