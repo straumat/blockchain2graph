@@ -67,7 +67,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	/**
 	 * Constructor.
 	 *
-	 * @param newStatusHandler    statusHandler
+	 * @param newStatusHandler           statusHandler
 	 * @param newStatisticService bitcoinStatisticService
 	 */
 	public BitcoinStatusServiceImplementation(final StatusHandler newStatusHandler, final StatisticService newStatisticService) {
