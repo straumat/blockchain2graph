@@ -33,7 +33,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Pause to make when there is no block to process.
 	 */
-	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 3 * 1000;
+	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
 	/**
 	 * Mapper.

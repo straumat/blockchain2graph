@@ -398,4 +398,5 @@ public class BitcoinTransaction {
 	public final int hashCode() {
 		return getTxId().hashCode();
 	}
+
 }

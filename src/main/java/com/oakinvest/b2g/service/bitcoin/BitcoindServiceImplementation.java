@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockDataComparator;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
@@ -14,6 +13,7 @@ import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.TreeSet;
 
 /**
  * Default implementation of bitcoind call.
@@ -76,11 +75,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private static final int BUFFER_SIZE = 100;
 
 	/**
-	 * How many block to read ahead.
-	 */
-	private static final int BUFFER_HISTORY = 20;
-
-	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
@@ -91,9 +85,9 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private final RestTemplate restTemplate;
 
 	/**
-	 * Buffer content.
+	 * Last block loaded in cache.
 	 */
-	private final TreeSet<BitcoindBlockData> buffer;
+	private long lastBlockLoadedInCache = 0;
 
 	/**
 	 * Last block height that was requested.
@@ -130,28 +124,19 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	public BitcoindServiceImplementation() {
 		restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
-		buffer = new TreeSet<>(new BitcoindBlockDataComparator());
 	}
 
 	/**
-	 * Get block data from bitcoind server.
+	 * Returns the block data from bitcoind.
 	 *
 	 * @param blockHeight block height
-	 * @return block data
+	 * @return block data or null if a problem occurred.
 	 */
+	@Override
+	@Cacheable(cacheNames = "blockData", unless = "#result != null")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	private Optional<BitcoindBlockData> getBlockDataFromBuffer(final long blockHeight) {
-		return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-	}
-
-	/**
-	 * Get block data from buffer.
-	 *
-	 * @param blockHeight block height
-	 * @return block data
-	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	private Optional<BitcoindBlockData> getBlockDataFromBitcoind(final long blockHeight) {
+	public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+		lastBlockHeightRequested = blockHeight;
 		try {
 			// ---------------------------------------------------------------------------------------------------------
 			// We retrieve the block hash...
@@ -197,27 +182,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		} catch (Exception e) {
 			log.error("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
 			return Optional.empty();
-		}
-	}
-
-	/**
-	 * Returns the block data from bitcoind.
-	 *
-	 * @param blockHeight block height
-	 * @return block data or null if a problem occurred.
-	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
-		// We save the last requested block height.
-		lastBlockHeightRequested = blockHeight;
-
-		Optional<BitcoindBlockData> result = getBlockDataFromBuffer(blockHeight);
-		if (result.isPresent()) {
-			// If the block is in the buffer, we return it.
-			return result;
-		} else {
-			// Else we get it directly from bitcoind.
-			return getBlockDataFromBitcoind(blockHeight);
 		}
 	}
 
@@ -333,34 +297,23 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * Update buffer.
 	 */
 	@Scheduled(fixedDelay = 1)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	@SuppressWarnings("checkstyle:designforextension")
 	public void updateBuffer() {
 		try {
-			// We are going to work on the buffer only if getBlockData has already been called.
-			// Without it, we don't know where to start so we don't start :)
-			if (lastBlockHeightRequested != 0) {
-				if (buffer.isEmpty()) {
-					Optional<BitcoindBlockData> blockData = getBlockData(lastBlockHeightRequested + BUFFER_SIZE);
-					blockData.ifPresent(buffer::add);
-				}
+			List<Long> blocksToLoad = new LinkedList<>();
 
-				// From the last block in the buffer to thr new
-				for (long i = buffer.last().getBlock().getHeight() + 1; i < lastBlockHeightRequested + BUFFER_SIZE; i++) {
-					Optional<BitcoindBlockData> blockData = getBlockDataFromBitcoind(i);
-					if (blockData.isPresent()) {
-						buffer.add(blockData.get());
-					} else {
-						return;
-					}
-				}
-
-				// We remove the old entries until we go back to BUFFER_SIZE.
-				while (buffer.size() > BUFFER_SIZE + BUFFER_HISTORY) {
-					buffer.pollFirst();
-				}
+			// Creating the list of blocks to load in cache.
+			Long i = lastBlockLoadedInCache + 1;
+			while (i < lastBlockHeightRequested + BUFFER_SIZE) {
+				blocksToLoad.add(i);
+				i++;
 			}
+
+			// Loading all the blocks.
+			blocksToLoad.parallelStream().forEach(blockHeight -> getBlockData(blockHeight));
+			lastBlockLoadedInCache = i;
 		} catch (Exception e) {
-			log.info("Error updating cache : " + e.getMessage(), e);
+			log.error("Error in updateBuffer " + e.getMessage(), e);
 		}
 	}
 
