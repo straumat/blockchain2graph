@@ -24,11 +24,6 @@ public interface BitcoindService {
 	Optional<BitcoindBlockData> getBlockData(long blockHeight);
 
 	/**
-	 * Update buffer - scheduled.
-	 */
-	void updateBuffer();
-
-	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.
 	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"jsonrpc":"1.0","method":"getblockcount","params":[]}' -H 'content-type:text/plain;' -X POST http://5.196.65.205:8332
 	 *

@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -70,11 +69,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private static final String PARAMETER_PARAMS = "params";
 
 	/**
-	 * Buffer size.
-	 */
-	private static final int BUFFER_SIZE = 100;
-
-	/**
 	 * Logger.
 	 */
 	private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
@@ -83,16 +77,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * Rest template.
 	 */
 	private final RestTemplate restTemplate;
-
-	/**
-	 * Last block loaded in cache.
-	 */
-	private long lastBlockLoadedInCache = 0;
-
-	/**
-	 * Last block height that was requested.
-	 */
-	private long lastBlockHeightRequested = 0;
 
 	/**
 	 * Bitcoind hostname.
@@ -133,10 +117,9 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 * @return block data or null if a problem occurred.
 	 */
 	@Override
-	@Cacheable(cacheNames = "blockData", unless = "#result != null")
+	@Cacheable(cacheNames = "blockData", unless = "#result == null")
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
-		lastBlockHeightRequested = blockHeight;
 		try {
 			// ---------------------------------------------------------------------------------------------------------
 			// We retrieve the block hash...
@@ -291,30 +274,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		HttpHeaders h = new HttpHeaders();
 		h.set("Authorization", authHeader);
 		return h;
-	}
-
-	/**
-	 * Update buffer.
-	 */
-	@Scheduled(fixedDelay = 1)
-	@SuppressWarnings("checkstyle:designforextension")
-	public void updateBuffer() {
-		try {
-			List<Long> blocksToLoad = new LinkedList<>();
-
-			// Creating the list of blocks to load in cache.
-			Long i = lastBlockLoadedInCache + 1;
-			while (i < lastBlockHeightRequested + BUFFER_SIZE) {
-				blocksToLoad.add(i);
-				i++;
-			}
-
-			// Loading all the blocks.
-			blocksToLoad.parallelStream().forEach(blockHeight -> getBlockData(blockHeight));
-			lastBlockLoadedInCache = i;
-		} catch (Exception e) {
-			log.error("Error in updateBuffer " + e.getMessage(), e);
-		}
 	}
 
 }
