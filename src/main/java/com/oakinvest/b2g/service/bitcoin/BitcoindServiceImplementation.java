@@ -21,10 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of bitcoind call.
@@ -134,18 +137,24 @@ public class BitcoindServiceImplementation implements BitcoindService {
 					// Then we retrieve the transactions data...
 					final List<GetRawTransactionResult> transactions = new LinkedList<>();
 					try {
-						blockResponse.getResult().getTx()
-								.stream()
-								.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
-								.forEach(t -> {
-									GetRawTransactionResponse r = getRawTransaction(t);
-									if (r.getError() == null) {
-										transactions.add(getRawTransaction(t).getResult());
-									} else {
-										log.error("Error getting transaction n°" + t + " informations : " + r.getError());
-										throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
-									}
-								});
+                        // We use multi thread to retrieve all the transactions informations.
+                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
+                        blockResponse.getResult().getTx()
+                                .parallelStream()
+                                .filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+                                .forEach(t -> {
+                                    GetRawTransactionResponse r = getRawTransaction(t);
+                                    if (r.getError() == null) {
+                                        tempTransactionList.put(t, getRawTransaction(t).getResult());
+                                    } else {
+                                        log.error("Error getting transaction n°" + t + " informations : " + r.getError());
+                                        throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
+                                    }
+                                });
+
+                        // Then we add it to the list in the right order.
+                        blockResponse.getResult().getTx().stream().forEach(t -> transactions.add(tempTransactionList.get(t)));
+
 					} catch (Exception e) {
 						return Optional.empty();
 					}

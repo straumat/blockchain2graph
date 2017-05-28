@@ -67,6 +67,12 @@ public class BitcoindCacheTest {
         assertThat(cacheManager.getCache("blockData").get(blockInCache))
                 .as("Checking that the cache is NOT empty")
                 .isNotNull();
+        assertThat(cacheManager.getCache("blockData").get(blockInCache-10))
+                .as("Checking that the cache is NOT empty")
+                .isNotNull();
+        assertThat(cacheManager.getCache("blockData").get(blockInCache+10))
+                .as("Checking that the cache is NOT empty")
+                .isNotNull();
     }
 
 }

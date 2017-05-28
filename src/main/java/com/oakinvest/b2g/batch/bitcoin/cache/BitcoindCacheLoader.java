@@ -26,6 +26,11 @@ public class BitcoindCacheLoader {
     private static final int BUFFER_SIZE = 100;
 
     /**
+     * Cache load range.
+     */
+    private static final int CACHE_LOAD_RANGE = 10;
+
+    /**
      * Bitcoin block repository.
      */
     private final BitcoinBlockRepository blockRepository;
@@ -52,8 +57,10 @@ public class BitcoindCacheLoader {
     @SuppressWarnings("checkstyle:designforextension")
     public void updateBuffer() {
         try {
-            long blockToLoadInCache = blockRepository.count() + BUFFER_SIZE;
-            bitcoindService.getBlockData(blockToLoadInCache);
+            long blockToCache = blockRepository.count() + BUFFER_SIZE;
+            for (long i = blockToCache - CACHE_LOAD_RANGE; i <= blockToCache + CACHE_LOAD_RANGE; i++) {
+                bitcoindService.getBlockData(i);
+            }
         } catch (Exception e) {
             log.error("Error in updateBuffer " + e.getMessage(), e);
         }
