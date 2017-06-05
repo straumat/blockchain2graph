@@ -184,8 +184,8 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockData(..)) && args(blockHeight)")
-	public final Object getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockDataFromBitcoind(..)) && args(blockHeight)")
+	public final Object getBlockDataFromBitcoind(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockData()");
 		Optional<BitcoindBlockData> blockData;
 

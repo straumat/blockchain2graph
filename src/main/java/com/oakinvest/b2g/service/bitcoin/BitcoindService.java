@@ -7,6 +7,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashRespo
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
 
 import java.util.Optional;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Provides an easy access to bitcoind server data.
@@ -22,6 +23,34 @@ public interface BitcoindService {
 	 * @return block data or null if a problem occurred.
 	 */
 	Optional<BitcoindBlockData> getBlockData(long blockHeight);
+
+    /**
+     * Get block data from buffer.
+     *
+     * @param blockHeight block height
+     * @return block data
+     */
+    Optional<BitcoindBlockData> getBlockDataFromBuffer(long blockHeight);
+
+    /**
+     * Get block data from buffer.
+     *
+     * @param blockHeight block height
+     * @return block data
+     */
+    Optional<BitcoindBlockData> getBlockDataFromBitcoind(long blockHeight);
+
+
+    /**
+     * Get the buffer.
+     * @return buffer
+     */
+    ConcurrentSkipListSet<BitcoindBlockData> getBuffer();
+
+    /**
+     * Clean the buffer to be the size of BUFFER_SIZE.
+     */
+    void cleanBuffer();
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.

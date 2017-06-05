@@ -5,6 +5,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
@@ -17,13 +18,38 @@ import org.mapstruct.Mappings;
  * Mapper from bitcoind to domain.
  * Created by straumat on 09/09/16.
  */
-@Mapper
+@Mapper(uses = BitcoindToDomainPostMapper.class)
 public interface BitcoindToDomainMapper {
+
+    /**
+     * Maps block data to block.
+     *
+     * @param bitcoindBlockData bitcoind block data
+     * @return domain block
+     */
+    @Mappings({
+            @Mapping(source = "block.hash", target = "hash"),
+            @Mapping(source = "block.size", target = "size"),
+            @Mapping(source = "block.height", target = "height"),
+            @Mapping(source = "block.version", target = "version"),
+            @Mapping(source = "block.merkleroot", target = "merkleRoot"),
+            @Mapping(source = "block.time", target = "time"),
+            @Mapping(source = "block.mediantime", target = "medianTime"),
+            @Mapping(source = "block.nonce", target = "nonce"),
+            @Mapping(source = "block.bits", target = "bits"),
+            @Mapping(source = "block.tx", target = "tx"),
+            @Mapping(source = "block.difficulty", target = "difficulty"),
+            @Mapping(source = "block.chainwork", target = "chainWork"),
+            @Mapping(source = "block.previousblockhash", target = "previousBlockHash"),
+            @Mapping(source = "block.nextblockhash", target = "nextBlockHash"),
+            @Mapping(source = "transactions", target = "transactions")
+    })
+    BitcoinBlock blockDataToBitcoinBlock(BitcoindBlockData bitcoindBlockData);
 
 	/**
 	 * Maps block result to block.
 	 *
-	 * @param gbr getblock result
+	 * @param getBlockResult getblock result
 	 * @return domain block
 	 */
 	@Mappings({
@@ -42,7 +68,7 @@ public interface BitcoindToDomainMapper {
 			@Mapping(source = "previousblockhash", target = "previousBlockHash"),
 			@Mapping(source = "nextblockhash", target = "nextBlockHash")
 	})
-	BitcoinBlock blockResultToBitcoinBlock(GetBlockResult gbr);
+	BitcoinBlock blockResultToBitcoinBlock(GetBlockResult getBlockResult);
 
 	/**
 	 * Maps a raw transaction to a transaction.

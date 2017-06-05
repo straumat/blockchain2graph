@@ -55,7 +55,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-	protected final Long getBlockHeightToProcess() {
+    protected final Long getBlockHeightToProcess() {
 		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
 		if (blockToTreat != null) {
 			return blockToTreat.getHeight();

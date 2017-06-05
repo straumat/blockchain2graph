@@ -69,4 +69,22 @@ public class BitcoindBlockData implements Serializable {
 		}
 	}
 
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BitcoindBlockData)) {
+            return false;
+        }
+
+        BitcoindBlockData that = (BitcoindBlockData) o;
+        return getBlock().getHeight() == that.getBlock().getHeight();
+    }
+
+    @Override
+    public final int hashCode() {
+        return getBlock().hashCode();
+    }
+
 }

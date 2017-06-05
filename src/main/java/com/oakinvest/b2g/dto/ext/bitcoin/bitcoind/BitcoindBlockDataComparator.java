@@ -23,8 +23,12 @@ public class BitcoindBlockDataComparator implements Comparator {
 	 */
 	@Override
 	public final int compare(final Object o1, final Object o2) {
-		BitcoindBlockData blockData1 = (BitcoindBlockData) o1;
-		BitcoindBlockData blockData2 = (BitcoindBlockData) o2;
-		return (int) (blockData1.getBlock().getHeight() - blockData2.getBlock().getHeight());
+	    if (o1 != null && o2 != null) {
+            BitcoindBlockData blockData1 = (BitcoindBlockData) o1;
+            BitcoindBlockData blockData2 = (BitcoindBlockData) o2;
+            return (int) (blockData1.getBlock().getHeight() - blockData2.getBlock().getHeight());
+        } else {
+	        return 0;
+        }
 	}
 }

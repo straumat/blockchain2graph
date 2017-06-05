@@ -10,6 +10,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,6 +21,12 @@ import java.util.Optional;
  */
 @Component
 public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
+
+    /**
+     * Bitcoind cache loader.
+     */
+    @Autowired
+    private BitcoindCacheLoader bitcoindCacheLoader;
 
 	/**
 	 * Log prefix.
@@ -53,7 +60,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-	protected final Long getBlockHeightToProcess() {
+    protected final Long getBlockHeightToProcess() {
 		// We retrieve the next block to process according to the database.
 		Long blockToProcess = getBlockRepository().count() + 1;
 
@@ -70,8 +77,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 				// We return the block to process.
 				if (blockToProcess <= totalBlockCount) {
+				    // We load in cache
+                    bitcoindCacheLoader.loadCache(blockToProcess);
+
 					// If there is still block after this one, we continue.
-					return blockToProcess;
+                    return blockToProcess;
 				} else {
 					return null;
 				}
