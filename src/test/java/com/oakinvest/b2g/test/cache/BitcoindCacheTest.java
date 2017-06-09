@@ -4,7 +4,6 @@ import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindServiceImplementation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
-import static com.oakinvest.b2g.configuration.CacheConfiguration.BITCOIND_BUFFER_SIZE;
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -67,20 +66,20 @@ public class BitcoindCacheTest {
     }
 
     /**
-     * Testing cache is working.
+     * Testing cache is working on getBlockData().
       */
     @Test
-    public final void blockDataCacheTest() throws InterruptedException {
+    public final void getBlockDataCacheTest() throws InterruptedException {
         // We add 101 blocks. The last block loaded is 10.
         while (bitcoinBlockRepository.count() < BUFFER_SIZE+1) {
             batchBlocks.execute();
         }
-        Thread.sleep(5000);
+        Thread.sleep(30000);
 
         // lastBlockSaved is database has an height of 101.
         long lastBlockSaved = bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight();
         assertThat(lastBlockSaved)
-                .as("lastBlockSaved is database has an height of 101")
+                .as("Checking that lastBlockSaved is database has an height of 101")
                 .isEqualTo(101);
 
         // Checking that the next block to read 102 is in cache.
@@ -101,9 +100,9 @@ public class BitcoindCacheTest {
             batchBlocks.execute();
         }
         assertThat(bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight())
-                .as("The last block in database is 201")
+                .as("Checking that the last block in database is 201")
                 .isEqualTo(201);
-        Thread.sleep(5000);
+        Thread.sleep(30000);
 
         // We check that 202 is waiting in the buffer
         // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.
@@ -124,9 +123,9 @@ public class BitcoindCacheTest {
                 .isFalse();
 
         // We call the cleaner.
-        bitcoindService.cleanBuffer();
+        bitcoindService.truncateBuffer();
         assertThat(bitcoindService.getBuffer().size())
-                .as("The buffer is not equals to BUFFER_SIZE (" + BUFFER_SIZE+ ")")
+                .as("Checking that the buffer is equals to BUFFER_SIZE (" + BUFFER_SIZE+ ")")
                 .isEqualTo(BUFFER_SIZE);
     }
 
