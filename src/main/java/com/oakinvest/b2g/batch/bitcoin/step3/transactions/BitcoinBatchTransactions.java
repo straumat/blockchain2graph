@@ -70,7 +70,7 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 	@Override
 	protected final BitcoinBlock processBlock(final long blockHeight) {
 		BitcoinBlock block = getBlockRepository().findByHeight(blockHeight);
-		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getCachedBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData.isPresent()) {

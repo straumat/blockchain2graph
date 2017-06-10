@@ -4,7 +4,7 @@ import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import static com.oakinvest.b2g.configuration.CacheConfiguration.BITCOIND_BUFFER_SIZE;
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
 
 /**
  * Bitcoind cache loader.
@@ -33,7 +33,7 @@ public class BitcoindCacheLoader {
     @Async
     @SuppressWarnings("checkstyle:designforextension")
     public void loadCache(final long lastBlockLoaded) {
-        bitcoindService.getBlockData(lastBlockLoaded + BITCOIND_BUFFER_SIZE);
+        bitcoindService.getCachedBlockData(lastBlockLoaded + BITCOIND_BUFFER_SIZE);
     }
 
 }

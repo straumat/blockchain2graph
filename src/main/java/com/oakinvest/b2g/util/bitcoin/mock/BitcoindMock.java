@@ -177,7 +177,7 @@ public class BitcoindMock {
 	}
 
 	/**
-	 * getBlockData() advice.
+	 * getCachedBlockData() advice.
 	 *
 	 * @param pjp         loadInCache.
 	 * @param blockHeight block height.
@@ -186,7 +186,7 @@ public class BitcoindMock {
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockDataFromBitcoind(..)) && args(blockHeight)")
 	public final Object getBlockDataFromBitcoind(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
-		log.debug("Using cache for getBlockData()");
+		log.debug("Using cache for getCachedBlockData()");
 		Optional<BitcoindBlockData> blockData;
 
 		// if the file doesn't exists, we call the bitcoind server and save the file.

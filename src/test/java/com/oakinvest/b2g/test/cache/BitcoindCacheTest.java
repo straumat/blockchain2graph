@@ -74,7 +74,7 @@ public class BitcoindCacheTest {
         while (bitcoinBlockRepository.count() < BUFFER_SIZE+1) {
             batchBlocks.execute();
         }
-        Thread.sleep(30000);
+        Thread.sleep(60000);
 
         // lastBlockSaved is database has an height of 101.
         long lastBlockSaved = bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight();
@@ -102,7 +102,7 @@ public class BitcoindCacheTest {
         assertThat(bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight())
                 .as("Checking that the last block in database is 201")
                 .isEqualTo(201);
-        Thread.sleep(30000);
+        Thread.sleep(60000);
 
         // We check that 202 is waiting in the buffer
         // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.

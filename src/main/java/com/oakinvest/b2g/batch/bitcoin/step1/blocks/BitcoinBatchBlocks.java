@@ -10,10 +10,12 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
 
 /**
  * Bitcoin import blocks batch.
@@ -23,9 +25,13 @@ import java.util.Optional;
 public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
     /**
+     * How many milli seconds in 1 minute.
+     */
+    private static final float MILLISECONDS_IN_ONE_MINUTE = 60F * 1000F;
+
+    /**
      * Bitcoind cache loader.
      */
-    @Autowired
     private BitcoindCacheLoader bitcoindCacheLoader;
 
 	/**
@@ -33,7 +39,18 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 */
 	private static final String PREFIX = "Blocks batch";
 
-	/**
+    /**
+     * Last block count value.
+     */
+    private long lastBlockCountValue = -1;
+
+    /**
+     * Last block count access.
+     */
+    private long lastBlockCountAccess = -1;
+
+
+    /**
 	 * Constructor.
 	 *
 	 * @param newBlockRepository       blockRepository
@@ -41,9 +58,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @param newTransactionRepository transactionRepository
 	 * @param newBitcoindService       bitcoindService
 	 * @param newStatus                status
+     * @param newBitcoindCacheLoader bitcoindCacheLoader
 	 */
-	public BitcoinBatchBlocks(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
+	public BitcoinBatchBlocks(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus, final BitcoindCacheLoader newBitcoindCacheLoader) {
 		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
+        bitcoindCacheLoader = newBitcoindCacheLoader;
 	}
 
 	/**
@@ -54,6 +73,41 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 		return PREFIX;
 	}
 
+    /**
+     * Return getblockcount (The result stays in cache for 10 minutes).
+     *
+     * @return the number of blocks in the block chain. -1 if error.
+     */
+	private long getBlockCount() {
+        // Getting the time elapsed since last call to getblockcount
+        float elapsedMinutesSinceLastCall = (System.currentTimeMillis() - lastBlockCountAccess) / MILLISECONDS_IN_ONE_MINUTE;
+
+        if (elapsedMinutesSinceLastCall < BITCOIN_BLOCK_GENERATION_DELAY && lastBlockCountAccess != -1) {
+            // If the last call to getblockcount was made less than 10 minutes ago, we return the result in cache.
+            return lastBlockCountValue;
+        } else {
+            // Else we get it from the bitcoind server.
+            try {
+                GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
+                if (blockCountResponse.getError() == null) {
+                    lastBlockCountValue = blockCountResponse.getResult();
+                    lastBlockCountAccess = System.currentTimeMillis();
+                    return lastBlockCountValue;
+                }  else {
+                    // Error while retrieving the number of blocks in bitcoind.
+                    addError("Error getting the number of blocks : " + blockCountResponse.getError());
+                    lastBlockCountAccess = -1;
+                    return -1;
+                }
+            } catch (Exception e) {
+                // Error while retrieving the number of blocks in bitcoind.
+                addError("Error getting the number of blocks : " + e.getMessage(), e);
+                lastBlockCountAccess = -1;
+                return -1;
+            }
+        }
+    }
+
 	/**
 	 * Return the block to process.
 	 *
@@ -63,23 +117,20 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     protected final Long getBlockHeightToProcess() {
 		// We retrieve the next block to process according to the database.
 		Long blockToProcess = getBlockRepository().count() + 1;
+		final long totalBlockCount = getBlockCount();
 
-		// -------------------------------------------------------------------------------------------------------------
 		// We check if that next block exists by retrieving the block count.
-		try {
-			GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
-			if (blockCountResponse.getError() == null) {
-				final long totalBlockCount = blockCountResponse.getResult();
-				// We update the global status.
+        if (totalBlockCount != -1) {
+				// We update the global status of blockcount.
 				if (totalBlockCount != getStatus().getTotalBlockCount()) {
 					getStatus().setTotalBlockCount(totalBlockCount);
 				}
-
 				// We return the block to process.
 				if (blockToProcess <= totalBlockCount) {
 				    // We load in cache
-                    bitcoindCacheLoader.loadCache(blockToProcess);
-
+                    if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount) {
+                        bitcoindCacheLoader.loadCache(blockToProcess);
+                    }
 					// If there is still block after this one, we continue.
                     return blockToProcess;
 				} else {
@@ -87,14 +138,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				}
 			} else {
 				// Error while retrieving the number of blocks in bitcoind.
-				addError("Error getting the number of blocks : " + blockCountResponse.getError());
 				return null;
 			}
-		} catch (Exception e) {
-			// Error while retrieving the number of blocks in bitcoind.
-			addError("Error getting the number of blocks : " + e.getMessage(), e);
-			return null;
-		}
 	}
 
 	/**
@@ -105,7 +150,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getCachedBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
 		if (blockData.isPresent()) {

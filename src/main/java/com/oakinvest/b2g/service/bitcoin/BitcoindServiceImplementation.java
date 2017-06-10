@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static com.oakinvest.b2g.configuration.CacheConfiguration.BITCOIND_BUFFER_SIZE;
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
 
 /**
  * Default implementation of bitcoind call.
@@ -90,6 +90,11 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private final RestTemplate restTemplate;
 
     /**
+     * Buffer content.
+     */
+    private final ConcurrentSkipListSet<BitcoindBlockData> buffer;
+
+    /**
      * Get buffer.
      * @return buffer
      */
@@ -98,13 +103,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
         return buffer;
     }
 
-
     /**
-     * Buffer content.
-     */
-    private final ConcurrentSkipListSet<BitcoindBlockData> buffer;
-
-	/**
 	 * Bitcoind hostname.
 	 */
 	@Value("${bitcoind.hostname}")
@@ -135,7 +134,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
         buffer = new ConcurrentSkipListSet<BitcoindBlockData>(new BitcoindBlockDataComparator());
-	}
+    }
 
     /**
      * Returns the block data from bitcoind.
@@ -144,7 +143,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
      * @return block data or null if a problem occurred.
      */
     @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+    public Optional<BitcoindBlockData> getCachedBlockData(final long blockHeight) {
         Optional<BitcoindBlockData> result = getBlockDataFromBuffer(blockHeight);
         if (result.isPresent()) {
             // If the block is in the buffer, we return it and remove it.
@@ -172,7 +171,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
     public Optional<BitcoindBlockData> getBlockDataFromBuffer(final long blockHeight) {
         return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
     }
-
 
     /**
      * Get block data from buffer.
@@ -236,7 +234,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		}
 	}
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -349,7 +347,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
      */
     @Scheduled(fixedDelay = DELAY_BETWEEN_BUFFER_CLEAN)
     @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public void cleanBuffer() {
+    public void truncateBuffer() {
         // We remove the old entries until we go back to BUFFER_SIZE.
         while (buffer.size() > BITCOIND_BUFFER_SIZE) {
             buffer.pollFirst();

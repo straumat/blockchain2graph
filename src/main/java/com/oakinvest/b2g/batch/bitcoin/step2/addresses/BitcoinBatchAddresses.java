@@ -74,7 +74,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoindService().getCachedBlockData(blockHeight);
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData.isPresent()) {

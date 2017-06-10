@@ -22,10 +22,11 @@ public interface BitcoindService {
 	 * @param blockHeight block number
 	 * @return block data or null if a problem occurred.
 	 */
-	Optional<BitcoindBlockData> getBlockData(long blockHeight);
+	Optional<BitcoindBlockData> getCachedBlockData(long blockHeight);
 
     /**
      * Get block data from buffer.
+     * Util method - not in bitcoind.
      *
      * @param blockHeight block height
      * @return block data
@@ -34,29 +35,32 @@ public interface BitcoindService {
 
     /**
      * Get block data from buffer.
+     * Util method - not in bitcoind.
      *
      * @param blockHeight block height
      * @return block data
      */
     Optional<BitcoindBlockData> getBlockDataFromBitcoind(long blockHeight);
 
-
     /**
      * Get the buffer.
+     * Util method - not in bitcoind.
+     *
      * @return buffer
      */
     ConcurrentSkipListSet<BitcoindBlockData> getBuffer();
 
     /**
-     * Clean the buffer to be the size of BUFFER_SIZE.
+     * Clean the buffer to be of the size of BUFFER_SIZE.
+     * Util method - not in bitcoind.
      */
-    void cleanBuffer();
+    void truncateBuffer();
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.
 	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"jsonrpc":"1.0","method":"getblockcount","params":[]}' -H 'content-type:text/plain;' -X POST http://5.196.65.205:8332
 	 *
-	 * @return the number of blocks in the local best block chain.
+	 * @return the number of blocks in the block chain.
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblockcount">https://chainquery.com/bitcoin-api/getblockcount</a>
 	 */
 	GetBlockCountResponse getBlockCount();
