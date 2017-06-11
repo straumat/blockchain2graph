@@ -4,9 +4,10 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
@@ -55,10 +56,10 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	private final BitcoinTransactionRepository transactionRepository;
 
-	/**
-	 * Bitcoind service.
+    /**
+	 * Bitcoin data service.
 	 */
-	private final BitcoindService bitcoindService;
+	private final BitcoinDataService bitcoinDataService;
 
 	/**
 	 * Status service.
@@ -77,18 +78,16 @@ public abstract class BitcoinBatchTemplate {
 
 	/**
 	 * Constructor.
-	 *
-	 * @param newBlockRepository       blockRepository
-	 * @param newAddressRepository     addressRepository
-	 * @param newTransactionRepository transactionRepository
-	 * @param newBitcoindService       bitcoindService
-	 * @param newStatus                status
-	 */
-	public BitcoinBatchTemplate(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
-		this.blockRepository = newBlockRepository;
-		this.addressRepository = newAddressRepository;
-		this.transactionRepository = newTransactionRepository;
-		this.bitcoindService = newBitcoindService;
+     *
+	 * @param newBitcoinRepositories    bitcoin repositories
+     * @param newBitcoinDataService     bitcoin data service
+     * @param newStatus                 status
+     */
+	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+        this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
+	    this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
+		this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
+        this.bitcoinDataService = newBitcoinDataService;
 		this.status = newStatus;
 		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
 	}
@@ -149,7 +148,16 @@ public abstract class BitcoinBatchTemplate {
 		}
 	}
 
-	/**
+    /**
+     * Getter session.
+     *
+     * @return session
+     */
+    private  Session getSession() {
+        return session;
+    }
+
+    /**
 	 * Return the block to process.
 	 *
 	 * @return block to process.
@@ -246,15 +254,6 @@ public abstract class BitcoinBatchTemplate {
 	}
 
 	/**
-	 * Getter bitcoindService.
-	 *
-	 * @return bitcoindService
-	 */
-	protected final BitcoindService getBitcoindService() {
-		return bitcoindService;
-	}
-
-	/**
 	 * Getter status.
 	 *
 	 * @return status
@@ -263,13 +262,13 @@ public abstract class BitcoinBatchTemplate {
 		return status;
 	}
 
-	/**
-	 * Getter session.
-	 *
-	 * @return session
-	 */
-	protected final Session getSession() {
-		return session;
-	}
+    /**
+     * Getter bitcoin data service.
+     *
+     * @return bitcoin data service
+     */
+    protected final BitcoinDataService getBitcoinDataService() {
+        return bitcoinDataService;
+    }
 
 }

@@ -19,7 +19,7 @@ public abstract class BitcoindToDomainPostMapper {
      * @param bitcoinBlock bitcoin block
      */
     @AfterMapping
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+    @SuppressWarnings("checkstyle:designforextension")
     protected final void blockDataToBitcoinBlockAfterMapping(final BitcoindBlockData bitcoindBlockData, @MappingTarget final BitcoinBlock bitcoinBlock) {
         bitcoinBlock.getTransactions().forEach(t -> t.setBlock(bitcoinBlock));
     }

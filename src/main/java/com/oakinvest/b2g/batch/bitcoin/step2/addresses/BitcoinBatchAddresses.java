@@ -4,11 +4,9 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
+import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -30,20 +28,18 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 */
 	private static final String PREFIX = "Addresses batch";
 
-	/**
-	 * Constructor.
-	 *
-	 * @param newBlockRepository       blockRepository
-	 * @param newAddressRepository     addressRepository
-	 * @param newTransactionRepository transactionRepository
-	 * @param newBitcoindService       bitcoindService
-	 * @param newStatus                status
-	 */
-	public BitcoinBatchAddresses(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
-	}
+    /**
+     * Constructor.
+     *
+     * @param newBitcoinRepositories    bitcoin repositories
+     * @param newBitcoinDataService     bitcoin data service
+     * @param newStatus                 status
+     */
+    public BitcoinBatchAddresses(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+    }
 
-	/**
+    /**
 	 * Returns the log prefix to display in each log.
 	 */
 	@Override
@@ -74,7 +70,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		Optional<BitcoindBlockData> blockData = getBitcoindService().getCachedBlockData(blockHeight);
+		Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockData.isPresent()) {

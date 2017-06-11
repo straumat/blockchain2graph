@@ -5,11 +5,9 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
+import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -28,18 +26,16 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 */
 	private static final String PREFIX = "Relations batch";
 
-	/**
-	 * Constructor.
-	 *
-	 * @param newBlockRepository       blockRepository
-	 * @param newAddressRepository     addressRepository
-	 * @param newTransactionRepository transactionRepository
-	 * @param newBitcoindService       bitcoindService
-	 * @param newStatus                status
-	 */
-	public BitcoinBatchRelations(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
-	}
+    /**
+     * Constructor.
+     *
+     * @param newBitcoinRepositories    bitcoin repositories
+     * @param newBitcoinDataService     bitcoin data service
+     * @param newStatus                 status
+     */
+    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+    }
 
 	/**
 	 * Returns the log prefix to display in each log.
@@ -81,7 +77,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 					blockToTreat.getTransactions().add(bt);
 				});
 		getBlockRepository().save(blockToTreat);
-		getSession().clear();
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.

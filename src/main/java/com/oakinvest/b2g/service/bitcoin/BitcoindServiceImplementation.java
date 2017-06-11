@@ -1,12 +1,10 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockDataComparator;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.rest.BitcoindResponseErrorHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.neo4j.ogm.json.JSONException;
@@ -17,20 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-
-import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
 
 /**
  * Default implementation of bitcoind call.
@@ -38,11 +28,6 @@ import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_B
  */
 @Service
 public class BitcoindServiceImplementation implements BitcoindService {
-
-    /**
-	 * Genesis transaction hash.
-	 */
-	private static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * Command to getblockcount.
@@ -75,33 +60,15 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	private static final String PARAMETER_PARAMS = "params";
 
     /**
-     * Delay between buffer clean (every 5 minutes).
+     * Logger.
      */
-    private static final int DELAY_BETWEEN_BUFFER_CLEAN = 5 * 60 * 1000;
+    private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
+
 
     /**
-	 * Logger.
-	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
-
-	/**
 	 * Rest template.
 	 */
 	private final RestTemplate restTemplate;
-
-    /**
-     * Buffer content.
-     */
-    private final ConcurrentSkipListSet<BitcoindBlockData> buffer;
-
-    /**
-     * Get buffer.
-     * @return buffer
-     */
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public ConcurrentSkipListSet<BitcoindBlockData> getBuffer() {
-        return buffer;
-    }
 
     /**
 	 * Bitcoind hostname.
@@ -133,106 +100,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	public BitcoindServiceImplementation() {
 		restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
-        buffer = new ConcurrentSkipListSet<BitcoindBlockData>(new BitcoindBlockDataComparator());
     }
-
-    /**
-     * Returns the block data from bitcoind.
-     *
-     * @param blockHeight block height
-     * @return block data or null if a problem occurred.
-     */
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public Optional<BitcoindBlockData> getCachedBlockData(final long blockHeight) {
-        Optional<BitcoindBlockData> result = getBlockDataFromBuffer(blockHeight);
-        if (result.isPresent()) {
-            // If the block is in the buffer, we return it and remove it.
-            buffer.remove(result.get());
-            return result;
-        } else {
-            // Else we get it directly from bitcoind and add it to the buffer.
-            Optional<BitcoindBlockData> blockData = getBlockDataFromBitcoind(blockHeight);
-            if (blockData.isPresent()) {
-                buffer.add(blockData.get());
-                return blockData;
-            } else {
-                return Optional.empty();
-            }
-        }
-    }
-
-    /**
-     * Get block data from buffer.
-     *
-     * @param blockHeight block height
-     * @return block data
-     */
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public Optional<BitcoindBlockData> getBlockDataFromBuffer(final long blockHeight) {
-        return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-    }
-
-    /**
-     * Get block data from buffer.
-     *
-     * @param blockHeight block height
-     * @return block data
-     */
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public Optional<BitcoindBlockData> getBlockDataFromBitcoind(final long blockHeight) {
-		try {
-			// ---------------------------------------------------------------------------------------------------------
-			// We retrieve the block hash...
-			GetBlockHashResponse blockHashResponse = getBlockHash(blockHeight);
-			if (blockHashResponse.getError() == null) {
-				// -----------------------------------------------------------------------------------------------------
-				// Then we retrieve the block data...
-				String blockHash = blockHashResponse.getResult();
-				final GetBlockResponse blockResponse = getBlock(blockHash);
-				if (blockResponse.getError() == null) {
-					// -------------------------------------------------------------------------------------------------
-					// Then we retrieve the transactions data...
-					final List<GetRawTransactionResult> transactions = new LinkedList<>();
-					try {
-                        // We use multi thread to retrieve all the transactions informations.
-                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
-                        blockResponse.getResult().getTx()
-                                .parallelStream()
-                                .filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
-                                .forEach(t -> {
-                                    GetRawTransactionResponse r = getRawTransaction(t);
-                                    if (r.getError() == null) {
-                                        tempTransactionList.put(t, getRawTransaction(t).getResult());
-                                    } else {
-                                        log.error("Error getting transaction n°" + t + " informations : " + r.getError());
-                                        throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
-                                    }
-                                });
-
-                        // Then we add it to the list in the right order.
-                        blockResponse.getResult().getTx().stream().forEach(t -> transactions.add(tempTransactionList.get(t)));
-
-					} catch (Exception e) {
-						return Optional.empty();
-					}
-					// -------------------------------------------------------------------------------------------------
-					// And we end up returning all the block data all at once.
-					return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions));
-				} else {
-					// Error while retrieving the block informations.
-					log.error("Error getting block n°" + blockHeight + " informations : " + blockResponse.getError());
-					return Optional.empty();
-				}
-			} else {
-				// Error while retrieving the block hash.
-				log.error("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError());
-				return Optional.empty();
-			}
-		} catch (Exception e) {
-			log.error("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
-			return Optional.empty();
-		}
-	}
 
     /**
 	 * {@inheritDoc}
@@ -341,17 +209,5 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		h.set("Authorization", authHeader);
 		return h;
 	}
-
-    /**
-     * Buffer cleaner (in case of).
-     */
-    @Scheduled(fixedDelay = DELAY_BETWEEN_BUFFER_CLEAN)
-    @SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-    public void truncateBuffer() {
-        // We remove the old entries until we go back to BUFFER_SIZE.
-        while (buffer.size() > BITCOIND_BUFFER_SIZE) {
-            buffer.pollFirst();
-        }
-    }
 
 }

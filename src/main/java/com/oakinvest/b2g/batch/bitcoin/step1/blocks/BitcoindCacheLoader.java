@@ -1,6 +1,6 @@
 package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
 
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.service.BitcoinDataService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +16,14 @@ public class BitcoindCacheLoader {
     /**
      * Bitcoind service.
      */
-    private final BitcoindService bitcoindService;
+    private final BitcoinDataService bitcoinDataService;
 
     /**
      * Constructor.
-     * @param newBitcoindService bitcoind service
+     * @param newBitcoinDataService    bitcoin data service
      */
-    public BitcoindCacheLoader(final BitcoindService newBitcoindService) {
-        this.bitcoindService = newBitcoindService;
+    public BitcoindCacheLoader(final BitcoinDataService newBitcoinDataService) {
+        this.bitcoinDataService = newBitcoinDataService;
     }
 
     /**
@@ -33,7 +33,7 @@ public class BitcoindCacheLoader {
     @Async
     @SuppressWarnings("checkstyle:designforextension")
     public void loadCache(final long lastBlockLoaded) {
-        bitcoindService.getCachedBlockData(lastBlockLoaded + BITCOIND_BUFFER_SIZE);
+        bitcoinDataService.getBlockData(lastBlockLoaded + BITCOIND_BUFFER_SIZE);
     }
 
 }
