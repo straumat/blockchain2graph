@@ -109,9 +109,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			// We set the previous and the next block.
 			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
 			block.setPreviousBlock(previousBlock);
+            addLog("Setting previous block");
 			if (previousBlock != null) {
 				previousBlock.setNextBlock(block);
-				getBlockRepository().save(previousBlock);
+                addLog("Setting next block");
+				//getBlockRepository().save(previousBlock);
 			}
 
 			// ---------------------------------------------------------------------------------------------------------
