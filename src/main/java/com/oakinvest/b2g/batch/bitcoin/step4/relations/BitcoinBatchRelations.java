@@ -70,22 +70,21 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
 		// -----------------------------------------------------------------------------------------------------
 		// Setting the relationship between blocks and transactions.
-		blockToTreat.getTx()
+/*		blockToTreat.getTx()
 				.forEach(t -> {
 					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
 					bt.setBlock(blockToTreat);
 					blockToTreat.getTransactions().add(bt);
 				});
-		getBlockRepository().save(blockToTreat);
+		getBlockRepository().save(blockToTreat);*/
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
-		if (blockToTreat.getTransactions().size() == 0) {
-			addError("Block " + blockToTreat.getHeight() + " has no transactions");
-		}
 		blockToTreat.getTransactions()
 				.forEach(
 						t -> {
+						    // TODO Find a better way than getting a tx from neo4j
+						    t = getTransactionRepository().findByTxId(t.getTxId());
 							addLog("- Transaction " + t.getTxId());
 							// For each Vin.
 							t.getInputs()
@@ -135,7 +134,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 												});
 										addLog("-- Done processing vout : " + vout);
 									});
-							addLog("-- Transaction " + t.getTxId() + " relations processed");
+
 						}
 				);
 		return blockToTreat;

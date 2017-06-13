@@ -101,18 +101,42 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			// Then, if the block doesn't exists, we map it to save it.
 			BitcoinBlock block = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
 			if (block == null) {
-				block = getMapper().blockResultToBitcoinBlock(blockData.get().getBlock());
-			}
+				block = getMapper().blockDataToBitcoinBlock(blockData.get());
+                //block = getMapper().blockResultToBitcoinBlock(blockData.get().getBlock());
+            }
+
+            /*
+            if (block.getHeight() > 1) {
+                BitcoinBlock block2 = getBlockRepository().findByHash(blockData.get().getBlock().getPreviousblockhash());
+                System.out.println("==============================");
+                System.out.println(block2.getTransactions().size());
+                System.out.println(block2.getTransactions().iterator().next().getOutputs().size());
+                System.out.println(block2.getTransactions().iterator().next().getOutputs().iterator().next());
+                System.out.println(block2.getTransactions().iterator().next().getBlock().getHeight());
+                System.out.println("==============================");
+            }*/
+
+			/*
+			block.getTransactions().forEach(t -> {
+			    t.getInputs().forEach(i -> System.out.println("1 - ==> " + i));
+			});
+            block.getTransactions().forEach(t -> {
+                t.getOutputs().forEach(i -> {
+                    System.out.println("2 - ==> " + i);
+                    i.getBitcoinAddresses().forEach(a -> System.out.println(" ==> " + a));
+                });
+            });
+*/
 			addLog("This block has " + block.getTx().size() + " transaction(s)");
 
 			// -----------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
 			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
 			block.setPreviousBlock(previousBlock);
-            addLog("Setting previous block");
+            addLog("Setting previous block of this block");
 			if (previousBlock != null) {
 				previousBlock.setNextBlock(block);
-                addLog("Setting next block");
+                addLog("Setting this block next block of the previous one");
 				//getBlockRepository().save(previousBlock);
 			}
 

@@ -28,6 +28,8 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -168,8 +170,8 @@ public class BitcoinImportTest {
 
 		// Test all transactions.
 		btr.findAll().forEach(t -> {
-			assertThat(t.getInputs()).as("Transaction %s's inputs", t.getTxId()).isNotEmpty();
-			assertThat(t.getOutputs()).as("Transaction %s's outputs", t.getTxId()).isNotEmpty();
+			assertThat(t.getInputs()).as("Transaction %s inputs", t.getTxId()).isNotEmpty();
+			assertThat(t.getOutputs()).as("Transaction %s outputs", t.getTxId()).isNotEmpty();
 		});
 
 		// Test all addresses.

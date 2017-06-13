@@ -8,6 +8,7 @@ import org.mapstruct.MappingTarget;
 
 /**
  * Post mapper.
+ *
  * Created by straumat on 29/05/17.
  */
 @Mapper
@@ -20,7 +21,7 @@ public abstract class BitcoindToDomainPostMapper {
      */
     @AfterMapping
     @SuppressWarnings("checkstyle:designforextension")
-    protected final void blockDataToBitcoinBlockAfterMapping(final BitcoindBlockData bitcoindBlockData, @MappingTarget final BitcoinBlock bitcoinBlock) {
+    protected void blockDataToBitcoinBlockAfterMapping(final BitcoindBlockData bitcoindBlockData, @MappingTarget final BitcoinBlock bitcoinBlock) {
         bitcoinBlock.getTransactions().forEach(t -> t.setBlock(bitcoinBlock));
     }
 

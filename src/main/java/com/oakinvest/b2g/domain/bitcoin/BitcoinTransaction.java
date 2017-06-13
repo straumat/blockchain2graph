@@ -39,7 +39,7 @@ public class BitcoinTransaction {
 	/**
 	 * The block.
 	 */
-	@Relationship(type = "IN_BLOCK", direction = Relationship.INCOMING)
+	@Relationship(type = "IN_BLOCK", direction = Relationship.UNDIRECTED)
 	private BitcoinBlock block;
 
 	/**

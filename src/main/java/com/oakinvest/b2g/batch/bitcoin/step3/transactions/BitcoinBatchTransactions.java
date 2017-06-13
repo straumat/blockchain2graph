@@ -80,8 +80,8 @@ public class BitcoinBatchTransactions extends BitcoinBatchTemplate {
 						// We save it in the database.
 						.forEach(t -> {
 							BitcoinTransaction transaction = getMapper().rawTransactionResultToBitcoinTransaction(t);
-							getTransactionRepository().save(transaction);
-							addLog(" - Transaction " + transaction.getTxId() + " added");
+							//getTransactionRepository().save(transaction);
+	//						addLog(" - Transaction " + transaction.getTxId() + " added");
 						});
 			} catch (Exception e) {
 				addError("Error treating transaction : " + e.getMessage(), e);
