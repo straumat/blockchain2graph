@@ -83,7 +83,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		blockToTreat.getTransactions()
 				.forEach(
 						t -> {
-						    // TODO Find a better way than getting a tx from neo4j
 						    t = getTransactionRepository().findByTxId(t.getTxId());
 							addLog("- Transaction " + t.getTxId());
 							// For each Vin.

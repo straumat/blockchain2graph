@@ -3,7 +3,7 @@ package com.oakinvest.b2g.batch.bitcoin.step2.addresses;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Bitcoin import addresses batch.
@@ -70,21 +69,25 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final BitcoinBlock processBlock(final long blockHeight) {
-		Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
+        BitcoinBlock blockToProcess = getBlockRepository().findByHeight(blockHeight);
+
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
-		if (blockData.isPresent()) {
+		if (blockToProcess != null) {
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
-			blockData.get().getTransactions()
-					.forEach(grt -> grt.getVout()
+            blockToProcess.getTx()
+					.forEach(txId -> {
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
+                            t.getOutputs()
 							.stream()
 							.filter(Objects::nonNull)
-							.forEach(v -> v.getScriptPubKey()
-									.getAddresses().stream()
+							.forEach(v -> v.getAddresses()
+                                    .stream()
 									.filter(Objects::nonNull)
-									.forEach(addresses::add)));
+									.forEach(addresses::add));
+					});
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.
@@ -101,7 +104,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return getBlockRepository().findByHeight(blockHeight);
+			return blockToProcess;
 		} else {
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
 			return null;
