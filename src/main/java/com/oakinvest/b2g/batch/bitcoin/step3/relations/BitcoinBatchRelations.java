@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step4.relations;
+package com.oakinvest.b2g.batch.bitcoin.step3.relations;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -52,7 +52,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 */
 	@Override
     protected final Long getBlockHeightToProcess() {
-		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.TRANSACTIONS_IMPORTED);
+		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
 		if (blockToTreat != null) {
 			return blockToTreat.getHeight();
 		} else {

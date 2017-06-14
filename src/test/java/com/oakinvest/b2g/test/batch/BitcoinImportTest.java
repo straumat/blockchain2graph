@@ -3,8 +3,7 @@ package com.oakinvest.b2g.test.batch;
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
-import com.oakinvest.b2g.batch.bitcoin.step3.transactions.BitcoinBatchTransactions;
-import com.oakinvest.b2g.batch.bitcoin.step4.relations.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.step3.relations.BitcoinBatchRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -28,8 +27,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -96,12 +93,6 @@ public class BitcoinImportTest {
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinBatchTransactions batchTransactions;
-
-	/**
-	 * Import batch.
-	 */
-	@Autowired
 	private BitcoinBatchRelations batchRelations;
 
 	/**
@@ -148,7 +139,6 @@ public class BitcoinImportTest {
 			try {
 				batchBlocks.execute();
 				batchAddresses.execute();
-				batchTransactions.execute();
 				batchRelations.execute();
 				iterations++;
 				if (iterations >= maxIteration) {
@@ -193,7 +183,6 @@ public class BitcoinImportTest {
 		// Then, we import it.
 		try {
 			batchAddresses.execute();
-			batchTransactions.execute();
 			batchRelations.execute();
 		} catch (Exception e) {
 			fail("Recovery after crash did not work " + e.getMessage());
