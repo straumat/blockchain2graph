@@ -50,12 +50,6 @@ function configure(url) {
 						}
 						break;
 
-					case "transactions":
-						if (response.messageValue.includes("Transactions batch")) {
-							logs.append("<div>" + response.messageValue.replace("Transactions batch - ", "") + "</div>");
-						}
-						break;
-
 					case "relations":
 						if (response.messageValue.includes("Relations batch")) {
 							logs.append("<div>" + response.messageValue.replace("Relations batch - ", "") + "</div>");
