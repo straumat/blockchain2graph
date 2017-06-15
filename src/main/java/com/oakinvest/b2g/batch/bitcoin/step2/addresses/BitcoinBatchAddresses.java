@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Bitcoin import addresses batch.
@@ -52,12 +53,12 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-    protected final Long getBlockHeightToProcess() {
+    protected final Optional<Long> getBlockHeightToProcess() {
 		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.BLOCK_IMPORTED);
 		if (blockToTreat != null) {
-			return blockToTreat.getHeight();
+			return Optional.of(blockToTreat.getHeight());
 		} else {
-			return null;
+			return Optional.empty();
 		}
 	}
 
@@ -68,7 +69,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	protected final BitcoinBlock processBlock(final long blockHeight) {
+	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
         BitcoinBlock blockToProcess = getBlockRepository().findByHeight(blockHeight);
 
 		// ---------------------------------------------------------------------------------------------------------
@@ -104,10 +105,10 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return blockToProcess;
+			return Optional.of(blockToProcess);
 		} else {
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
-			return null;
+			return Optional.empty();
 		}
 	}
 

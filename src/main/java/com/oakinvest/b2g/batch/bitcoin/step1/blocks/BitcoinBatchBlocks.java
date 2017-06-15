@@ -57,7 +57,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-    protected final Long getBlockHeightToProcess() {
+    protected final Optional<Long> getBlockHeightToProcess() {
 		// We retrieve the next block to process according to the database.
 		Long blockToProcess = getBlockRepository().count() + 1;
 		final long totalBlockCount = getBitcoinDataService().getBlockCount();
@@ -70,14 +70,14 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				}
 				// We return the block to process.
 				if (blockToProcess <= totalBlockCount) {
-				    // We load in cache
+				    // We load the cache
                     if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount) {
                         bitcoindCacheLoader.loadCache(blockToProcess);
                     }
 					// If there is still block after this one, we continue.
-                    return blockToProcess;
+                    return Optional.of(blockToProcess);
 				} else {
-					return null;
+					return Optional.empty();
 				}
 			} else {
 				// Error while retrieving the number of blocks in bitcoind.
@@ -92,7 +92,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 */
 	@Override
 	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	protected final BitcoinBlock processBlock(final long blockHeight) {
+	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
 		Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
@@ -102,31 +102,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			BitcoinBlock block = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
 			if (block == null) {
 				block = getMapper().blockDataToBitcoinBlock(blockData.get());
-                //block = getMapper().blockResultToBitcoinBlock(blockData.get().getBlock());
             }
-
-            /*
-            if (block.getHeight() > 1) {
-                BitcoinBlock block2 = getBlockRepository().findByHash(blockData.get().getBlock().getPreviousblockhash());
-                System.out.println("==============================");
-                System.out.println(block2.getTransactions().size());
-                System.out.println(block2.getTransactions().iterator().next().getOutputs().size());
-                System.out.println(block2.getTransactions().iterator().next().getOutputs().iterator().next());
-                System.out.println(block2.getTransactions().iterator().next().getBlock().getHeight());
-                System.out.println("==============================");
-            }*/
-
-			/*
-			block.getTransactions().forEach(t -> {
-			    t.getInputs().forEach(i -> System.out.println("1 - ==> " + i));
-			});
-            block.getTransactions().forEach(t -> {
-                t.getOutputs().forEach(i -> {
-                    System.out.println("2 - ==> " + i);
-                    i.getBitcoinAddresses().forEach(a -> System.out.println(" ==> " + a));
-                });
-            });
-*/
 			addLog("This block has " + block.getTx().size() + " transaction(s)");
 
 			// -----------------------------------------------------------------------------------------------------
@@ -142,11 +118,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return block;
+			return Optional.of(block);
 		} else {
 			// Or nothing if we did not retrieve the data.
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
-			return null;
+			return Optional.empty();
 		}
 	}
 

@@ -15,6 +15,8 @@ import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * Bitcoin import batch - abstract model.
  * Created by straumat on 27/02/17.
@@ -119,20 +121,22 @@ public abstract class BitcoinBatchTemplate {
 		batchStartTime = System.currentTimeMillis();
 		try {
 			// We retrieve the block to process.
-			Long blockHeightToProcess = getBlockHeightToProcess();
+            Optional<Long> blockHeightToProcess = getBlockHeightToProcess();
 
 			// If there is a block to process.
-			if (blockHeightToProcess != null) {
-				addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess));
-				BitcoinBlock blockToProcess = processBlock(blockHeightToProcess);
-				if (blockToProcess != null) {
-					// If the block has been well processed, we change the state.
-					blockToProcess.setState(getNewStateOfProcessedBlock());
-					blockRepository.save(blockToProcess);
-					addLog("Block " + blockToProcess.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
-					// If we are in the status "block imported", we add where we are
+			if (blockHeightToProcess.isPresent()) {
+				addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess.get()));
+                Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
+				if (blockToProcess.isPresent()) {
+
+					// If the block has been well processed, we change the state and we save it.
+					blockToProcess.get().setState(getNewStateOfProcessedBlock());
+					blockRepository.save(blockToProcess.get());
+					addLog("Block " + blockToProcess.get().getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
+
+					// If we are in the status "block imported", we update the status of number of blocks imported.
 					if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
-						status.setImportedBlockCount(blockToProcess.getHeight());
+						status.setImportedBlockCount(blockToProcess.get().getHeight());
 					}
 				}
 			} else {
@@ -162,7 +166,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return block to process.
 	 */
-	protected abstract Long getBlockHeightToProcess();
+	protected abstract Optional<Long> getBlockHeightToProcess();
 
 	/**
 	 * Treat block.
@@ -170,7 +174,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 * @return the block processed
 	 */
-	protected abstract BitcoinBlock processBlock(long blockHeight);
+	protected abstract Optional<BitcoinBlock> processBlock(long blockHeight);
 
 	/**
 	 * Return the state to set to the block that has been processed.

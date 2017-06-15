@@ -51,12 +51,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-    protected final Long getBlockHeightToProcess() {
+    protected final Optional<Long> getBlockHeightToProcess() {
 		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
 		if (blockToTreat != null) {
-			return blockToTreat.getHeight();
+			return Optional.of(blockToTreat.getHeight());
 		} else {
-			return null;
+			return Optional.empty();
 		}
 	}
 
@@ -66,17 +66,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 */
 	@Override
-	protected final BitcoinBlock processBlock(final long blockHeight) {
+	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
 		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
-		// -----------------------------------------------------------------------------------------------------
-		// Setting the relationship between blocks and transactions.
-/*		blockToTreat.getTx()
-				.forEach(t -> {
-					BitcoinTransaction bt = getTransactionRepository().findByTxId(t);
-					bt.setBlock(blockToTreat);
-					blockToTreat.getTransactions().add(bt);
-				});
-		getBlockRepository().save(blockToTreat);*/
 
 		// -----------------------------------------------------------------------------------------------------
 		// we link the addresses to the input and the origin transaction.
@@ -136,7 +127,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
 						}
 				);
-		return blockToTreat;
+		return Optional.of(blockToTreat);
 	}
 
 	/**
