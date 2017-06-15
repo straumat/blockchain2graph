@@ -64,7 +64,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 		// We check if that next block exists by retrieving the block count.
         if (totalBlockCount != -1) {
-				// We update the global status of blockcount.
+				// We update the global status of blockcount (if needed).
 				if (totalBlockCount != getStatus().getTotalBlockCount()) {
 					getStatus().setTotalBlockCount(totalBlockCount);
 				}
@@ -81,7 +81,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				}
 			} else {
 				// Error while retrieving the number of blocks in bitcoind.
-				return null;
+				return Optional.empty();
 			}
 	}
 
@@ -91,9 +91,9 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 */
 	@Override
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
 	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
 		Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
+
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
 		if (blockData.isPresent()) {
@@ -113,7 +113,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			if (previousBlock != null) {
 				previousBlock.setNextBlock(block);
                 addLog("Setting this block next block of the previous one");
-				//getBlockRepository().save(previousBlock);
 			}
 
 			// ---------------------------------------------------------------------------------------------------------

@@ -115,7 +115,7 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	@Transactional
 	@Scheduled(fixedDelay = 1)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
+	@SuppressWarnings("checkstyle:designforextension")
 	public void execute() {
 		addLog(LOG_SEPARATOR);
 		batchStartTime = System.currentTimeMillis();
@@ -125,8 +125,11 @@ public abstract class BitcoinBatchTemplate {
 
 			// If there is a block to process.
 			if (blockHeightToProcess.isPresent()) {
+			    // Process the block.
 				addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess.get()));
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
+
+                // If the process ended well.
 				if (blockToProcess.isPresent()) {
 
 					// If the block has been well processed, we change the state and we save it.
@@ -217,7 +220,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param message message
 	 * @param e       exception raised.
 	 */
-	protected final void addError(final String message, final Exception e) {
+	private void addError(final String message, final Exception e) {
 		status.addError(getLogPrefix() + " - " + message, e);
 	}
 

@@ -76,6 +76,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 						t -> {
 						    t = getTransactionRepository().findByTxId(t.getTxId());
 							addLog("- Transaction " + t.getTxId());
+
 							// For each Vin.
 							t.getInputs()
 									.stream()

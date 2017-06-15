@@ -9,6 +9,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.BitcoindService;
+import com.oakinvest.b2g.service.StatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,6 +48,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private static final int DELAY_BETWEEN_BUFFER_CLEAN = 5 * 60 * 1000;
 
     /**
+     * Status service.
+     */
+    private final StatusService status;
+
+    /**
      * Logger.
      */
     private final Logger log = LoggerFactory.getLogger(BitcoinDataService.class);
@@ -75,10 +81,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * Constructor.
      *
      * @param newBitcoindService bitcoind service
+     * @param newStatusService status service
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService) {
+    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService) {
+        this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
-        buffer = new ConcurrentSkipListSet<BitcoindBlockData>(new BitcoindBlockDataComparator());
+        buffer = new ConcurrentSkipListSet<>(new BitcoindBlockDataComparator());
     }
 
     /**
@@ -105,15 +113,13 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     return lastBlockCountValue;
                 }  else {
                     // Error while retrieving the number of blocks in bitcoind.
-                    // TODO Deal with error.
-                    //addError("Error getting the number of blocks : " + blockCountResponse.getError());
+                    status.addError("Error getting the number of blocks : " + blockCountResponse.getError(), null);
                     lastBlockCountAccess = -1;
                     return -1;
                 }
             } catch (Exception e) {
                 // Error while retrieving the number of blocks in bitcoind.
-                // TODO Deal with error.
-                //addError("Error getting the number of blocks : " + e.getMessage(), e);
+                status.addError("Error getting the number of blocks : " + e.getMessage(), e);
                 lastBlockCountAccess = -1;
                 return -1;
             }
@@ -198,15 +204,15 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     if (r.getError() == null) {
                                         tempTransactionList.put(t, bitcoindService.getRawTransaction(t).getResult());
                                     } else {
-                                        log.error("Error getting transaction n°" + t + " informations : " + r.getError());
                                         throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
                                     }
                                 });
 
                         // Then we add it to the list in the right order.
-                        blockResponse.getResult().getTx().stream().forEach(t -> transactions.add(tempTransactionList.get(t)));
+                        blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
 
                     } catch (Exception e) {
+                        status.addError("Error retrieving the block : " + e.getMessage(), e);
                         return Optional.empty();
                     }
                     // -------------------------------------------------------------------------------------------------
@@ -214,28 +220,27 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions));
                 } else {
                     // Error while retrieving the block informations.
-                    log.error("Error getting block n°" + blockHeight + " informations : " + blockResponse.getError());
+                    status.addError("Error retrieving the block : " + blockResponse.getError(), null);
                     return Optional.empty();
                 }
             } else {
                 // Error while retrieving the block hash.
-                log.error("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError());
+                status.addError("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError(), null);
                 return Optional.empty();
             }
         } catch (Exception e) {
-            log.error("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
+            status.addError("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
             return Optional.empty();
         }
     }
 
     /**
-     * Clean the buffer to be of the size of BUFFER_SIZE.
+     * Remove the old entries until we go back to BUFFER_SIZE.
      */
     @Override
     @Scheduled(fixedDelay = DELAY_BETWEEN_BUFFER_CLEAN)
     @SuppressWarnings("checkstyle:designforextension")
     public void truncateBuffer() {
-        // We remove the old entries until we go back to BUFFER_SIZE.
         while (buffer.size() > BITCOIND_BUFFER_SIZE) {
             buffer.pollFirst();
         }
