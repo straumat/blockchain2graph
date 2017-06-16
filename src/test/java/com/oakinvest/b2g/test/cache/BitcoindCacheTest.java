@@ -120,8 +120,7 @@ public class BitcoindCacheTest {
                 .as("Checking that the block %s is NO MORE in cache", lastBlockSaved)
                 .isFalse();
 
-        // We call the cleaner.
-        bitcoinDataService.truncateBuffer();
+        // We check the size.
         assertThat(bitcoinDataService.getBuffer().size())
                 .as("Checking that the buffer is equals to BUFFER_SIZE (" + BITCOIND_BUFFER_SIZE+ ")")
                 .isEqualTo(BITCOIND_BUFFER_SIZE);

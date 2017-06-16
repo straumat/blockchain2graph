@@ -33,9 +33,4 @@ public interface BitcoinDataService {
      */
     ConcurrentSkipListSet<BitcoindBlockData> getBuffer();
 
-    /**
-     * Clean the buffer to be of the size of BUFFER_SIZE.
-     */
-    void truncateBuffer();
-
 }

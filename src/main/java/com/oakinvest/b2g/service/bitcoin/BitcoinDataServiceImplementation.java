@@ -12,7 +12,6 @@ import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -41,11 +40,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * How many milli seconds in 1 minute.
      */
     private static final float MILLISECONDS_IN_ONE_MINUTE = 60F * 1000F;
-
-    /**
-     * Delay between buffer clean (every 5 minutes).
-     */
-    private static final int DELAY_BETWEEN_BUFFER_CLEAN = 5 * 60 * 1000;
 
     /**
      * Status service.
@@ -135,10 +129,16 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     @Override
     @SuppressWarnings("checkstyle:designforextension")
     public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+        // Getting result
         Optional<BitcoindBlockData> result = getBlockDataFromBuffer(blockHeight);
         if (result.isPresent()) {
             // If the block is in the buffer, we return it and remove it.
             buffer.remove(result.get());
+
+            // Clean buffer.
+            while (buffer.size() >= BITCOIND_BUFFER_SIZE) {
+                buffer.pollFirst();
+            }
             return result;
         } else {
             // Else we get it directly from bitcoind and add it to the buffer.
@@ -231,18 +231,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
         } catch (Exception e) {
             status.addError("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
             return Optional.empty();
-        }
-    }
-
-    /**
-     * Remove the old entries until we go back to BUFFER_SIZE.
-     */
-    @Override
-    @Scheduled(fixedDelay = DELAY_BETWEEN_BUFFER_CLEAN)
-    @SuppressWarnings("checkstyle:designforextension")
-    public void truncateBuffer() {
-        while (buffer.size() > BITCOIND_BUFFER_SIZE) {
-            buffer.pollFirst();
         }
     }
 
