@@ -10,8 +10,6 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -45,11 +43,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * Status service.
      */
     private final StatusService status;
-
-    /**
-     * Logger.
-     */
-    private final Logger log = LoggerFactory.getLogger(BitcoinDataService.class);
 
     /**
      * Bitcoind service.
@@ -98,6 +91,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             // If the last call to getblockcount was made less than 10 minutes ago, we return the result in cache.
             return lastBlockCountValue;
         } else {
+            // Clean buffer.
+            while (buffer.size() >= BITCOIND_BUFFER_SIZE) {
+                buffer.pollFirst();
+            }
+
             // Else we get it from the bitcoind server.
             try {
                 GetBlockCountResponse blockCountResponse = bitcoindService.getBlockCount();
@@ -134,11 +132,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
         if (result.isPresent()) {
             // If the block is in the buffer, we return it and remove it.
             buffer.remove(result.get());
-
-            // Clean buffer.
-            while (buffer.size() >= BITCOIND_BUFFER_SIZE) {
-                buffer.pollFirst();
-            }
             return result;
         } else {
             // Else we get it directly from bitcoind and add it to the buffer.
