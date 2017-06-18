@@ -76,11 +76,15 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         // We retrieve the list of all the origin transaction and all the addresses required.
         final Map<String, BitcoinTransaction> originTransactions =  Collections.synchronizedMap(new HashMap<>());
         final Map<String, BitcoinAddress> addresses = Collections.synchronizedMap(new HashMap<>());
+        final Map<String, BitcoinTransaction> transactions = Collections.synchronizedMap(new HashMap<>());
+        addLog("Retrieving all address");
         blockToTreat.getTx()
                 .parallelStream()
                 .forEach(txId -> {
                     // Retrieving the transaction.
                     BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
+                    addLog("- Inspecting transaction " + t.getTxId());
+                    transactions.putIfAbsent(t.getTxId(), t);
 
                     // Getting all the origin transactions and there addresses.
                     t.getInputs()
@@ -112,7 +116,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 		blockToTreat.getTx()
 				.forEach(
 						txId -> {
-						    BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
+						    BitcoinTransaction t = transactions.get(txId);
 							addLog("- Transaction " + t.getTxId());
 
 							// For each Vin.
