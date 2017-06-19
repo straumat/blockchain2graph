@@ -37,12 +37,6 @@ public class BitcoinTransaction {
 	private String txId;
 
 	/**
-	 * The block.
-	 */
-	@Relationship(type = "IN_BLOCK", direction = Relationship.UNDIRECTED)
-	private BitcoinBlock block;
-
-	/**
 	 * The transaction hash (differs from txId for witness transactions).
 	 */
 	@Property(name = "hash")
@@ -349,24 +343,6 @@ public class BitcoinTransaction {
 	 */
 	public final void setOutputs(final Set<BitcoinTransactionOutput> newOutputs) {
 		outputs = newOutputs;
-	}
-
-	/**
-	 * Getter of block.
-	 *
-	 * @return block
-	 */
-	public final BitcoinBlock getBlock() {
-		return block;
-	}
-
-	/**
-	 * Setter of block.
-	 *
-	 * @param newBlock the block to set
-	 */
-	public final void setBlock(final BitcoinBlock newBlock) {
-		block = newBlock;
 	}
 
 	/**
