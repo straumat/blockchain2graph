@@ -11,9 +11,6 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,10 +21,10 @@ import java.util.Optional;
 @Component
 public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
-	/**
-	 * Log prefix.
-	 */
-	private static final String PREFIX = "Relations batch";
+    /**
+     * Log prefix.
+     */
+    private static final String PREFIX = "Relations batch";
 
     /**
      * Constructor.
@@ -40,141 +37,108 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus);
     }
 
-	/**
-	 * Returns the log prefix to display in each log.
-	 */
-	@Override
-	public final String getLogPrefix() {
-		return PREFIX;
-	}
+    /**
+     * Returns the log prefix to display in each log.
+     */
+    @Override
+    public final String getLogPrefix() {
+        return PREFIX;
+    }
 
-	/**
-	 * Return the block to process.
-	 *
-	 * @return block to process.
-	 */
-	@Override
+    /**
+     * Return the block to process.
+     *
+     * @return block to process.
+     */
+    @Override
     protected final Optional<Long> getBlockHeightToProcess() {
-		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
-		if (blockToTreat != null) {
-			return Optional.of(blockToTreat.getHeight());
-		} else {
-			return Optional.empty();
-		}
-	}
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
+        if (blockToTreat != null) {
+            return Optional.of(blockToTreat.getHeight());
+        } else {
+            return Optional.empty();
+        }
+    }
 
-	/**
-	 * Process block.
-	 *
-	 * @param blockHeight block height to process.
-	 */
-	@Override
-	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-		final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
+    /**
+     * Process block.
+     *
+     * @param blockHeight block height to process.
+     */
+    @Override
+    protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
+        final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
 
         // -----------------------------------------------------------------------------------------------------
-        // We retrieve the list of all the origin transaction and all the addresses required.
-        final Map<String, BitcoinTransaction> originTransactions =  Collections.synchronizedMap(new HashMap<>());
-        final Map<String, BitcoinAddress> addresses = Collections.synchronizedMap(new HashMap<>());
-        final Map<String, BitcoinTransaction> transactions = Collections.synchronizedMap(new HashMap<>());
-        addLog("Retrieving all data");
+        // we link the addresses to the input and the origin transaction.
         blockToTreat.getTx()
-                .parallelStream()
-                .forEach(txId -> {
-                    addLog("- Inspecting transaction " + txId);
+                .forEach(
+                        txId -> {
+                            addLog("- Transaction " + txId);
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
 
-                    // Getting the transaction.
-                    BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
-                    transactions.putIfAbsent(t.getTxId(), t);
-
-                    // Getting all the origin transactions and there addresses.
-                    t.getInputs()
-                        .parallelStream()
-                        .filter(vin -> !vin.isCoinbase())
-                        .forEach(vin -> {
-                            BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                            // Adding origin transaction.
-                            originTransactions.putIfAbsent(vin.getTxId(), originTransaction);
-                            // Adding addresses.
-                            originTransaction.getOutputByIndex(vin.getvOut()).get().getAddresses()
+                            // For each Vin.
+                            t.getInputs()
                                     .stream()
-                                    .filter(Objects::nonNull)
-                                    .forEach(a -> addresses.putIfAbsent(a, getAddressRepository().findByAddress(a)));
-                        });
+                                    // If it's NOT a coinbase transaction.
+                                    .filter(vin -> !vin.isCoinbase())
+                                    .forEach(vin -> {
+                                        // We retrieve the original transaction.
+                                        BitcoinTransaction originTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                        if (originTransaction != null) {
 
-                    // Getting all the addresses of output.
-                    t.getOutputs()
-                            .parallelStream()
-                            .forEach(o -> o.getAddresses()
-                                    .stream()
-                                    .filter(Objects::nonNull)
-                                    .forEach(a -> addresses.putIfAbsent(a, getAddressRepository().findByAddress(a))));
+                                            // We retrieve the original transaction output.
+                                            Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
+                                            if (originTransactionOutput.isPresent()) {
+                                                // We set the addresses "from" if it's not a coinbase transaction.
+                                                vin.setTransactionOutput(originTransactionOutput.get());
 
-                });
+                                                // We set all the addresses linked to this input
+                                                originTransactionOutput.get().getAddresses()
+                                                        .stream()
+                                                        .filter(Objects::nonNull)
+                                                        .forEach(a -> {
+                                                            BitcoinAddress address = getAddressRepository().findByAddress(a);
+                                                            address.getInputTransactions().add(vin);
+                                                            getAddressRepository().save(address);
+                                                        });
+                                                addLog("-- Done processing vin : " + vin);
+                                            } else {
+                                                addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+                                                throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
+                                            }
+                                        } else {
+                                            addError("Impossible to find the original transaction " + vin.getTxId());
+                                            throw new RuntimeException("Impossible to find the original transaction " + vin.getTxId());
+                                        }
+                                    });
 
-        // -----------------------------------------------------------------------------------------------------
-		//
-        addLog("Treating transactions and addresses");
-		blockToTreat.getTx()
-				.forEach(
-						txId -> {
-						    BitcoinTransaction t = transactions.get(txId);
-							addLog("- Transaction " + t.getTxId());
+                            // For each Vout.
+                            t.getOutputs()
+                                    .forEach(vout -> {
+                                        vout.getAddresses().stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> {
+                                                    BitcoinAddress address = getAddressRepository().findByAddress(a);
+                                                    address.getOutputTransactions().add(vout);
+                                                    getAddressRepository().save(address);
+                                                });
+                                        addLog("-- Done processing vout : " + vout);
+                                    });
 
-							// For each Vin.
-							t.getInputs()
-									.stream()
-									// If it's NOT a coinbase transaction.
-									.filter(vin -> !vin.isCoinbase())
-									.forEach(vin -> {
-										// We retrieve the original transaction.
-										BitcoinTransaction originTransaction = originTransactions.get(vin.getTxId());
+                        }
+                );
+        return Optional.of(blockToTreat);
+    }
 
-                                        // We retrieve the original transaction output.
-										Optional<BitcoinTransactionOutput> originTransactionOutput = originTransaction.getOutputByIndex(vin.getvOut());
-										if (originTransactionOutput.isPresent()) {
-											// We set the addresses "from" if it's not a coinbase transaction.
-											vin.setTransactionOutput(originTransactionOutput.get());
-
-											// We set all the addresses linked to this input
-											originTransactionOutput.get().getAddresses()
-													.stream()
-													.filter(Objects::nonNull)
-													.forEach(a -> addresses.get(a).getInputTransactions().add(vin));
-											addLog("-- Done processing vin : " + vin);
-										} else {
-											addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
-											throw new RuntimeException("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
-										}
-									});
-
-							// For each Vout.
-							t.getOutputs()
-									.forEach(vout -> {
-										vout.getAddresses().stream()
-												.filter(Objects::nonNull)
-												.forEach(a -> addresses.get(a).getOutputTransactions().add(vout));
-										addLog("-- Done processing vout : " + vout);
-									});
-
-						}
-				);
-
-		// We save all the addresses.
-        addLog("Saving data");
-        addresses.values().forEach(a -> getAddressRepository().save(a));
-
-		return Optional.of(blockToTreat);
-	}
-
-	/**
-	 * Return the state to set to the block that has been processed.
-	 *
-	 * @return state to set of the block that has been processed.
-	 */
-	@Override
-	protected final BitcoinBlockState getNewStateOfProcessedBlock() {
-		return BitcoinBlockState.IMPORTED;
-	}
+    /**
+     * Return the state to set to the block that has been processed.
+     *
+     * @return state to set of the block that has been processed.
+     */
+    @Override
+    protected final BitcoinBlockState getNewStateOfProcessedBlock() {
+        return BitcoinBlockState.IMPORTED;
+    }
 
 }
