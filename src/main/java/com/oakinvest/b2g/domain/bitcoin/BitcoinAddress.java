@@ -163,4 +163,9 @@ public class BitcoinAddress {
 		return getAddress().hashCode();
 	}
 
+    @Override
+    public final String toString() {
+        return "BitcoinAddress{address='" + address + "'}'";
+    }
+
 }

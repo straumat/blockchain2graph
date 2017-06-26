@@ -1,12 +1,10 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockDataComparator;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.rest.BitcoindResponseErrorHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.neo4j.ogm.json.JSONException;
@@ -17,16 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.TreeSet;
 
 /**
  * Default implementation of bitcoind call.
@@ -34,11 +28,6 @@ import java.util.TreeSet;
  */
 @Service
 public class BitcoindServiceImplementation implements BitcoindService {
-
-	/**
-	 * Genesis transaction hash.
-	 */
-	private static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
 	/**
 	 * Command to getblockcount.
@@ -70,37 +59,18 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	private static final String PARAMETER_PARAMS = "params";
 
-	/**
-	 * Buffer size.
-	 */
-	private static final int BUFFER_SIZE = 100;
+    /**
+     * Logger.
+     */
+    private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
 
-	/**
-	 * How many block to read ahead.
-	 */
-	private static final int BUFFER_HISTORY = 20;
 
-	/**
-	 * Logger.
-	 */
-	private final Logger log = LoggerFactory.getLogger(BitcoindService.class);
-
-	/**
+    /**
 	 * Rest template.
 	 */
 	private final RestTemplate restTemplate;
 
-	/**
-	 * Buffer content.
-	 */
-	private final TreeSet<BitcoindBlockData> buffer;
-
-	/**
-	 * Last block height that was requested.
-	 */
-	private long lastBlockHeightRequested = 0;
-
-	/**
+    /**
 	 * Bitcoind hostname.
 	 */
 	@Value("${bitcoind.hostname}")
@@ -130,98 +100,9 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	public BitcoindServiceImplementation() {
 		restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
-		buffer = new TreeSet<>(new BitcoindBlockDataComparator());
-	}
+    }
 
-	/**
-	 * Get block data from bitcoind server.
-	 *
-	 * @param blockHeight block height
-	 * @return block data
-	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	private Optional<BitcoindBlockData> getBlockDataFromBuffer(final long blockHeight) {
-		return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-	}
-
-	/**
-	 * Get block data from buffer.
-	 *
-	 * @param blockHeight block height
-	 * @return block data
-	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	private Optional<BitcoindBlockData> getBlockDataFromBitcoind(final long blockHeight) {
-		try {
-			// ---------------------------------------------------------------------------------------------------------
-			// We retrieve the block hash...
-			GetBlockHashResponse blockHashResponse = getBlockHash(blockHeight);
-			if (blockHashResponse.getError() == null) {
-				// -----------------------------------------------------------------------------------------------------
-				// Then we retrieve the block data...
-				String blockHash = blockHashResponse.getResult();
-				final GetBlockResponse blockResponse = getBlock(blockHash);
-				if (blockResponse.getError() == null) {
-					// -------------------------------------------------------------------------------------------------
-					// Then we retrieve the transactions data...
-					final List<GetRawTransactionResult> transactions = new LinkedList<>();
-					try {
-						blockResponse.getResult().getTx()
-								.stream()
-								.filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
-								.forEach(t -> {
-									GetRawTransactionResponse r = getRawTransaction(t);
-									if (r.getError() == null) {
-										transactions.add(getRawTransaction(t).getResult());
-									} else {
-										log.error("Error getting transaction n°" + t + " informations : " + r.getError());
-										throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
-									}
-								});
-					} catch (Exception e) {
-						return Optional.empty();
-					}
-					// -------------------------------------------------------------------------------------------------
-					// And we end up returning all the block data all at once.
-					return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions));
-				} else {
-					// Error while retrieving the block informations.
-					log.error("Error getting block n°" + blockHeight + " informations : " + blockResponse.getError());
-					return Optional.empty();
-				}
-			} else {
-				// Error while retrieving the block hash.
-				log.error("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError());
-				return Optional.empty();
-			}
-		} catch (Exception e) {
-			log.error("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
-			return Optional.empty();
-		}
-	}
-
-	/**
-	 * Returns the block data from bitcoind.
-	 *
-	 * @param blockHeight block height
-	 * @return block data or null if a problem occurred.
-	 */
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
-		// We save the last requested block height.
-		lastBlockHeightRequested = blockHeight;
-
-		Optional<BitcoindBlockData> result = getBlockDataFromBuffer(blockHeight);
-		if (result.isPresent()) {
-			// If the block is in the buffer, we return it.
-			return result;
-		} else {
-			// Else we get it directly from bitcoind.
-			return getBlockDataFromBitcoind(blockHeight);
-		}
-	}
-
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -327,41 +208,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
 		HttpHeaders h = new HttpHeaders();
 		h.set("Authorization", authHeader);
 		return h;
-	}
-
-	/**
-	 * Update buffer.
-	 */
-	@Scheduled(fixedDelay = 1)
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	public void updateBuffer() {
-		try {
-			// We are going to work on the buffer only if getBlockData has already been called.
-			// Without it, we don't know where to start so we don't start :)
-			if (lastBlockHeightRequested != 0) {
-				if (buffer.isEmpty()) {
-					Optional<BitcoindBlockData> blockData = getBlockData(lastBlockHeightRequested + BUFFER_SIZE);
-					blockData.ifPresent(buffer::add);
-				}
-
-				// From the last block in the buffer to thr new
-				for (long i = buffer.last().getBlock().getHeight() + 1; i < lastBlockHeightRequested + BUFFER_SIZE; i++) {
-					Optional<BitcoindBlockData> blockData = getBlockDataFromBitcoind(i);
-					if (blockData.isPresent()) {
-						buffer.add(blockData.get());
-					} else {
-						return;
-					}
-				}
-
-				// We remove the old entries until we go back to BUFFER_SIZE.
-				while (buffer.size() > BUFFER_SIZE + BUFFER_HISTORY) {
-					buffer.pollFirst();
-				}
-			}
-		} catch (Exception e) {
-			log.info("Error updating cache : " + e.getMessage(), e);
-		}
 	}
 
 }

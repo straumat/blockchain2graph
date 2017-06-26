@@ -17,11 +17,6 @@ public enum BitcoinBlockState {
 	ADDRESSES_IMPORTED,
 
 	/**
-	 * State 3 - Transactions imported.
-	 */
-	TRANSACTIONS_IMPORTED,
-
-	/**
 	 * Final State - Imported.
 	 */
 	IMPORTED

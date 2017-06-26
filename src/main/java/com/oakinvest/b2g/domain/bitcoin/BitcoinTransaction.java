@@ -37,12 +37,6 @@ public class BitcoinTransaction {
 	private String txId;
 
 	/**
-	 * The block.
-	 */
-	@Relationship(type = "IN_BLOCK", direction = Relationship.INCOMING)
-	private BitcoinBlock block;
-
-	/**
 	 * The transaction hash (differs from txId for witness transactions).
 	 */
 	@Property(name = "hash")
@@ -110,6 +104,11 @@ public class BitcoinTransaction {
 	 */
 	public final Optional<BitcoinTransactionOutput> getOutputByIndex(final int n) {
 		return getOutputs().stream().filter(o -> o.getN() == n).findFirst();
+	}
+
+	@Override
+	public final String toString() {
+		return "BitcoinTransaction{" + "txId='" + txId + '}';
 	}
 
 	@Override
@@ -352,24 +351,6 @@ public class BitcoinTransaction {
 	}
 
 	/**
-	 * Getter of block.
-	 *
-	 * @return block
-	 */
-	public final BitcoinBlock getBlock() {
-		return block;
-	}
-
-	/**
-	 * Setter of block.
-	 *
-	 * @param newBlock the block to set
-	 */
-	public final void setBlock(final BitcoinBlock newBlock) {
-		block = newBlock;
-	}
-
-	/**
 	 * Using transaction hash.
 	 *
 	 * @param o object
@@ -398,4 +379,5 @@ public class BitcoinTransaction {
 	public final int hashCode() {
 		return getTxId().hashCode();
 	}
+
 }

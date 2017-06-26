@@ -1,24 +1,27 @@
 version: '2'
 services:
   bitcoin:
-    image:  kylemanna/bitcoind
-    volumes:
-      - ./src/main/docker/conf/bitcoin/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf
-      - ./data/bitcoin:/bitcoin
+    image: kylemanna/bitcoind
     ports:
       - 8332:8332
+    environment:
+      - TXINDEX=1
+      - RPCUSER=bitcoinrpc
+      - RPCPASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      - REST=1
   neo4j:
-    image: neo4j:3.1.1
+    image: neo4j:3.1.4
     ports:
       - 7474:7474
       - 7687:7687
-    volumes:
-      - ./data/neo4j/data:/data
-      - ./data/neo4j/logs:/logs
-  app:
-    image: oakinvest/blockchain2graph
+    environment:
+      - NEO4J_AUTH=neo4j/neo4j123
+  tomcat:
+    image: tomcat
     ports:
       - 8080:8080
+    volumes:
+      - ./target/blockchain2graph.war:/usr/local/tomcat/webapps/blockchain2graph.war
     links:
       - bitcoin
       - neo4j

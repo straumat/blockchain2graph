@@ -3,16 +3,15 @@ package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
+import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
 
 /**
  * Bitcoin import blocks batch.
@@ -21,23 +20,28 @@ import java.util.Optional;
 @Component
 public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
+    /**
+     * Bitcoind cache loader.
+     */
+    private BitcoindCacheLoader bitcoindCacheLoader;
+
 	/**
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Blocks batch";
 
-	/**
-	 * Constructor.
-	 *
-	 * @param newBlockRepository       blockRepository
-	 * @param newAddressRepository     addressRepository
-	 * @param newTransactionRepository transactionRepository
-	 * @param newBitcoindService       bitcoindService
-	 * @param newStatus                status
-	 */
-	public BitcoinBatchBlocks(final BitcoinBlockRepository newBlockRepository, final BitcoinAddressRepository newAddressRepository, final BitcoinTransactionRepository newTransactionRepository, final BitcoindService newBitcoindService, final StatusService newStatus) {
-		super(newBlockRepository, newAddressRepository, newTransactionRepository, newBitcoindService, newStatus);
-	}
+    /**
+     * Constructor.
+     *
+     * @param newBitcoinRepositories    bitcoin repositories
+     * @param newBitcoinDataService     bitcoin data service
+     * @param newStatus                 status
+     * @param newBitcoindCacheLoader    bitcoin cache loader
+     */
+    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoindCacheLoader newBitcoindCacheLoader) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+        bitcoindCacheLoader = newBitcoindCacheLoader;
+    }
 
 	/**
 	 * Returns the log prefix to display in each log.
@@ -53,38 +57,32 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @return block to process.
 	 */
 	@Override
-	protected final Long getBlockHeightToProcess() {
+    protected final Optional<Long> getBlockHeightToProcess() {
 		// We retrieve the next block to process according to the database.
 		Long blockToProcess = getBlockRepository().count() + 1;
+		final long totalBlockCount = getBitcoinDataService().getBlockCount();
 
-		// -------------------------------------------------------------------------------------------------------------
 		// We check if that next block exists by retrieving the block count.
-		try {
-			GetBlockCountResponse blockCountResponse = getBitcoindService().getBlockCount();
-			if (blockCountResponse.getError() == null) {
-				final long totalBlockCount = blockCountResponse.getResult();
-				// We update the global status.
+        if (totalBlockCount != -1) {
+				// We update the global status of blockcount (if needed).
 				if (totalBlockCount != getStatus().getTotalBlockCount()) {
 					getStatus().setTotalBlockCount(totalBlockCount);
 				}
-
 				// We return the block to process.
 				if (blockToProcess <= totalBlockCount) {
+				    // We load the cache
+                    if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount) {
+                        bitcoindCacheLoader.loadCache(blockToProcess);
+                    }
 					// If there is still block after this one, we continue.
-					return blockToProcess;
+                    return Optional.of(blockToProcess);
 				} else {
-					return null;
+					return Optional.empty();
 				}
 			} else {
 				// Error while retrieving the number of blocks in bitcoind.
-				addError("Error getting the number of blocks : " + blockCountResponse.getError());
-				return null;
+				return Optional.empty();
 			}
-		} catch (Exception e) {
-			// Error while retrieving the number of blocks in bitcoind.
-			addError("Error getting the number of blocks : " + e.getMessage(), e);
-			return null;
-		}
 	}
 
 	/**
@@ -93,9 +91,9 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 */
 	@Override
-	@SuppressWarnings({ "checkstyle:designforextension", "checkstyle:emptyforiteratorpad" })
-	protected final BitcoinBlock processBlock(final long blockHeight) {
-		Optional<BitcoindBlockData> blockData = getBitcoindService().getBlockData(blockHeight);
+	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
+		Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
+
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
 		if (blockData.isPresent()) {
@@ -103,26 +101,27 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			// Then, if the block doesn't exists, we map it to save it.
 			BitcoinBlock block = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
 			if (block == null) {
-				block = getMapper().blockResultToBitcoinBlock(blockData.get().getBlock());
-			}
+				block = getMapper().blockDataToBitcoinBlock(blockData.get());
+            }
 			addLog("This block has " + block.getTx().size() + " transaction(s)");
 
 			// -----------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
 			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
 			block.setPreviousBlock(previousBlock);
+            addLog("Setting previous block of this block");
 			if (previousBlock != null) {
 				previousBlock.setNextBlock(block);
-				getBlockRepository().save(previousBlock);
+                addLog("Setting this block next block of the previous one");
 			}
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return block;
+			return Optional.of(block);
 		} else {
 			// Or nothing if we did not retrieve the data.
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
-			return null;
+			return Optional.empty();
 		}
 	}
 
