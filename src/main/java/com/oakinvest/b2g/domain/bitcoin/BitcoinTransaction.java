@@ -111,11 +111,6 @@ public class BitcoinTransaction {
 		return "BitcoinTransaction{" + "txId='" + txId + '}';
 	}
 
-	@Override
-	public final String toString() {
-		return "BitcoinTransaction{" + "txId='" + txId + '}';
-	}
-
 	/**
 	 * Getter of blockHash.
 	 *

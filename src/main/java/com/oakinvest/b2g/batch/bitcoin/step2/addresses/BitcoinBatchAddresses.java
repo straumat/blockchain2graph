@@ -80,13 +80,14 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
             blockToProcess.getTx()
                     .parallelStream()
 					.forEach(txId -> {
+                            addLog("- Inspecting transaction " + txId);
                             getTransactionRepository().findByTxId(txId).getOutputs().stream()
                                     .filter(Objects::nonNull)
                                     .forEach(v -> v.getAddresses()
                                             .stream()
                                             .filter(Objects::nonNull)
-                                            .forEach(addresses::add));}
-                                            );
+                                            .forEach(addresses::add));
+					});
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.
