@@ -32,13 +32,13 @@ public class BitcoinAddress {
 	/**
 	 * Input transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_INPUTS")
+	@Relationship(type = "IN_TRANSACTION_INPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<>();
 
 	/**
 	 * Output transactions.
 	 */
-	@Relationship(type = "IN_TRANSACTION_OUTPUTS")
+	@Relationship(type = "IN_TRANSACTION_OUTPUTS", direction = Relationship.OUTGOING)
 	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
 
 	/**

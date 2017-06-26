@@ -79,7 +79,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Return getblockcount (The result stays in cache for 10 minutes).
      *
-     * @return the number of blocks in the block chain & -1 if error.
+     * @return the number of blocks in the block chain and -1 if error.
      */
     @Override
     @SuppressWarnings("checkstyle:designforextension")
