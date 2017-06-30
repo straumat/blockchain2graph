@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.batch.bitcoin.step3.relations;
 
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
@@ -97,11 +96,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 originTransactionOutput.get().getAddresses()
                                                         .stream()
                                                         .filter(Objects::nonNull)
-                                                        .forEach(a -> {
-                                                            BitcoinAddress address = getAddressRepository().findByAddress(a);
-                                                            address.getInputTransactions().add(vin);
-                                                            getAddressRepository().save(address);
-                                                        });
+                                                        .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddress(a)));
                                                 addLog("-- Done processing vin : " + vin);
                                             } else {
                                                 addError("Impossible to find the original output transaction " + vin.getTxId() + " / " + vin.getvOut());
@@ -118,13 +113,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                     .forEach(vout -> {
                                         vout.getAddresses().stream()
                                                 .filter(Objects::nonNull)
-                                                .forEach(a -> {
-                                                    BitcoinAddress address = getAddressRepository().findByAddress(a);
-                                                    address.getOutputTransactions().add(vout);
-                                                    getAddressRepository().save(address);
-                                                });
+                                                .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddress(a)));
                                         addLog("-- Done processing vout : " + vout);
                                     });
+
+                            getTransactionRepository().save(t);
 
                         }
                 );
