@@ -116,9 +116,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddress(a)));
                                         addLog("-- Done processing vout : " + vout);
                                     });
-
-                            getTransactionRepository().save(t);
-
                         }
                 );
         return Optional.of(blockToTreat);

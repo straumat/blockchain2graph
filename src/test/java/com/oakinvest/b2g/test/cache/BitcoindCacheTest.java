@@ -5,6 +5,7 @@ import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,12 @@ public class BitcoindCacheTest {
      */
     @Autowired
     private ApplicationContext ctx;
+
+    /**
+     * Cache store.
+     */
+    @Autowired
+    private BitcoinDataServiceCacheStore cacheStore;
 
     /**
      * Bitcoin data service.
@@ -79,15 +86,15 @@ public class BitcoindCacheTest {
                 .isEqualTo(101);
 
         // Checking that the next block to read 102 is in cache.
-        assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == lastBlockSaved + 1))
+        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + 1))
                 .as("Checking that the block %s is in cache", lastBlockSaved + 1)
                 .isTrue();
         // Checking that the block 201 (lastBlockSaved + BUFFER_SIZE) is in cache thanks to the cache loader.
-        assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == lastBlockSaved + BITCOIND_BUFFER_SIZE))
+        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE))
                 .as("Checking that the block %s is in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE)
                 .isTrue();
         // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.
-        assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
+        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
                 .as("Checking that the block %s is not in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE + 1)
                 .isFalse();
 
@@ -102,7 +109,7 @@ public class BitcoindCacheTest {
 
         // We check that 202 is waiting in the buffer
         // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.
-        assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
+        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
                 .as("Checking that the block %s is in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE + 1)
                 .isTrue();
 
@@ -110,13 +117,13 @@ public class BitcoindCacheTest {
         // We check until 299 because of mock.
         for (long i = lastBlockSaved + BITCOIND_BUFFER_SIZE + 1;i <= 299;i++) {
             final long j = i;
-            assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == j))
+            assertThat(cacheStore.isBlockDataInCache(j))
                     .as("Checking that the block %s is in cache", i)
                     .isTrue();
         }
 
         // We check that the block 101 should not be anymore in cache.
-        assertThat(bitcoinDataService.getBuffer().stream().anyMatch(b -> b.getBlock().getHeight() == lastBlockSaved))
+        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved))
                 .as("Checking that the block %s is NO MORE in cache", lastBlockSaved)
                 .isFalse();
 

@@ -55,6 +55,13 @@ public interface StatusService {
 	 */
 	String getLastError();
 
+    /**
+     * Add an error message.
+     *
+     * @param errorMessage error message
+     */
+    void addError(String errorMessage);
+
 	/**
 	 * Add an error message.
 	 *

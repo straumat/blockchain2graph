@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
+package com.oakinvest.b2g.service.bitcoin;
 
 import com.oakinvest.b2g.service.BitcoinDataService;
 import org.springframework.scheduling.annotation.Async;
@@ -11,7 +11,7 @@ import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_B
  * Created by straumat on 04/06/17.
  */
 @Component
-public class BitcoindCacheLoader {
+public class BitcoinDataServiceCacheLoader {
 
     /**
      * Bitcoind service.
@@ -22,7 +22,7 @@ public class BitcoindCacheLoader {
      * Constructor.
      * @param newBitcoinDataService    bitcoin data service
      */
-    public BitcoindCacheLoader(final BitcoinDataService newBitcoinDataService) {
+    public BitcoinDataServiceCacheLoader(final BitcoinDataService newBitcoinDataService) {
         this.bitcoinDataService = newBitcoinDataService;
     }
 

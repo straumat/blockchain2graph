@@ -168,7 +168,20 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 		return lastError;
 	}
 
-	/**
+    /**
+     * Add an error message.
+     *
+     * @param errorMessage error message
+     */
+    @Override
+    public final void addError(final String errorMessage) {
+        String date = getFormattedCurrentDate();
+        lastError = "[" + date + "] " + errorMessage;
+        statusHandler.updateLog("[" + date + "] " + errorMessage);
+        statusHandler.updateError("[" + date + "] " + errorMessage);
+    }
+
+    /**
 	 * Add an error message.
 	 *
 	 * @param errorMessage error message
