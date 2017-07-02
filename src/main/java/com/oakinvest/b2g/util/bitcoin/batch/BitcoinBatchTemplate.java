@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -117,6 +118,13 @@ public abstract class BitcoinBatchTemplate {
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void execute() {
+	    // We recreate a transaction from times to times.
+        final int bound = 1000;
+        int randomNum = ThreadLocalRandom.current().nextInt(0, bound);
+        if (randomNum == bound) {
+            session = new SessionFactory("com.oakinvest.b2g").openSession();
+        }
+
 		addLog(LOG_SEPARATOR);
 		batchStartTime = System.currentTimeMillis();
 		try {
@@ -131,7 +139,6 @@ public abstract class BitcoinBatchTemplate {
 
                 // If the process ended well.
 				if (blockToProcess.isPresent()) {
-
 					// If the block has been well processed, we change the state and we save it.
 					blockToProcess.get().setState(getNewStateOfProcessedBlock());
 					blockRepository.save(blockToProcess.get());
@@ -148,8 +155,8 @@ public abstract class BitcoinBatchTemplate {
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
 		} catch (Exception e) {
-			addError("An error occurred while processing block " + getBlockHeightToProcess() + " : " + e.getMessage(), e);
-			session = new SessionFactory("com.oakinvest.b2g").openSession();
+			addError("An error occurred while processing block " + getFormattedBlockHeight(getBlockHeightToProcess().get()) + " : " + e.getMessage(), e);
+			getSession().getTransaction().close();
 		} finally {
 			getSession().clear();
 		}
