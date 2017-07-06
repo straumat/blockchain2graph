@@ -155,7 +155,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 		String date = getFormattedCurrentDate();
 		lastLog = "[" + date + "] " + logMessage;
 		statusHandler.updateLog("[" + date + "] " + logMessage);
-		log.info(logMessage);
+		//log.info(logMessage);
 	}
 
 	/**
