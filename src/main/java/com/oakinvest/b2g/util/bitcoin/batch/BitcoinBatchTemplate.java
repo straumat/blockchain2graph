@@ -118,13 +118,6 @@ public abstract class BitcoinBatchTemplate {
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void execute() {
-	    // We recreate a transaction from times to times.
-        final int bound = 1000;
-        int randomNum = ThreadLocalRandom.current().nextInt(0, bound);
-        if (randomNum == bound) {
-            session = new SessionFactory("com.oakinvest.b2g").openSession();
-        }
-
 		addLog(LOG_SEPARATOR);
 		batchStartTime = System.currentTimeMillis();
 		try {
