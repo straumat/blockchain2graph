@@ -188,7 +188,7 @@ public class StatusHandler extends TextWebSocketHandler {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Error sending message : " + e.getMessage(), e);
+			log.warn("Error sending message : " + e.getMessage());
 		}
 	}
 

@@ -3,8 +3,6 @@ package com.oakinvest.b2g.test.cache;
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.service.BitcoinDataService;
-import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,12 +39,6 @@ public class BitcoindCacheTest {
      */
     @Autowired
     private BitcoinDataServiceCacheStore cacheStore;
-
-    /**
-     * Bitcoin data service.
-     */
-    @Autowired
-    private BitcoinDataService bitcoinDataService;
 
     /**
      * Import batch.
@@ -116,8 +108,7 @@ public class BitcoindCacheTest {
         // In fact, all blocks from 202 to 302 should be in cache.
         // We check until 299 because of mock.
         for (long i = lastBlockSaved + BITCOIND_BUFFER_SIZE + 1;i <= 299;i++) {
-            final long j = i;
-            assertThat(cacheStore.isBlockDataInCache(j))
+            assertThat(cacheStore.isBlockDataInCache(i))
                     .as("Checking that the block %s is in cache", i)
                     .isTrue();
         }

@@ -114,9 +114,7 @@ public class BitcoinDataServiceCacheStore {
     public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
         Optional<BitcoindBlockData> block = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
         // When the block is requested, we delete it from the buffer.
-        if (block.isPresent()) {
-            buffer.remove(block.get());
-        }
+        block.ifPresent(buffer::remove);
         return block;
     }
 

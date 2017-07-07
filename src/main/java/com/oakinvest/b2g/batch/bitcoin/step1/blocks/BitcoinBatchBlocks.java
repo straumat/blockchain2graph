@@ -24,7 +24,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     /**
      * Bitcoind cache loader.
      */
-    private BitcoinDataServiceCacheLoader bitcoindCacheLoader;
+    private final BitcoinDataServiceCacheLoader bitcoindCacheLoader;
 
 	/**
 	 * Log prefix.

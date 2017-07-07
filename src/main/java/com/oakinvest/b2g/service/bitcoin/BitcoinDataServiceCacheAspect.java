@@ -19,7 +19,7 @@ public class BitcoinDataServiceCacheAspect {
     /**
      * Cache store.
      */
-    private BitcoinDataServiceCacheStore cacheStore;
+    private final BitcoinDataServiceCacheStore cacheStore;
 
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class BitcoinDataServiceCacheAspect {
             // If it's not in the cache, we retrieve it.
             blockData = (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
             // If we retrieve if for the first time, we let it in cache.
-            blockData.ifPresent(b -> cacheStore.addBlockData(b));
+            blockData.ifPresent(cacheStore::addBlockData);
             return blockData;
         }
     }

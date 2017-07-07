@@ -138,17 +138,17 @@ public abstract class BitcoinBatchTemplate {
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
 
                 // If the process ended well.
-				if (blockToProcess.isPresent()) {
-					// If the block has been well processed, we change the state and we save it.
-					blockToProcess.get().setState(getNewStateOfProcessedBlock());
-					blockRepository.save(blockToProcess.get());
-					addLog("Block " + blockToProcess.get().getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
+                blockToProcess.ifPresent(bitcoinBlock -> {
+                    // If the block has been well processed, we change the state and we save it.
+                    bitcoinBlock.setState(getNewStateOfProcessedBlock());
+                    blockRepository.save(bitcoinBlock);
+                    addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
-					// If we are in the status "block imported", we update the status of number of blocks imported.
-					if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
-						status.setImportedBlockCount(blockToProcess.get().getHeight());
-					}
-				}
+                    // If we are in the status "block imported", we update the status of number of blocks imported.
+                    if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
+                        status.setImportedBlockCount(bitcoinBlock.getHeight());
+                    }
+                });
 			} else {
 				// If there is nothing to process.
 				addLog("No block to process");

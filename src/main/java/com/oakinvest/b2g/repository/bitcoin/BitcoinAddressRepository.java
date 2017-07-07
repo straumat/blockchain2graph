@@ -28,7 +28,7 @@ public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress
      * @return bitcoin address
      */
     @Query("MATCH (a:BitcoinAddress) WHERE a.address = {0} return a")
-	BitcoinAddress findSimpleByAddress(String address);
+	BitcoinAddress findByAddressWithoutDepth(String address);
 
 	/**
 	 * Find an address.
