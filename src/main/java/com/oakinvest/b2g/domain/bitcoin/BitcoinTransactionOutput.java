@@ -67,7 +67,7 @@ public class BitcoinTransactionOutput {
     /**
      * Address.
      */
-    @Relationship(type = "ADDRESS")
+    @Relationship(type = "ADDRESS", direction = Relationship.INCOMING)
     private BitcoinAddress bitcoinAddress;
 
 	@Override
