@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Bitcoin import batch - abstract model.
