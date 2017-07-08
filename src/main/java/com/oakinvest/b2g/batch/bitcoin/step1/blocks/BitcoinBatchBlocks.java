@@ -71,7 +71,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				}
 				// We return the block to process.
 				if (blockToProcess <= totalBlockCount.get()) {
-				    // We load the cache
+				    // We load the cache.
                     if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount.get()) {
                         bitcoindCacheLoader.loadCache(blockToProcess);
                     }
@@ -108,7 +108,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 			// -----------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
-			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
+			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
 			block.setPreviousBlock(previousBlock);
             addLog("Setting previous block of this block");
 			if (previousBlock != null) {

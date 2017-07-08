@@ -68,7 +68,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
+        BitcoinBlock blockToTreat = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data

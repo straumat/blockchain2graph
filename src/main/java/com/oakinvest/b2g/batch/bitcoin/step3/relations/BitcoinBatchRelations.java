@@ -66,7 +66,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        final BitcoinBlock blockToTreat = getBlockRepository().findByHeight(blockHeight);
+        final BitcoinBlock blockToTreat = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
         // we link the addresses to the input and the origin transaction.
