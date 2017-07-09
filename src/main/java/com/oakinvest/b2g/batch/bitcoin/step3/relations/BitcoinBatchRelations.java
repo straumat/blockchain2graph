@@ -71,6 +71,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         // -------------------------------------------------------------------------------------------------------------
         // we link the addresses to the input and the origin transaction.
         blockToTreat.getTx()
+                .parallelStream()
                 .forEach(
                         txId -> {
                             addLog("- Transaction " + txId);
