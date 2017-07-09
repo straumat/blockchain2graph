@@ -74,7 +74,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                 .parallelStream()
                 .forEach(
                         txId -> {
-                            addLog("- Transaction " + txId);
                             BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
 
                             // For each Vin.
@@ -93,7 +92,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                     .stream()
                                                     .filter(Objects::nonNull)
                                                     .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                            addLog("-- Done processing vin : " + vin);
+                                            //addLog("-- Done processing vin : " + vin);
                                         } else {
                                             throw new RuntimeException("Impossible to find original transaction");
                                         }
@@ -106,8 +105,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 .stream()
                                                 .filter(Objects::nonNull)
                                                 .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        addLog("-- Done processing vout : " + vout);
+                                        //addLog("-- Done processing vout : " + vout);
                                     });
+
+                            // Add log.
+                            addLog("- Transaction " + txId + " treated");
                         }
                 );
 
