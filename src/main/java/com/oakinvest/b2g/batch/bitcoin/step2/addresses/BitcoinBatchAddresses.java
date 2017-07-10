@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin import addresses batch.
@@ -73,14 +74,19 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
 		if (blockToTreat != null) {
+
+		    int size = 0;
+
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
+            final AtomicInteger txCounter = new AtomicInteger();
+            final int txSize = blockToTreat.getTx().size();
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
             addLog("Retrieving all address");
             blockToTreat.getTx()
                     .parallelStream()
 					.forEach(txId -> {
-                            addLog("- Inspecting transaction " + txId);
+                            addLog("- Inspecting transaction " + txId + " (" + txCounter.incrementAndGet() + '/' + txSize + ')');
                             getTransactionRepository().findByTxId(txId).getOutputs().stream()
                                     .filter(Objects::nonNull)
                                     .forEach(v -> v.getAddresses()

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin import relations batch.
@@ -70,6 +71,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
         // -------------------------------------------------------------------------------------------------------------
         // we link the addresses to the input and the origin transaction.
+        final AtomicInteger txCounter = new AtomicInteger();
+        final int txSize = blockToTreat.getTx().size();
         blockToTreat.getTx()
                 .parallelStream()
                 .forEach(
@@ -109,7 +112,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                     });
 
                             // Add log.
-                            addLog("- Transaction " + txId + " treated");
+                            addLog("- Transaction " + txId + " treated (" + txCounter.incrementAndGet() + "/" + txSize + ")");
                         }
                 );
 
