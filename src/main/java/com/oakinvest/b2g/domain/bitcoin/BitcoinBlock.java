@@ -33,7 +33,7 @@ public class BitcoinBlock {
 	/**
 	 * Transactions in the block.
 	 */
-	@Relationship(type = "TRANSACTIONS")
+	@Relationship(type = "TRANSACTIONS", direction = Relationship.INCOMING)
 	private Set<BitcoinTransaction> transactions = new HashSet<>();
 
 	/**
