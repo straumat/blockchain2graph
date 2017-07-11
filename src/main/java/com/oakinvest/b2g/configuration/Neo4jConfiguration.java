@@ -23,6 +23,7 @@ public class Neo4jConfiguration {
      */
     public Neo4jConfiguration() {
         try {
+            // Constraints.
             Session session = new SessionFactory("com.oakinvest.b2g").openSession();
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());

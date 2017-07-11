@@ -6,6 +6,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheLoader;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     /**
      * Bitcoind cache loader.
      */
-    private BitcoindCacheLoader bitcoindCacheLoader;
+    private final BitcoinDataServiceCacheLoader bitcoindCacheLoader;
 
 	/**
 	 * Log prefix.
@@ -38,7 +39,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      * @param newStatus                 status
      * @param newBitcoindCacheLoader    bitcoin cache loader
      */
-    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoindCacheLoader newBitcoindCacheLoader) {
+    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus);
         bitcoindCacheLoader = newBitcoindCacheLoader;
     }
@@ -60,18 +61,18 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     protected final Optional<Long> getBlockHeightToProcess() {
 		// We retrieve the next block to process according to the database.
 		Long blockToProcess = getBlockRepository().count() + 1;
-		final long totalBlockCount = getBitcoinDataService().getBlockCount();
+        final Optional<Long> totalBlockCount = getBitcoinDataService().getBlockCount();
 
 		// We check if that next block exists by retrieving the block count.
-        if (totalBlockCount != -1) {
+        if (totalBlockCount.isPresent()) {
 				// We update the global status of blockcount (if needed).
-				if (totalBlockCount != getStatus().getTotalBlockCount()) {
-					getStatus().setTotalBlockCount(totalBlockCount);
+				if (totalBlockCount.get() != getStatus().getTotalBlockCount()) {
+					getStatus().setTotalBlockCount(totalBlockCount.get());
 				}
 				// We return the block to process.
-				if (blockToProcess <= totalBlockCount) {
-				    // We load the cache
-                    if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount) {
+				if (blockToProcess <= totalBlockCount.get()) {
+				    // We load the cache.
+                    if (blockToProcess + BITCOIND_BUFFER_SIZE <= totalBlockCount.get()) {
                         bitcoindCacheLoader.loadCache(blockToProcess);
                     }
 					// If there is still block after this one, we continue.
@@ -107,7 +108,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
 			// -----------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
-			BitcoinBlock previousBlock = getBlockRepository().findByHash(block.getPreviousBlockHash());
+			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
 			block.setPreviousBlock(previousBlock);
             addLog("Setting previous block of this block");
 			if (previousBlock != null) {

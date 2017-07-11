@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin import addresses batch.
@@ -68,19 +69,24 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        BitcoinBlock blockToProcess = getBlockRepository().findByHeight(blockHeight);
+        BitcoinBlock blockToTreat = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
-		if (blockToProcess != null) {
+		if (blockToTreat != null) {
+
+		    int size = 0;
+
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
+            final AtomicInteger txCounter = new AtomicInteger();
+            final int txSize = blockToTreat.getTx().size();
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
             addLog("Retrieving all address");
-            blockToProcess.getTx()
+            blockToTreat.getTx()
                     .parallelStream()
 					.forEach(txId -> {
-                            addLog("- Inspecting transaction " + txId);
+                            addLog("- Inspecting transaction " + txId + " (" + txCounter.incrementAndGet() + '/' + txSize + ')');
                             getTransactionRepository().findByTxId(txId).getOutputs().stream()
                                     .filter(Objects::nonNull)
                                     .forEach(v -> v.getAddresses()
@@ -105,7 +111,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return Optional.of(blockToProcess);
+			return Optional.of(blockToTreat);
 		} else {
 			addError("Impossible to find the block " + getFormattedBlockHeight(blockHeight));
 			return Optional.empty();

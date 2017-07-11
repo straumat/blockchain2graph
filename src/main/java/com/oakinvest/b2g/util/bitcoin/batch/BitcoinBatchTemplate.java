@@ -130,26 +130,25 @@ public abstract class BitcoinBatchTemplate {
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
 
                 // If the process ended well.
-				if (blockToProcess.isPresent()) {
+                blockToProcess.ifPresent(bitcoinBlock -> {
+                    // If the block has been well processed, we change the state and we save it.
+                    bitcoinBlock.setState(getNewStateOfProcessedBlock());
+                    blockRepository.save(bitcoinBlock);
+                    addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
-					// If the block has been well processed, we change the state and we save it.
-					blockToProcess.get().setState(getNewStateOfProcessedBlock());
-					blockRepository.save(blockToProcess.get());
-					addLog("Block " + blockToProcess.get().getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
-
-					// If we are in the status "block imported", we update the status of number of blocks imported.
-					if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
-						status.setImportedBlockCount(blockToProcess.get().getHeight());
-					}
-				}
+                    // If we are in the status "block imported", we update the status of number of blocks imported.
+                    if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
+                        status.setImportedBlockCount(bitcoinBlock.getHeight());
+                    }
+                });
 			} else {
 				// If there is nothing to process.
 				addLog("No block to process");
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
 		} catch (Exception e) {
-			addError("An error occurred while processing block " + getBlockHeightToProcess() + " : " + e.getMessage(), e);
-			session = new SessionFactory("com.oakinvest.b2g").openSession();
+			addError("An error occurred while processing block " + getFormattedBlockHeight(getBlockHeightToProcess().get()) + " : " + e.getMessage(), e);
+			getSession().getTransaction().close();
 		} finally {
 			getSession().clear();
 		}

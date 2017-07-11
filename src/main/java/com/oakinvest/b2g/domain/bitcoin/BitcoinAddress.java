@@ -4,10 +4,6 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Represents a bitcoin address.
@@ -28,74 +24,6 @@ public class BitcoinAddress {
 	@Index(unique = true, primary = true)
 	@Property(name = "address")
 	private String address;
-
-	/**
-	 * Input transactions.
-	 */
-	@Relationship(type = "IN_TRANSACTION_INPUTS", direction = Relationship.OUTGOING)
-	private Set<BitcoinTransactionInput> inputTransactions = new HashSet<>();
-
-	/**
-	 * Output transactions.
-	 */
-	@Relationship(type = "IN_TRANSACTION_OUTPUTS", direction = Relationship.OUTGOING)
-	private Set<BitcoinTransactionOutput> outputTransactions = new HashSet<>();
-
-	/**
-	 * Getter inputTransactions.
-	 *
-	 * @return inputTransactions
-	 */
-	public final Set<BitcoinTransactionInput> getInputTransactions() {
-		return inputTransactions;
-	}
-
-	/**
-	 * Setter of inputTransactions.
-	 *
-	 * @param newInputTransactions the inputTransactions to set
-	 */
-	@Relationship
-	public final void setInputTransactions(final Set<BitcoinTransactionInput> newInputTransactions) {
-		inputTransactions = newInputTransactions;
-	}
-
-	/**
-	 * Getter outputTransactions.
-	 *
-	 * @return outputTransactions
-	 */
-	public final Set<BitcoinTransactionOutput> getOutputTransactions() {
-		return outputTransactions;
-	}
-
-	/**
-	 * Setter of outputTransactions.
-	 *
-	 * @param newOutputTransactions the outputTransactions to set
-	 */
-	@Relationship
-	public final void setOutputTransactions(final Set<BitcoinTransactionOutput> newOutputTransactions) {
-		outputTransactions = newOutputTransactions;
-	}
-
-	/**
-	 * Getter of inputTransactions.
-	 *
-	 * @return inputTransactions
-	 */
-	public final Set<BitcoinTransactionInput> getWithdrawals() {
-		return inputTransactions;
-	}
-
-	/**
-	 * Getter of outputTransactions.
-	 *
-	 * @return outputTransactions
-	 */
-	public final Set<BitcoinTransactionOutput> getDeposits() {
-		return outputTransactions;
-	}
 
 	/**
 	 * Getter of id.
@@ -165,7 +93,7 @@ public class BitcoinAddress {
 
     @Override
     public final String toString() {
-        return "BitcoinAddress{address='" + address + "'}'";
+        return address;
     }
 
 }

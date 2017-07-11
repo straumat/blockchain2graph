@@ -17,12 +17,6 @@ import java.util.Set;
 public class BitcoinTransactionOutput {
 
 	/**
-	 * Addresses.
-	 */
-	@Relationship(type = "FOR_ADDRESS")
-	private final Set<BitcoinAddress> bitcoinAddresses = new HashSet<>();
-
-	/**
 	 * ID.
 	 */
 	@GraphId
@@ -70,11 +64,17 @@ public class BitcoinTransactionOutput {
 	@Property(name = "addresses")
 	private Set<String> addresses = new HashSet<>();
 
+    /**
+     * Address.
+     */
+    @Relationship(type = "ADDRESS", direction = Relationship.INCOMING)
+    private BitcoinAddress bitcoinAddress;
+
 	@Override
 	public final String toString() {
 		StringBuilder description = new StringBuilder(getValue() + " -> ");
 		if (getAddresses() == null || getAddresses().size() == 0) {
-			description.append("No address");
+			description.append("No bitcoinAddress");
 		} else {
 			Iterator<String> it = getAddresses().iterator();
 			while (it.hasNext()) {
@@ -87,7 +87,24 @@ public class BitcoinTransactionOutput {
 		return description.toString();
 	}
 
-	/**
+    /**
+     * Getter.
+     *
+     * @return bitcoin address
+     */
+    public final BitcoinAddress getBitcoinAddress() {
+        return bitcoinAddress;
+    }
+
+    /**
+     * Setter.
+     * @param newAddress bitcoin bitcoinAddress
+     */
+    public final void setBitcoinAddress(final BitcoinAddress newAddress) {
+        this.bitcoinAddress = newAddress;
+    }
+
+    /**
 	 * Getter of scriptPubKeyReqSigs.
 	 *
 	 * @return scriptPubKeyReqSigs
@@ -139,15 +156,6 @@ public class BitcoinTransactionOutput {
 	 */
 	public final void setAddresses(final Set<String> newAddresses) {
 		addresses = newAddresses;
-	}
-
-	/**
-	 * Getter of bitcoinAddresses.
-	 *
-	 * @return bitcoinAddresses
-	 */
-	public final Set<BitcoinAddress> getBitcoinAddresses() {
-		return bitcoinAddresses;
 	}
 
 	/**

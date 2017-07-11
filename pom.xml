@@ -6,7 +6,7 @@
 	<!-- Project information -->
 	<groupId>com.oakinvest.b2g</groupId>
 	<artifactId>blockchain2graph</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<packaging>war</packaging>
 	<name>blockchain2graph</name>
 	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
