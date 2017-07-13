@@ -71,7 +71,7 @@
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
-		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+		<maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
         <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
         <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->

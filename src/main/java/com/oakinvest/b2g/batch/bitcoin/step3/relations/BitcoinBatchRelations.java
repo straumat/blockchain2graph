@@ -74,10 +74,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToTreat.getTx().size();
         blockToTreat.getTx()
-                .parallelStream()
                 .forEach(
                         txId -> {
                             BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
+ //                           t = getSession().load(BitcoinTransaction.class, txId);
 
                             // For each Vin.
                             t.getInputs()

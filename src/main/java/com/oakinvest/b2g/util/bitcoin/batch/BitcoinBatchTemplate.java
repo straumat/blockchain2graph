@@ -159,7 +159,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return session
      */
-    private  Session getSession() {
+    private Session getSession() {
         return session;
     }
 
