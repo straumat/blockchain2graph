@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step3.relations;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinBatchRelations extends BitcoinBatchTemplate {
+public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
 
     /**
      * Log prefix.
@@ -33,7 +33,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
      */
-    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+    public BitcoinBatchBlocksRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus);
     }
 
@@ -67,17 +67,17 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        final BitcoinBlock blockToTreat = getBlockRepository().findByHeightWithoutDepth(blockHeight);
+        final BitcoinBlock blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
         // we link the addresses to the input and the origin transaction.
         final AtomicInteger txCounter = new AtomicInteger();
-        final int txSize = blockToTreat.getTx().size();
-        blockToTreat.getTx()
+        final int txSize = blockToProcess.getTx().size();
+        blockToProcess.getTx()
                 .forEach(
                         txId -> {
                             BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
- //                           t = getSession().load(BitcoinTransaction.class, txId);
+                            addLog("- Treating transaction " + txId + " (vin:" + t.getInputs().size() + " / vout:" + t.getOutputs().size() + ")");
 
                             // For each Vin.
                             t.getInputs()
@@ -95,7 +95,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                     .stream()
                                                     .filter(Objects::nonNull)
                                                     .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                            //addLog("-- Done processing vin : " + vin);
+                                            addLog("-- Done processing vin : " + vin);
                                         } else {
                                             throw new RuntimeException("Impossible to find original transaction");
                                         }
@@ -108,7 +108,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 .stream()
                                                 .filter(Objects::nonNull)
                                                 .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        //addLog("-- Done processing vout : " + vout);
+                                        addLog("-- Done processing vout : " + vout);
                                     });
 
                             // Add log.
@@ -116,7 +116,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                         }
                 );
 
-        return Optional.of(blockToTreat);
+        return Optional.of(blockToProcess);
     }
 
     /**

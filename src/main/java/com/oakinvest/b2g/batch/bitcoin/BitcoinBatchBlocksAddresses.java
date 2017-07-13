@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step2.addresses;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
+public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 
 	/**
 	 * Log prefix.
@@ -35,7 +35,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
      */
-    public BitcoinBatchAddresses(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+    public BitcoinBatchBlocksAddresses(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus);
     }
 
@@ -69,21 +69,21 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        BitcoinBlock blockToTreat = getBlockRepository().findByHeightWithoutDepth(blockHeight);
+        BitcoinBlock blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
-		if (blockToTreat != null) {
+		if (blockToProcess != null) {
 
 		    int size = 0;
 
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
             final AtomicInteger txCounter = new AtomicInteger();
-            final int txSize = blockToTreat.getTx().size();
+            final int txSize = blockToProcess.getTx().size();
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
             addLog("Retrieving all address");
-            blockToTreat.getTx()
+            blockToProcess.getTx()
                     .parallelStream()
 					.forEach(txId -> {
                             addLog("- Inspecting transaction " + txId + " (" + txCounter.incrementAndGet() + '/' + txSize + ')');
@@ -111,7 +111,7 @@ public class BitcoinBatchAddresses extends BitcoinBatchTemplate {
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return Optional.of(blockToTreat);
+			return Optional.of(blockToProcess);
 		} else {
 			addError("Impossible to find the block " + getFormattedBlockHeight(blockHeight));
 			return Optional.empty();

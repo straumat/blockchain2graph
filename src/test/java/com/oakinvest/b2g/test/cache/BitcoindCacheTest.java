@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.test.cache;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.junit.Before;

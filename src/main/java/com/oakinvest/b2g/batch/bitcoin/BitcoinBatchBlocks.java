@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin.step1.blocks;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -100,25 +100,25 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 		if (blockData.isPresent()) {
 			// ---------------------------------------------------------------------------------------------------------
 			// Then, if the block doesn't exists, we map it to save it.
-			BitcoinBlock block = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
-			if (block == null) {
-				block = getMapper().blockDataToBitcoinBlock(blockData.get());
+			BitcoinBlock blockToProcess = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
+			if (blockToProcess == null) {
+				blockToProcess = getMapper().blockDataToBitcoinBlock(blockData.get());
             }
-			addLog("This block has " + block.getTx().size() + " transaction(s)");
+			addLog("This block has " + blockToProcess.getTx().size() + " transaction(s)");
 
 			// -----------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
-			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
-			block.setPreviousBlock(previousBlock);
+			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
+			blockToProcess.setPreviousBlock(previousBlock);
             addLog("Setting previous block of this block");
 			if (previousBlock != null) {
-				previousBlock.setNextBlock(block);
+				previousBlock.setNextBlock(blockToProcess);
                 addLog("Setting this block next block of the previous one");
 			}
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
-			return Optional.of(block);
+			return Optional.of(blockToProcess);
 		} else {
 			// Or nothing if we did not retrieve the data.
 			addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));

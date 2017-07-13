@@ -1,9 +1,9 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.bitcoin.step1.blocks.BitcoinBatchBlocks;
-import com.oakinvest.b2g.batch.bitcoin.step2.addresses.BitcoinBatchAddresses;
-import com.oakinvest.b2g.batch.bitcoin.step3.relations.BitcoinBatchRelations;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksAddresses;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -85,13 +85,13 @@ public class BitcoinImportTest {
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinBatchAddresses batchAddresses;
+	private BitcoinBatchBlocksAddresses batchAddresses;
 
 	/**
 	 * Import batch.
 	 */
 	@Autowired
-	private BitcoinBatchRelations batchRelations;
+	private BitcoinBatchBlocksRelations batchRelations;
 
 	/**
 	 * Import batch.
