@@ -86,12 +86,22 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                     .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // We retrieve the original transaction.
-                                        Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByTxIdAndIndex(vin.getTxId(), vin.getvOut());
+                                        vin.setTransactionOutput(originTransactionOutput);
+
+                                        // We set all the addresses linked to this input.
+                                        originTransactionOutput.getAddresses()
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+
+                                        // We retrieve the original transaction.
+     /*                                   Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
                                         if (originTransactionOutput.isPresent()) {
                                             // We set the addresses "from".
                                             vin.setTransactionOutput(originTransactionOutput.get());
 
-                                            // We set all the addresses linked to this input
+                                            // We set all the addresses linked to this input.
                                             originTransactionOutput.get().getAddresses()
                                                     .stream()
                                                     .filter(Objects::nonNull)
@@ -100,7 +110,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                         } else {
                                             throw new RuntimeException("Impossible to find original transaction");
                                         }
-                                    });
+     */                               });
 
                             // For each Vout.
                             t.getOutputs()
@@ -112,7 +122,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                         //addLog("-- Done processing vout : " + vout);
                                     });
 
-                            // Add log.
+                            // Add log to say we are done.
                             addLog("-- Transaction " + txId + " treated (" + txCounter.incrementAndGet() + "/" + txSize + ")");
                         }
                 );

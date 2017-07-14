@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BitcoinTransactionOutputRepository extends GraphRepository<BitcoinTransactionOutput> {
+
+    /**
+     * Find a block by its id.
+     *
+     * @param txId transaction id
+     * @param index index
+     * @return transaction
+     */
+    @Query("MATCH (n:BitcoinTransactionOutput) USING INDEX n:BitcoinTransactionOutput(txid, n) WHERE n.txid = {0} and n.n = {1} RETURN n")
+    BitcoinTransactionOutput findByTxIdAndIndex(String txId, int index);
 
 }

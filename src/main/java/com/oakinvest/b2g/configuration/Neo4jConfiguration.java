@@ -32,6 +32,7 @@ public class Neo4jConfiguration {
             session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
             // Indexes.
             session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
+            session.query("CREATE INDEX ON :BitcoinTransactionOutput(txid, n)", Collections.emptyMap());
         } catch (Exception e) {
             LoggerFactory.getLogger(Neo4jConfiguration.class).error("Error creating constraints & indexes : " + e.getMessage(), e);
         }

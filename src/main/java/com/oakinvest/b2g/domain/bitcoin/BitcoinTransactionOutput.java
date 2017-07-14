@@ -22,6 +22,12 @@ public class BitcoinTransactionOutput {
 	@GraphId
 	private Long id;
 
+    /**
+     * Link to the transaction where the transaction output is.
+     */
+    @Property(name = "txid")
+    private String txId;
+
 	/**
 	 * The value in BTC.
 	 */
@@ -176,7 +182,23 @@ public class BitcoinTransactionOutput {
 		id = newId;
 	}
 
-	/**
+    /**
+     * Getter.
+     * @return transaction id
+     */
+    public final String getTxId() {
+        return txId;
+    }
+
+    /**
+     * Setter.
+     * @param newTxId new tx id
+     */
+    public final void setTxId(final String newTxId) {
+        this.txId = newTxId;
+    }
+
+    /**
 	 * Getter of value.
 	 *
 	 * @return value

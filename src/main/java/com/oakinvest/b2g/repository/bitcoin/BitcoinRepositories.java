@@ -25,15 +25,29 @@ public class BitcoinRepositories {
     private final BitcoinTransactionRepository bitcoinTransactionRepository;
 
     /**
+     * Bitcoin transaction input repository.
+     */
+    private final BitcoinTransactionInputRepository bitcoinTransactionInputRepository;
+
+    /**
+     * Bitcoin transaction output repository.
+     */
+    private final BitcoinTransactionOutputRepository bitcoinTransactionOutputRepository;
+
+    /**
      * Constructor.
      * @param newBitcoinAddressRepository Bitcoin address repository
      * @param newBitcoinBlockRepository Bitcoin block repository
      * @param newBitcoinTransactionRepository Bitcoin transaction repository
+     * @param newBitcoinTransactionInputRepository Bitcoin transaction input repository
+     * @param newBitcoinTransactionOutputRepository Bitcoin transaction ouput repository
      */
-    public BitcoinRepositories(final BitcoinAddressRepository newBitcoinAddressRepository, final BitcoinBlockRepository newBitcoinBlockRepository, final BitcoinTransactionRepository newBitcoinTransactionRepository) {
+    public BitcoinRepositories(final BitcoinAddressRepository newBitcoinAddressRepository, final BitcoinBlockRepository newBitcoinBlockRepository, final BitcoinTransactionRepository newBitcoinTransactionRepository, final BitcoinTransactionInputRepository newBitcoinTransactionInputRepository, final BitcoinTransactionOutputRepository newBitcoinTransactionOutputRepository) {
         this.bitcoinAddressRepository = newBitcoinAddressRepository;
         this.bitcoinBlockRepository = newBitcoinBlockRepository;
         this.bitcoinTransactionRepository = newBitcoinTransactionRepository;
+        this.bitcoinTransactionInputRepository = newBitcoinTransactionInputRepository;
+        this.bitcoinTransactionOutputRepository = newBitcoinTransactionOutputRepository;
     }
 
     /**
@@ -58,6 +72,22 @@ public class BitcoinRepositories {
      */
     public final BitcoinTransactionRepository getBitcoinTransactionRepository() {
         return bitcoinTransactionRepository;
+    }
+
+    /**
+     * Getter.
+     * @return bitcoin transaction input repository
+     */
+    public final BitcoinTransactionInputRepository getBitcoinTransactionInputRepository() {
+        return bitcoinTransactionInputRepository;
+    }
+
+    /**
+     * Getter.
+     * @return Bitcoin transaction ouput repository
+     */
+    public final BitcoinTransactionOutputRepository getBitcoinTransactionOutputRepository() {
+        return bitcoinTransactionOutputRepository;
     }
 
 }
