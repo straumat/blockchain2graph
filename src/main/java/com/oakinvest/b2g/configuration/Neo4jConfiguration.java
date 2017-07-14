@@ -23,8 +23,9 @@ public class Neo4jConfiguration {
      */
     public Neo4jConfiguration() {
         try {
-            // Constraints.
+            // Session.
             Session session = new SessionFactory("com.oakinvest.b2g").openSession();
+            // Constraints.
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
@@ -32,7 +33,7 @@ public class Neo4jConfiguration {
             // Indexes.
             session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
         } catch (Exception e) {
-            LoggerFactory.getLogger(Neo4jConfiguration.class).error("Error creating index " + e.getMessage(), e);
+            LoggerFactory.getLogger(Neo4jConfiguration.class).error("Error creating constraints & indexes : " + e.getMessage(), e);
         }
     }
 
