@@ -15,11 +15,10 @@ public interface BitcoinTransactionOutputRepository extends GraphRepository<Bitc
     /**
      * Find a block by its id.
      *
-     * @param txId transaction id
-     * @param index index
+     * @param key transaction id = index
      * @return transaction
      */
-    @Query("MATCH (n:BitcoinTransactionOutput) USING INDEX n:BitcoinTransactionOutput(txid, n) WHERE n.txid = {0} and n.n = {1} RETURN n")
-    BitcoinTransactionOutput findByTxIdAndIndex(String txId, int index);
+    @Query("MATCH (n:BitcoinTransactionOutput) USING INDEX n:BitcoinTransactionOutput(key) WHERE n.key = {0} RETURN n")
+    BitcoinTransactionOutput findByKey(String key);
 
 }
