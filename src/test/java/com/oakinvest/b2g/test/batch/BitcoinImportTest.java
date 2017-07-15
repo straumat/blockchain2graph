@@ -369,7 +369,6 @@ public class BitcoinImportTest {
 		// Data to test.
 		final String address = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
 		final BitcoinAddress bitcoinAddress = bar.findByAddress(address);
-		final String addressWithCoinbase = "1562oGAGjMnQU5VsppQ8R2Hs4ab6WaeGBW";
 
         //  Transaction 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9.
         //  Coinbase                            =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (50)
