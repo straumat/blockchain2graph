@@ -26,7 +26,7 @@ public class BitcoinBlock {
 	/**
 	 * Block hash.
 	 */
-	@Index(unique = true, primary = true)
+    @Index
 	@Property(name = "hash")
 	private String hash;
 

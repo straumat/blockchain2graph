@@ -32,7 +32,7 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction id (same as provided).
 	 */
-	@Index(unique = true, primary = true)
+    @Index
 	@Property(name = "txid")
 	private String txId;
 
