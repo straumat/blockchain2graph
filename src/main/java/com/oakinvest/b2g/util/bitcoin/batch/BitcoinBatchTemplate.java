@@ -161,9 +161,9 @@ public abstract class BitcoinBatchTemplate {
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
 		} catch (Exception e) {
-			addError("An error occurred while processing block " + e.getMessage(), e);
+		    addError("An error occurred while processing block : " + e.getMessage(), e);
 			session = new SessionFactory("com.oakinvest.b2g").openSession();
-		} finally {
+        } finally {
 			getSession().clear();
 		}
 	}

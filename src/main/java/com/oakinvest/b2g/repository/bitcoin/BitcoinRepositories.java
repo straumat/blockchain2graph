@@ -40,7 +40,7 @@ public class BitcoinRepositories {
      * @param newBitcoinBlockRepository Bitcoin block repository
      * @param newBitcoinTransactionRepository Bitcoin transaction repository
      * @param newBitcoinTransactionInputRepository Bitcoin transaction input repository
-     * @param newBitcoinTransactionOutputRepository Bitcoin transaction ouput repository
+     * @param newBitcoinTransactionOutputRepository Bitcoin transaction output repository
      */
     public BitcoinRepositories(final BitcoinAddressRepository newBitcoinAddressRepository, final BitcoinBlockRepository newBitcoinBlockRepository, final BitcoinTransactionRepository newBitcoinTransactionRepository, final BitcoinTransactionInputRepository newBitcoinTransactionInputRepository, final BitcoinTransactionOutputRepository newBitcoinTransactionOutputRepository) {
         this.bitcoinAddressRepository = newBitcoinAddressRepository;
@@ -84,7 +84,7 @@ public class BitcoinRepositories {
 
     /**
      * Getter.
-     * @return Bitcoin transaction ouput repository
+     * @return Bitcoin transaction output repository
      */
     public final BitcoinTransactionOutputRepository getBitcoinTransactionOutputRepository() {
         return bitcoinTransactionOutputRepository;

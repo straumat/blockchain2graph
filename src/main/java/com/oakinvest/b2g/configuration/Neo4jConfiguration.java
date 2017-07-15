@@ -29,10 +29,10 @@ public class Neo4jConfiguration {
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.height IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinTransaction) ASSERT n.txid IS UNIQUE", Collections.emptyMap());
-            session.query("CREATE CONSTRAINT ON (n:BitcoinTransactionOutput) ASSERT n.key IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
             // Indexes.
             session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
+            session.query("CREATE INDEX ON :BitcoinTransactionOutput(txid, n)", Collections.emptyMap());
         } catch (Exception e) {
             LoggerFactory.getLogger(Neo4jConfiguration.class).error("Error creating constraints & indexes : " + e.getMessage(), e);
         }

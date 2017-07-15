@@ -74,6 +74,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
         blockToProcess.getTx()
+                .parallelStream()
                 .forEach(
                         txId -> {
                             // Retrieving the transaction.
@@ -82,11 +83,11 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
 
                             // For each Vin.
                             t.getInputs()
-                                    .parallelStream()
+                                    .stream()
                                     .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByKey(vin.getTxId() + "-"  + vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByTxIdAndIndex(vin.getTxId(), vin.getvOut());
                                         vin.setTransactionOutput(originTransactionOutput);
 
                                         // We set all the addresses linked to this input.
@@ -96,7 +97,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                                 .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
 
                                         // We retrieve the original transaction.
-     /*                                   Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getKey()).getOutputByIndex(vin.getvOut());
+     /*                                   Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
                                         if (originTransactionOutput.isPresent()) {
                                             // We set the addresses "from".
                                             vin.setTransactionOutput(originTransactionOutput.get());

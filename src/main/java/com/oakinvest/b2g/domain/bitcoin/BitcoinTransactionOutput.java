@@ -23,10 +23,10 @@ public class BitcoinTransactionOutput {
 	private Long id;
 
     /**
-     * Composite field : txid + n.
+     * Link to the transaction where the transaction output is.
      */
-    @Property(name = "key")
-    private String key;
+    @Property(name = "txid")
+    private String txId;
 
 	/**
 	 * The value in BTC.
@@ -186,16 +186,16 @@ public class BitcoinTransactionOutput {
      * Getter.
      * @return transaction id
      */
-    public final String getKey() {
-        return key;
+    public final String getTxId() {
+        return txId;
     }
 
     /**
      * Setter.
      * @param newTxId new tx id
      */
-    public final void setKey(final String newTxId) {
-        this.key = newTxId;
+    public final void setTxId(final String newTxId) {
+        this.txId = newTxId;
     }
 
     /**

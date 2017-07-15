@@ -75,8 +75,6 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 		// If we have the data
 		if (blockToProcess != null) {
 
-		    int size = 0;
-
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
             final AtomicInteger txCounter = new AtomicInteger();

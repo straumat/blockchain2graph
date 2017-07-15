@@ -107,7 +107,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     if (r.getError() == null) {
                                         tempTransactionList.put(t, bitcoindService.getRawTransaction(t).getResult());
                                     } else {
-                                        throw new RuntimeException("Error getting transaction n°" + t + " informations : " + r.getError());
+                                        throw new RuntimeException("Error getting transaction n°" + t + " information : " + r.getError());
                                     }
                                 });
 
@@ -122,7 +122,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     // And we end up returning all the block data all at once.
                     return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions));
                 } else {
-                    // Error while retrieving the block informations.
+                    // Error while retrieving the block information.
                     status.addError("Error retrieving the block : " + blockResponse.getError(), null);
                     return Optional.empty();
                 }

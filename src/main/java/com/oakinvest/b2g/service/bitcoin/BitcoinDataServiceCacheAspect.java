@@ -37,8 +37,16 @@ public class BitcoinDataServiceCacheAspect {
      */
     @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockCount())")
     public final Optional<Long> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
+        // If the data is outdated.
         if (cacheStore.isBlockCountOutdated()) {
-            return (Optional<Long>) pjp.proceed(new Object[]{});
+            Optional<Long> blockCount = ((Optional<Long>) pjp.proceed(new Object[]{}));
+            if (blockCount.isPresent()) {
+                cacheStore.updateBlockCount(blockCount.get());
+                return Optional.of(blockCount.get());
+            } else {
+                return Optional.empty();
+            }
+        // If the data is still in cache.
         } else {
             if (cacheStore.getBlockCount() != -1) {
                 return Optional.of(cacheStore.getBlockCount());
