@@ -74,6 +74,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
         blockToProcess.getTx()
+                .parallelStream()
                 .forEach(
                         txId -> {
                             // Retrieving the transaction.
@@ -94,32 +95,16 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                                 .stream()
                                                 .filter(Objects::nonNull)
                                                 .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-
-                                        // We retrieve the original transaction.
-     /*                                   Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionRepository().findByTxId(vin.getTxId()).getOutputByIndex(vin.getvOut());
-                                        if (originTransactionOutput.isPresent()) {
-                                            // We set the addresses "from".
-                                            vin.setTransactionOutput(originTransactionOutput.get());
-
-                                            // We set all the addresses linked to this input.
-                                            originTransactionOutput.get().getAddresses()
-                                                    .stream()
-                                                    .filter(Objects::nonNull)
-                                                    .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                            //addLog("-- Done processing vin : " + vin);
-                                        } else {
-                                            throw new RuntimeException("Impossible to find original transaction");
-                                        }
-     */                               });
+                                    });
 
                             // For each Vout.
                             t.getOutputs()
                                     .forEach(vout -> {
+                                        // We set all the addresses linked to this output.
                                         vout.getAddresses()
                                                 .stream()
                                                 .filter(Objects::nonNull)
                                                 .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        //addLog("-- Done processing vout : " + vout);
                                     });
 
                             // Add log to say we are done.
