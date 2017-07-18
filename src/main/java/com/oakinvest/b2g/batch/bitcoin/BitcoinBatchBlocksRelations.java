@@ -87,7 +87,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                     .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByTxIdAndIndex(vin.getTxId(), vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
                                         vin.setTransactionOutput(originTransactionOutput);
 
                                         // We set all the addresses linked to this input.

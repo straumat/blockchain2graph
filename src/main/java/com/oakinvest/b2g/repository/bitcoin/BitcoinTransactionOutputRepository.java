@@ -13,13 +13,23 @@ import org.springframework.stereotype.Repository;
 public interface BitcoinTransactionOutputRepository extends GraphRepository<BitcoinTransactionOutput> {
 
     /**
-     * Find a block by its id.
+     * Find a transaction output with tx id & key.
      *
      * @param txId transaction id
      * @param index index
-     * @return transaction
+     * @return transaction output
      */
     @Query("MATCH (to:BitcoinTransactionOutput) USING INDEX to:BitcoinTransactionOutput(txid, n) WHERE to.txid = {0} and to.n = {1} RETURN to")
     BitcoinTransactionOutput findByTxIdAndIndex(String txId, int index);
+
+    /**
+     * Find a transaction by key (txid-n).
+     *
+     * @param key key
+     * @return transaction output
+     */
+    @Query("MATCH (to:BitcoinTransactionOutput) USING INDEX to:BitcoinTransactionOutput(key) WHERE to.key = {0} RETURN to")
+    BitcoinTransactionOutput findByKey(String key);
+
 
 }
