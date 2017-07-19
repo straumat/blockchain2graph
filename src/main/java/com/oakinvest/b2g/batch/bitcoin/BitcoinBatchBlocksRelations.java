@@ -2,7 +2,6 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -78,39 +77,41 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                 .forEach(
                         txId -> {
                             // Retrieving the transaction.
-                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
-                            addLog("- Treating transaction " + txId + " (vin:" + t.getInputs().size() + " / vout:" + t.getOutputs().size() + ")");
+                            getTransactionRepository().findByTxId(txId).forEach(t -> {
 
-                            // For each Vin.
-                            t.getInputs()
-                                    .stream()
-                                    .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
-                                    .forEach(vin -> {
-                                        // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
-                                        vin.setTransactionOutput(originTransactionOutput);
+                                addLog("- Treating transaction " + txId + " (" + t.getInputs().size() + " vin(s) / " + t.getOutputs().size() + " vout(s))");
 
-                                        // We set all the addresses linked to this input.
-                                        originTransactionOutput.getAddresses()
-                                                .stream()
-                                                .filter(Objects::nonNull)
-                                                .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                    });
+                                // For each Vin.
+                                t.getInputs()
+                                        .stream()
+                                        .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
+                                        .forEach(vin -> {
+                                            // We retrieve the original transaction.
+                                            BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                            vin.setTransactionOutput(originTransactionOutput);
 
-                            // For each Vout.
-                            t.getOutputs()
-                                    .forEach(vout -> {
-                                        // We set all the addresses linked to this output.
-                                        vout.getAddresses()
-                                                .stream()
-                                                .filter(Objects::nonNull)
-                                                .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                    });
+                                            // We set all the addresses linked to this input.
+                                            originTransactionOutput.getAddresses()
+                                                    .stream()
+                                                    .filter(Objects::nonNull)
+                                                    .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                        });
 
-                            // Add log to say we are done.
-                            addLog("-- Transaction " + txId + " treated (" + txCounter.incrementAndGet() + "/" + txSize + ")");
-                        }
-                );
+                                // For each Vout.
+                                t.getOutputs()
+                                        .forEach(vout -> {
+                                            // We set all the addresses linked to this output.
+                                            vout.getAddresses()
+                                                    .stream()
+                                                    .filter(Objects::nonNull)
+                                                    .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                        });
+
+                                 // Add log to say we are done.
+                                 addLog("-- Transaction " + txId + " treated (" + txCounter.incrementAndGet() + "/" + txSize + ")");
+                        });
+                });
+
 
         return Optional.of(blockToProcess);
     }

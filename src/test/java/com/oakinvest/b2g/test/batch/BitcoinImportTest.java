@@ -313,7 +313,7 @@ public class BitcoinImportTest {
 
 		// Test.
 		// Transaction.
-		BitcoinTransaction transaction = btr.findByTxId(transactionHash);
+		BitcoinTransaction transaction = btr.findByTxId(transactionHash).get(0);
 		assertThat(transaction).as("Transaction").isNotNull();
 		assertThat(transaction.getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
 		assertThat(transaction.getHex()).as("Hex").isEqualTo(expectedTransactionHex);
@@ -536,7 +536,7 @@ public class BitcoinImportTest {
      * @return transaction input
      */
     private BitcoinTransactionInput getTransactionInput(final String txId, final int index) {
-        final BitcoinTransaction transaction = btr.findByTxId(txId);
+        final BitcoinTransaction transaction = btr.findByTxId(txId).get(0);
         int i = 0;
         for (BitcoinTransactionInput input : transaction.getInputs()) {
             if (i == index) {
@@ -554,7 +554,7 @@ public class BitcoinImportTest {
      * @return transaction input
      */
     private BitcoinTransactionOutput getTransactionOutput(final String txId, final int index) {
-        final BitcoinTransaction transaction = btr.findByTxId(txId);
+        final BitcoinTransaction transaction = btr.findByTxId(txId).get(0);
         return transactionOutputRepository.findOne(transaction.getOutputByIndex(index).get().getId());
     }
 
