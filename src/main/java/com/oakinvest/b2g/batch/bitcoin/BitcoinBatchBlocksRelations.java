@@ -79,8 +79,6 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                             // Retrieving the transaction.
                             getTransactionRepository().findByTxId(txId).forEach(t -> {
 
-                                addLog("- Treating transaction " + txId + " (" + t.getInputs().size() + " vin(s) / " + t.getOutputs().size() + " vout(s))");
-
                                 // For each Vin.
                                 t.getInputs()
                                         .stream()
@@ -108,7 +106,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                         });
 
                                  // Add log to say we are done.
-                                 addLog("-- Transaction " + txId + " treated (" + txCounter.incrementAndGet() + "/" + txSize + ")");
+                                addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + txId  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
                 });
 
