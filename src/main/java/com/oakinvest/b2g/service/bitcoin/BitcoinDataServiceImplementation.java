@@ -107,9 +107,17 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     if (r.getError() == null) {
                                         tempTransactionList.put(t, bitcoindService.getRawTransaction(t).getResult());
                                     } else {
-                                        throw new RuntimeException("Error getting transaction n°" + t + " information : " + r.getError());
+                                        status.addError("Error getting transaction " + t + " : " + r.getError().getMessage());
+                                        tempTransactionList.put(t, null);
                                     }
                                 });
+
+                        // We check that no response was missing.
+                        for (Map.Entry<String, GetRawTransactionResult> entry : tempTransactionList.entrySet()) {
+                            if (entry.getValue() == null) {
+                                return Optional.empty();
+                            }
+                        }
 
                         // Then we add it to the list in the right order.
                         blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
