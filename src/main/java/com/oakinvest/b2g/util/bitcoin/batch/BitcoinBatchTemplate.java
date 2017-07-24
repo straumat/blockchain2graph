@@ -63,12 +63,12 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Bitcoin transaction input repository.
      */
-    private final BitcoinTransactionInputRepository bitcoinTransactionInputRepository;
+    private final BitcoinTransactionInputRepository transactionInputRepository;
 
     /**
      * Bitcoin transaction output repository.
      */
-    private final BitcoinTransactionOutputRepository bitcoinTransactionOutputRepository;
+    private final BitcoinTransactionOutputRepository transactionOutputRepository;
 
     /**
 	 * Bitcoin data service.
@@ -101,8 +101,8 @@ public abstract class BitcoinBatchTemplate {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
 	    this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
 		this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
-		this.bitcoinTransactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
-		this.bitcoinTransactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
+		this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
+		this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
 		this.status = newStatus;
 		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
@@ -274,18 +274,18 @@ public abstract class BitcoinBatchTemplate {
 
     /**
      * Getter.
-     * @return bitcoinTransactionInputRepository
+     * @return transactionInputRepository
      */
-    protected final BitcoinTransactionInputRepository getBitcoinTransactionInputRepository() {
-        return bitcoinTransactionInputRepository;
+    protected final BitcoinTransactionInputRepository getTransactionInputRepository() {
+        return transactionInputRepository;
     }
 
     /**
      * Getter.
-     * @return bitcoinTransactionOutputRepository
+     * @return transactionOutputRepository
      */
-    protected final BitcoinTransactionOutputRepository getBitcoinTransactionOutputRepository() {
-        return bitcoinTransactionOutputRepository;
+    protected final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+        return transactionOutputRepository;
     }
 
     /**

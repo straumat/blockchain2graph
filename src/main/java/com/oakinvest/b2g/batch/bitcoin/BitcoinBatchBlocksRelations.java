@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -9,6 +10,7 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -84,8 +86,22 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                         .stream()
                                         .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                         .forEach(vin -> {
+
+                                            // -------------------------------------------------------------------------
+                                            // Test for missing transaction.
+                                            List<BitcoinTransaction> ot = getTransactionRepository().findByTxId(vin.getTxId());
+                                            if (ot.isEmpty()) {
+                                                System.out.println("====> Missing transaction " + vin.getTxId());
+                                            }
+                                            BitcoinTransactionOutput oto = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                            if (oto == null) {
+                                                System.out.println("====> Missing output transaction " + vin.getTxId() + vin.getvOut());
+                                            }
+
+                                            // -------------------------------------------------------------------------
+
                                             // We retrieve the original transaction.
-                                            BitcoinTransactionOutput originTransactionOutput = getBitcoinTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
                                             vin.setTransactionOutput(originTransactionOutput);
 
                                             // We set all the addresses linked to this input.
