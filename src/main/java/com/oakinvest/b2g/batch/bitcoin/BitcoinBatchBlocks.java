@@ -98,6 +98,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 		// -------------------------------------------------------------------------------------------------------------
 		// If we have the data.
 		if (blockData.isPresent()) {
+
 			// ---------------------------------------------------------------------------------------------------------
 			// Then, if the block doesn't exists, we map it to save it.
 			BitcoinBlock blockToProcess = getBlockRepository().findByHash(blockData.get().getBlock().getHash());
@@ -106,7 +107,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             }
 			addLog("This block has " + blockToProcess.getTx().size() + " transaction(s)");
 
-			// -----------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
 			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
 			blockToProcess.setPreviousBlock(previousBlock);

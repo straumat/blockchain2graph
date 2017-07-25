@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin import addresses batch.
@@ -77,21 +76,19 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 
 			// -----------------------------------------------------------------------------------------------------
 			// We retrieve all the addresses.
-            final AtomicInteger txCounter = new AtomicInteger();
-            final int txSize = blockToProcess.getTx().size();
+            addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
-            addLog("Retrieving all address");
             blockToProcess.getTx()
                     .parallelStream()
-					.forEach(txId -> {
-                            addLog("- Inspecting transaction " + txId + " (" + txCounter.incrementAndGet() + '/' + txSize + ')');
-                            getTransactionRepository().findByTxId(txId).forEach(t -> t.getOutputs().stream()
+					.forEach(txId ->
+                            getTransactionRepository().findByTxId(txId)
+                                    .forEach(t -> t.getOutputs().stream()
                                     .filter(Objects::nonNull)
                                     .forEach(v -> v.getAddresses()
-                                            .stream()
-                                            .filter(Objects::nonNull)
-                                            .forEach(addresses::add)));
-					});
+                                                   .stream()
+                                                   .filter(Objects::nonNull)
+                                                   .forEach(addresses::add)))
+					);
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.

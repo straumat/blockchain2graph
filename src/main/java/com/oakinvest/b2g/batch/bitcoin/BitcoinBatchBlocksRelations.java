@@ -99,11 +99,11 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                             }
 
                                             // -------------------------------------------------------------------------
-
                                             // We retrieve the original transaction.
                                             BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
                                             vin.setTransactionOutput(originTransactionOutput);
 
+                                            // -------------------------------------------------------------------------
                                             // We set all the addresses linked to this input.
                                             originTransactionOutput.getAddresses()
                                                     .stream()
@@ -125,7 +125,6 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                 addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + txId  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
                 });
-
 
         return Optional.of(blockToProcess);
     }
