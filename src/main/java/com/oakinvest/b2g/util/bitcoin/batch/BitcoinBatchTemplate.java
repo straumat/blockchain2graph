@@ -153,17 +153,28 @@ public abstract class BitcoinBatchTemplate {
                     getBlockRepository().save(bitcoinBlock);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
+                    // -------------------------------------------------------------------------------------------------
+                    // Temporary fix : sometimes vins & vouts are missing.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
                     if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                        boolean validBlock = true;
+
+                        // Checking all transactions.
                         for (String tx : bitcoinBlock.getTx()) {
                             BitcoinTransaction t = getTransactionRepository().findByTxId(tx).get(0);
                             if (t.getOutputs().size() == 0 || t.getInputs().size() == 0) {
-                                getBlockRepository().delete(bitcoinBlock.getId());
-                                addError("Block " + bitcoinBlock.getFormattedHeight() + " was not correct - recreating it");
+                                validBlock = false;
                             }
                         }
+
+                        // If invalid block, we delete it.
+                        if (!validBlock) {
+                            addError("Block " + bitcoinBlock.getHeight() + " was not correct - deleting it");
+                            getBlockRepository().delete(bitcoinBlock.getId());
+                        }
                     }
+                    // -------------------------------------------------------------------------------------------------
 
                     // If we are in the status "block imported", we update the status of number of blocks imported.
                     if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
