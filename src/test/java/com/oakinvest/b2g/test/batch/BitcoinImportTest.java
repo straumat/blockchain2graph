@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.IMPORTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 
@@ -93,14 +94,21 @@ public class BitcoinImportTest {
 	@Autowired
 	private BitcoinBatchBlocksRelations batchRelations;
 
+    /**
+     * Transaction repository.
+     */
+    @Autowired
+    private BitcoinTransactionRepository transactionRepository;
+
+
 	/**
-	 * Import batch.
+	 * Transaction output repository.
 	 */
 	@Autowired
 	private BitcoinTransactionOutputRepository transactionOutputRepository;
 
 	/**
-	 * Import batch.
+	 * Transaction import repository.
 	 */
 	@Autowired
 	private BitcoinTransactionInputRepository transactionInputRepository;
@@ -133,11 +141,20 @@ public class BitcoinImportTest {
 		// Launch block importation.
 		int iterations = 0;
 		final int maxIteration = 1000;
-		while (bbr.countBlockByState(BitcoinBlockState.IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (bbr.countBlockByState(IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.execute();
 				batchAddresses.execute();
 				batchRelations.execute();
+
+				if (bbr.countBlockByState(IMPORTED) == 10) {
+                    // Deleting an input to make a test.
+                    // Transaction f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16 (Block 170)
+                    // is looking for 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9 (Block 9)
+                    BitcoinTransactionOutput o = transactionOutputRepository.findByKey("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9-0");
+                    transactionOutputRepository.delete(o.getId());
+                }
+
 				iterations++;
 				if (iterations >= maxIteration) {
 					fail("Persistent problem to get blocks");
@@ -184,8 +201,8 @@ public class BitcoinImportTest {
 		}
 
 		// we check that everything as been imported again on that block
-		assertThat(bbr.countBlockByState(BitcoinBlockState.IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
-		assertThat(bbr.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(BitcoinBlockState.IMPORTED);
+		assertThat(bbr.countBlockByState(IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
+		assertThat(bbr.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(IMPORTED);
 	}
 
 	/**

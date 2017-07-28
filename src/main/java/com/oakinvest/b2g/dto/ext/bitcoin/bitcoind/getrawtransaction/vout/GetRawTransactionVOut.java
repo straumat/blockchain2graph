@@ -18,7 +18,7 @@ public class GetRawTransactionVOut implements Serializable {
 	/**
 	 * Index.
 	 */
-	private long n;
+	private int n;
 
 	/**
 	 * ScriptPubKey.
@@ -48,7 +48,7 @@ public class GetRawTransactionVOut implements Serializable {
 	 *
 	 * @return n
 	 */
-	public final long getN() {
+	public final int getN() {
 		return n;
 	}
 
@@ -57,7 +57,7 @@ public class GetRawTransactionVOut implements Serializable {
 	 *
 	 * @param newIndex the n to set
 	 */
-	public final void setN(final long newIndex) {
+	public final void setN(final int newIndex) {
 		n = newIndex;
 	}
 

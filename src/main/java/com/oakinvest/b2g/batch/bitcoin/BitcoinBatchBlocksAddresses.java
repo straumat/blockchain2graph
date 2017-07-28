@@ -99,7 +99,7 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 					.filter(address -> !getAddressRepository().exists(address))
 					// We save all the addresses.
 					.forEach(address -> {
-						BitcoinAddress a = getMapper().toBitcoinAddress(address);
+						BitcoinAddress a = getMapper().addressToBitcoinAddress(address);
 						getAddressRepository().save(a);
 						addLog("- Address " + address + " created with id " + a.getId());
 					});

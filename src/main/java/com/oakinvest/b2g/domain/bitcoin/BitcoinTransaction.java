@@ -319,6 +319,18 @@ public class BitcoinTransaction {
 	}
 
 	/**
+     * Returns a particular transaction input.
+     * @param transactionId transaction id
+     * @param vOut vout
+     * @return transaction input
+     */
+	public final Optional<BitcoinTransactionInput> getInput(final String transactionId, final int vOut) {
+        return inputs.stream()
+                .filter(ti -> ti.getTxId().equals(transactionId) && ti.getvOut() == (vOut))
+                .findFirst();
+    }
+
+	/**
 	 * Setter of inputs.
 	 *
 	 * @param newInputs the inputs to set
@@ -335,6 +347,17 @@ public class BitcoinTransaction {
 	public final Set<BitcoinTransactionOutput> getOutputs() {
 		return outputs;
 	}
+
+    /**
+     * Returns a particular transaction output.
+     * @param n vout
+     * @return transaction output
+     */
+    public final Optional<BitcoinTransactionOutput> getOutput(final int n) {
+        return outputs.stream()
+                .filter(to -> to.getN() == n)
+                .findFirst();
+    }
 
 	/**
 	 * Setter of outputs.

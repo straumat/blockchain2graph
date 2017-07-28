@@ -23,7 +23,7 @@ public class GetRawTransactionVIn implements Serializable {
 	/**
 	 * vout.
 	 */
-	private long vout;
+	private int vout;
 
 	/**
 	 * ScriptSig.
@@ -76,7 +76,7 @@ public class GetRawTransactionVIn implements Serializable {
 	 *
 	 * @return vout
 	 */
-	public final long getVout() {
+	public final int getVout() {
 		return vout;
 	}
 
@@ -85,7 +85,7 @@ public class GetRawTransactionVIn implements Serializable {
 	 *
 	 * @param newVout the vout to set
 	 */
-	public final void setVout(final long newVout) {
+	public final void setVout(final int newVout) {
 		vout = newVout;
 	}
 
