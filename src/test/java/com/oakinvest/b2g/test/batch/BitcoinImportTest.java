@@ -146,15 +146,6 @@ public class BitcoinImportTest {
 				batchBlocks.execute();
 				batchAddresses.execute();
 				batchRelations.execute();
-
-				if (bbr.countBlockByState(IMPORTED) == 10) {
-                    // Deleting an input to make a test.
-                    // Transaction f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16 (Block 170)
-                    // is looking for 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9 (Block 9)
-                    BitcoinTransactionOutput o = transactionOutputRepository.findByKey("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9-0");
-                    transactionOutputRepository.delete(o.getId());
-                }
-
 				iterations++;
 				if (iterations >= maxIteration) {
 					fail("Persistent problem to get blocks");

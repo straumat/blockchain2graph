@@ -2,6 +2,7 @@ package com.oakinvest.b2g.util.bitcoin.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -18,6 +19,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -147,8 +150,20 @@ public abstract class BitcoinBatchTemplate {
                 blockToProcess.ifPresent(bitcoinBlock -> {
                     // If the block has been well processed, we change the state and we save it.
                     bitcoinBlock.setState(getNewStateOfProcessedBlock());
-                    blockRepository.save(bitcoinBlock);
+                    getBlockRepository().save(bitcoinBlock);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
+
+                    // We check that the block just created have all the vin/vout.
+                    // If not, we delete it to recreate it.
+                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                        for (String tx : bitcoinBlock.getTx()) {
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(tx).get(0);
+                            if (t.getOutputs().size() == 0 || t.getInputs().size() == 0) {
+                                getBlockRepository().delete(bitcoinBlock.getId());
+                                addError("Block " + bitcoinBlock.getFormattedHeight() + " was not correct - recreating it");
+                            }
+                        }
+                    }
 
                     // If we are in the status "block imported", we update the status of number of blocks imported.
                     if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {

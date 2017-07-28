@@ -2,9 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.BitcoindService;
@@ -94,17 +92,9 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                         .stream()
                                         .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                         .forEach(vin -> {
-
-                                            // -------------------------------------------------------------------------
-                                            // Test for missing transaction.
-                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
-                                            if (originTransactionOutput == null) {
-                                                fixEmptyTransaction(vin.getTxId());
-                                                originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
-                                            }
-
                                             // -------------------------------------------------------------------------
                                             // We retrieve the original transaction.
+                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
                                             vin.setTransactionOutput(originTransactionOutput);
 
                                             // -------------------------------------------------------------------------
@@ -141,48 +131,6 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
     @Override
     protected final BitcoinBlockState getNewStateOfProcessedBlock() {
         return BitcoinBlockState.IMPORTED;
-    }
-
-    /**
-     * Fix empty transaction (empty vin et vout).
-     * @param txId transaction id
-     */
-    private void fixEmptyTransaction(final String txId) {
-        addLog("Fixing empty transaction for transaction " + txId);
-        BitcoinTransaction transaction = getTransactionRepository().findByTxId(txId).get(0);
-
-        // We retrieve the transaction from bitcoind.
-        GetRawTransactionResult getRawTransactionResult = bitcoindService.getRawTransaction(txId).getResult();
-
-        // Treating all vin.
-        /*
-        getRawTransactionResult.getVin()
-                .stream()
-                .filter(vin -> vin.getCoinbase() != null)
-                .forEach(vin -> {
-                    BitcoinTransactionInput bti = getMapper().rawTransactionVIn(vin);
-                    //bti.setBitcoinAddress(getAddressRepository().findByAddress());
-                    //if (!transaction.getInput(vin.getTxid(), vin.getVout()).isPresent()) {
-                        transaction.getInputs().add(bti);
-
-                    //}
-                });
-        */
-
-        // Treating all vout.
-        getRawTransactionResult.getVout()
-                .forEach(vout -> {
-                    BitcoinTransactionOutput bto = getMapper().rawTransactionVout(vout);
-                    bto.setTxId(txId);
-                    bto.setKey(txId + "-" + bto.getN());
-                    bto.setBitcoinAddress(getAddressRepository().findByAddress(vout.getScriptPubKey().getAddresses().get(0)));
-                    //if (!transaction.getOutput(vout.getN()).isPresent()) {
-                        transaction.getOutputs().add(bto);
-                    //}
-                });
-
-        // We save.
-        getTransactionRepository().save(transaction);
     }
 
 }
