@@ -220,6 +220,7 @@ public class BitcoinImportTest {
 		// Test.
 		BitcoinBlock b = bbr.findByHash(expectedHash);
 		assertThat(b).as("Block").isNotNull();
+		assertThat(b.getHash()).as("Hash").isEqualTo(expectedHash);
 		assertThat(b.getHeight()).as("Height").isEqualTo(expectedHeight);
 		assertThat(b.getSize()).as("Size").isEqualTo(expectedSize);
 		assertThat(b.getVersion()).as("Version").isEqualTo(expectedVersion);

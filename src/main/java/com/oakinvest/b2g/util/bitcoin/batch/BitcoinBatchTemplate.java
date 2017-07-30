@@ -86,7 +86,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Neo4j session.
 	 */
-	private Session session;
+	private final Session session;
 
 	/**
 	 * time of the start of the batch.
