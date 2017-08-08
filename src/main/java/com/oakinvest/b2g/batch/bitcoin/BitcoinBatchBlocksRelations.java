@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -9,6 +10,7 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -88,7 +90,25 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                             // -------------------------------------------------------------------------
                                             // We retrieve the original transaction.
                                             BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+
+                                            // -------------------------------------------------------------------------
+                                            // We check if this output is not missing.
+                                            // TODO Remove before release.
+                                            if (originTransactionOutput == null) {
+                                                addError("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+
+                                                System.out.println("------------------------------------");
+                                                System.out.println(("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut()));
+                                                List<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                                transaction.get(0).getInputs().forEach(i -> System.out.println("- vin : " + i.getTxId() + " / " + i.getvOut()));
+                                                transaction.get(0).getOutputs().forEach(o -> System.out.println("- vout : " + o.getN()));
+                                                System.out.println("------------------------------------");
+                                            }
+
+                                            // -------------------------------------------------------------------------
+                                            // We create the link.
                                             vin.setTransactionOutput(originTransactionOutput);
+
 
                                             // -------------------------------------------------------------------------
                                             // We set all the addresses linked to this input.
