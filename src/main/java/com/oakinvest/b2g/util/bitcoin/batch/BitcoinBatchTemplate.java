@@ -172,25 +172,20 @@ public abstract class BitcoinBatchTemplate {
 
                         // Checking all transactions.
                         for (String tx : bitcoinBlock.getTx()) {
-                            // Getting the data in database.
-                            BitcoinTransaction t = getTransactionRepository().findByTxId(tx);
+                            // Getting the data in database & from bitcoind.
+                            BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(tx);
+                            GetRawTransactionResult bitcoindTransaction = blockData.getRawTransactionResult(tx).get();
 
-                            // Getting the data from bitcoind
-                            GetRawTransactionResult tResult = blockData.getRawTransactionResult(tx).get();
-
-                            // Checking vins.
-                            if (t.getInputs().size() != tResult.getVin().size()) {
+                            // Checking vins & vouts.
+                            if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.getVin().size()) {
                                 validBlock = false;
                             }
-
-                            // Checking vouts.
-                            if (t.getOutputs().size() != tResult.getVout().size()) {
+                            if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.getVout().size()) {
                                 validBlock = false;
                             }
-
                         }
 
-                        // If invalid block, we delete it.
+                        // If the block is invalid, we delete it.
                         if (!validBlock) {
                             addError("Block " + bitcoinBlock.getHeight() + " is not correct - deleting it");
                             getBlockRepository().delete(bitcoinBlock.getId());
