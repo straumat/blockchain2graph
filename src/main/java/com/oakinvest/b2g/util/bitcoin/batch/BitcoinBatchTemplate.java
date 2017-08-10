@@ -45,6 +45,11 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
+    /**
+     * Duplicate txid block.
+     */
+    private static final int DUPLICATE_TXID_BLOCK = 91812;
+
 	/**
 	 * Mapper.
 	 */
@@ -159,7 +164,7 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED) && DUPLICATE_TXID_BLOCK != blockToProcess.get().getHeight()) {
                         boolean validBlock = true;
 
                         // Getting the data from bitcoind.
