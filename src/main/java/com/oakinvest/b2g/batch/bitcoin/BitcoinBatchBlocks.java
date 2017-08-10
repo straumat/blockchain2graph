@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -30,6 +31,16 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Blocks batch";
+
+    /**
+     * Duplicate txid.
+     */
+	private static final String DUPLICATE_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+
+    /**
+     * Duplicate txid block.
+     */
+    private static final int DUPLICATE_TXID_BLOCK = 91812;
 
     /**
      * Constructor.
@@ -107,7 +118,19 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             }
 			addLog("This block has " + blockToProcess.getTx().size() + " transaction(s)");
 
-			// ---------------------------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------------------------------
+            // Fixing duplicate txid : remove the transaction from the block.
+            if (DUPLICATE_TXID_BLOCK == blockHeight) {
+                Optional<BitcoinTransaction> transactionToRemove = blockToProcess.getTransactions()
+                                                                    .stream()
+                                                                    .filter(t -> DUPLICATE_TXID.equals(t.getTxId()))
+                                                                    .findFirst();
+                if (transactionToRemove.isPresent()) {
+                    blockToProcess.getTransactions().remove(transactionToRemove);
+                }
+            }
+
+            // ---------------------------------------------------------------------------------------------------------
 			// We set the previous and the next block.
 			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
 			blockToProcess.setPreviousBlock(previousBlock);

@@ -113,15 +113,6 @@ public class BitcoindCacheTest {
                     .isTrue();
         }
 
-        // We check that the block 101 should not be anymore in cache.
-        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved))
-                .as("Checking that the block %s is NO MORE in cache", lastBlockSaved)
-                .isFalse();
-
-        // We check the size.
-/*        assertThat(bitcoinDataService.getBuffer().size())
-                .as("Checking that the buffer is equals to BUFFER_SIZE (" + BITCOIND_BUFFER_SIZE+ ")")
-                .isLessThanOrEqualTo(BITCOIND_BUFFER_SIZE);*/
     }
 
 }

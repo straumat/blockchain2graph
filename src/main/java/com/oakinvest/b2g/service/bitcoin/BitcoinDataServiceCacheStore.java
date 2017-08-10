@@ -71,10 +71,11 @@ public class BitcoinDataServiceCacheStore {
         lastBlockCountValue = blockCount;
         lastBlockCountAccess = System.currentTimeMillis();
 
-        // We reduce the cache size at this moment (every ten minutes).
+        // We reduce the cache size at this moment.
         while (buffer.size() > BITCOIND_BUFFER_SIZE) {
             buffer.pollFirst();
         }
+
     }
 
     /**
@@ -112,9 +113,8 @@ public class BitcoinDataServiceCacheStore {
      */
     @SuppressWarnings("checkstyle:designforextension")
     public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+        // We get it from the cache.
         Optional<BitcoindBlockData> block = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-        // When the block is requested, we delete it from the buffer.
-        block.ifPresent(buffer::remove);
         return block;
     }
 

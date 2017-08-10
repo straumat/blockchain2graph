@@ -80,15 +80,16 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
             blockToProcess.getTx()
                     .parallelStream()
-					.forEach(txId ->
+                    .forEach(txId ->
                             getTransactionRepository().findByTxId(txId)
-                                    .forEach(t -> t.getOutputs().stream()
+                                    .getOutputs()
+                                    .stream()
                                     .filter(Objects::nonNull)
                                     .forEach(v -> v.getAddresses()
-                                                   .stream()
-                                                   .filter(Objects::nonNull)
-                                                   .forEach(addresses::add)))
-					);
+                                            .stream()
+                                            .filter(Objects::nonNull)
+                                            .forEach(addresses::add))
+                    );
 
 			// -----------------------------------------------------------------------------------------------------
 			// We create all the addresses.

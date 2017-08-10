@@ -3,6 +3,8 @@ package com.oakinvest.b2g.util.bitcoin.batch;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -160,17 +162,32 @@ public abstract class BitcoinBatchTemplate {
                     if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
                         boolean validBlock = true;
 
+                        // Getting the data from bitcoind.
+                        BitcoindBlockData blockData = getBitcoinDataService().getBlockData(blockToProcess.get().getHeight()).get();
+
                         // Checking all transactions.
                         for (String tx : bitcoinBlock.getTx()) {
-                            BitcoinTransaction t = getTransactionRepository().findByTxId(tx).get(0);
-                            if (t.getOutputs().size() == 0 || t.getInputs().size() == 0) {
+                            // Getting the data in database.
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(tx);
+
+                            // Getting the data from bitcoind
+                            GetRawTransactionResult tResult = blockData.getRawTransactionResult(tx).get();
+
+                            // Checking vins.
+                            if (t.getInputs().size() != tResult.getVin().size()) {
                                 validBlock = false;
                             }
+
+                            // Checking vouts.
+                            if (t.getOutputs().size() != tResult.getVout().size()) {
+                                validBlock = false;
+                            }
+
                         }
 
                         // If invalid block, we delete it.
                         if (!validBlock) {
-                            addError("Block " + bitcoinBlock.getHeight() + " was not correct - deleting it");
+                            addError("Block " + bitcoinBlock.getHeight() + " is not correct - deleting it");
                             getBlockRepository().delete(bitcoinBlock.getId());
                         }
                     }

@@ -10,7 +10,6 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,58 +79,56 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                 .forEach(
                         txId -> {
                             // Retrieving the transaction.
-                            getTransactionRepository().findByTxId(txId).forEach(t -> {
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
 
-                                // For each Vin.
-                                t.getInputs()
+                            // For each Vin.
+                            t.getInputs()
+                                .stream()
+                                .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
+                                .forEach(vin -> {
+                                    // -------------------------------------------------------------------------
+                                    // We retrieve the original transaction.
+                                    BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+
+                                    // -------------------------------------------------------------------------
+                                    // We check if this output is not missing.
+                                    // TODO Remove before release.
+                                    if (originTransactionOutput == null) {
+                                        addError("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+
+                                        System.out.println("------------------------------------");
+                                        System.out.println(("Treating transaction " + txId + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut()));
+                                        BitcoinTransaction transaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                        transaction.getInputs().forEach(i -> System.out.println("- vin : " + i.getTxId() + " / " + i.getvOut()));
+                                        transaction.getOutputs().forEach(o -> System.out.println("- vout : " + o.getN()));
+                                        System.out.println("------------------------------------");
+                                    }
+
+                                    // -------------------------------------------------------------------------
+                                    // We create the link.
+                                    vin.setTransactionOutput(originTransactionOutput);
+
+                                    // -------------------------------------------------------------------------
+                                    // We set all the addresses linked to this input.
+                                    originTransactionOutput.getAddresses()
                                         .stream()
-                                        .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
-                                        .forEach(vin -> {
-                                            // -------------------------------------------------------------------------
-                                            // We retrieve the original transaction.
-                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                        .filter(Objects::nonNull)
+                                        .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                    });
 
-                                            // -------------------------------------------------------------------------
-                                            // We check if this output is not missing.
-                                            // TODO Remove before release.
-                                            if (originTransactionOutput == null) {
-                                                addError("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                            // For each Vout.
+                            t.getOutputs()
+                                .forEach(vout -> {
+                                    // We set all the addresses linked to this output.
+                                    vout.getAddresses()
+                                        .stream()
+                                        .filter(Objects::nonNull)
+                                        .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                });
 
-                                                System.out.println("------------------------------------");
-                                                System.out.println(("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut()));
-                                                List<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                                transaction.get(0).getInputs().forEach(i -> System.out.println("- vin : " + i.getTxId() + " / " + i.getvOut()));
-                                                transaction.get(0).getOutputs().forEach(o -> System.out.println("- vout : " + o.getN()));
-                                                System.out.println("------------------------------------");
-                                            }
-
-                                            // -------------------------------------------------------------------------
-                                            // We create the link.
-                                            vin.setTransactionOutput(originTransactionOutput);
-
-
-                                            // -------------------------------------------------------------------------
-                                            // We set all the addresses linked to this input.
-                                            originTransactionOutput.getAddresses()
-                                                    .stream()
-                                                    .filter(Objects::nonNull)
-                                                    .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        });
-
-                                // For each Vout.
-                                t.getOutputs()
-                                        .forEach(vout -> {
-                                            // We set all the addresses linked to this output.
-                                            vout.getAddresses()
-                                                    .stream()
-                                                    .filter(Objects::nonNull)
-                                                    .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        });
-
-                                 // Add log to say we are done.
-                                addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + txId  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
+                             // Add log to say we are done.
+                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + txId  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
-                });
 
         return Optional.of(blockToProcess);
     }

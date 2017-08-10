@@ -4,8 +4,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-import java.util.List;
-
 /**
  * BitcoinTransaction repository.
  * Created by straumat on 27/09/16.
@@ -27,7 +25,8 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
 	 * @param txId transaction id
 	 * @return transaction
 	 */
-	@Query("MATCH (n:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE n.txid = {0} WITH n MATCH p=(n)-[*0..1]-(m) RETURN p, ID(n)")
-    List<BitcoinTransaction> findByTxId(String txId);
+	//@Query("MATCH (n:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE n.txid = {0} WITH n MATCH p=(n)-[*0..1]-(m) RETURN p, ID(n) ORDER BY (n.time) LIMIT 1")
+    @Query("MATCH (n:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE n.txid = {0} WITH n MATCH p=(n)-[*0..1]-(m) RETURN p, ID(n)")
+    BitcoinTransaction findByTxId(String txId);
 
 }
