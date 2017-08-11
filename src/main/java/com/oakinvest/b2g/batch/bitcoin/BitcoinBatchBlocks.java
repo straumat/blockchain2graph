@@ -120,6 +120,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // Fixing duplicate txid : remove the transaction from the block.
+            // TODO : Replace addError with addInfo.
             if (DUPLICATED_TXID_BLOCK - 1 == blockHeight) {
                 addError("Treating the duplicated transaction " + DUPLICATED_TXID);
                 BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(DUPLICATED_TXID);

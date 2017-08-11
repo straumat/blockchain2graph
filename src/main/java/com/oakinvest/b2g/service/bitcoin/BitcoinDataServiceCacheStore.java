@@ -113,13 +113,7 @@ public class BitcoinDataServiceCacheStore {
      */
     @SuppressWarnings("checkstyle:designforextension")
     public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
-        // We get it from the cache.
-        Optional<BitcoindBlockData> block = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-        return block;
+        return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
     }
-
-
-
-
 
 }

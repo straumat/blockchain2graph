@@ -50,7 +50,7 @@ public class BitcoinImportTest {
 	/**
 	 * setup is done.
 	 */
-	private static boolean databaseResetDone = false;
+	private static boolean databaseReseted = false;
 
 	/**
 	 * Spring context.
@@ -58,60 +58,53 @@ public class BitcoinImportTest {
 	@Autowired
 	private ApplicationContext ctx;
 
+    /**
+     * Import batch.
+     */
+    @Autowired
+    private BitcoinBatchBlocks batchBlocks;
+
+    /**
+     * Import batch.
+     */
+    @Autowired
+    private BitcoinBatchBlocksAddresses batchAddresses;
+
+    /**
+     * Import batch.
+     */
+    @Autowired
+    private BitcoinBatchBlocksRelations batchRelations;
+
 	/**
 	 * Bitcoin block repository.
 	 */
 	@Autowired
-	private BitcoinBlockRepository bbr;
+	private BitcoinBlockRepository blockRepository;
 
 	/**
 	 * Bitcoin address repository.
 	 */
 	@Autowired
-	private BitcoinAddressRepository bar;
+	private BitcoinAddressRepository addressRepository;
 
 	/**
 	 * Bitcoin transaction repository.
 	 */
 	@Autowired
-	private BitcoinTransactionRepository btr;
-
-	/**
-	 * Import batch.
-	 */
-	@Autowired
-	private BitcoinBatchBlocks batchBlocks;
-
-	/**
-	 * Import batch.
-	 */
-	@Autowired
-	private BitcoinBatchBlocksAddresses batchAddresses;
-
-	/**
-	 * Import batch.
-	 */
-	@Autowired
-	private BitcoinBatchBlocksRelations batchRelations;
+	private BitcoinTransactionRepository transactionRepository;
 
     /**
-     * Transaction repository.
+     * Transaction import repository.
      */
     @Autowired
-    private BitcoinTransactionRepository transactionRepository;
+    private BitcoinTransactionInputRepository transactionInputRepository;
 
-
-	/**
+    /**
 	 * Transaction output repository.
 	 */
 	@Autowired
 	private BitcoinTransactionOutputRepository transactionOutputRepository;
-
-	/**
-	 * Transaction import repository.
-	 */
-	@Autowired
-	private BitcoinTransactionInputRepository transactionInputRepository;
 
 	/**
 	 * Bitcoind mock.
@@ -127,12 +120,12 @@ public class BitcoinImportTest {
 	@Before
 	public void setUp() throws Exception {
 		// Reset the database.
-		if (!databaseResetDone) {
+		if (!databaseReseted) {
 			Map<String, GraphRepository> graphRepositories = ctx.getBeansOfType(GraphRepository.class);
 			for (GraphRepository graphRepository : graphRepositories.values()) {
 				graphRepository.deleteAll();
 			}
-			databaseResetDone = true;
+			databaseReseted = true;
 		}
 
 		// Reset errors.
@@ -141,7 +134,7 @@ public class BitcoinImportTest {
 		// Launch block importation.
 		int iterations = 0;
 		final int maxIteration = 1000;
-		while (bbr.countBlockByState(IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (blockRepository.countBlockByState(IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.execute();
 				batchAddresses.execute();
@@ -162,10 +155,10 @@ public class BitcoinImportTest {
 	@Test
 	public void testEmptyRelations() {
 		// Test all blocks.
-		bbr.findAll().forEach(b -> assertThat(b.getTransactions()).as("Block %s's transactions", b.getHeight()).isNotEmpty());
+		blockRepository.findAll().forEach(b -> assertThat(b.getTransactions()).as("Block %s's transactions", b.getHeight()).isNotEmpty());
 
 		// Test all transactions.
-		btr.findAll().forEach(t -> {
+		transactionRepository.findAll().forEach(t -> {
 			assertThat(t.getInputs()).as("Transaction %s inputs", t.getTxId()).isNotEmpty();
 			assertThat(t.getOutputs()).as("Transaction %s outputs", t.getTxId()).isNotEmpty();
 		});
@@ -179,9 +172,9 @@ public class BitcoinImportTest {
 		final long blockForTest = NUMBERS_OF_BLOCK_TO_IMPORT - 1;
 
 		// We set the last block as not at all imported
-		BitcoinBlock b = bbr.findByHeight(blockForTest);
+		BitcoinBlock b = blockRepository.findByHeight(blockForTest);
 		b.setState(BitcoinBlockState.BLOCK_IMPORTED);
-		bbr.save(b);
+		blockRepository.save(b);
 
 		// Then, we import it.
 		try {
@@ -192,8 +185,8 @@ public class BitcoinImportTest {
 		}
 
 		// we check that everything as been imported again on that block
-		assertThat(bbr.countBlockByState(IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
-		assertThat(bbr.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(IMPORTED);
+		assertThat(blockRepository.countBlockByState(IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
+		assertThat(blockRepository.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(IMPORTED);
 	}
 
 	/**
@@ -218,7 +211,7 @@ public class BitcoinImportTest {
 		final int expectedTxSize = 2;
 
 		// Test.
-		BitcoinBlock b = bbr.findByHash(expectedHash);
+		BitcoinBlock b = blockRepository.findByHash(expectedHash);
 		assertThat(b).as("Block").isNotNull();
 		assertThat(b.getHash()).as("Hash").isEqualTo(expectedHash);
 		assertThat(b.getHeight()).as("Height").isEqualTo(expectedHeight);
@@ -240,17 +233,17 @@ public class BitcoinImportTest {
         assertThat(b.getTransactions()).as("Block transactions").hasSize(expectedTxSize);
 
         // Test relations between blocks (previous block & next block).
-        assertThat(bbr.findByHeight(1L))
+        assertThat(blockRepository.findByHeight(1L))
                 .as("Previous & next block")
                 .extracting("previousBlock", "nextBlock.height")
                 .contains(null, 2L);
 
-        assertThat(bbr.findByHeight(6L))
+        assertThat(blockRepository.findByHeight(6L))
                 .as("Previous & next block")
                 .extracting("previousBlock.height", "nextBlock.height")
                 .contains(5L, 7L);
 
-        assertThat(bbr.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT))
+        assertThat(blockRepository.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT))
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
                 .contains(null, 499L);
@@ -266,7 +259,7 @@ public class BitcoinImportTest {
 		final String nonExistingAddress = "TOTO";
 
 		// Existing address.
-		assertThat(bar.findByAddress(existingAddress))
+		assertThat(addressRepository.findByAddress(existingAddress))
 				.as("Address exists")
 				.isNotNull()
 				.as("Address value")
@@ -274,7 +267,7 @@ public class BitcoinImportTest {
 				.contains(existingAddress);
 
 		// Non existing address.
-		assertThat(bar.findByAddress(nonExistingAddress))
+		assertThat(addressRepository.findByAddress(nonExistingAddress))
 				.as("Address does not exists")
 				.isNull();
 	}
@@ -322,7 +315,7 @@ public class BitcoinImportTest {
 
 		// Test.
 		// Transaction.
-		BitcoinTransaction transaction = btr.findByTxId(transactionHash);
+		BitcoinTransaction transaction = transactionRepository.findByTxId(transactionHash);
 		assertThat(transaction).as("Transaction").isNotNull();
 		assertThat(transaction.getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
 		assertThat(transaction.getHex()).as("Hex").isEqualTo(expectedTransactionHex);
@@ -377,7 +370,7 @@ public class BitcoinImportTest {
 	public final void transactionsChainTest() throws Exception {
 		// Data to test.
 		final String address = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
-		final BitcoinAddress bitcoinAddress = bar.findByAddress(address);
+		final BitcoinAddress bitcoinAddress = addressRepository.findByAddress(address);
 
         //  Transaction 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9.
         //  Coinbase                            =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (50)
@@ -545,7 +538,7 @@ public class BitcoinImportTest {
      * @return transaction input
      */
     private BitcoinTransactionInput getTransactionInput(final String txId, final int index) {
-        final BitcoinTransaction transaction = btr.findByTxId(txId);
+        final BitcoinTransaction transaction = transactionRepository.findByTxId(txId);
         int i = 0;
         for (BitcoinTransactionInput input : transaction.getInputs()) {
             if (i == index) {
@@ -563,7 +556,7 @@ public class BitcoinImportTest {
      * @return transaction input
      */
     private BitcoinTransactionOutput getTransactionOutput(final String txId, final int index) {
-        final BitcoinTransaction transaction = btr.findByTxId(txId);
+        final BitcoinTransaction transaction = transactionRepository.findByTxId(txId);
         return transactionOutputRepository.findOne(transaction.getOutputByIndex(index).get().getId());
     }
 
