@@ -131,7 +131,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                         addError("Transaction " + DUPLICATE_TXID + " was not removed");
                     }
                 } else {
-                    addError("Transaction " + DUPLICATE_TXID + " was not found in block "+ DUPLICATE_TXID_BLOCK);
+                    addError("Transaction " + DUPLICATE_TXID + " was not found in block " + DUPLICATE_TXID_BLOCK);
                 }
             }
 
