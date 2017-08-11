@@ -129,6 +129,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                 if (transactionToRemove.isPresent()) {
                     if (!blockToProcess.getTransactions().remove(transactionToRemove.get())) {
                         addError("Transaction " + DUPLICATE_TXID + " was not removed");
+                    } else {
+                        addError("Transaction " + DUPLICATE_TXID + " removed. " + blockToProcess.getTransactions().size() + "transactions");
                     }
                 } else {
                     addError("Transaction " + DUPLICATE_TXID + " was not found in block " + DUPLICATE_TXID_BLOCK);
