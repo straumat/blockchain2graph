@@ -35,12 +35,12 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     /**
      * Duplicate txid.
      */
-	private static final String DUPLICATE_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+	private static final String DUPLICATED_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
 
     /**
      * Duplicate txid block.
      */
-    private static final int DUPLICATE_TXID_BLOCK = 91812;
+    private static final int DUPLICATED_TXID_BLOCK = 91842;
 
     /**
      * Constructor.
@@ -120,20 +120,14 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // Fixing duplicate txid : remove the transaction from the block.
-            if (DUPLICATE_TXID_BLOCK == blockHeight) {
-                addError("Treating the duplicate tx in block " + DUPLICATE_TXID_BLOCK);
-                Optional<BitcoinTransaction> transactionToRemove = blockToProcess.getTransactions()
-                                                                    .stream()
-                                                                    .filter(t -> DUPLICATE_TXID.equals(t.getTxId()))
-                                                                    .findFirst();
-                if (transactionToRemove.isPresent()) {
-                    if (!blockToProcess.getTransactions().remove(transactionToRemove.get())) {
-                        addError("Transaction " + DUPLICATE_TXID + " was not removed");
-                    } else {
-                        addError("Transaction " + DUPLICATE_TXID + " removed. " + blockToProcess.getTransactions().size() + "transactions");
-                    }
+            if (DUPLICATED_TXID_BLOCK - 1 == blockHeight) {
+                addError("Treating the duplicated transaction " + DUPLICATED_TXID);
+                BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(DUPLICATED_TXID);
+                if (transactionToRemove != null) {
+                    getTransactionRepository().delete(transactionToRemove);
+                    addError("Duplicated transaction " + DUPLICATED_TXID + " treated");
                 } else {
-                    addError("Transaction " + DUPLICATE_TXID + " was not found in block " + DUPLICATE_TXID_BLOCK);
+                    addError("Duplicated transaction " + DUPLICATED_TXID + " not found");
                 }
             }
 
