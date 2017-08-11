@@ -121,6 +121,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             // ---------------------------------------------------------------------------------------------------------
             // Fixing duplicate txid : remove the transaction from the block.
             if (DUPLICATE_TXID_BLOCK == blockHeight) {
+                addError("Treating the duplicate tx in block " + DUPLICATE_TXID_BLOCK);
                 Optional<BitcoinTransaction> transactionToRemove = blockToProcess.getTransactions()
                                                                     .stream()
                                                                     .filter(t -> DUPLICATE_TXID.equals(t.getTxId()))
@@ -129,6 +130,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                     if (!blockToProcess.getTransactions().remove(transactionToRemove.get())) {
                         addError("Transaction " + DUPLICATE_TXID + " was not removed");
                     }
+                } else {
+                    addError("Transaction " + DUPLICATE_TXID + " was not found in block "+ DUPLICATE_TXID_BLOCK);
                 }
             }
 
