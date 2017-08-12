@@ -40,7 +40,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     /**
      * Duplicate txid block.
      */
-    private static final int DUPLICATED_TXID_BLOCK = 91842;
+    private static final int DUPLICATED_TXID_BLOCK = 91812;
 
     /**
      * Constructor.
@@ -119,17 +119,27 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			addLog("This block has " + blockToProcess.getTx().size() + " transaction(s)");
 
             // ---------------------------------------------------------------------------------------------------------
+			// We set the previous and the next block.
+			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
+			blockToProcess.setPreviousBlock(previousBlock);
+            addLog("Setting the previous block of this block");
+			if (previousBlock != null) {
+				previousBlock.setNextBlock(blockToProcess);
+                addLog("Setting this block as next block of the previous one");
+			}
+
+            // ---------------------------------------------------------------------------------------------------------
             // Fixing duplicate txid : remove the transaction from the block.
             // TODO : Replace addError with addInfo.
-            if (DUPLICATED_TXID_BLOCK - 1 == blockHeight) {
+            if (DUPLICATED_TXID_BLOCK + 1 == blockHeight) {
                 addError("Treating the duplicated transaction " + DUPLICATED_TXID);
                 BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(DUPLICATED_TXID);
                 if (transactionToRemove != null) {
                     // Removing from block.
                     BitcoinBlock b = getBlockRepository().findByHeight(DUPLICATED_TXID_BLOCK);
                     Optional<BitcoinTransaction> transaction = b.getTransactions().stream()
-                                        .filter(t -> DUPLICATED_TXID.equals(t.getTxId()))
-                                        .findFirst();
+                            .filter(t -> DUPLICATED_TXID.equals(t.getTxId()))
+                            .findFirst();
                     b.getTransactions().remove(transaction.get());
                     getBlockRepository().save(b);
 
@@ -142,16 +152,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                     addError("Duplicated transaction " + DUPLICATED_TXID + " not found");
                 }
             }
-
-            // ---------------------------------------------------------------------------------------------------------
-			// We set the previous and the next block.
-			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
-			blockToProcess.setPreviousBlock(previousBlock);
-            addLog("Setting the previous block of this block");
-			if (previousBlock != null) {
-				previousBlock.setNextBlock(blockToProcess);
-                addLog("Setting this block as next block of the previous one");
-			}
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
