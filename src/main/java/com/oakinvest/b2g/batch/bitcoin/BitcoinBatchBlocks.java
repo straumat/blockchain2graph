@@ -125,6 +125,17 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                 addError("Treating the duplicated transaction " + DUPLICATED_TXID);
                 BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(DUPLICATED_TXID);
                 if (transactionToRemove != null) {
+                    // Removing from block.
+                    BitcoinBlock b = getBlockRepository().findByHeight(DUPLICATED_TXID_BLOCK);
+                    Optional<BitcoinTransaction> transaction = b.getTransactions().stream()
+                                        .filter(t -> DUPLICATED_TXID.equals(t.getTxId()))
+                                        .findFirst();
+                    b.getTransactions().remove(transaction.get());
+                    getBlockRepository().save(b);
+
+                    // Deleting all data & relationships.
+                    transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
+                    transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
                     getTransactionRepository().delete(transactionToRemove);
                     addError("Duplicated transaction " + DUPLICATED_TXID + " treated");
                 } else {
