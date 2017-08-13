@@ -30,6 +30,16 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
     /**
+     * Duplicate txid.
+     */
+    private static final String DUPLICATED_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+
+    /**
+     * Duplicate txid block.
+     */
+    private static final int DUPLICATED_TXID_BLOCK = 91812;
+
+    /**
      * Status service.
      */
     private final StatusService status;
@@ -101,19 +111,21 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
                                 .parallelStream()
-                                .filter(t -> !t.equals(GENESIS_BLOCK_TRANSACTION))
+                                .filter(t -> (!GENESIS_BLOCK_TRANSACTION.equals(t)) && !(DUPLICATED_TXID_BLOCK == blockHeight && DUPLICATED_TXID.equals(t)))
                                 .forEach(t -> {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
                                     if (r != null && r.getError() == null) {
                                         tempTransactionList.put(t, bitcoindService.getRawTransaction(t).getResult());
+                                    } else {
+                                        throw new RuntimeException("Error getting transactions from block " + blockHeight);
                                     }
                                 });
 
                         // We check that no response was missing.
-                        if (tempTransactionList.size() != blockResponse.getResult().getTx().size()) {
+/*                        if (tempTransactionList.size() != blockResponse.getResult().getTx().size()) {
                             status.addError("Error getting transactions from block " + blockHeight);
                             return Optional.empty();
-                        }
+                        }*/
 
                         // Then we add it to the list in the right order.
                         blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));

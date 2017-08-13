@@ -2,7 +2,6 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -31,16 +30,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 * Log prefix.
 	 */
 	private static final String PREFIX = "Blocks batch";
-
-    /**
-     * Duplicate txid.
-     */
-	private static final String DUPLICATED_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
-
-    /**
-     * Duplicate txid block.
-     */
-    private static final int DUPLICATED_TXID_BLOCK = 91812;
 
     /**
      * Constructor.
@@ -130,8 +119,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // Fixing duplicate txid : remove the transaction from the block.
-            // TODO : Replace addError with addInfo.
-            if (DUPLICATED_TXID_BLOCK + 1 == blockHeight) {
+            // TODO : to remove.
+/*            if (DUPLICATED_TXID_BLOCK + 1 == blockHeight) {
                 addError("Treating the duplicated transaction " + DUPLICATED_TXID);
                 BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(DUPLICATED_TXID);
                 if (transactionToRemove != null) {
@@ -151,7 +140,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                 } else {
                     addError("Duplicated transaction " + DUPLICATED_TXID + " not found");
                 }
-            }
+            }*/
 
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.

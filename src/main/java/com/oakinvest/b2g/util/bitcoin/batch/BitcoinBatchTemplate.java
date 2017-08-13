@@ -2,9 +2,6 @@ package com.oakinvest.b2g.util.bitcoin.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -21,8 +18,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -159,7 +154,7 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                    /*if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
                         boolean validBlock = true;
 
                         // Getting the data from bitcoind.
@@ -185,7 +180,7 @@ public abstract class BitcoinBatchTemplate {
                             addError("Block " + bitcoinBlock.getHeight() + " is not correct - deleting it");
                             getBlockRepository().delete(bitcoinBlock.getId());
                         }
-                    }
+                    }*/
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------
