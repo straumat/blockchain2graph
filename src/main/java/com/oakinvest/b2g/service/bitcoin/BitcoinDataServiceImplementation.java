@@ -126,7 +126,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                             blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
                         }
                         if (blockHeight == DUPLICATED_TXID_BLOCK_2) {
-                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
+                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_2);
                         }
 
                         blockResponse.getResult().getTx()
