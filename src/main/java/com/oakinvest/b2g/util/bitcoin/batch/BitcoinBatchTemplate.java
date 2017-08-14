@@ -178,6 +178,16 @@ public abstract class BitcoinBatchTemplate {
                         // If the block is invalid, we delete it.
                         if (!validBlock) {
                             addError("Block " + bitcoinBlock.getHeight() + " is not correct - deleting it");
+                            bitcoinBlock.getTransactions().forEach(t -> {
+                                        BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
+                                        transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
+                                        transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
+                                        transactionToRemove.getOutputs().clear();
+                                        transactionToRemove.getInputs().clear();
+                                        getTransactionRepository().delete(transactionToRemove);
+                                        bitcoinBlock.getTransactions().remove(transactionToRemove);
+                                    }
+                            );
                             getBlockRepository().delete(bitcoinBlock.getId());
                         }
                     }*/

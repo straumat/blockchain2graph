@@ -129,7 +129,7 @@ public class BitcoinImportTest {
 		}
 
 		// Reset errors.
-		bitcoindMock.resetErrorCounters();
+		bitcoindMock.resetErrors();
 
 		// Launch block importation.
 		int iterations = 0;

@@ -96,7 +96,7 @@ public class BitcoindServiceTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		bitcoindMock.resetErrorCounters();
+		bitcoindMock.resetErrors();
 	}
 
 	/**

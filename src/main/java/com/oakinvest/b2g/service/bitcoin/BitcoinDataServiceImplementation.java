@@ -42,7 +42,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Duplicate txid.
      */
-    private static final String DUPLICATED_TXID_2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468\n";
+    private static final String DUPLICATED_TXID_2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
 
     /**
      * Duplicate txid block.
