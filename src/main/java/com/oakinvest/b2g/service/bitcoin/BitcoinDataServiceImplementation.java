@@ -32,12 +32,23 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Duplicate txid.
      */
-    private static final String DUPLICATED_TXID = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+    private static final String DUPLICATED_TXID_1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
 
     /**
      * Duplicate txid block.
      */
-    private static final int DUPLICATED_TXID_BLOCK = 91812;
+    private static final int DUPLICATED_TXID_BLOCK_1 = 91812;
+
+    /**
+     * Duplicate txid.
+     */
+    private static final String DUPLICATED_TXID_2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468\n";
+
+    /**
+     * Duplicate txid block.
+     */
+    private static final int DUPLICATED_TXID_BLOCK_2 = 91722;
+
 
     /**
      * Status service.
@@ -109,9 +120,14 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     try {
                         // We use multi thread to retrieve all the transactions information.
                         final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
+
                         // Fix duplicated transaction.
-                        if (blockHeight == DUPLICATED_TXID_BLOCK) {
-                            Optional<String> transactionToRemove = blockResponse.getResult().getTx().stream().filter(DUPLICATED_TXID::equals).findFirst();
+                        if (blockHeight == DUPLICATED_TXID_BLOCK_1) {
+                            Optional<String> transactionToRemove = blockResponse.getResult().getTx().stream().filter(DUPLICATED_TXID_1::equals).findFirst();
+                            blockResponse.getResult().getTx().remove(transactionToRemove.get());
+                        }
+                        if (blockHeight == DUPLICATED_TXID_BLOCK_2) {
+                            Optional<String> transactionToRemove = blockResponse.getResult().getTx().stream().filter(DUPLICATED_TXID_2::equals).findFirst();
                             blockResponse.getResult().getTx().remove(transactionToRemove.get());
                         }
 
