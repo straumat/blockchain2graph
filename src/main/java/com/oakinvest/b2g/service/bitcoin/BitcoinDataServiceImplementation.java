@@ -123,12 +123,10 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
 
                         // Fix duplicated transaction.
                         if (blockHeight == DUPLICATED_TXID_BLOCK_1) {
-                            Optional<String> transactionToRemove = blockResponse.getResult().getTx().stream().filter(DUPLICATED_TXID_1::equals).findFirst();
-                            blockResponse.getResult().getTx().remove(transactionToRemove.get());
+                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
                         }
                         if (blockHeight == DUPLICATED_TXID_BLOCK_2) {
-                            Optional<String> transactionToRemove = blockResponse.getResult().getTx().stream().filter(DUPLICATED_TXID_2::equals).findFirst();
-                            blockResponse.getResult().getTx().remove(transactionToRemove.get());
+                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
                         }
 
                         blockResponse.getResult().getTx()
