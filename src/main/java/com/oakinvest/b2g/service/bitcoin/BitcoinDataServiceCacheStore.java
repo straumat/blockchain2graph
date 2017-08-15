@@ -97,6 +97,16 @@ public class BitcoinDataServiceCacheStore {
     }
 
     /**
+     * Remove a block data to the cache.
+     * @param blockHeight block height
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public void removeBlockData(final long blockHeight) {
+        Optional<BitcoindBlockData> blockData = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
+        blockData.ifPresent(buffer::remove);
+    }
+
+    /**
      * Returns true if the block is in cache.
      * @param blockHeight block height
      * @return true if in cache

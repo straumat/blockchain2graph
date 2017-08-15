@@ -16,6 +16,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,6 +112,12 @@ public class BitcoinImportTest {
 	 */
 	@Autowired
 	private BitcoindMock bitcoindMock;
+
+    /**
+     * Cache store.
+     */
+    @Autowired
+    private BitcoinDataServiceCacheStore cacheStore;
 
 	/**
 	 * Importing the data.

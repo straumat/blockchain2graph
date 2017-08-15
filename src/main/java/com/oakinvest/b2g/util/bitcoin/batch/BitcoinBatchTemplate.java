@@ -2,6 +2,9 @@ package com.oakinvest.b2g.util.bitcoin.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -10,14 +13,18 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -90,6 +97,12 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	private long batchStartTime;
 
+    /**
+     * Cache store.
+     */
+    @Autowired
+    private BitcoinDataServiceCacheStore cacheStore;
+
 	/**
 	 * Constructor.
      *
@@ -154,10 +167,11 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    /*if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
                         boolean validBlock = true;
 
                         // Getting the data from bitcoind.
+                        cacheStore.removeBlockData(blockToProcess.get().getHeight());
                         BitcoindBlockData blockData = getBitcoinDataService().getBlockData(blockToProcess.get().getHeight()).get();
 
                         // Checking all transactions.
@@ -190,7 +204,7 @@ public abstract class BitcoinBatchTemplate {
                             );
                             getBlockRepository().delete(bitcoinBlock.getId());
                         }
-                    }*/
+                    }
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------

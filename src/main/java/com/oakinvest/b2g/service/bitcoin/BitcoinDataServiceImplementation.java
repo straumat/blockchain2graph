@@ -121,7 +121,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         // We use multi thread to retrieve all the transactions information.
                         final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
 
-                        // Fix duplicated transaction.
+                        // Fix duplicated transactions.
                         if (blockHeight == DUPLICATED_TXID_BLOCK_1) {
                             blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
                         }
@@ -135,7 +135,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                 .forEach(t -> {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
                                     if (r != null && r.getError() == null) {
-                                        tempTransactionList.put(t, bitcoindService.getRawTransaction(t).getResult());
+                                        tempTransactionList.put(t, r.getResult());
                                     } else {
                                         throw new RuntimeException("Error getting transactions from block " + blockHeight);
                                     }
