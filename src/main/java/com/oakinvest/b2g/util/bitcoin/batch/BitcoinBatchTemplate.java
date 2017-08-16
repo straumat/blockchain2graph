@@ -18,7 +18,6 @@ import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,8 +99,7 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Cache store.
      */
-    @Autowired
-    private BitcoinDataServiceCacheStore cacheStore;
+    private final BitcoinDataServiceCacheStore cacheStore;
 
 	/**
 	 * Constructor.
@@ -109,14 +107,16 @@ public abstract class BitcoinBatchTemplate {
 	 * @param newBitcoinRepositories    bitcoin repositories
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
+     * @param newCacheStore             cache store
      */
-	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
 	    this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
 		this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
 		this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
 		this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
+        this.cacheStore = newCacheStore;
 		this.status = newStatus;
 		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
 	}
@@ -171,21 +171,30 @@ public abstract class BitcoinBatchTemplate {
                         boolean validBlock = true;
 
                         // Getting the data from bitcoind.
-                        cacheStore.removeBlockData(blockToProcess.get().getHeight());
-                        BitcoindBlockData blockData = getBitcoinDataService().getBlockData(blockToProcess.get().getHeight()).get();
+                        cacheStore.removeBlockData(blockHeightToProcess.get());
+                        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeightToProcess.get());
 
-                        // Checking all transactions.
-                        for (String tx : bitcoinBlock.getTx()) {
-                            // Getting the data in database & from bitcoind.
-                            BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(tx);
-                            GetRawTransactionResult bitcoindTransaction = blockData.getRawTransactionResult(tx).get();
+                        // If we did not succeed to get it, we delete anyway.
+                        if (!blockData.isPresent()) {
+                            validBlock = false;
+                        } else {
+                            // Checking all transactions.
+                            for (String tx : bitcoinBlock.getTx()) {
+                                // Getting the data in database & from bitcoind.
+                                BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(tx);
+                                Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(tx);
 
-                            // Checking vins & vouts.
-                            if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.getVin().size()) {
-                                validBlock = false;
-                            }
-                            if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.getVout().size()) {
-                                validBlock = false;
+                                // Checking vins & vouts.
+                                if (bitcoindTransaction.isPresent()) {
+                                    if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
+                                        validBlock = false;
+                                    }
+                                    if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
+                                        validBlock = false;
+                                    }
+                                } else {
+                                    validBlock = false;
+                                }
                             }
                         }
 

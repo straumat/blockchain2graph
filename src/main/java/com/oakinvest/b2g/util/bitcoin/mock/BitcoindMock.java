@@ -41,14 +41,14 @@ public class BitcoindMock {
 	private static final int BLOCK_IN_ERROR_1 = 496;
 
     /**
-     * Transaction with missing VIn Error Occured.
+     * Transaction with missing VIn Error Occurred.
      */
-	private static boolean transactionWithMissingVInErrorOccured = false;
+	private static boolean transactionWithMissingVInErrorOccurred = false;
 
     /**
-     * Transaction with missing Vout Error Occured.
+     * Transaction with missing Vout Error Occurred.
      */
-    private static boolean transactionWithMissingVOutErrorOccured = false;
+    private static boolean transactionWithMissingVOutErrorOccurred = false;
 
 	/**
 	 * Block hash in error.
@@ -169,8 +169,8 @@ public class BitcoindMock {
 		getBlockHashErrors = 0;
 		getBlockErrors = 0;
 		getRawTransactionErrors = 0;
-        transactionWithMissingVInErrorOccured = false;
-        transactionWithMissingVOutErrorOccured = false;
+        transactionWithMissingVInErrorOccurred = false;
+        transactionWithMissingVOutErrorOccurred = false;
 	}
 
 	/**
@@ -310,14 +310,14 @@ public class BitcoindMock {
 
 		// We simulate that a vin and a vout are missing.
         final String transactionWithMissingVIn = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
-		if (transactionWithMissingVIn.equals(transactionHashValue) && !transactionWithMissingVInErrorOccured) {
+		if (transactionWithMissingVIn.equals(transactionHashValue) && !transactionWithMissingVInErrorOccurred) {
 		    getRawTransactionResponse.getResult().getVin().remove(0);
-            transactionWithMissingVInErrorOccured = true;
+            transactionWithMissingVInErrorOccurred = true;
         }
         final String transactionWithMissingVOut = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-        if (transactionWithMissingVOut.equals(transactionHashValue) && !transactionWithMissingVOutErrorOccured) {
+        if (transactionWithMissingVOut.equals(transactionHashValue) && !transactionWithMissingVOutErrorOccurred) {
             getRawTransactionResponse.getResult().getVout().remove(1);
-            transactionWithMissingVOutErrorOccured = true;
+            transactionWithMissingVOutErrorOccurred = true;
         }
 
 		return getRawTransactionResponse;

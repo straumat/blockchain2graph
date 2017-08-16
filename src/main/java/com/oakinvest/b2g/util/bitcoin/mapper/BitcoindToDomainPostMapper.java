@@ -6,6 +6,8 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.Objects;
+
 /**
  * Post mapper.
  *
@@ -24,7 +26,7 @@ public abstract class BitcoindToDomainPostMapper {
     protected void blockDataToBitcoinBlockAfterMapping(final BitcoindBlockData bitcoindBlockData, @MappingTarget final BitcoinBlock bitcoinBlock) {
         bitcoinBlock.getTransactions()
                 .stream()
-                .filter(t -> t != null)
+                .filter(Objects::nonNull)
                 .forEach(t -> t.getOutputs().forEach(o -> {
                     o.setTxId(t.getTxId());
                     o.setKey(t.getTxId() + "-" + o.getN());

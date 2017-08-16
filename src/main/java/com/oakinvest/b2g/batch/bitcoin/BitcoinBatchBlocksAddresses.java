@@ -6,6 +6,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -33,9 +34,10 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
      * @param newBitcoinRepositories    bitcoin repositories
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
+     * @param newCacheStore             cache store
      */
-    public BitcoinBatchBlocksAddresses(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+    public BitcoinBatchBlocksAddresses(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
     }
 
     /**

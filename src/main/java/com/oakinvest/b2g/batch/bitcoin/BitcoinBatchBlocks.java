@@ -7,6 +7,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheLoader;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +39,10 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
      * @param newBitcoindCacheLoader    bitcoin cache loader
+     * @param newCacheStore             cache store
      */
-    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader, final BitcoinDataServiceCacheStore newCacheStore) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
         bitcoindCacheLoader = newBitcoindCacheLoader;
     }
 
