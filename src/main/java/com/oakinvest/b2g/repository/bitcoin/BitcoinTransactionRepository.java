@@ -25,6 +25,7 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
      * @param txId tx id
      * @return number of transaction
      */
+    @Query("MATCH (t:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE t.txid = {0} return count(*)")
     int transactionCount(String txId);
 
 	/**
