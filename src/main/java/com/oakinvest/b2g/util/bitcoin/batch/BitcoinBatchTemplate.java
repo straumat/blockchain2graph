@@ -181,6 +181,10 @@ public abstract class BitcoinBatchTemplate {
                             // Checking all transactions.
                             for (String tx : bitcoinBlock.getTx()) {
                                 // Getting the data in database & from bitcoind.
+                                if (getTransactionRepository().transactionCount(tx) > 1) {
+                                    System.out.println("tx" + tx + " is duplicated");
+                                }
+
                                 BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(tx);
                                 Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(tx);
 

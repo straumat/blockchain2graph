@@ -19,6 +19,14 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
 	@Query("MATCH (t:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE t.txid = {0} return count(*) = 1")
 	boolean exists(String txId);
 
+    /**
+     * Transaction count.
+     *
+     * @param txId tx id
+     * @return number of transaction
+     */
+    int transactionCount(String txId);
+
 	/**
 	 * Find a block by its id.
 	 *

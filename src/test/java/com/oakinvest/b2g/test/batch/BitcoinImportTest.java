@@ -113,12 +113,6 @@ public class BitcoinImportTest {
 	@Autowired
 	private BitcoindMock bitcoindMock;
 
-    /**
-     * Cache store.
-     */
-    @Autowired
-    private BitcoinDataServiceCacheStore cacheStore;
-
 	/**
 	 * Importing the data.
 	 *
@@ -170,6 +164,20 @@ public class BitcoinImportTest {
 			assertThat(t.getOutputs()).as("Transaction %s outputs", t.getTxId()).isNotEmpty();
 		});
 	}
+
+    /**
+     * Test duplicated txid.
+     */
+    @Test
+    public void testDuplicatedTxid() {
+        transactionRepository.findAll().forEach(t -> {
+           try {
+               transactionOutputRepository.findByKey(t.getTxId());
+           } catch (Exception e) {
+               fail("Duplicated transaction found : " + t.getTxId());
+           }
+        });
+    }
 
 	/**
 	 * Test for recovery after crash.
