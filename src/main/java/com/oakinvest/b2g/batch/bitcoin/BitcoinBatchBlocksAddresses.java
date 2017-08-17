@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
+
 /**
  * Bitcoin import addresses batch.
  * Created by straumat on 27/02/17.
@@ -55,7 +57,7 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
     protected final Optional<Long> getBlockHeightToProcess() {
-		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.BLOCK_IMPORTED);
+		BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_IMPORTED);
 		if (blockToTreat != null) {
 			return Optional.of(blockToTreat.getHeight());
 		} else {

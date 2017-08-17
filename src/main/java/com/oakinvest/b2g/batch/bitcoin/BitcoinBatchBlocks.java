@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIND_BUFFER_SIZE;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 
 /**
  * Bitcoin import blocks batch.
@@ -136,7 +137,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final BitcoinBlockState getNewStateOfProcessedBlock() {
-		return BitcoinBlockState.BLOCK_IMPORTED;
+		return BLOCK_IMPORTED;
 	}
 
 }

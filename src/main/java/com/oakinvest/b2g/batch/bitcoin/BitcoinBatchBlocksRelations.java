@@ -15,6 +15,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.ADDRESSES_IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.IMPORTED;
+
 /**
  * Bitcoin import relations batch.
  * Created by straumat on 27/02/17.
@@ -55,7 +58,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<Long> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BitcoinBlockState.ADDRESSES_IMPORTED);
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(ADDRESSES_IMPORTED);
         if (blockToTreat != null) {
             return Optional.of(blockToTreat.getHeight());
         } else {
@@ -138,7 +141,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final BitcoinBlockState getNewStateOfProcessedBlock() {
-        return BitcoinBlockState.IMPORTED;
+        return IMPORTED;
     }
 
 }
