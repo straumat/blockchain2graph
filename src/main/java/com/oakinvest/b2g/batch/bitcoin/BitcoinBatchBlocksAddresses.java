@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.ADDRESSES_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 
 /**
@@ -125,7 +126,7 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final BitcoinBlockState getNewStateOfProcessedBlock() {
-		return BitcoinBlockState.ADDRESSES_IMPORTED;
+		return ADDRESSES_IMPORTED;
 	}
 
 }

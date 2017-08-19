@@ -6,6 +6,7 @@ import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksAddresses;
 import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
@@ -15,6 +16,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.IMPORTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -112,6 +113,12 @@ public class BitcoinImportTest {
 	@Autowired
 	private BitcoindMock bitcoindMock;
 
+    /**
+     * Cache store.
+     */
+    @Autowired
+    private BitcoinDataServiceCacheStore cacheStore;
+
 	/**
 	 * Importing the data.
 	 *
@@ -164,20 +171,6 @@ public class BitcoinImportTest {
 		});
 	}
 
-    /**
-     * Test duplicated txid.
-     */
-    @Test
-    public void testDuplicatedTxid() {
-        transactionRepository.findAll().forEach(t -> {
-           try {
-               transactionOutputRepository.findByKey(t.getTxId());
-           } catch (Exception e) {
-               fail("Duplicated transaction found : " + t.getTxId());
-           }
-        });
-    }
-
 	/**
 	 * Test for recovery after crash.
 	 */
@@ -187,7 +180,7 @@ public class BitcoinImportTest {
 
 		// We set the last block as not at all imported
 		BitcoinBlock b = blockRepository.findByHeight(blockForTest);
-		b.setState(BLOCK_IMPORTED);
+		b.setState(BitcoinBlockState.BLOCK_IMPORTED);
 		blockRepository.save(b);
 
 		// Then, we import it.

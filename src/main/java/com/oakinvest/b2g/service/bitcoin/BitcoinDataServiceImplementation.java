@@ -137,7 +137,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     if (r != null && r.getError() == null) {
                                         tempTransactionList.put(t, r.getResult());
                                     } else {
-                                        throw new RuntimeException("Error getting transactions from block " + blockHeight);
+                                        if (r == null) {
+                                            throw new RuntimeException("Error getting transactions from block " + blockHeight);
+                                        } else {
+                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError());
+                                        }
                                     }
                                 });
 

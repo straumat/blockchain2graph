@@ -69,7 +69,7 @@
 
 		<!-- Maven plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-        <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
 		<maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
         <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
