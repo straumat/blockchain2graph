@@ -47,6 +47,7 @@ public class BitcoinDataServiceCacheStore {
     /**
      * Clear cache.
      */
+    @SuppressWarnings("checkstyle:designforextension")
     public void clear() {
         lastBlockCountValue = -1;
         lastBlockCountValueAccess = -1;
