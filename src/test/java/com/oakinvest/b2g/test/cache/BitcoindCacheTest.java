@@ -58,61 +58,59 @@ public class BitcoindCacheTest {
         for (GraphRepository graphRepository : graphRepositories.values()) {
             graphRepository.deleteAll();
         }
+        cacheStore.clear();
     }
 
     /**
-     * Testing cache is working on getBlockData().
+     * Testing cache is working on getBlockDataFromCache().
       */
     @Test
     public final void getBlockDataCacheTest() throws InterruptedException {
-        // We add 101 blocks. The last block loaded is 10.
+        // We import 101 blocks.
         while (bitcoinBlockRepository.count() < BITCOIND_BUFFER_SIZE + 1) {
             batchBlocks.execute();
         }
         Thread.sleep(60000);
 
-        // lastBlockSaved is database has an height of 101.
-        long lastBlockSaved = bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight();
-        assertThat(lastBlockSaved)
+        // So we must have 101 block in the database.
+        long blockCount = bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight();
+        assertThat(blockCount)
                 .as("Checking that lastBlockSaved is database has an height of 101")
                 .isEqualTo(101);
 
         // Checking that the next block to read 102 is in cache.
-        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + 1))
-                .as("Checking that the block %s is in cache", lastBlockSaved + 1)
+        assertThat(cacheStore.isBlockDataInCache(blockCount + 1))
+                .as("Checking that the block %s is in cache", blockCount + 1)
                 .isTrue();
-        // Checking that the block 201 (lastBlockSaved + BUFFER_SIZE) is in cache thanks to the cache loader.
-        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE))
-                .as("Checking that the block %s is in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE)
+        // Checking that the block 201 (lastBlockSaved + BUFFER_SIZE) is in cache   .
+        assertThat(cacheStore.isBlockDataInCache(blockCount + BITCOIND_BUFFER_SIZE))
+                .as("Checking that the block %s is in cache", blockCount + BITCOIND_BUFFER_SIZE)
                 .isTrue();
         // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.
-        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
-                .as("Checking that the block %s is not in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE + 1)
+        assertThat(cacheStore.isBlockDataInCache(blockCount + BITCOIND_BUFFER_SIZE + 1))
+                .as("Checking that the block %s is not in cache", blockCount + BITCOIND_BUFFER_SIZE + 1)
                 .isFalse();
 
-        // We add 100 (BUFFER_SIZE) blocks. The last block in database is 201.
-        while (bitcoinBlockRepository.count() < lastBlockSaved + BITCOIND_BUFFER_SIZE) {
+        // We import 100 (BUFFER_SIZE) blocks.
+        while (bitcoinBlockRepository.count() < blockCount + BITCOIND_BUFFER_SIZE) {
             batchBlocks.execute();
         }
+        Thread.sleep(60000);
+
+        // So we must have 201 block in the database.
         assertThat(bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight())
                 .as("Checking that the last block in database is 201")
                 .isEqualTo(201);
-        Thread.sleep(60000);
 
-        // We check that 202 is waiting in the buffer
-        // Checking that the block 202 (lastBlockSaved + BUFFER_SIZE + 1) is NOT in cache.
-        assertThat(cacheStore.isBlockDataInCache(lastBlockSaved + BITCOIND_BUFFER_SIZE + 1))
-                .as("Checking that the block %s is in cache", lastBlockSaved + BITCOIND_BUFFER_SIZE + 1)
+        // We check that 202 is waiting in the buffer.
+        assertThat(cacheStore.isBlockDataInCache(blockCount + BITCOIND_BUFFER_SIZE + 1))
+                .as("Checking that the block %s is in cache", blockCount + BITCOIND_BUFFER_SIZE + 1)
                 .isTrue();
 
-        // In fact, all blocks from 202 to 302 should be in cache.
-        // We check until 299 because of mock.
-        for (long i = lastBlockSaved + BITCOIND_BUFFER_SIZE + 1;i <= 299;i++) {
-            assertThat(cacheStore.isBlockDataInCache(i))
-                    .as("Checking that the block %s is in cache", i)
-                    .isTrue();
-        }
-
+        // We check that the block 100 is no more in cache.
+        assertThat(cacheStore.isBlockDataInCache(BITCOIND_BUFFER_SIZE))
+                .as("Checking that the block %s is in cache", BITCOIND_BUFFER_SIZE)
+                .isFalse();
     }
 
 }

@@ -100,7 +100,7 @@ public class BitcoindServiceTest {
 	}
 
 	/**
-	 * getBlockCount test.
+	 * getBlockCountFromCache test.
 	 */
 	@Test
 	public final void getBlockCountTest() {
@@ -115,7 +115,7 @@ public class BitcoindServiceTest {
 
 	/**
 	 * getBlockCountTest test in error.
-	 * Statistically getBlockCount() should fail at least one time every 100 block.
+	 * Statistically getBlockCountFromCache() should fail at least one time every 100 block.
 	 */
 	@Test
 	public final void getBlockCountTestInError() {

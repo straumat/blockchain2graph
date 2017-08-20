@@ -30,7 +30,7 @@ public class BitcoinDataServiceCacheAspect {
     }
 
     /**
-     * Cache for getBlockCount().
+     * Cache for getBlockCountFromCache().
      * @param pjp object
      * @return block count
      * @throws Throwable exception
@@ -42,15 +42,15 @@ public class BitcoinDataServiceCacheAspect {
         if (cacheStore.isBlockCountOutdated()) {
             Optional<Long> blockCount = ((Optional<Long>) pjp.proceed(new Object[]{}));
             if (blockCount.isPresent()) {
-                cacheStore.updateBlockCount(blockCount.get());
+                cacheStore.updateBlockCountInCache(blockCount.get());
                 return Optional.of(blockCount.get());
             } else {
                 return Optional.empty();
             }
         // If the data is still in cache.
         } else {
-            if (cacheStore.getBlockCount() != -1) {
-                return Optional.of(cacheStore.getBlockCount());
+            if (cacheStore.getBlockCountFromCache() != -1) {
+                return Optional.of(cacheStore.getBlockCountFromCache());
             } else {
                 return Optional.empty();
             }
@@ -58,7 +58,7 @@ public class BitcoinDataServiceCacheAspect {
     }
 
     /**
-     * Cache for getBlockData().
+     * Cache for getBlockDataFromCache().
      * @param pjp object
      * @param blockHeight block height
      * @return block data
@@ -67,9 +67,8 @@ public class BitcoinDataServiceCacheAspect {
     @SuppressWarnings("unchecked")
     @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockData(..)) && args(blockHeight))")
     public final Optional<BitcoindBlockData> getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
-
         // Returning the data.
-        Optional<BitcoindBlockData> blockData = cacheStore.getBlockData(blockHeight);
+        Optional<BitcoindBlockData> blockData = cacheStore.getBlockDataFromCache(blockHeight);
         if (blockData.isPresent()) {
             // If the block is in the cache, we return it.
             return blockData;
@@ -77,7 +76,7 @@ public class BitcoinDataServiceCacheAspect {
             // If it's not in the cache, we retrieve it.
             blockData = (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
             // If we retrieve if for the first time, we let it in cache.
-            blockData.ifPresent(cacheStore::addBlockData);
+            blockData.ifPresent(cacheStore::addBlockDataInCache);
             return blockData;
         }
     }

@@ -174,7 +174,7 @@ public class BitcoindMock {
 	}
 
 	/**
-	 * getBlockCount() advice.
+	 * getBlockCountFromCache() advice.
 	 *
 	 * @param pjp loadInCache.
 	 * @return value.
@@ -182,7 +182,7 @@ public class BitcoindMock {
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockCount())")
 	public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
-        log.debug("Using cache for getBlockCount()");
+        log.debug("Using cache for getBlockCountFromCache()");
 		GetBlockCountResponse getBlockCountResponse;
 		File response = new File(getBlockCountDirectory.getPath() + "/response.ser");
 
@@ -202,7 +202,7 @@ public class BitcoindMock {
 			// We create an error.
 			BitcoindResponseError error = new BitcoindResponseError();
 			error.setCode(0);
-			error.setMessage("Mock error on getBlockCount");
+			error.setMessage("Mock error on getBlockCountFromCache");
 			getBlockCountResponse.setResult(0);
 			getBlockCountResponse.setError(error);
 		}

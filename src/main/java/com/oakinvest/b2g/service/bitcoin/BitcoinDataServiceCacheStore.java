@@ -35,7 +35,7 @@ public class BitcoinDataServiceCacheStore {
     /**
      * Last block count access.
      */
-    private long lastBlockCountAccess = -1;
+    private long lastBlockCountValueAccess = -1;
 
     /**
      * Constructor.
@@ -45,17 +45,26 @@ public class BitcoinDataServiceCacheStore {
     }
 
     /**
+     * Clear cache.
+     */
+    public void clear() {
+        lastBlockCountValue = -1;
+        lastBlockCountValueAccess = -1;
+        buffer.clear();
+    }
+
+    /**
      * Returns true if it's time to refresh the block count.
      * @return true if update is required
      */
     @SuppressWarnings("checkstyle:designforextension")
     public boolean isBlockCountOutdated() {
         // If getBlockcount has never been call, of course, it's outdated.
-        if (lastBlockCountAccess == -1) {
+        if (lastBlockCountValueAccess == -1) {
             return true;
         } else {
             // Getting the time elapsed since last call to getblockcount.
-            float elapsedMinutesSinceLastCall = (System.currentTimeMillis() - lastBlockCountAccess) / MILLISECONDS_IN_ONE_MINUTE;
+            float elapsedMinutesSinceLastCall = (System.currentTimeMillis() - lastBlockCountValueAccess) / MILLISECONDS_IN_ONE_MINUTE;
             // Return true if it's been more than 10 minutes.
             return elapsedMinutesSinceLastCall > BITCOIN_BLOCK_GENERATION_DELAY;
         }
@@ -66,16 +75,9 @@ public class BitcoinDataServiceCacheStore {
      * @param blockCount block count
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public void updateBlockCount(final long blockCount) {
-        // We update the value.
+    public void updateBlockCountInCache(final long blockCount) {
         lastBlockCountValue = blockCount;
-        lastBlockCountAccess = System.currentTimeMillis();
-
-        // We reduce the cache size at this moment.
-        while (buffer.size() > BITCOIND_BUFFER_SIZE) {
-            buffer.pollFirst();
-        }
-
+        lastBlockCountValueAccess = System.currentTimeMillis();
     }
 
     /**
@@ -83,7 +85,7 @@ public class BitcoinDataServiceCacheStore {
      * @return block count
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public long getBlockCount() {
+    public long getBlockCountFromCache() {
         return lastBlockCountValue;
     }
 
@@ -92,18 +94,16 @@ public class BitcoinDataServiceCacheStore {
      * @param blockData block
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public void addBlockData(final BitcoindBlockData blockData) {
-        buffer.add(blockData);
-    }
+    public void addBlockDataInCache(final BitcoindBlockData blockData) {
+        // Reducing the cache.
+        while (buffer.size() > BITCOIND_BUFFER_SIZE) {
+            buffer.pollFirst();
+        }
 
-    /**
-     * Remove a block data to the cache.
-     * @param blockHeight block height
-     */
-    @SuppressWarnings("checkstyle:designforextension")
-    public void removeBlockData(final long blockHeight) {
-        Optional<BitcoindBlockData> blockData = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
-        blockData.ifPresent(buffer::remove);
+        // Add the block in cache.
+        if (!isBlockDataInCache(blockData.getBlock().getHeight())) {
+            buffer.add(blockData);
+        }
     }
 
     /**
@@ -122,8 +122,18 @@ public class BitcoinDataServiceCacheStore {
      * @return block data
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+    public Optional<BitcoindBlockData> getBlockDataFromCache(final long blockHeight) {
         return buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
+    }
+
+    /**
+     * Remove a block data to the cache.
+     * @param blockHeight block height
+     */
+    @SuppressWarnings("checkstyle:designforextension")
+    public void removeBlockDataFromCache(final long blockHeight) {
+        Optional<BitcoindBlockData> blockData = buffer.stream().filter(b -> b.getBlock().getHeight() == blockHeight).findFirst();
+        blockData.ifPresent(buffer::remove);
     }
 
 }

@@ -171,7 +171,7 @@ public abstract class BitcoinBatchTemplate {
                         boolean validBlock = true;
 
                         // Getting the data from bitcoind.
-                        cacheStore.removeBlockData(blockHeightToProcess.get());
+                        cacheStore.removeBlockDataFromCache(blockHeightToProcess.get());
                         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeightToProcess.get());
 
                         // If we did not succeed to get it, we delete anyway.
