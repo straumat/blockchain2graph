@@ -2,6 +2,7 @@ package com.oakinvest.b2g.service.bitcoin;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
@@ -30,27 +31,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private static final String GENESIS_BLOCK_TRANSACTION = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
 
     /**
-     * Duplicate txid.
-     */
-    private static final String DUPLICATED_TXID_1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
-
-    /**
-     * Duplicate txid block.
-     */
-    private static final int DUPLICATED_TXID_BLOCK_1 = 91812;
-
-    /**
-     * Duplicate txid.
-     */
-    private static final String DUPLICATED_TXID_2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
-
-    /**
-     * Duplicate txid block.
-     */
-    private static final int DUPLICATED_TXID_BLOCK_2 = 91722;
-
-
-    /**
      * Status service.
      */
     private final StatusService status;
@@ -69,6 +49,27 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
+    }
+
+    /**
+     * Suppress duplicated transaction in blocks.
+     *
+     * @param getBlockResult block
+     */
+    private void fixDuplicatedTransaction(final GetBlockResult getBlockResult) {
+        // First duplicated transaction.
+        final long duplicatedTxIdBlock1 = 91812;
+        final String duplicatedTxId1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+        if (getBlockResult.getHeight() == duplicatedTxIdBlock1) {
+            getBlockResult.getTx().remove(duplicatedTxId1);
+        }
+
+        // Second duplicated transaction.
+        final long duplicatedTxIdBlock2 = 91722;
+        final String duplicatedTxId2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
+        if (getBlockResult.getHeight() == duplicatedTxIdBlock2) {
+            getBlockResult.getTx().remove(duplicatedTxId2);
+        }
     }
 
     /**
@@ -118,17 +119,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     // Then we retrieve the transactions data...
                     final List<GetRawTransactionResult> transactions = new LinkedList<>();
                     try {
-                        // We use multi thread to retrieve all the transactions information.
-                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
 
                         // Fix duplicated transactions.
-                        if (blockHeight == DUPLICATED_TXID_BLOCK_1) {
-                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_1);
-                        }
-                        if (blockHeight == DUPLICATED_TXID_BLOCK_2) {
-                            blockResponse.getResult().getTx().remove(DUPLICATED_TXID_2);
-                        }
+                        fixDuplicatedTransaction(blockResponse.getResult());
 
+                        // We use multi thread to retrieve all the transactions information.
+                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
                                 .parallelStream()
                                 .filter(t -> (!GENESIS_BLOCK_TRANSACTION.equals(t)))
@@ -145,12 +141,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     }
                                 });
 
-
                         // We check that no response was missing.
-/*                        if (tempTransactionList.size() != blockResponse.getResult().getTx().size()) {
+                        if (tempTransactionList.size() != blockResponse.getResult().getTx().size()) {
                             status.addError("Error getting transactions from block " + blockHeight);
                             return Optional.empty();
-                        }*/
+                        }
 
                         // Then we add it to the list in the right order.
                         blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
