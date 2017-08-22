@@ -191,13 +191,17 @@ public abstract class BitcoinBatchTemplate {
                                     System.out.println("tx " + tx + " is duplicated");
                                 }
 
-                                // Checking vins & vouts.
+                                // Checking transaction is present, vins & vouts.
                                 if (bitcoindTransaction.isPresent()) {
-                                    if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
+                                    if (bitcoinTransaction == null) {
                                         validBlock = false;
-                                    }
-                                    if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                                        validBlock = false;
+                                    } else {
+                                        if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
+                                            validBlock = false;
+                                        }
+                                        if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
+                                            validBlock = false;
+                                        }
                                     }
                                 } else {
                                     validBlock = false;
