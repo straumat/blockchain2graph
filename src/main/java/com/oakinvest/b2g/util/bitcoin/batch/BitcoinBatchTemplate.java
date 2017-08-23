@@ -181,29 +181,27 @@ public abstract class BitcoinBatchTemplate {
                             validBlock = false;
                         } else {
                             // Checking all transactions.
-                            for (String tx : bitcoinBlock.getTx()) {
-                                // Getting the data in database & from bitcoind.
-                                BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(tx);
-                                Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(tx);
+                            for (String txId : bitcoinBlock.getTx()) {
+                                // Checking that all transactions are unique.
+                                if (getTransactionRepository().transactionCount(txId) == 1) {
+                                    // Getting the data in database & from bitcoind.
+                                    BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
+                                    Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
 
-                                // TODO : Remove.
-                                if (getTransactionRepository().transactionCount(tx) > 1) {
-                                    System.out.println("tx " + tx + " is duplicated");
-                                }
-
-                                // Checking transaction is present, vins & vouts.
-                                if (bitcoindTransaction.isPresent()) {
-                                    if (bitcoinTransaction == null) {
-                                        validBlock = false;
-                                    } else {
+                                    // Checking transaction is present, vins & vouts.
+                                    if (bitcoindTransaction.isPresent()) {
                                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
                                             validBlock = false;
                                         }
                                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
                                             validBlock = false;
                                         }
+                                    } else {
+                                        // Transaction not presend in bitcoind response.
+                                        validBlock = false;
                                     }
                                 } else {
+                                    // No transaction or more than one transaction.
                                     validBlock = false;
                                 }
                             }
