@@ -18,6 +18,7 @@ import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -164,85 +165,11 @@ public abstract class BitcoinBatchTemplate {
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
                     // -------------------------------------------------------------------------------------------------
-                    // Temporary fix : sometimes vins & vouts are missing.
+                    // Temporary fix : sometimes vins & vouts are missing. Or there are two transactions
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
                     if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
-                        addLog("Checking data of block " + bitcoinBlock.getFormattedHeight());
-                        boolean validBlock = true;
-
-                        // Getting the data from bitcoind.
-                        Optional<BitcoindBlockData> blockDataInCache = cacheStore.getBlockDataFromCache(blockHeightToProcess.get());
-                        cacheStore.removeBlockDataFromCache(blockHeightToProcess.get());
-                        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeightToProcess.get());
-
-                        // If we did not succeed to get it, we delete anyway.
-                        if (!blockData.isPresent()) {
-                            validBlock = false;
-                        } else {
-                            // Checking all transactions.
-                            for (String txId : bitcoinBlock.getTx()) {
-                                // Checking that all transactions are unique.
-                                if (getTransactionRepository().transactionCount(txId) == 1) {
-                                    // Getting the data in database & from bitcoind.
-                                    BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
-                                    Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
-
-                                    // Checking transaction is present, vins & vouts.
-                                    if (bitcoindTransaction.isPresent()) {
-                                        if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
-                                            validBlock = false;
-                                        }
-                                        if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                                            validBlock = false;
-                                        }
-                                    } else {
-                                        // Transaction not present in bitcoind response.
-                                        validBlock = false;
-                                    }
-                                } else {
-                                    // No transaction or more than one transaction.
-                                    validBlock = false;
-                                }
-                            }
-                        }
-
-                        // If the block is invalid, we delete it.
-                        if (!validBlock) {
-                            addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
-                            // Deleting the block.
-                            bitcoinBlock.getTransactions().forEach(t -> {
-                                        BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
-                                        transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
-                                        transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
-                                        transactionToRemove.getOutputs().clear();
-                                        transactionToRemove.getInputs().clear();
-                                        getTransactionRepository().delete(transactionToRemove);
-                                        bitcoinBlock.getTransactions().remove(transactionToRemove);
-                                    }
-                            );
-                            getBlockRepository().delete(bitcoinBlock.getId());
-
-                            // Audit : Checking if the block data in cache and the block data retrieved are the same.
-                            blockDataInCache.ifPresent(bitcoindBlockData -> bitcoindBlockData.getTransactions().forEach(tx -> {
-                                Optional<GetRawTransactionResult> txInCache = bitcoindBlockData.getRawTransactionResult(tx.getTxid());
-                                if (txInCache.isPresent()) {
-                                    // Checking vins.
-                                    if (txInCache.get().getVin().size() != tx.getVin().size()) {
-                                        addError("Vins differs between new data & cache");
-                                    }
-                                    // Checking vouts.
-                                    if (txInCache.get().getVout().size() != tx.getVout().size()) {
-                                        addError("Vouts differs between new data & cache");
-                                    }
-                                } else {
-                                    // Transaction missing.
-                                    addError("Tx " + tx.getTxid() + " is missing");
-                                }
-                            }));
-                        } else {
-                            addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
-                        }
+                        verifyBlock(bitcoinBlock);
                     }
                     // -------------------------------------------------------------------------------------------------
 
@@ -401,6 +328,100 @@ public abstract class BitcoinBatchTemplate {
      */
     protected final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
+    }
+
+    /**
+     * Verify a block. If it nos correct we delete it.
+     * @param bitcoinBlock block to verify
+     */
+    private void verifyBlock(final BitcoinBlock bitcoinBlock) {
+        addLog("Checking data of block " + bitcoinBlock.getFormattedHeight());
+        StringBuilder audit = new StringBuilder("");
+        boolean validBlock = true;
+
+        // Getting the data from bitcoind (in cache and fresh).
+        Optional<BitcoindBlockData> blockDataInCache = cacheStore.getBlockDataFromCache(bitcoinBlock.getHeight());
+        cacheStore.removeBlockDataFromCache(bitcoinBlock.getHeight());
+        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(bitcoinBlock.getHeight());
+
+        // Checking all the data.
+        if (!blockData.isPresent()) {
+            audit.append("Impossible to get fresh block data from bitcoind. ").append(System.getProperty("line.separator"));
+            validBlock = false;
+        } else {
+            // Checking all transactions.
+            for (String txId : bitcoinBlock.getTx()) {
+                // Checking that all transactions are unique.
+                if (getTransactionRepository().transactionCount(txId) == 1) {
+                    // Getting the data in database & from bitcoind.
+                    BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
+                    Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
+
+                    // Checking transaction is present, vins & vouts.
+                    if (bitcoindTransaction.isPresent()) {
+                        if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
+                            audit.append("Inputs are not correct. ").append(System.getProperty("line.separator"));
+                            audit.append("From database ").append(bitcoinTransaction.getInputs().size()).append(System.getProperty("line.separator"));
+                            audit.append("From bitcoind ").append(bitcoindTransaction.get().getVin().size()).append(System.getProperty("line.separator"));
+                            validBlock = false;
+                        }
+                        if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
+                            audit.append("Outputs are not correct. ").append(System.getProperty("line.separator"));
+                            audit.append("From database ").append(bitcoinTransaction.getOutputs().size()).append(System.getProperty("line.separator"));
+                            audit.append("From bitcoind ").append(bitcoindTransaction.get().getVout().size()).append(System.getProperty("line.separator"));
+                            validBlock = false;
+                        }
+                    } else {
+                        // Transaction not present in bitcoind response.
+                        audit.append("Transaction ").append(txId).append(" not found in bitcoind response").append(System.getProperty("line.separator"));
+                        validBlock = false;
+                    }
+                } else {
+                    // No transaction or more than one transaction.
+                    audit.append("Transaction ").append(txId).append(" found ").append(getTransactionRepository().transactionCount(txId)).append(" times").append(System.getProperty("line.separator"));
+                    validBlock = false;
+                }
+            }
+        }
+
+        // If the block is invalid, we delete it.
+        if (!validBlock) {
+            addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
+            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("Block " + bitcoinBlock.getFormattedHeight() + " is not correct" + audit);
+
+            // Deleting the block.
+            bitcoinBlock.getTransactions().forEach(t -> {
+                        BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
+                        transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
+                        transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
+                        transactionToRemove.getOutputs().clear();
+                        transactionToRemove.getInputs().clear();
+                        getTransactionRepository().delete(transactionToRemove);
+                        bitcoinBlock.getTransactions().remove(transactionToRemove);
+                    }
+            );
+            getBlockRepository().delete(bitcoinBlock.getId());
+
+            // Audit : Checking if the block data in cache and the block data retrieved are the same.
+            blockDataInCache.ifPresent(bitcoindBlockData -> bitcoindBlockData.getTransactions().forEach(tx -> {
+                Optional<GetRawTransactionResult> txInCache = bitcoindBlockData.getRawTransactionResult(tx.getTxid());
+                if (txInCache.isPresent()) {
+                    // Checking vins.
+                    if (txInCache.get().getVin().size() != tx.getVin().size()) {
+                        addError("Vins differs between new data & cache");
+                    }
+                    // Checking vouts.
+                    if (txInCache.get().getVout().size() != tx.getVout().size()) {
+                        addError("Vouts differs between new data & cache");
+                    }
+                } else {
+                    // Transaction missing.
+                    addError("Tx " + tx.getTxid() + " is missing");
+                }
+            }));
+        } else {
+            addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
+        }
     }
 
 }
