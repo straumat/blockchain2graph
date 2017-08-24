@@ -10,15 +10,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  */
 public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTransaction> {
 
-	/**
-	 * Returns 1 if the address is already in the database.
-	 *
-	 * @param txId transaction id
-	 * @return 1 if the transaction exists.
-	 */
-	@Query("MATCH (t:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE t.txid = {0} return count(*) = 1")
-	boolean exists(String txId);
-
     /**
      * Transaction count.
      *

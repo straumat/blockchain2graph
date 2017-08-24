@@ -197,7 +197,7 @@ public abstract class BitcoinBatchTemplate {
                                             validBlock = false;
                                         }
                                     } else {
-                                        // Transaction not presend in bitcoind response.
+                                        // Transaction not present in bitcoind response.
                                         validBlock = false;
                                     }
                                 } else {
@@ -373,7 +373,7 @@ public abstract class BitcoinBatchTemplate {
      * Getter.
      * @return transactionInputRepository
      */
-    protected final BitcoinTransactionInputRepository getTransactionInputRepository() {
+    private BitcoinTransactionInputRepository getTransactionInputRepository() {
         return transactionInputRepository;
     }
 
