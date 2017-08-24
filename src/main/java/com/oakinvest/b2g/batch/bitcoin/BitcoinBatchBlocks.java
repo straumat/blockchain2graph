@@ -110,16 +110,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             }
 			addLog("This block has " + blockToProcess.getTx().size() + " transaction(s)");
 
-            // ---------------------------------------------------------------------------------------------------------
-			// We set the previous and the next block.
-			BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
-			blockToProcess.setPreviousBlock(previousBlock);
-            addLog("Setting the previous block of this block");
-			if (previousBlock != null) {
-				previousBlock.setNextBlock(blockToProcess);
-                addLog("Setting this block as next block of the previous one");
-			}
-
 			// ---------------------------------------------------------------------------------------------------------
 			// We return the block.
 			return Optional.of(blockToProcess);

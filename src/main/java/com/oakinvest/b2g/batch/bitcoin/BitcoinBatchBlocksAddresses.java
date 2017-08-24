@@ -73,7 +73,7 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 	 */
 	@Override
 	protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        BitcoinBlock blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
+        BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
 		// ---------------------------------------------------------------------------------------------------------
 		// If we have the data
@@ -83,14 +83,13 @@ public class BitcoinBatchBlocksAddresses extends BitcoinBatchTemplate {
 			// We retrieve all the addresses.
             addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
 			final List<String> addresses = Collections.synchronizedList(new ArrayList<String>());
-            blockToProcess.getTx()
+            blockToProcess.getTransactions()
                     .parallelStream()
-                    .forEach(txId ->
-                            getTransactionRepository().findByTxId(txId)
-                                    .getOutputs()
-                                    .stream()
-                                    .filter(Objects::nonNull)
-                                    .forEach(v -> v.getAddresses()
+                    .forEach(transaction ->
+                            transaction.getOutputs()
+                                        .stream()
+                                        .filter(Objects::nonNull)
+                                        .forEach(v -> v.getAddresses()
                                             .stream()
                                             .filter(Objects::nonNull)
                                             .forEach(addresses::add))

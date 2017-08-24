@@ -73,19 +73,16 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
-        final BitcoinBlock blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
+        final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
         // We link the addresses to the input and the origin transaction.
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
-        blockToProcess.getTx()
+        blockToProcess.getTransactions()
                 .parallelStream()
                 .forEach(
-                        txId -> {
-                            // Retrieving the transaction.
-                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
-
+                        t -> {
                             // For each Vin.
                             t.getInputs()
                                 .stream()
@@ -99,10 +96,10 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                     // We check if this output is not missing.
                                     if (originTransactionOutput == null) {
                                         BitcoinTransaction transaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                        addError("Treating transaction " + txId + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                        addError("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                         transaction.getInputs().forEach(i -> addError("- vin : " + i.getTxId() + " / " + i.getvOut()));
                                         transaction.getOutputs().forEach(o -> addError("- vout : " + o.getN()));
-                                        throw new RuntimeException("Treating transaction " + txId + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                        throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                     } else {
                                         // -------------------------------------------------------------------------
                                         // We create the link.
@@ -128,8 +125,18 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                 });
 
                              // Add log to say we are done.
-                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + txId  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
+                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId()  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
+
+        // ---------------------------------------------------------------------------------------------------------
+        // We set the previous and the next block.
+        BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
+        blockToProcess.setPreviousBlock(previousBlock);
+        addLog("Setting the previous block of this block");
+        if (previousBlock != null) {
+            previousBlock.setNextBlock(blockToProcess);
+            addLog("Setting this block as next block of the previous one");
+        }
 
         return Optional.of(blockToProcess);
     }

@@ -49,6 +49,15 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
     BitcoinBlock findByHeightWithoutDepth(long height);
 
     /**
+     * Find a block by it's height get all the data.
+     *
+     * @param height height
+     * @return block
+     */
+    @Query("MATCH (n:BitcoinBlock) WHERE n.height = {0} WITH n MATCH p=(n)-[*0..1]-(m)-[*0..1]-(l)-[*0..1]-(k) RETURN p, ID(n)")
+    BitcoinBlock findFullByHeight(long height);
+
+    /**
 	 * Find a block by its hash.
 	 *
 	 * @param hash hash
