@@ -11,6 +11,7 @@ import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -95,12 +96,14 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
                                     // -------------------------------------------------------------------------
                                     // We check if this output is not missing.
                                     if (originTransactionOutput == null) {
-                                        BitcoinTransaction transaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                        addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                        BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                        missingTransaction.getOutputs().forEach(o -> {
-                                            addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN());
-                                        });
+                                            addError("*");
+                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                            missingTransaction.getOutputs()
+                                                .stream()
+                                                .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
+                                                .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
+                                            addError("*");
                                         throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                     } else {
                                         // -------------------------------------------------------------------------

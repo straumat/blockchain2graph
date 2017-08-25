@@ -169,7 +169,7 @@ public abstract class BitcoinBatchTemplate {
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
                     if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
-                        verifyBlock(bitcoinBlock);
+                        verifyBlock(bitcoinBlock.getHeight());
                     }
                     // -------------------------------------------------------------------------------------------------
 
@@ -332,23 +332,23 @@ public abstract class BitcoinBatchTemplate {
 
     /**
      * Verify a block. If it nos correct we delete it.
-     * @param bitcoinBlock block to verify
+     * @param blockHeight block to verify
      */
-    private void verifyBlock(final BitcoinBlock bitcoinBlock) {
-        addLog("Checking data of block " + bitcoinBlock.getFormattedHeight());
-        StringBuilder audit = new StringBuilder("");
+    private void verifyBlock(final long blockHeight) {
+        addLog("Checking data of block " + getFormattedBlockHeight(blockHeight));
         boolean validBlock = true;
+        StringBuilder audit = new StringBuilder("");
+
+        // Getting the data from neo4j.
+        getSession().clear();
+        BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
 
         // Getting the data from bitcoind (in cache and fresh).
-        Optional<BitcoindBlockData> blockDataInCache = cacheStore.getBlockDataFromCache(bitcoinBlock.getHeight());
-        cacheStore.removeBlockDataFromCache(bitcoinBlock.getHeight());
-        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(bitcoinBlock.getHeight());
+        cacheStore.removeBlockDataFromCache(blockHeight);
+        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
         // Checking all the data.
-        if (!blockData.isPresent()) {
-            audit.append("Impossible to get fresh block data from bitcoind. ").append(System.getProperty("line.separator"));
-            validBlock = false;
-        } else {
+        if (blockData.isPresent()) {
             // Checking all transactions.
             for (String txId : bitcoinBlock.getTx()) {
                 // Checking that all transactions are unique.
@@ -382,12 +382,16 @@ public abstract class BitcoinBatchTemplate {
                     validBlock = false;
                 }
             }
+        } else {
+            // Not getting data from bitcoind.
+            audit.append("Impossible to get fresh block data from bitcoind. ").append(System.getProperty("line.separator"));
+            validBlock = false;
         }
 
         // If the block is invalid, we delete it.
         if (!validBlock) {
             addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
-            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("Block " + bitcoinBlock.getFormattedHeight() + " is not correct" + audit);
+            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("Block " + bitcoinBlock.getFormattedHeight() + " is not correct : " + audit);
 
             // Deleting the block.
             bitcoinBlock.getTransactions().forEach(t -> {
@@ -401,24 +405,6 @@ public abstract class BitcoinBatchTemplate {
                     }
             );
             getBlockRepository().delete(bitcoinBlock.getId());
-
-            // Audit : Checking if the block data in cache and the block data retrieved are the same.
-            blockDataInCache.ifPresent(bitcoindBlockData -> bitcoindBlockData.getTransactions().forEach(tx -> {
-                Optional<GetRawTransactionResult> txInCache = bitcoindBlockData.getRawTransactionResult(tx.getTxid());
-                if (txInCache.isPresent()) {
-                    // Checking vins.
-                    if (txInCache.get().getVin().size() != tx.getVin().size()) {
-                        addError("Vins differs between new data & cache");
-                    }
-                    // Checking vouts.
-                    if (txInCache.get().getVout().size() != tx.getVout().size()) {
-                        addError("Vouts differs between new data & cache");
-                    }
-                } else {
-                    // Transaction missing.
-                    addError("Tx " + tx.getTxid() + " is missing");
-                }
-            }));
         } else {
             addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
         }
