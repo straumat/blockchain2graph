@@ -22,7 +22,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	/**
 	 * The required sigs.
 	 */
-	private long reqSigs;
+	private int reqSigs;
 
 	/**
 	 * The type, eg 'type'.
@@ -93,7 +93,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	 *
 	 * @return reqSigs
 	 */
-	public final long getReqSigs() {
+	public final int getReqSigs() {
 		return reqSigs;
 	}
 
@@ -102,7 +102,7 @@ public class GetRawTransactionScriptPubKey implements Serializable {
 	 *
 	 * @param newReqSigs the reqSigs to set
 	 */
-	public final void setReqSigs(final long newReqSigs) {
+	public final void setReqSigs(final int newReqSigs) {
 		reqSigs = newReqSigs;
 	}
 

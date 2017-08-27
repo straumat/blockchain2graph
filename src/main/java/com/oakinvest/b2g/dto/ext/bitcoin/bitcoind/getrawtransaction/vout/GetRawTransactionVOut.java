@@ -78,4 +78,5 @@ public class GetRawTransactionVOut implements Serializable {
 	public final void setScriptPubKey(final GetRawTransactionScriptPubKey newScriptPubKey) {
 		scriptPubKey = newScriptPubKey;
 	}
+
 }

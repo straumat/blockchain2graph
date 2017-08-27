@@ -32,7 +32,7 @@ public class BitcoinDataServiceCacheLoader {
      */
     @Async
     @SuppressWarnings("checkstyle:designforextension")
-    public void loadCache(final long lastBlockLoaded) {
+    public void loadCache(final int lastBlockLoaded) {
         bitcoinDataService.getBlockData(lastBlockLoaded + BITCOIND_BUFFER_SIZE);
     }
 

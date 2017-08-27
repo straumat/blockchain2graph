@@ -52,12 +52,12 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	/**
 	 * Total block count.
 	 */
-	private long totalBlockCount = 0;
+	private int totalBlockCount = 0;
 
 	/**
 	 * Imported block count.
 	 */
-	private long importedBlockCount = 0;
+	private int importedBlockCount = 0;
 
 	/**
 	 * Time between two block importation.
@@ -91,7 +91,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	 * @return total block count
 	 */
 	@Override
-	public final long getTotalBlockCount() {
+	public final int getTotalBlockCount() {
 		return totalBlockCount;
 	}
 
@@ -101,7 +101,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	 * @param newTotalBlockCount new value
 	 */
 	@Override
-	public final void setTotalBlockCount(final long newTotalBlockCount) {
+	public final void setTotalBlockCount(final int newTotalBlockCount) {
 		totalBlockCount = newTotalBlockCount;
 		statusHandler.updateTotalBlockCount(totalBlockCount);
 	}
@@ -112,7 +112,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	 * @return block height.
 	 */
 	@Override
-	public final long getImportedBlockCount() {
+	public final int getImportedBlockCount() {
 		return importedBlockCount;
 	}
 
@@ -122,7 +122,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	 * @param newImportedBlockCount new value
 	 */
 	@Override
-	public final void setImportedBlockCount(final long newImportedBlockCount) {
+	public final void setImportedBlockCount(final int newImportedBlockCount) {
 		if (newImportedBlockCount != importedBlockCount) {
 			// Set statistic time and reset clock.
 			float averageBlockImportDuration = statisticService.addBlockImportDuration(System.currentTimeMillis() - timeSinceLastImport);

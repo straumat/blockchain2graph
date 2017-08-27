@@ -2,11 +2,9 @@ package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
-import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksAddresses;
-import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocksRelations;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchRelations;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
@@ -30,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 
@@ -69,13 +67,7 @@ public class BitcoinImportTest {
      * Import batch.
      */
     @Autowired
-    private BitcoinBatchBlocksAddresses batchAddresses;
-
-    /**
-     * Import batch.
-     */
-    @Autowired
-    private BitcoinBatchBlocksRelations batchRelations;
+    private BitcoinBatchRelations batchRelations;
 
 	/**
 	 * Bitcoin block repository.
@@ -141,10 +133,9 @@ public class BitcoinImportTest {
 		// Launch block importation.
 		int iterations = 0;
 		final int maxIteration = 1000;
-		while (blockRepository.countBlockByState(IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
+		while (blockRepository.countBlockByState(BLOCK_FULLY_IMPORTED) < NUMBERS_OF_BLOCK_TO_IMPORT) {
 			try {
 				batchBlocks.execute();
-				batchAddresses.execute();
 				batchRelations.execute();
 				iterations++;
 				if (iterations >= maxIteration) {
@@ -180,7 +171,7 @@ public class BitcoinImportTest {
 
 		// We set the last block as not at all imported
 		BitcoinBlock b = blockRepository.findByHeight(blockForTest);
-		b.setState(BitcoinBlockState.BLOCK_IMPORTED);
+		b.setState(BitcoinBlockState.BLOCK_DATA_IMPORTED);
 		blockRepository.save(b);
 
 		// Then, we import it.
@@ -192,8 +183,8 @@ public class BitcoinImportTest {
 		}
 
 		// we check that everything as been imported again on that block
-		assertThat(blockRepository.countBlockByState(IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
-		assertThat(blockRepository.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(IMPORTED);
+		assertThat(blockRepository.countBlockByState(BLOCK_FULLY_IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
+		assertThat(blockRepository.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(BLOCK_FULLY_IMPORTED);
 	}*/
 
 	/**
@@ -203,9 +194,9 @@ public class BitcoinImportTest {
 	public final void blocksDataTest() {
 		// Expected values.
 		final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
-		final long expectedHeight = 170;
-		final long expectedSize = 490;
-		final long expectedVersion = 1;
+		final int expectedHeight = 170;
+		final int expectedSize = 490;
+		final int expectedVersion = 1;
 		final String expectedMerkleroot = "7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff";
 		final long expectedTime = 1231731025;
 		final long expectedMedianTime = 1231716245;
@@ -240,20 +231,20 @@ public class BitcoinImportTest {
         assertThat(b.getTransactions()).as("Block transactions").hasSize(expectedTxSize);
 
         // Test relations between blocks (previous block & next block).
-        assertThat(blockRepository.findByHeight(1L))
+        assertThat(blockRepository.findByHeight(1))
                 .as("Previous & next block")
                 .extracting("previousBlock", "nextBlock.height")
-                .contains(null, 2L);
+                .contains(null, 2);
 
-        assertThat(blockRepository.findByHeight(6L))
+        assertThat(blockRepository.findByHeight(6))
                 .as("Previous & next block")
                 .extracting("previousBlock.height", "nextBlock.height")
-                .contains(5L, 7L);
+                .contains(5, 7);
 
         assertThat(blockRepository.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT))
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
-                .contains(null, 499L);
+                .contains(null, 499);
     }
 
 	/**
@@ -290,9 +281,9 @@ public class BitcoinImportTest {
 		final String expectedTransactionHex = "0100000001c997a5e56e104102fa209c6a852dd90660a20b2d9c352423edce25857fcd3704000000004847304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901ffffffff0200ca9a3b00000000434104ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84cac00286bee0000000043410411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3ac00000000";
 		final String expectedTransactionTxID = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
 		final String expectedTransactionHash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-		final long expectedTransactionSize = 275;
-		final long expectedTransactionVSize = 275;
-		final long expectedTransactionVersion = 1;
+		final int expectedTransactionSize = 275;
+		final int expectedTransactionVSize = 275;
+		final int expectedTransactionVersion = 1;
 		final long expectedTransactionLockTime = 0;
 		final String expectedBlockHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
 		final long expectedTransactionTime = 1231731025;
@@ -308,7 +299,7 @@ public class BitcoinImportTest {
 		final int expectedVout1N = 0;
 		final String expectedVout1ScriptPubKeyAsm = "04ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84c OP_CHECKSIG";
 		final String expectedVout1ScriptPubKeyHex = "4104ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84cac";
-		final long expectedVout1ScriptPubKeyReqSigs = 1L;
+		final int expectedVout1ScriptPubKeyReqSigs = 1;
 		final BitcoinTransactionOutputType expectedVout1ScriptPubKeyType = BitcoinTransactionOutputType.pubkey;
 		final String expectedVout1ScriptPubKeyAddress = "1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3";
 		// Vout 2.
@@ -316,7 +307,7 @@ public class BitcoinImportTest {
 		final int expectedVout2N = 1;
 		final String expectedVout2ScriptPubKeyAsm = "0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3 OP_CHECKSIG";
 		final String expectedVout2ScriptPubKeyHex = "410411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3ac";
-		final long expectedVout2ScriptPubKeyReqSigs = 1L;
+		final int expectedVout2ScriptPubKeyReqSigs = 1;
 		final BitcoinTransactionOutputType expectedVout2ScriptPubKeyType = BitcoinTransactionOutputType.pubkey;
 		final String expectedVout2ScriptPubKeyAddress = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
 

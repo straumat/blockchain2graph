@@ -16,15 +16,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.ADDRESSES_IMPORTED;
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 
 /**
  * Bitcoin import relations batch.
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
+public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
     /**
      * Log prefix.
@@ -40,7 +40,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      * @param newStatus                 status
      * @param newCacheStore             cache store
      */
-    public BitcoinBatchBlocksRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
+    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
     }
 
@@ -58,8 +58,8 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      * @return block to process.
      */
     @Override
-    protected final Optional<Long> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(ADDRESSES_IMPORTED);
+    protected final Optional<Integer> getBlockHeightToProcess() {
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_IMPORTED);
         if (blockToTreat != null) {
             return Optional.of(blockToTreat.getHeight());
         } else {
@@ -73,7 +73,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      * @param blockHeight block height to process.
      */
     @Override
-    protected final Optional<BitcoinBlock> processBlock(final long blockHeight) {
+    protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ public class BitcoinBatchBlocksRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final BitcoinBlockState getNewStateOfProcessedBlock() {
-        return IMPORTED;
+        return BLOCK_FULLY_IMPORTED;
     }
 
 }

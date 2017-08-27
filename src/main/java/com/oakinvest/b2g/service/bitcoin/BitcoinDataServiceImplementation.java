@@ -12,10 +12,13 @@ import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -58,14 +61,14 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     private void fixDuplicatedTransaction(final GetBlockResult getBlockResult) {
         // First duplicated transaction.
-        final long duplicatedTxIdBlock1 = 91812;
+        final int duplicatedTxIdBlock1 = 91812;
         final String duplicatedTxId1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
         if (getBlockResult.getHeight() == duplicatedTxIdBlock1) {
             getBlockResult.getTx().remove(duplicatedTxId1);
         }
 
         // Second duplicated transaction.
-        final long duplicatedTxIdBlock2 = 91722;
+        final int duplicatedTxIdBlock2 = 91722;
         final String duplicatedTxId2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
         if (getBlockResult.getHeight() == duplicatedTxIdBlock2) {
             getBlockResult.getTx().remove(duplicatedTxId2);
@@ -79,7 +82,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     @Override
     @SuppressWarnings("checkstyle:designforextension")
-    public Optional<Long> getBlockCount() {
+    public Optional<Integer> getBlockCount() {
         try {
             GetBlockCountResponse blockCountResponse = bitcoindService.getBlockCount();
             if (blockCountResponse.getError() == null) {
@@ -104,7 +107,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     @Override
     @SuppressWarnings("checkstyle:designforextension")
-    public Optional<BitcoindBlockData> getBlockData(final long blockHeight) {
+    public Optional<BitcoindBlockData> getBlockData(final int blockHeight) {
         try {
             // ---------------------------------------------------------------------------------------------------------
             // We retrieve the block hash...
@@ -118,20 +121,24 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     // -------------------------------------------------------------------------------------------------
                     // Then we retrieve the transactions data...
                     final List<GetRawTransactionResult> transactions = new LinkedList<>();
+                    final Set<String> addresses = Collections.synchronizedSet(new HashSet<String>());
                     try {
 
                         // Fix duplicated transactions.
                         fixDuplicatedTransaction(blockResponse.getResult());
 
-                        // We use multi thread to retrieve all the transactions information.
+                        // Where to store data.
                         final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
                                 .parallelStream()
-                                .filter(t -> (!GENESIS_BLOCK_TRANSACTION.equals(t)))
+                                .filter(t -> !GENESIS_BLOCK_TRANSACTION.equals(t))
                                 .forEach(t -> {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
                                     if (r != null && r.getError() == null) {
+                                        // Adding the transaction.
                                         tempTransactionList.put(t, r.getResult());
+                                        // Adding the addresses.
+                                        r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
                                     } else {
                                         if (r == null) {
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight);
@@ -156,7 +163,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     }
                     // -------------------------------------------------------------------------------------------------
                     // And we end up returning all the block data all at once.
-                    return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions));
+                    return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions, addresses));
                 } else {
                     // Error while retrieving the block information.
                     status.addError("Error retrieving the block : " + blockResponse.getError(), null);

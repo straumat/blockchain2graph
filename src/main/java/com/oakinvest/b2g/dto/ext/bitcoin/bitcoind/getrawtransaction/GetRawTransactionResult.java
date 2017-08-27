@@ -30,17 +30,17 @@ public class GetRawTransactionResult implements Serializable {
 	/**
 	 * The transaction size.
 	 */
-	private long size;
+	private int size;
 
 	/**
 	 * The virtual transaction size (differs from size for witness transactions).
 	 */
-	private long vsize;
+	private int vsize;
 
 	/**
 	 * The version.
 	 */
-	private long version;
+	private int version;
 
 	/**
 	 * The lock time.
@@ -100,7 +100,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @return vsize
 	 */
-	public final long getVsize() {
+	public final int getVsize() {
 		return vsize;
 	}
 
@@ -109,7 +109,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @param newVsize the vsize to set
 	 */
-	public final void setVsize(final long newVsize) {
+	public final void setVsize(final int newVsize) {
 		vsize = newVsize;
 	}
 
@@ -190,7 +190,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @return size
 	 */
-	public final long getSize() {
+	public final int getSize() {
 		return size;
 	}
 
@@ -199,7 +199,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @param newSize the size to set
 	 */
-	public final void setSize(final long newSize) {
+	public final void setSize(final int newSize) {
 		size = newSize;
 	}
 
@@ -208,7 +208,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @return version
 	 */
-	public final long getVersion() {
+	public final int getVersion() {
 		return version;
 	}
 
@@ -217,7 +217,7 @@ public class GetRawTransactionResult implements Serializable {
 	 *
 	 * @param newVersion the version to set
 	 */
-	public final void setVersion(final long newVersion) {
+	public final void setVersion(final int newVersion) {
 		version = newVersion;
 	}
 

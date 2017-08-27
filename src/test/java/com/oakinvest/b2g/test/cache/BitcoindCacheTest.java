@@ -73,7 +73,7 @@ public class BitcoindCacheTest {
         Thread.sleep(60000);
 
         // So we must have 101 block in the database.
-        long blockCount = bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight();
+        int blockCount = bitcoinBlockRepository.findByHeight((int) bitcoinBlockRepository.count()).getHeight();
         assertThat(blockCount)
                 .as("Checking that lastBlockSaved is database has an height of 101")
                 .isEqualTo(101);
@@ -98,7 +98,7 @@ public class BitcoindCacheTest {
         Thread.sleep(60000);
 
         // So we must have 201 block in the database.
-        assertThat(bitcoinBlockRepository.findByHeight(bitcoinBlockRepository.count()).getHeight())
+        assertThat(bitcoinBlockRepository.findByHeight((int) bitcoinBlockRepository.count()).getHeight())
                 .as("Checking that the last block in database is 201")
                 .isEqualTo(201);
 

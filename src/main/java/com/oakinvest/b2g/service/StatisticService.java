@@ -12,7 +12,7 @@ public interface StatisticService {
 	 * @param newDuration new duration in milliseconds.
 	 * @return average time in seconds
 	 */
-	float addBlockImportDuration(long newDuration);
+	float addBlockImportDuration(float newDuration);
 
 	/**
 	 * Return average execution time.

@@ -9,16 +9,11 @@ public enum BitcoinBlockState {
 	/**
 	 * State 1 - Block just created.
 	 */
-	BLOCK_IMPORTED,
-
-	/**
-	 * State 2 - Addresses imported.
-	 */
-	ADDRESSES_IMPORTED,
+    BLOCK_DATA_IMPORTED,
 
 	/**
 	 * Final State - Imported.
 	 */
-	IMPORTED
+    BLOCK_FULLY_IMPORTED
 
 }

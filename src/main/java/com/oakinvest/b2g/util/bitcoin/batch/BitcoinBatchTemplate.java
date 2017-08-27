@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -149,7 +149,7 @@ public abstract class BitcoinBatchTemplate {
 		batchStartTime = System.currentTimeMillis();
 		try {
 			// We retrieve the block to process.
-            Optional<Long> blockHeightToProcess = getBlockHeightToProcess();
+            Optional<Integer> blockHeightToProcess = getBlockHeightToProcess();
 
 			// If there is a block to process.
 			if (blockHeightToProcess.isPresent()) {
@@ -168,14 +168,14 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing. Or there are two transactions
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    if (getNewStateOfProcessedBlock().equals(BLOCK_IMPORTED)) {
+                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
                         verifyBlock(bitcoinBlock.getHeight());
                     }
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------
                     // If we are in the status "block imported", we update the status of number of blocks imported.
-                    if (getNewStateOfProcessedBlock() == BitcoinBlockState.IMPORTED) {
+                    if (getNewStateOfProcessedBlock() == BitcoinBlockState.BLOCK_FULLY_IMPORTED) {
                         status.setImportedBlockCount(bitcoinBlock.getHeight());
                     }
                 });
@@ -205,7 +205,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return block to process.
 	 */
-	protected abstract Optional<Long> getBlockHeightToProcess();
+	protected abstract Optional<Integer> getBlockHeightToProcess();
 
 	/**
 	 * Treat block.
@@ -213,7 +213,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 * @return the block processed
 	 */
-	protected abstract Optional<BitcoinBlock> processBlock(long blockHeight);
+	protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
 
 	/**
 	 * Return the state to set to the block that has been processed.
@@ -228,7 +228,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height
 	 * @return formatted block height
 	 */
-	protected final String getFormattedBlockHeight(final long blockHeight) {
+	protected final String getFormattedBlockHeight(final int blockHeight) {
 		return String.format("%09d", blockHeight);
 	}
 
@@ -334,7 +334,7 @@ public abstract class BitcoinBatchTemplate {
      * Verify a block. If it nos correct we delete it.
      * @param blockHeight block to verify
      */
-    private void verifyBlock(final long blockHeight) {
+    private void verifyBlock(final int blockHeight) {
         addLog("Checking data of block " + getFormattedBlockHeight(blockHeight));
         boolean validBlock = true;
         StringBuilder audit = new StringBuilder("");
@@ -360,15 +360,15 @@ public abstract class BitcoinBatchTemplate {
                     // Checking transaction is present, vins & vouts.
                     if (bitcoindTransaction.isPresent()) {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
-                            audit.append("Inputs are not correct. ").append(System.getProperty("line.separator"));
-                            audit.append("From database ").append(bitcoinTransaction.getInputs().size()).append(System.getProperty("line.separator"));
-                            audit.append("From bitcoind ").append(bitcoindTransaction.get().getVin().size()).append(System.getProperty("line.separator"));
+                            audit.append("Inputs are not correct. ");
+                            audit.append("From database : ").append(bitcoinTransaction.getInputs().size());
+                            audit.append("From bitcoind : ").append(bitcoindTransaction.get().getVin().size());
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                            audit.append("Outputs are not correct. ").append(System.getProperty("line.separator"));
-                            audit.append("From database ").append(bitcoinTransaction.getOutputs().size()).append(System.getProperty("line.separator"));
-                            audit.append("From bitcoind ").append(bitcoindTransaction.get().getVout().size()).append(System.getProperty("line.separator"));
+                            audit.append("Outputs are not correct. ");
+                            audit.append("From database : ").append(bitcoinTransaction.getOutputs().size());
+                            audit.append("From bitcoind : ").append(bitcoindTransaction.get().getVout().size());
                             validBlock = false;
                         }
                     } else {

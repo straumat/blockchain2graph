@@ -81,12 +81,12 @@ public class StatusHandler extends TextWebSocketHandler {
 	/**
 	 * Total block count.
 	 */
-	private long lastTotalBlockCount = -1;
+	private int lastTotalBlockCount = -1;
 
 	/**
 	 * Imported block count.
 	 */
-	private long lastImportedBlockCount = -1;
+	private int lastImportedBlockCount = -1;
 
 	/**
 	 * Last average block import duration.
@@ -110,7 +110,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 *
 	 * @param count new value.
 	 */
-	public final void updateImportedBlockCount(final long count) {
+	public final void updateImportedBlockCount(final int count) {
 		lastImportedBlockCount = count;
 		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
@@ -123,7 +123,7 @@ public class StatusHandler extends TextWebSocketHandler {
 	 *
 	 * @param count new value.
 	 */
-	public final void updateTotalBlockCount(final long count) {
+	public final void updateTotalBlockCount(final int count) {
 		lastTotalBlockCount = count;
 		HashMap<Object, Object> information = new HashMap<>();
 		information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);

@@ -37,10 +37,10 @@ public class BitcoinDataServiceCacheAspect {
      */
     @SuppressWarnings("unchecked")
     @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockCount())")
-    public final Optional<Long> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
+    public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
         // If the data is outdated.
         if (cacheStore.isBlockCountOutdated()) {
-            Optional<Long> blockCount = ((Optional<Long>) pjp.proceed(new Object[]{}));
+            Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
             if (blockCount.isPresent()) {
                 cacheStore.updateBlockCountInCache(blockCount.get());
                 return Optional.of(blockCount.get());
@@ -66,7 +66,7 @@ public class BitcoinDataServiceCacheAspect {
      */
     @SuppressWarnings("unchecked")
     @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockData(..)) && args(blockHeight))")
-    public final Optional<BitcoindBlockData> getBlockData(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
+    public final Optional<BitcoindBlockData> getBlockData(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
         // Returning the data.
         Optional<BitcoindBlockData> blockData = cacheStore.getBlockDataFromCache(blockHeight);
         if (blockData.isPresent()) {

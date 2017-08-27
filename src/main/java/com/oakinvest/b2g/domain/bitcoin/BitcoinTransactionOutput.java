@@ -64,7 +64,7 @@ public class BitcoinTransactionOutput {
 	 * The required sigs.
 	 */
 	@Property(name = "scriptPubKeyReqSigs")
-	private long scriptPubKeyReqSigs;
+	private int scriptPubKeyReqSigs;
 
 	/**
 	 * The type, eg 'pubkeyhash'.
@@ -123,7 +123,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @return scriptPubKeyReqSigs
 	 */
-	public final long getScriptPubKeyReqSigs() {
+	public final int getScriptPubKeyReqSigs() {
 		return scriptPubKeyReqSigs;
 	}
 
@@ -132,7 +132,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @param newScriptPubKeyReqSigs the scriptPubKeyReqSigs to set
 	 */
-	public final void setScriptPubKeyReqSigs(final long newScriptPubKeyReqSigs) {
+	public final void setScriptPubKeyReqSigs(final int newScriptPubKeyReqSigs) {
 		scriptPubKeyReqSigs = newScriptPubKeyReqSigs;
 	}
 

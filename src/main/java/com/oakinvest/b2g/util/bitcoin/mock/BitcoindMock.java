@@ -219,12 +219,12 @@ public class BitcoindMock {
 	 * @throws Throwable exception.
 	 */
 	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockHash(..)) && args(blockHeight)")
-	public final Object getBlockHash(final ProceedingJoinPoint pjp, final long blockHeight) throws Throwable {
+	public final Object getBlockHash(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse getBlockHashResponse;
 
 		// blockHeightValue is the value to get.
-		long blockHeightValue = blockHeight;
+        int blockHeightValue = blockHeight;
 
 		// Simulate error on a specific bloc.
 		if (blockHeight == BLOCK_IN_ERROR_1 && getBlockHashErrors < NUMBER_OF_ERRORS) {

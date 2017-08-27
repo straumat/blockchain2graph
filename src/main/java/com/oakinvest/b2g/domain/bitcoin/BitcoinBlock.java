@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 
 /**
  * Bitcoin block.
@@ -55,19 +55,19 @@ public class BitcoinBlock {
 	 */
 	@Index
 	@Property(name = "height")
-	private long height;
+	private int height;
 
 	/**
 	 * The block size.
 	 */
 	@Property(name = "size")
-	private long size;
+	private int size;
 
 	/**
 	 * The version.
 	 */
 	@Property(name = "version")
-	private long version;
+	private int version;
 
 	/**
 	 * The merkle root.
@@ -134,7 +134,7 @@ public class BitcoinBlock {
 	 */
 	@Index
 	@Property(name = "state")
-	private BitcoinBlockState state = BLOCK_IMPORTED;
+	private BitcoinBlockState state = BLOCK_DATA_IMPORTED;
 
 	/**
 	 * Getter state.
@@ -205,7 +205,7 @@ public class BitcoinBlock {
 	 *
 	 * @return height
 	 */
-	public final long getHeight() {
+	public final int getHeight() {
 		return height;
 	}
 
@@ -214,7 +214,7 @@ public class BitcoinBlock {
 	 *
 	 * @param newIndex the height to set
 	 */
-	public final void setHeight(final long newIndex) {
+	public final void setHeight(final int newIndex) {
 		height = newIndex;
 	}
 
@@ -232,7 +232,7 @@ public class BitcoinBlock {
 	 *
 	 * @return size
 	 */
-	public final long getSize() {
+	public final int getSize() {
 		return size;
 	}
 
@@ -241,7 +241,7 @@ public class BitcoinBlock {
 	 *
 	 * @param newSize the size to set
 	 */
-	public final void setSize(final long newSize) {
+	public final void setSize(final int newSize) {
 		size = newSize;
 	}
 
@@ -250,7 +250,7 @@ public class BitcoinBlock {
 	 *
 	 * @return version
 	 */
-	public final long getVersion() {
+	public final int getVersion() {
 		return version;
 	}
 
@@ -259,7 +259,7 @@ public class BitcoinBlock {
 	 *
 	 * @param newVersion the version to set
 	 */
-	public final void setVersion(final long newVersion) {
+	public final void setVersion(final int newVersion) {
 		version = newVersion;
 	}
 

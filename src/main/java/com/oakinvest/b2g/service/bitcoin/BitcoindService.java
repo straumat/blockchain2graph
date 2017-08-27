@@ -21,7 +21,7 @@ public interface BitcoindService {
 	 * @param blockHeight block number
 	 * @return block data or null if a problem occurred.
 	 */
-	Optional<BitcoindBlockData> getBlockData(long blockHeight);
+	Optional<BitcoindBlockData> getBlockData(int blockHeight);
 
 	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.
@@ -40,7 +40,7 @@ public interface BitcoindService {
 	 * @return the block header hash.
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblockhash/427707">https://chainquery.com/bitcoin-api/getblockhash</a>
 	 */
-	GetBlockHashResponse getBlockHash(long blockHeight);
+	GetBlockHashResponse getBlockHash(int blockHeight);
 
 	/**
 	 * The getblock RPC gets a block with a particular header hash from the local block database either as a JSON object or as a serialized block.

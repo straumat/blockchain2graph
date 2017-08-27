@@ -30,7 +30,7 @@ public class BitcoinStatisticServiceImplementation implements StatisticService {
 	/**
 	 * Execution time statistics.
 	 */
-	private final LinkedList<Long> blockImportDurations = new LinkedList<>();
+	private final LinkedList<Float> blockImportDurations = new LinkedList<>();
 
 	/**
 	 * Executed time statistic.
@@ -44,7 +44,7 @@ public class BitcoinStatisticServiceImplementation implements StatisticService {
 	 * @return average time in seconds
 	 */
 	@Override
-	public final float addBlockImportDuration(final long newDuration) {
+	public final float addBlockImportDuration(final float newDuration) {
 		// If we reach the maximum number of execution times, we remove the first one.
 		while (blockImportDurations.size() >= MAX_NUMBER_OF_BLOCKS_FOR_EXECUTION_TIME_STATISTICS) {
 			blockImportDurations.removeFirst();
