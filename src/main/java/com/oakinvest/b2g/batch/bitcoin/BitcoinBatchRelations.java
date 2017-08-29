@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 
 /**
@@ -59,11 +58,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<Integer> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_IMPORTED);
+        BitcoinBlock blockToTreat = getBlockRepository().findLastBlockByState(BLOCK_FULLY_IMPORTED);
         if (blockToTreat != null) {
-            return Optional.of(blockToTreat.getHeight());
+            return Optional.of(blockToTreat.getHeight() + 1);
         } else {
-            return Optional.empty();
+            return Optional.of(1);
         }
     }
 
@@ -77,7 +76,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
         if (blockToProcess != null) {
-
             // -------------------------------------------------------------------------------------------------------------
             // We link the addresses to the input and the origin transaction.
             final AtomicInteger txCounter = new AtomicInteger();

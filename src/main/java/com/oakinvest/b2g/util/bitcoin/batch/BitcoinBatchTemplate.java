@@ -344,7 +344,7 @@ public abstract class BitcoinBatchTemplate {
         BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
 
         // Getting the data from bitcoind (in cache and fresh).
-        cacheStore.removeBlockDataFromCache(blockHeight);
+        // TODO Cache or not cache ? cacheStore.removeBlockDataFromCache(blockHeight);
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
         // Checking all the data.
@@ -360,15 +360,15 @@ public abstract class BitcoinBatchTemplate {
                     // Checking transaction is present, vins & vouts.
                     if (bitcoindTransaction.isPresent()) {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
-                            audit.append("Inputs are not correct. ");
-                            audit.append("From database : ").append(bitcoinTransaction.getInputs().size());
-                            audit.append("From bitcoind : ").append(bitcoindTransaction.get().getVin().size());
+                            audit.append("Inputs are not correct in transaction : ").append(txId).append(".");
+                            audit.append(" From database : ").append(bitcoinTransaction.getInputs().size());
+                            audit.append(" From bitcoind : ").append(bitcoindTransaction.get().getVin().size());
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                            audit.append("Outputs are not correct. ");
-                            audit.append("From database : ").append(bitcoinTransaction.getOutputs().size());
-                            audit.append("From bitcoind : ").append(bitcoindTransaction.get().getVout().size());
+                            audit.append("Outputs are not correct in transaction : ").append(txId).append(".");
+                            audit.append(" From database : ").append(bitcoinTransaction.getOutputs().size());
+                            audit.append(" From bitcoind : ").append(bitcoindTransaction.get().getVout().size());
                             validBlock = false;
                         }
                     } else {

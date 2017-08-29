@@ -295,4 +295,29 @@ public class BitcoinTransactionOutput {
         this.key = newKey;
     }
 
+ /*
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BitcoinTransactionOutput)) {
+            return false;
+        }
+
+        BitcoinTransactionOutput that = (BitcoinTransactionOutput) o;
+
+        if (getN() != that.getN()) {
+            return false;
+        }
+        return getTxId().equals(that.getTxId());
+    }
+
+    @Override
+    public final int hashCode() {
+        int result = getTxId().hashCode();
+        result = result + getN();
+        return result;
+    }
+*/
 }

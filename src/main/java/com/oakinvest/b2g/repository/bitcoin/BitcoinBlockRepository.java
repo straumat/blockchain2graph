@@ -31,6 +31,15 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	@Query("MATCH (b:BitcoinBlock) where b.state = {0} RETURN b order by b.height limit 1")
 	BitcoinBlock findFirstBlockByState(BitcoinBlockState state);
 
+    /**
+     * Returns the last bitcoin block with the desired state.
+     *
+     * @param state state
+     * @return first block.
+     */
+    @Query("MATCH (b:BitcoinBlock) where b.state = {0} RETURN b order by b.height desc limit 1")
+    BitcoinBlock findLastBlockByState(BitcoinBlockState state);
+
    /**
 	 * Find a block by its height.
 	 *
