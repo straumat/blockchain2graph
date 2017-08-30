@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 
 /**
@@ -58,11 +59,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<Integer> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findLastBlockByState(BLOCK_FULLY_IMPORTED);
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_IMPORTED);
         if (blockToTreat != null) {
-            return Optional.of(blockToTreat.getHeight() + 1);
+            return Optional.of(blockToTreat.getHeight());
         } else {
-            return Optional.of(1);
+            return Optional.empty();
         }
     }
 
@@ -75,80 +76,74 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
-        if (blockToProcess != null) {
-            // -------------------------------------------------------------------------------------------------------------
-            // We link the addresses to the input and the origin transaction.
-            final AtomicInteger txCounter = new AtomicInteger();
-            final int txSize = blockToProcess.getTx().size();
-            blockToProcess.getTransactions()
-                    .parallelStream()
-                    .forEach(
-                            t -> {
-                                // For each Vin.
-                                t.getInputs()
+        // -------------------------------------------------------------------------------------------------------------
+        // We link the addresses to the input and the origin transaction.
+        final AtomicInteger txCounter = new AtomicInteger();
+        final int txSize = blockToProcess.getTx().size();
+        blockToProcess.getTransactions()
+                .parallelStream()
+                .forEach(
+                        t -> {
+                            // For each Vin.
+                            t.getInputs()
+                                .stream()
+                                .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
+                                .forEach(vin -> {
+                                    // -------------------------------------------------------------------------
+                                    // We retrieve the original transaction.
+                                    BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+
+                                    // -------------------------------------------------------------------------
+                                    // We check if this output is not missing.
+                                    if (originTransactionOutput == null) {
+                                            addError("*");
+                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                            missingTransaction.getOutputs()
+                                                .stream()
+                                                .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
+                                                .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
+                                            addError("*");
+                                        throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                    } else {
+                                        // -------------------------------------------------------------------------
+                                        // We create the link.
+                                        vin.setTransactionOutput(originTransactionOutput);
+
+                                        // -------------------------------------------------------------------------
+                                        // We set all the addresses linked to this input.
+                                        originTransactionOutput.getAddresses()
+                                            .stream()
+                                            .filter(Objects::nonNull)
+                                            .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                        }
+                                });
+
+                            // For each Vout.
+                            t.getOutputs()
+                                .forEach(vout -> {
+                                    // We set all the addresses linked to this output.
+                                    vout.getAddresses()
                                         .stream()
-                                        .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
-                                        .forEach(vin -> {
-                                            // -------------------------------------------------------------------------
-                                            // We retrieve the original transaction.
-                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                        .filter(Objects::nonNull)
+                                        .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                });
 
-                                            // -------------------------------------------------------------------------
-                                            // We check if this output is not missing.
-                                            if (originTransactionOutput == null) {
-                                                addError("*");
-                                                addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                                BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                                missingTransaction.getOutputs()
-                                                        .stream()
-                                                        .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                        .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
-                                                addError("*");
-                                                throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                            } else {
-                                                // -------------------------------------------------------------------------
-                                                // We create the link.
-                                                vin.setTransactionOutput(originTransactionOutput);
+                             // Add log to say we are done.
+                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId()  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
+                        });
 
-                                                // -------------------------------------------------------------------------
-                                                // We set all the addresses linked to this input.
-                                                originTransactionOutput.getAddresses()
-                                                        .stream()
-                                                        .filter(Objects::nonNull)
-                                                        .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                            }
-                                        });
-
-                                // For each Vout.
-                                t.getOutputs()
-                                        .forEach(vout -> {
-                                            // We set all the addresses linked to this output.
-                                            vout.getAddresses()
-                                                    .stream()
-                                                    .filter(Objects::nonNull)
-                                                    .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        });
-
-                                // Add log to say we are done.
-                                addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
-                            });
-
-            // ---------------------------------------------------------------------------------------------------------
-            // We set the previous and the next block.
-            BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
-            blockToProcess.setPreviousBlock(previousBlock);
-            addLog("Setting the previous block of this block");
-            if (previousBlock != null) {
-                previousBlock.setNextBlock(blockToProcess);
-                addLog("Setting this block as next block of the previous one");
-            }
-
-            return Optional.of(blockToProcess);
-        } else {
-            // Not retrieved in database.
-            addError("Block " + blockHeight + " was not found");
-            return Optional.empty();
+        // ---------------------------------------------------------------------------------------------------------
+        // We set the previous and the next block.
+        BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
+        blockToProcess.setPreviousBlock(previousBlock);
+        addLog("Setting the previous block of this block");
+        if (previousBlock != null) {
+            previousBlock.setNextBlock(blockToProcess);
+            addLog("Setting this block as next block of the previous one");
         }
+
+        return Optional.of(blockToProcess);
     }
 
     /**

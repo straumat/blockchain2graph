@@ -344,7 +344,7 @@ public abstract class BitcoinBatchTemplate {
         BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
 
         // Getting the data from bitcoind (in cache and fresh).
-        // TODO Cache or not cache ? cacheStore.removeBlockDataFromCache(blockHeight);
+        cacheStore.removeBlockDataFromCache(blockHeight);
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
         // Checking all the data.
