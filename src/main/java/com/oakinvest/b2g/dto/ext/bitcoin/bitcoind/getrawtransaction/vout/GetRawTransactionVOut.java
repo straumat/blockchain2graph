@@ -79,4 +79,32 @@ public class GetRawTransactionVOut implements Serializable {
 		scriptPubKey = newScriptPubKey;
 	}
 
+    /**
+     * Equals method.
+     * @param o object
+     * @return true if equals
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetRawTransactionVOut)) {
+            return false;
+        }
+
+        GetRawTransactionVOut that = (GetRawTransactionVOut) o;
+
+        return getN() == that.getN();
+    }
+
+    /**
+     * Hashcode.
+     * @return hashcode
+     */
+    @Override
+    public final int hashCode() {
+        return getN();
+    }
+
 }

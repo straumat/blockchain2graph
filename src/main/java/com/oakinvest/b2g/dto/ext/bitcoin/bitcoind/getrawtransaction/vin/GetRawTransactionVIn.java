@@ -125,4 +125,34 @@ public class GetRawTransactionVIn implements Serializable {
 		sequence = newSequence;
 	}
 
+    /**
+     * Equals method.
+     * @param o object
+     * @return true if equals
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetRawTransactionVIn)) {
+            return false;
+        }
+
+        GetRawTransactionVIn that = (GetRawTransactionVIn) o;
+
+        return getVout() == that.getVout() && getTxid().equals(that.getTxid());
+    }
+
+    /**
+     * Hashcode.
+     * @return hashcode
+     */
+    @Override
+    public final int hashCode() {
+        int result = getTxid().hashCode();
+        result = result + getVout();
+        return result;
+    }
+
 }
