@@ -333,8 +333,9 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Verify a block. If it nos correct we delete it.
      * @param blockHeight block to verify
+     * @return true if block is ok
      */
-    private void verifyBlock(final int blockHeight) {
+    private boolean verifyBlock(final int blockHeight) {
         addLog("Checking data of block " + getFormattedBlockHeight(blockHeight));
         boolean validBlock = true;
         StringBuilder audit = new StringBuilder("");
@@ -353,6 +354,7 @@ public abstract class BitcoinBatchTemplate {
             for (String txId : bitcoinBlock.getTx()) {
                 // Checking that all transactions are unique.
                 if (getTransactionRepository().transactionCount(txId) == 1) {
+
                     // Getting the data in database & from bitcoind.
                     BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
                     Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
@@ -400,14 +402,15 @@ public abstract class BitcoinBatchTemplate {
                         transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
                         transactionToRemove.getOutputs().clear();
                         transactionToRemove.getInputs().clear();
-                        getTransactionRepository().delete(transactionToRemove);
                         bitcoinBlock.getTransactions().remove(transactionToRemove);
+                        getTransactionRepository().delete(transactionToRemove);
                     }
             );
             getBlockRepository().delete(bitcoinBlock.getId());
         } else {
             addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
         }
+        return validBlock;
     }
 
 }

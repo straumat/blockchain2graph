@@ -311,4 +311,31 @@ public class GetRawTransactionResult implements Serializable {
 		blocktime = newBlocktime;
 	}
 
+    /**
+     * Equals.
+     * @param o object
+     * @return true if equals
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetRawTransactionResult)) {
+            return false;
+        }
+
+        GetRawTransactionResult that = (GetRawTransactionResult) o;
+
+        return getTxid().equals(that.getTxid());
+    }
+
+    /**
+     * hash code.
+     * @return hashcode
+     */
+    @Override
+    public final int hashCode() {
+        return getTxid().hashCode();
+    }
 }

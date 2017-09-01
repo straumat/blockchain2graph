@@ -245,4 +245,5 @@ public class BitcoinTransactionInput {
 		sequence = newSequence;
 	}
 
+
 }

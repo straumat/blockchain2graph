@@ -353,4 +353,34 @@ public class GetBlockResult implements Serializable {
 	public final void setNextblockhash(final String newNextblockhash) {
 		nextblockhash = newNextblockhash;
 	}
+
+    /**
+     * Equals.
+     *
+     * @param o object
+     * @return true if same
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetBlockResult)) {
+            return false;
+        }
+
+        GetBlockResult that = (GetBlockResult) o;
+
+        return getHash().equals(that.getHash());
+    }
+
+    /**
+     * Hash code.
+     * @return hash
+     */
+    @Override
+    public final int hashCode() {
+        return getHash().hashCode();
+    }
+
 }

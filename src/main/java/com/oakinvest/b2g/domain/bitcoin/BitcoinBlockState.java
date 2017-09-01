@@ -12,11 +12,6 @@ public enum BitcoinBlockState {
     BLOCK_DATA_IMPORTED,
 
     /**
-     * State 2 - Block verified.
-     */
-    BLOCK_DATA_VERIFIED,
-
-    /**
 	 * Final State - Imported.
 	 */
     BLOCK_FULLY_IMPORTED

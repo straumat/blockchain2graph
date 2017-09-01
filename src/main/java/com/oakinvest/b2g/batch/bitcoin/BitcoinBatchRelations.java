@@ -76,6 +76,11 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
+        // TODO Debug
+        if (blockToProcess == null) {
+            addError("Impossible to retrieve block " + blockHeight);
+        }
+
         // -------------------------------------------------------------------------------------------------------------
         // We link the addresses to the input and the origin transaction.
         final AtomicInteger txCounter = new AtomicInteger();

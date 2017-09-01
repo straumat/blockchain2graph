@@ -88,7 +88,7 @@ public class BitcoinTransactionOutput {
 	public final String toString() {
 		StringBuilder description = new StringBuilder(getValue() + " -> ");
 		if (getAddresses() == null || getAddresses().size() == 0) {
-			description.append("No bitcoinAddress");
+			description.append("No bitcoin address");
 		} else {
 			Iterator<String> it = getAddresses().iterator();
 			while (it.hasNext()) {
@@ -293,6 +293,34 @@ public class BitcoinTransactionOutput {
      */
     public final void setKey(final String newKey) {
         this.key = newKey;
+    }
+
+    /**
+     * Equals.
+     * @param o object
+     * @return true if same object
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BitcoinTransactionOutput)) {
+            return false;
+        }
+
+        BitcoinTransactionOutput that = (BitcoinTransactionOutput) o;
+
+        return getN() == that.getN();
+    }
+
+    /**
+     * Hash.
+     * @return hash
+     */
+    @Override
+    public final int hashCode() {
+        return getN();
     }
 
 }
