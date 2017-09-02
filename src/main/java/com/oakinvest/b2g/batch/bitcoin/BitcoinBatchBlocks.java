@@ -111,18 +111,20 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				blockToProcess = getMapper().blockDataToBitcoinBlock(blockData.get());
             }
 
+            // TODO Remove - only for debug purpose.
             blockToProcess.getTransactions()
                     .forEach(t -> {
                         if (t.getOutputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVout().size()) {
-                            addError("Should have never happend");
+                            addError("Should never append (outputs)");
                         }
                         if (t.getInputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVin().size()) {
-                            addError("Should have never happend");
+                            addError("Should never append (inputs)");
                         }
 
                     });
 
             // ---------------------------------------------------------------------------------------------------------
+            // We create all the addresses.
             addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
             blockData.get().getAddresses()
                     .parallelStream() // In parallel.

@@ -158,7 +158,7 @@ public abstract class BitcoinBatchTemplate {
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
 
                 // If the process ended well.
-                blockToProcess.ifPresent(bitcoinBlock -> {
+                blockToProcess.ifPresent((BitcoinBlock bitcoinBlock) -> {
                     // If the block has been well processed, we change the state and we save it.
                     bitcoinBlock.setState(getNewStateOfProcessedBlock());
                     getBlockRepository().save(bitcoinBlock);
@@ -344,7 +344,7 @@ public abstract class BitcoinBatchTemplate {
         getSession().clear();
         BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
 
-        // Getting the data from bitcoind (in cache and fresh).
+        // Getting the data from bitcoind without cache.
         cacheStore.removeBlockDataFromCache(blockHeight);
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
@@ -363,14 +363,14 @@ public abstract class BitcoinBatchTemplate {
                     if (bitcoindTransaction.isPresent()) {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
                             audit.append("Inputs are not correct in transaction : ").append(txId).append(".");
-                            audit.append(" From database : ").append(bitcoinTransaction.getInputs().size());
-                            audit.append(" From bitcoind : ").append(bitcoindTransaction.get().getVin().size());
+                            audit.append(" In database : ").append(bitcoinTransaction.getInputs().size()).append(" / ");
+                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVin().size());
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
                             audit.append("Outputs are not correct in transaction : ").append(txId).append(".");
-                            audit.append(" From database : ").append(bitcoinTransaction.getOutputs().size());
-                            audit.append(" From bitcoind : ").append(bitcoindTransaction.get().getVout().size());
+                            audit.append(" In database : ").append(bitcoinTransaction.getOutputs().size()).append(" / ");
+                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVout().size());
                             validBlock = false;
                         }
                     } else {
@@ -386,7 +386,7 @@ public abstract class BitcoinBatchTemplate {
             }
         } else {
             // Not getting data from bitcoind.
-            audit.append("Impossible to get fresh block data from bitcoind. ").append(System.getProperty("line.separator"));
+            audit.append("Impossible to get fresh block data from bitcoind. ");
             validBlock = false;
         }
 
@@ -406,6 +406,7 @@ public abstract class BitcoinBatchTemplate {
                         getTransactionRepository().delete(transactionToRemove);
                     }
             );
+            bitcoinBlock.getTransactions().clear();
             getBlockRepository().delete(bitcoinBlock.getId());
         } else {
             addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
