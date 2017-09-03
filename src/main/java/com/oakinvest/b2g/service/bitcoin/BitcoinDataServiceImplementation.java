@@ -130,7 +130,8 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         // Where to store data.
                         final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
-                                .parallelStream()
+                                .stream()
+                                //.parallelStream()
                                 .filter(t -> !GENESIS_BLOCK_TRANSACTION.equals(t))
                                 .forEach(t -> {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
