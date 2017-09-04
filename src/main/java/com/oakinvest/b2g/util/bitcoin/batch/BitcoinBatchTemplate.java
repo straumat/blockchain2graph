@@ -380,7 +380,7 @@ public abstract class BitcoinBatchTemplate {
                     }
                 } else {
                     // No transaction or more than one transaction.
-                    audit.append("Transaction ").append(txId).append(" found ").append(getTransactionRepository().transactionCount(txId)).append(" times").append(System.getProperty("line.separator"));
+                    audit.append("Transaction ").append(txId).append(" found ").append(getTransactionRepository().transactionCount(txId)).append(" time(s)").append(System.getProperty("line.separator"));
                     validBlock = false;
                 }
             }
@@ -393,15 +393,23 @@ public abstract class BitcoinBatchTemplate {
         // If the block is invalid, we delete it.
         if (!validBlock) {
             addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
-            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("Block " + bitcoinBlock.getFormattedHeight() + " is not correct : " + audit);
+            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("[LOG] Block " + bitcoinBlock.getFormattedHeight() + " is not correct : " + audit);
 
             // Deleting the block.
             bitcoinBlock.getTransactions().forEach(t -> {
                         BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
-                        transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
-                        transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
-                        transactionToRemove.getOutputs().clear();
-                        transactionToRemove.getInputs().clear();
+                        if (transactionToRemove.getOutputs() != null) {
+                            transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
+                            transactionToRemove.getOutputs().clear();
+                        } else {
+                            addError("Outputs is null");
+                        }
+                        if (transactionToRemove.getInputs() != null) {
+                            transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
+                            transactionToRemove.getInputs().clear();
+                        } else {
+                            addError("Inputs is null");
+                        }
                         bitcoinBlock.getTransactions().remove(transactionToRemove);
                         getTransactionRepository().delete(transactionToRemove);
                     }

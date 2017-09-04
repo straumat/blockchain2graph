@@ -16,10 +16,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Bitcoin data service implementation.
@@ -128,7 +126,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         fixDuplicatedTransaction(blockResponse.getResult());
 
                         // Where to store data.
-                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
+                        //final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
                                 .stream()
                                 //.parallelStream()
@@ -137,26 +135,29 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
                                     if (r != null && r.getError() == null) {
                                         // Adding the transaction.
-                                        tempTransactionList.put(t, r.getResult());
+                                        transactions.add(r.getResult());
                                         // Adding the addresses.
                                         r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
                                     } else {
                                         if (r == null) {
+                                            // TODO Useless
+                                            status.addError("Error getting transactions from block " + blockHeight);
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight);
                                         } else {
+                                            status.addError("Error getting transactions from block " + blockHeight + " : " + r.getError());
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError());
                                         }
                                     }
                                 });
 
                         // We check that no response was missing.
-                        if (tempTransactionList.size() != blockResponse.getResult().getTx().size()) {
+                        if (transactions.size() != blockResponse.getResult().getTx().size()) {
                             status.addError("Error getting transactions from block " + blockHeight);
                             return Optional.empty();
                         }
 
                         // Then we add it to the list in the right order.
-                        blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
+                        //blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
 
                     } catch (Exception e) {
                         status.addError("Error retrieving the block : " + e.getMessage(), e);
