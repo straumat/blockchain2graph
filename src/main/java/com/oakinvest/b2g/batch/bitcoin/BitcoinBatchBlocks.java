@@ -120,15 +120,14 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                         if (t.getInputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVin().size()) {
                             addError("Should never append (inputs)");
                         }
-
                     });
 
             // ---------------------------------------------------------------------------------------------------------
             // We create all the addresses.
             addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
             blockData.get().getAddresses()
-                    .stream()
-                    //.parallelStream() // In parallel.
+                    //.stream()
+                    .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.
                     .filter(address -> !getAddressRepository().exists(address))  // If the address doesn't exists.
                     .forEach(a -> {

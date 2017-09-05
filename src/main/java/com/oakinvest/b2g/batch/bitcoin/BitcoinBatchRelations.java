@@ -78,7 +78,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
         // TODO Debug
         if (blockToProcess == null) {
-            addError("Impossible to retrieve block " + blockHeight);
+            addError("Impossible to retrieve block " + blockHeight + ". It's null.");
+            if (getBlockRepository().findByHeight(blockHeight) != null) {
+                addError("But found with simple findByHeight (" + blockHeight + ")");
+            }
         }
 
         // -------------------------------------------------------------------------------------------------------------
@@ -86,8 +89,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
         blockToProcess.getTransactions()
-                .stream()
-                //.parallelStream()
+                //.stream()
+                .parallelStream()
                 .forEach(
                         t -> {
                             // For each Vin.
