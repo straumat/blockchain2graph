@@ -141,7 +141,6 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Execute the batch.
 	 */
-	@Transactional
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void execute() {
@@ -213,7 +212,8 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 * @return the block processed
 	 */
-	protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
+    @Transactional
+    protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
 
 	/**
 	 * Return the state to set to the block that has been processed.
@@ -398,20 +398,24 @@ public abstract class BitcoinBatchTemplate {
             // Deleting the block.
             bitcoinBlock.getTransactions().forEach(t -> {
                         BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
-                        if (transactionToRemove.getOutputs() != null) {
-                            transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
-                            transactionToRemove.getOutputs().clear();
+                        if (transactionToRemove != null) {
+                            if (transactionToRemove.getOutputs() != null) {
+                                transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
+                                transactionToRemove.getOutputs().clear();
+                            } else {
+                                addError("Outputs is null");
+                            }
+                            if (transactionToRemove.getInputs() != null) {
+                                transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
+                                transactionToRemove.getInputs().clear();
+                            } else {
+                                addError("Inputs is null");
+                            }
+                            bitcoinBlock.getTransactions().remove(transactionToRemove);
+                            getTransactionRepository().delete(transactionToRemove);
                         } else {
-                            addError("Outputs is null");
+                            addError("Impossible to remove transaction " + t.getTxId());
                         }
-                        if (transactionToRemove.getInputs() != null) {
-                            transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
-                            transactionToRemove.getInputs().clear();
-                        } else {
-                            addError("Inputs is null");
-                        }
-                        bitcoinBlock.getTransactions().remove(transactionToRemove);
-                        getTransactionRepository().delete(transactionToRemove);
                     }
             );
             bitcoinBlock.getTransactions().clear();
