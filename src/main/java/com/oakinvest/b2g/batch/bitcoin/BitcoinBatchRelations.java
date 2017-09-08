@@ -92,12 +92,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                 //.stream()
                 .parallelStream()
                 .forEach(
-                        t -> {
+                        (BitcoinTransaction t) -> {
                             // For each Vin.
                             t.getInputs()
                                 .stream()
                                 .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
-                                .forEach(vin -> {
+                                    .forEach(vin -> {
                                     // -------------------------------------------------------------------------
                                     // We retrieve the original transaction.
                                     BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());

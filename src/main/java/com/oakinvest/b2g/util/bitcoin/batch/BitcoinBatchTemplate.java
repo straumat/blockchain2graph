@@ -141,6 +141,7 @@ public abstract class BitcoinBatchTemplate {
 	/**
 	 * Execute the batch.
 	 */
+    @Transactional
 	@Scheduled(fixedDelay = 1)
 	@SuppressWarnings("checkstyle:designforextension")
 	public void execute() {
@@ -212,7 +213,6 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height to process.
 	 * @return the block processed
 	 */
-    @Transactional
     protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
 
 	/**
