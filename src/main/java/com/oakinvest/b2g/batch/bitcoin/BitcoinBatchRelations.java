@@ -72,9 +72,10 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
+        // -------------------------------------------------------------------------------------------------------------
         // Sometimes, block is empty. Still don't know why.
         while (blockToProcess == null) {
-            addError("Impossible to retrieve block " + blockHeight + ". It's null.");
+            addLog("Block " + blockHeight + " not retrieved. It's null.");
             blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
         }
 
@@ -86,44 +87,47 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                 .parallelStream()
                 .forEach(
                         t -> {
+                            // -----------------------------------------------------------------------------------------
                             // For each Vin.
                             t.getInputs()
                                 .stream()
                                 .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
-                                    // -------------------------------------------------------------------------
-                                    // We retrieve the original transaction.
-                                    BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                        // -----------------------------------------------------------------------------
+                                        // We retrieve the original transaction.
+                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
 
-                                    // -------------------------------------------------------------------------
-                                    // We check if this output is not missing.
-                                    /*if (originTransactionOutput == null) {
-                                            addError("*");
-                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                            missingTransaction.getOutputs()
-                                                .stream()
-                                                .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
-                                            addError("*");
-                                        throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                    }*/
+                                        // -----------------------------------------------------------------------------
+                                        // We check if this output is not missing.
+                                        /*if (originTransactionOutput == null) {
+                                                addError("*");
+                                                addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                                BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                                missingTransaction.getOutputs()
+                                                    .stream()
+                                                    .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
+                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
+                                                addError("*");
+                                            throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                        }*/
 
-                                    // -------------------------------------------------------------------------
-                                    // We create the link.
-                                    vin.setTransactionOutput(originTransactionOutput);
+                                        // -----------------------------------------------------------------------------
+                                        // We create the link.
+                                        vin.setTransactionOutput(originTransactionOutput);
 
-                                    // -------------------------------------------------------------------------
-                                    // We set all the addresses linked to this input.
-                                    originTransactionOutput.getAddresses()
-                                        .stream()
-                                        .filter(Objects::nonNull)
-                                        .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                        // -----------------------------------------------------------------------------
+                                        // We set all the addresses linked to this input.
+                                        originTransactionOutput.getAddresses()
+                                            .stream()
+                                            .filter(Objects::nonNull)
+                                            .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
                                 });
 
+                            // -----------------------------------------------------------------------------------------
                             // For each Vout.
                             t.getOutputs()
                                 .forEach(vout -> {
+                                    // ---------------------------------------------------------------------------------
                                     // We set all the addresses linked to this output.
                                     vout.getAddresses()
                                         .stream()
@@ -131,11 +135,12 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                         .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
                                 });
 
-                             // Add log to say we are done.
+                            // -----------------------------------------------------------------------------------------
+                            // Add log to say we are done.
                             addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId()  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
 
-        // ---------------------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------------------------
         // We set the previous and the next block.
         BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
         blockToProcess.setPreviousBlock(previousBlock);
@@ -145,6 +150,8 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
             addLog("Setting this block as next block of the previous one");
         }
 
+        // -------------------------------------------------------------------------------------------------------------
+        // We return the block to save.
         return Optional.of(blockToProcess);
     }
 
