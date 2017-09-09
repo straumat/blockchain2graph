@@ -28,7 +28,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     private static final String PREFIX = "Relations batch";
 
-
     /**
      * Constructor.
      *

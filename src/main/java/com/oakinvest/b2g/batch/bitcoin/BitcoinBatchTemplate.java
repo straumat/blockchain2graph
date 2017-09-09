@@ -226,7 +226,7 @@ public abstract class BitcoinBatchTemplate {
 	 * @param blockHeight block height
 	 * @return formatted block height
 	 */
-	protected final String getFormattedBlockHeight(final int blockHeight) {
+	final String getFormattedBlockHeight(final int blockHeight) {
 		return String.format("%09d", blockHeight);
 	}
 
@@ -235,7 +235,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @param message message
 	 */
-	protected final void addLog(final String message) {
+	final void addLog(final String message) {
 		status.addLog(getLogPrefix() + " - " + message);
 	}
 
@@ -244,7 +244,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @param message message
 	 */
-	protected final void addError(final String message) {
+	final void addError(final String message) {
 		status.addError(getLogPrefix() + " - " + message, null);
 	}
 
@@ -263,7 +263,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return mapper
 	 */
-	protected final BitcoindToDomainMapper getMapper() {
+	final BitcoindToDomainMapper getMapper() {
 		return mapper;
 	}
 
@@ -272,7 +272,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return blockRepository
 	 */
-	protected final BitcoinBlockRepository getBlockRepository() {
+	final BitcoinBlockRepository getBlockRepository() {
 		return blockRepository;
 	}
 
@@ -281,7 +281,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return addressRepository
 	 */
-	protected final BitcoinAddressRepository getAddressRepository() {
+	final BitcoinAddressRepository getAddressRepository() {
 		return addressRepository;
 	}
 
@@ -306,7 +306,7 @@ public abstract class BitcoinBatchTemplate {
      * Getter.
      * @return transactionOutputRepository
      */
-    protected final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+    final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
         return transactionOutputRepository;
     }
 
@@ -315,7 +315,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return status
 	 */
-	protected final StatusService getStatus() {
+	final StatusService getStatus() {
 		return status;
 	}
 
@@ -324,7 +324,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return bitcoin data service
      */
-    protected final BitcoinDataService getBitcoinDataService() {
+    final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
     }
 
