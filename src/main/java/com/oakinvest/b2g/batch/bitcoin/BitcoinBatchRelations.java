@@ -70,17 +70,13 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
-        final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
+        BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
-        // Only for debug
-        /*
-        if (blockToProcess == null) {
+        // Sometimes, block is empty. Still don't know why.
+        while (blockToProcess == null) {
             addError("Impossible to retrieve block " + blockHeight + ". It's null.");
-            if (getBlockRepository().findByHeight(blockHeight) != null) {
-                addError("But found with simple findByHeight (" + blockHeight + ")");
-            }
+            blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
         }
-        */
 
         // -------------------------------------------------------------------------------------------------------------
         // We link the addresses to the input and the origin transaction.
