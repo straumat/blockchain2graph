@@ -9,7 +9,6 @@ import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheLoader;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
-import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -111,8 +110,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 				blockToProcess = getMapper().blockDataToBitcoinBlock(blockData.get());
             }
 
-            // TODO Remove - only for debug purpose.
-            blockToProcess.getTransactions()
+            // Only for debug purpose.
+/*            blockToProcess.getTransactions()
                     .forEach(t -> {
                         if (t.getOutputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVout().size()) {
                             addError("Should never append (outputs)");
@@ -120,13 +119,12 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                         if (t.getInputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVin().size()) {
                             addError("Should never append (inputs)");
                         }
-                    });
+                    });*/
 
             // ---------------------------------------------------------------------------------------------------------
             // We create all the addresses.
             addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
             blockData.get().getAddresses()
-                    //.stream()
                     .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.
                     .filter(address -> !getAddressRepository().exists(address))  // If the address doesn't exists.

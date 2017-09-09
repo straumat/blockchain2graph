@@ -8,7 +8,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
-import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -89,10 +88,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
         blockToProcess.getTransactions()
-                //.stream()
                 .parallelStream()
                 .forEach(
-                        (BitcoinTransaction t) -> {
+                        t -> {
                             // For each Vin.
                             t.getInputs()
                                 .stream()
@@ -104,7 +102,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
                                     // -------------------------------------------------------------------------
                                     // We check if this output is not missing.
-                                    if (originTransactionOutput == null) {
+                                    /*if (originTransactionOutput == null) {
                                             addError("*");
                                             addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                             BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
@@ -114,18 +112,18 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
                                             addError("*");
                                         throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                    } else {
-                                        // -------------------------------------------------------------------------
-                                        // We create the link.
-                                        vin.setTransactionOutput(originTransactionOutput);
+                                    }*/
 
-                                        // -------------------------------------------------------------------------
-                                        // We set all the addresses linked to this input.
-                                        originTransactionOutput.getAddresses()
-                                            .stream()
-                                            .filter(Objects::nonNull)
-                                            .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                        }
+                                    // -------------------------------------------------------------------------
+                                    // We create the link.
+                                    vin.setTransactionOutput(originTransactionOutput);
+
+                                    // -------------------------------------------------------------------------
+                                    // We set all the addresses linked to this input.
+                                    originTransactionOutput.getAddresses()
+                                        .stream()
+                                        .filter(Objects::nonNull)
+                                        .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
                                 });
 
                             // For each Vout.

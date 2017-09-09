@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.util.bitcoin.batch;
+package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
@@ -168,9 +168,9 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing. Or there are two transactions
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
+/*                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
                         verifyBlock(bitcoinBlock.getHeight());
-                    }
+                    }*/
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------
