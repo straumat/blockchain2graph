@@ -2,7 +2,6 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -10,7 +9,6 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -75,13 +73,15 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         final BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
 
-        // TODO Debug
+        // Only for debug
+        /*
         if (blockToProcess == null) {
             addError("Impossible to retrieve block " + blockHeight + ". It's null.");
             if (getBlockRepository().findByHeight(blockHeight) != null) {
                 addError("But found with simple findByHeight (" + blockHeight + ")");
             }
         }
+        */
 
         // -------------------------------------------------------------------------------------------------------------
         // We link the addresses to the input and the origin transaction.

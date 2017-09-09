@@ -140,11 +140,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                         r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
                                     } else {
                                         if (r == null) {
-                                            // TODO addError are useless. Only here for debug purpose.
-                                            status.addError("Error getting transactions from block " + blockHeight);
+                                            // addError are useless. Only here for debug purpose.
+                                            //status.addError("Error getting transactions from block " + blockHeight);
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight);
                                         } else {
-                                            status.addError("Error getting transactions from block " + blockHeight + " : " + r.getError());
+                                            //status.addError("Error getting transactions from block " + blockHeight + " : " + r.getError());
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError());
                                         }
                                     }

@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
-
 /**
  * Bitcoin import batch - abstract model.
  * Created by straumat on 27/02/17.
