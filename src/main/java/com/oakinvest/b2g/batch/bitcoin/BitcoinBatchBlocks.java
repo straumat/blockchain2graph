@@ -111,7 +111,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             }
 
             // Only for debug purpose.
-/*            blockToProcess.getTransactions()
+            blockToProcess.getTransactions()
                     .forEach(t -> {
                         if (t.getOutputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVout().size()) {
                             addError("Should never append (outputs)");
@@ -119,7 +119,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                         if (t.getInputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVin().size()) {
                             addError("Should never append (inputs)");
                         }
-                    });*/
+                    });
 
             // ---------------------------------------------------------------------------------------------------------
             // We create all the addresses.

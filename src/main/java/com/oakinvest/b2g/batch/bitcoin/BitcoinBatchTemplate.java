@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
+
 /**
  * Bitcoin import batch - abstract model.
  * Created by straumat on 27/02/17.
@@ -41,9 +43,9 @@ public abstract class BitcoinBatchTemplate {
 	private static final String LOG_SEPARATOR = "=====";
 
 	/**
-	 * Pause to make when there is no block to process.
+	 * Pause to make when there is no block to process (10 seconds).
 	 */
-	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 10 * 1000;
 
 	/**
 	 * Mapper.
@@ -163,12 +165,12 @@ public abstract class BitcoinBatchTemplate {
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
                     // -------------------------------------------------------------------------------------------------
-                    // Temporary fix : sometimes vins & vouts are missing. Or there are two transactions
+                    // Temporary fix : sometimes vins & vouts are missing. Or there are zero or two transactions.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-/*                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
+                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
                         verifyBlock(bitcoinBlock.getHeight());
-                    }*/
+                    }
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------
@@ -178,7 +180,7 @@ public abstract class BitcoinBatchTemplate {
                     }
                 });
 			} else {
-				// If there is nothing to process.
+				// If there     is nothing to process.
 				addLog("No block to process");
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
@@ -290,7 +292,7 @@ public abstract class BitcoinBatchTemplate {
 	 *
 	 * @return transactionRepository
 	 */
-	protected final BitcoinTransactionRepository getTransactionRepository() {
+    final BitcoinTransactionRepository getTransactionRepository() {
 		return transactionRepository;
 	}
 
@@ -362,13 +364,17 @@ public abstract class BitcoinBatchTemplate {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
                             audit.append("Inputs are not correct in transaction : ").append(txId).append(".");
                             audit.append(" In database : ").append(bitcoinTransaction.getInputs().size()).append(" / ");
-                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVin().size());
+                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVin().size()).append(System.getProperty("line.separator"));
+                            bitcoinTransaction.getInputs().forEach(i -> audit.append(" Database : ").append(i).append(System.getProperty("line.separator")));
+                            bitcoindTransaction.get().getVin().forEach(vin -> audit.append(" Bitcoind : ").append(vin).append(System.getProperty("line.separator")));
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
                             audit.append("Outputs are not correct in transaction : ").append(txId).append(".");
                             audit.append(" In database : ").append(bitcoinTransaction.getOutputs().size()).append(" / ");
-                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVout().size());
+                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVout().size()).append(System.getProperty("line.separator"));
+                            bitcoinTransaction.getOutputs().forEach(o -> audit.append(" Database : ").append(o).append(System.getProperty("line.separator")));
+                            bitcoindTransaction.get().getVout().forEach(vOut -> audit.append(" Bitcoind : ").append(vOut).append(System.getProperty("line.separator")));
                             validBlock = false;
                         }
                     } else {

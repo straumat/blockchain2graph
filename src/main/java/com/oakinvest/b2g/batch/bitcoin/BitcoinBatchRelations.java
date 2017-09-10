@@ -2,6 +2,7 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
+import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
@@ -9,6 +10,7 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -99,17 +101,18 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
                                         // -----------------------------------------------------------------------------
                                         // We check if this output is not missing.
-                                        /*if (originTransactionOutput == null) {
+                                        if (originTransactionOutput == null) {
                                                 addError("*");
                                                 addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                                 BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                                addError("* This is what we found in the database : ");
                                                 missingTransaction.getOutputs()
                                                     .stream()
                                                     .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN()));
+                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN() + " key is " + o.getKey()));
                                                 addError("*");
                                             throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                        }*/
+                                        }
 
                                         // -----------------------------------------------------------------------------
                                         // We create the link.
