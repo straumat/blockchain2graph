@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_VERIFIED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -169,7 +170,10 @@ public abstract class BitcoinBatchTemplate {
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
                     if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
-                        verifyBlock(bitcoinBlock.getHeight());
+                        if (verifyBlock(bitcoinBlock.getHeight())) {
+                            bitcoinBlock.setState(BLOCK_DATA_VERIFIED);
+                            getBlockRepository().save(bitcoinBlock);
+                        }
                     }
                     // -------------------------------------------------------------------------------------------------
 
