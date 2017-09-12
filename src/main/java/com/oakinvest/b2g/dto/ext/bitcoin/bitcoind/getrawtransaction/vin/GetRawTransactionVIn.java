@@ -155,4 +155,13 @@ public class GetRawTransactionVIn implements Serializable {
         return result;
     }
 
+    /**
+     * toString.
+     * @return value.
+     */
+    @Override
+    public final String toString() {
+        return txid + "-" + vout;
+    }
+
 }

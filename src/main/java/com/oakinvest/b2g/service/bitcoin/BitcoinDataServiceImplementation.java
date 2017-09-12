@@ -134,7 +134,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                 .filter(t -> !GENESIS_BLOCK_TRANSACTION.equals(t))
                                 .forEach(t -> {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
-                                    if (r != null && r.getError() == null) {
+                                    if (r != null && r.getError() == null && r.getResult() != null) {
                                         // Adding the transaction.
                                         tempTransactionList.put(t, r.getResult());
                                         // Adding the addresses.
@@ -143,8 +143,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                         // Error in calling the services.
                                         if (r == null) {
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight);
-                                        } else {
-                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError());
+                                        }
+                                        if (r.getError() != null) {
+                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError().getMessage());
+                                        }
+                                        if (r.getResult() == null) {
+                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : Empty result");
                                         }
                                     }
                                 });

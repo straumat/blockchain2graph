@@ -348,7 +348,8 @@ public abstract class BitcoinBatchTemplate {
         getSession().clear();
         BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
 
-        // Getting the data from bitcoind without cache.
+        // Getting the data from bitcoind with and without cache.
+        Optional<BitcoindBlockData> blockDataInCache = getBitcoinDataService().getBlockData(blockHeight);
         cacheStore.removeBlockDataFromCache(blockHeight);
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
@@ -362,23 +363,22 @@ public abstract class BitcoinBatchTemplate {
                     // Getting the data in database & from bitcoind.
                     BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
                     Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
+                    Optional<GetRawTransactionResult> bitcoindTransactionInCache = blockDataInCache.get().getRawTransactionResult(txId);
 
                     // Checking transaction is present, vins & vouts.
                     if (bitcoindTransaction.isPresent()) {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
                             audit.append("Inputs are not correct in transaction : ").append(txId).append(".");
-                            audit.append(" In database : ").append(bitcoinTransaction.getInputs().size()).append(" / ");
-                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVin().size()).append(System.getProperty("line.separator"));
                             bitcoinTransaction.getInputs().forEach(i -> audit.append(" Database : ").append(i).append(System.getProperty("line.separator")));
                             bitcoindTransaction.get().getVin().forEach(vin -> audit.append(" Bitcoind : ").append(vin).append(System.getProperty("line.separator")));
+                            bitcoindTransactionInCache.get().getVin().forEach(vin -> audit.append(" Bitcoind (cache) : ").append(vin).append(System.getProperty("line.separator")));
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
                             audit.append("Outputs are not correct in transaction : ").append(txId).append(".");
-                            audit.append(" In database : ").append(bitcoinTransaction.getOutputs().size()).append(" / ");
-                            audit.append(" In bitcoind : ").append(bitcoindTransaction.get().getVout().size()).append(System.getProperty("line.separator"));
                             bitcoinTransaction.getOutputs().forEach(o -> audit.append(" Database : ").append(o).append(System.getProperty("line.separator")));
                             bitcoindTransaction.get().getVout().forEach(vOut -> audit.append(" Bitcoind : ").append(vOut).append(System.getProperty("line.separator")));
+                            bitcoindTransactionInCache.get().getVout().forEach(vOut -> audit.append(" Bitcoind (cache) : ").append(vOut).append(System.getProperty("line.separator")));
                             validBlock = false;
                         }
                     } else {
@@ -401,7 +401,7 @@ public abstract class BitcoinBatchTemplate {
         // If the block is invalid, we delete it.
         if (!validBlock) {
             addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
-            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("[LOG] Block " + bitcoinBlock.getFormattedHeight() + " is not correct : " + audit);
+            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("[AUDIT] " + audit);
 
             // Deleting the block.
             bitcoinBlock.getTransactions().forEach(t -> {
@@ -421,8 +421,6 @@ public abstract class BitcoinBatchTemplate {
                             }
                             bitcoinBlock.getTransactions().remove(transactionToRemove);
                             getTransactionRepository().delete(transactionToRemove);
-                        } else {
-                            addError("Impossible to remove transaction " + t.getTxId());
                         }
                     }
             );

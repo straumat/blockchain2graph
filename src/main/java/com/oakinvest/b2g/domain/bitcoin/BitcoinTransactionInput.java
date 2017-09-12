@@ -66,15 +66,6 @@ public class BitcoinTransactionInput {
     @Relationship(type = "ADDRESS", direction = Relationship.INCOMING)
     private BitcoinAddress bitcoinAddress;
 
-    @Override
-	public final String toString() {
-		if (getTxId() == null) {
-			return "Coinbase";
-		} else {
-			return getTxId() + "-" + getvOut();
-		}
-	}
-
     /**
      * Getter.
      *
@@ -244,5 +235,14 @@ public class BitcoinTransactionInput {
 	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
 	}
+
+    @Override
+    public final String toString() {
+        if (getTxId() == null) {
+            return "Coinbase";
+        } else {
+            return getTxId() + "-" + getvOut();
+        }
+    }
 
 }
