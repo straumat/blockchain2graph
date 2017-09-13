@@ -126,6 +126,15 @@ public class GetRawTransactionVIn implements Serializable {
 	}
 
     /**
+     * Returns true if it's a coinbase transaction.
+     *
+     * @return coinbase.
+     */
+    public final boolean isCoinbase() {
+        return getCoinbase() != null;
+    }
+
+    /**
      * Equals method.
      * @param o object
      * @return true if equals
@@ -141,7 +150,13 @@ public class GetRawTransactionVIn implements Serializable {
 
         GetRawTransactionVIn that = (GetRawTransactionVIn) o;
 
-        return getVout() == that.getVout() && getTxid().equals(that.getTxid());
+        if (isCoinbase()) {
+            // If it's a coinbase.
+            return that.getTxid() == null && getCoinbase().equals(that.getCoinbase());
+        } else {
+            // if it's a transaction
+            return (getTxid().equals(that.getTxid()) && (getVout() == that.getVout()));
+        }
     }
 
     /**
@@ -150,9 +165,11 @@ public class GetRawTransactionVIn implements Serializable {
      */
     @Override
     public final int hashCode() {
-        int result = getTxid().hashCode();
-        result = result + getVout();
-        return result;
+        if (isCoinbase()) {
+            return getCoinbase().hashCode();
+        } else {
+            return (getTxid() + getVout()).hashCode();
+        }
     }
 
     /**

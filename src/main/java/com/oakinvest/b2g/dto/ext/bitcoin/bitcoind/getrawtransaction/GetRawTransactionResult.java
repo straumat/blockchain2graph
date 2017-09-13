@@ -338,4 +338,5 @@ public class GetRawTransactionResult implements Serializable {
     public final int hashCode() {
         return getTxid().hashCode();
     }
+
 }
