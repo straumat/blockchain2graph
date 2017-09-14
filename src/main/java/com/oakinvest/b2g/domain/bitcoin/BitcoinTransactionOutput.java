@@ -86,7 +86,7 @@ public class BitcoinTransactionOutput {
 
 	@Override
 	public final String toString() {
-		StringBuilder description = new StringBuilder(getValue() + " -> ");
+		StringBuilder description = new StringBuilder(getN() + " " + getValue() + " -> ");
 		if (getAddresses() == null || getAddresses().size() == 0) {
 			description.append("No bitcoin address");
 		} else {
@@ -322,5 +322,7 @@ public class BitcoinTransactionOutput {
     public final int hashCode() {
         return getN();
     }
+
+
 
 }

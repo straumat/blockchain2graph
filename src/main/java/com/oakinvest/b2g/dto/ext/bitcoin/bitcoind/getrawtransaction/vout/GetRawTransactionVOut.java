@@ -3,6 +3,7 @@ package com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout.scriptpubkey.GetRawTransactionScriptPubKey;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * vout.
@@ -105,6 +106,23 @@ public class GetRawTransactionVOut implements Serializable {
     @Override
     public final int hashCode() {
         return getN();
+    }
+
+    @Override
+    public final String toString() {
+        StringBuilder description = new StringBuilder(getN() + " " + getValue() + " -> ");
+        if (getScriptPubKey().getAddresses() == null || getScriptPubKey().getAddresses().size() == 0) {
+            description.append("No bitcoin address");
+        } else {
+            Iterator<String> it = getScriptPubKey().getAddresses().iterator();
+            while (it.hasNext()) {
+                description.append(it.next());
+                if (it.hasNext()) {
+                    description.append(", ");
+                }
+            }
+        }
+        return description.toString();
     }
 
 }
