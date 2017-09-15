@@ -368,14 +368,14 @@ public abstract class BitcoinBatchTemplate {
                     // Checking transaction is present, vins & vouts.
                     if (bitcoindTransaction.isPresent()) {
                         if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
-                            audit.append("Inputs are not correct in transaction : ").append(txId).append(".");
+                            audit.append("Inputs are not correct in transaction : ").append(txId).append(".").append(System.getProperty("line.separator"));
                             bitcoinTransaction.getInputs().forEach(i -> audit.append(" Database : ").append(i).append(System.getProperty("line.separator")));
                             bitcoindTransaction.get().getVin().forEach(vin -> audit.append(" Bitcoind : ").append(vin).append(System.getProperty("line.separator")));
                             bitcoindTransactionInCache.get().getVin().forEach(vin -> audit.append(" Bitcoind (cache) : ").append(vin).append(System.getProperty("line.separator")));
                             validBlock = false;
                         }
                         if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                            audit.append("Outputs are not correct in transaction : ").append(txId).append(".");
+                            audit.append("Outputs are not correct in transaction : ").append(txId).append(".").append(System.getProperty("line.separator"));
                             bitcoinTransaction.getOutputs().forEach(o -> audit.append(" Database : ").append(o).append(System.getProperty("line.separator")));
                             bitcoindTransaction.get().getVout().forEach(vOut -> audit.append(" Bitcoind : ").append(vOut).append(System.getProperty("line.separator")));
                             bitcoindTransactionInCache.get().getVout().forEach(vOut -> audit.append(" Bitcoind (cache) : ").append(vOut).append(System.getProperty("line.separator")));
