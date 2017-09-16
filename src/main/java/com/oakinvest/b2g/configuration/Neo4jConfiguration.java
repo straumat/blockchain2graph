@@ -32,8 +32,8 @@ public class Neo4jConfiguration {
             session.query("CREATE INDEX ON :BitcoinBlock(hash)", Collections.emptyMap());
             session.query("CREATE INDEX ON :BitcoinBlock(state)", Collections.emptyMap());
             session.query("CREATE INDEX ON :BitcoinTransaction(txid)", Collections.emptyMap());
-            session.query("CREATE INDEX ON :BitcoinTransactionOutput(key)", Collections.emptyMap());
-            //session.query("CREATE INDEX ON :BitcoinTransactionOutput(txid, n)", Collections.emptyMap());
+            //session.query("CREATE INDEX ON :BitcoinTransactionOutput(key)", Collections.emptyMap());
+            session.query("CREATE INDEX ON :BitcoinTransactionOutput(txid, n)", Collections.emptyMap());
         } catch (Exception e) {
             LoggerFactory.getLogger(Neo4jConfiguration.class).error("Error creating constraints & indexes : " + e.getMessage(), e);
         }

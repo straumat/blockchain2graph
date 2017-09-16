@@ -22,11 +22,7 @@ public abstract class BitcoindToDomainPostMapper {
     @AfterMapping
     @SuppressWarnings("checkstyle:designforextension")
     protected void blockDataToBitcoinBlockAfterMapping(final BitcoindBlockData bitcoindBlockData, @MappingTarget final BitcoinBlock bitcoinBlock) {
-        bitcoinBlock.getTransactions()
-                .forEach(t -> t.getOutputs().forEach(o -> {
-                    o.setTxId(t.getTxId());
-                    o.setKey(t.getTxId() + "-" + o.getN());
-                }));
+        bitcoinBlock.getTransactions().forEach(t -> t.getOutputs().forEach(o -> o.setTxId(t.getTxId())));
     }
 
 }
