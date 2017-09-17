@@ -97,7 +97,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                     .forEach(vin -> {
                                         // -----------------------------------------------------------------------------
                                         // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
 
                                         // -----------------------------------------------------------------------------
                                         // We check if this output is not missing.
@@ -109,7 +109,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                                 missingTransaction.getOutputs()
                                                     .stream()
                                                     .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                    .forEach(o -> addError("* txid : " + o.getTxId() + " - vout : " + o.getN()));
+                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN() + " key is " + o.getKey()));
                                                 addError("*");
                                             throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                         }

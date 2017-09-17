@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -27,6 +28,13 @@ public class BitcoinTransactionOutput {
      */
     @Property(name = "txid")
     private String txId;
+
+    /**
+     * Key (txid-n).
+     */
+    @Index
+    @Property(name = "key")
+    private String key;
 
 	/**
 	 * The value in BTC.
@@ -269,6 +277,23 @@ public class BitcoinTransactionOutput {
 	public final void setScriptPubKeyHex(final String newScriptPubKeyHex) {
 		scriptPubKeyHex = newScriptPubKeyHex;
 	}
+
+    /**
+     * Getter.
+     *
+     * @return key.
+     */
+    public final String getKey() {
+        return key;
+    }
+
+    /**
+     * Setter.
+     * @param newKey key
+     */
+    public final void setKey(final String newKey) {
+        this.key = newKey;
+    }
 
     /**
      * Equals.

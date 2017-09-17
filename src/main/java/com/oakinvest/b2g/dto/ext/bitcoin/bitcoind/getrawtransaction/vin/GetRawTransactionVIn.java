@@ -130,7 +130,7 @@ public class GetRawTransactionVIn implements Serializable {
      *
      * @return coinbase.
      */
-    private boolean isCoinbase() {
+    public final boolean isCoinbase() {
         return getCoinbase() != null;
     }
 

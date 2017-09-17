@@ -26,7 +26,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
@@ -529,29 +528,6 @@ public class BitcoinImportTest {
                 .as("Transaction 6 output 2 - bitcoin address")
                 .isEqualTo(18f);
 	}
-
-    /**
-     * Test order of data.
-     * @throws Exception exception
-     */
-    @Test
-    public final void orderTest() throws Exception {
-        final int blockToTest = 496;
-        final String firstTransactionInBlock = "77dfc2fe598419b00641c296181a96cf16943697f573480b023b77cce82ada21";
-        final String secondTransactionInBlock = "a3b0e9e7cddbbe78270fa4182a7675ff00b92872d8df7d14265a2b1e379a9d33";
-
-        // We retrieve the block.
-        BitcoinBlock block = blockRepository.findByHeight(blockToTest);
-
-        // We pass through the transactions.
-        Iterator<BitcoinTransaction> transactions = block.getTransactions().iterator();
-        assertThat(transactions.next().getTxId())
-                .as("The first transaction is not in the right order")
-                .isEqualTo(firstTransactionInBlock);
-        assertThat(transactions.next().getTxId())
-                .as("The second transaction is not in the right order")
-                .isEqualTo(secondTransactionInBlock);
-    }
 
     /**
      * Return a specified transaction input.
