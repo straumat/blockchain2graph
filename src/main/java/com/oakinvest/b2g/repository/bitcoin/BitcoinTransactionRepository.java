@@ -20,15 +20,6 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
     int transactionCount(String txId);
 
 	/**
-	 * Returns 1 if the address is already in the database.
-	 *
-	 * @param txId transaction id
-	 * @return 1 if the transaction exists.
-	 */
-	@Query("MATCH (t:BitcoinTransaction) WHERE t.txid = {0} return count(*) = 1")
-	boolean exists(String txId);
-
-	/**
 	 * Find a block by its id.
 	 *
 	 * @param txId transaction id
