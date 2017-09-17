@@ -33,7 +33,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getTotalBlockCountTest() {
-		final long expectedTotalBlockCount = 150;
+		final int expectedTotalBlockCount = 150;
 		statusService.setTotalBlockCount(expectedTotalBlockCount);
 		// Test.
 		assertThat(statusService.getTotalBlockCount())
@@ -46,7 +46,7 @@ public class StatusServiceTest {
 	 */
 	@Test
 	public final void getImportedBlockCountTest() {
-		final long expectedImportedBlockCount = 140;
+		final int expectedImportedBlockCount = 140;
 		statusService.setImportedBlockCount(expectedImportedBlockCount);
 		// Test.
 		assertThat(statusService.getImportedBlockCount())

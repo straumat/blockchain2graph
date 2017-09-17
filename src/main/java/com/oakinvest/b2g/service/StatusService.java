@@ -11,28 +11,28 @@ public interface StatusService {
 	 *
 	 * @return total block count
 	 */
-	long getTotalBlockCount();
+	int getTotalBlockCount();
 
 	/**
 	 * Set the total number of blocks in the blockchain.
 	 *
 	 * @param newTotalBlockCount new value
 	 */
-	void setTotalBlockCount(long newTotalBlockCount);
+	void setTotalBlockCount(int newTotalBlockCount);
 
 	/**
 	 * Returns the number of the last block imported.
 	 *
 	 * @return block number.
 	 */
-	long getImportedBlockCount();
+	int getImportedBlockCount();
 
 	/**
 	 * Set the number of the last block imported.
 	 *
 	 * @param newImportedBlockCount new value
 	 */
-	void setImportedBlockCount(long newImportedBlockCount);
+	void setImportedBlockCount(int newImportedBlockCount);
 
 	/**
 	 * Returns the last log message.

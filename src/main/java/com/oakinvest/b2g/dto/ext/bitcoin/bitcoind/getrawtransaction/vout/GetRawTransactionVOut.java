@@ -3,6 +3,7 @@ package com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.vout.scriptpubkey.GetRawTransactionScriptPubKey;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * vout.
@@ -18,7 +19,7 @@ public class GetRawTransactionVOut implements Serializable {
 	/**
 	 * Index.
 	 */
-	private long n;
+	private int n;
 
 	/**
 	 * ScriptPubKey.
@@ -48,7 +49,7 @@ public class GetRawTransactionVOut implements Serializable {
 	 *
 	 * @return n
 	 */
-	public final long getN() {
+	public final int getN() {
 		return n;
 	}
 
@@ -57,7 +58,7 @@ public class GetRawTransactionVOut implements Serializable {
 	 *
 	 * @param newIndex the n to set
 	 */
-	public final void setN(final long newIndex) {
+	public final void setN(final int newIndex) {
 		n = newIndex;
 	}
 
@@ -78,4 +79,50 @@ public class GetRawTransactionVOut implements Serializable {
 	public final void setScriptPubKey(final GetRawTransactionScriptPubKey newScriptPubKey) {
 		scriptPubKey = newScriptPubKey;
 	}
+
+    /**
+     * Equals method.
+     * @param o object
+     * @return true if equals
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetRawTransactionVOut)) {
+            return false;
+        }
+
+        GetRawTransactionVOut that = (GetRawTransactionVOut) o;
+
+        return getN() == that.getN();
+    }
+
+    /**
+     * Hashcode.
+     * @return hashcode
+     */
+    @Override
+    public final int hashCode() {
+        return getN();
+    }
+
+    @Override
+    public final String toString() {
+        StringBuilder description = new StringBuilder(getN() + " " + getValue() + " -> ");
+        if (getScriptPubKey().getAddresses() == null || getScriptPubKey().getAddresses().size() == 0) {
+            description.append("No bitcoin address");
+        } else {
+            Iterator<String> it = getScriptPubKey().getAddresses().iterator();
+            while (it.hasNext()) {
+                description.append(it.next());
+                if (it.hasNext()) {
+                    description.append(", ");
+                }
+            }
+        }
+        return description.toString();
+    }
+
 }

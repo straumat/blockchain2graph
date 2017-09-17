@@ -18,7 +18,7 @@ public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress
 	 * @param address address
 	 * @return 1 if the address exists.
 	 */
-	@Query("MATCH (a:BitcoinAddress) WHERE a.address = {0} return count(*) = 1")
+	@Query("MATCH (a:BitcoinAddress) USING INDEX a:BitcoinAddress(address) WHERE a.address = {0} return count(*) = 1")
 	boolean exists(String address);
 
     /**
@@ -35,7 +35,7 @@ public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress
      * @param address address
      * @return bitcoin address
      */
-    @Query("MATCH (a:BitcoinAddress) WHERE a.address = {0} return a")
+    @Query("MATCH (a:BitcoinAddress) USING INDEX a:BitcoinAddress(address) WHERE a.address = {0} return a")
 	BitcoinAddress findByAddressWithoutDepth(String address);
 
 }

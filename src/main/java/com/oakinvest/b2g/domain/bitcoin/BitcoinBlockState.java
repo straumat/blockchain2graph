@@ -7,18 +7,18 @@ package com.oakinvest.b2g.domain.bitcoin;
 public enum BitcoinBlockState {
 
 	/**
-	 * State 1 - Block just created.
+	 * State 1 - Block data just created.
 	 */
-	BLOCK_IMPORTED,
+    BLOCK_DATA_IMPORTED,
 
-	/**
-	 * State 2 - Addresses imported.
-	 */
-	ADDRESSES_IMPORTED,
+    /**
+     * State 2 - block verified.
+     */
+    BLOCK_DATA_VERIFIED,
 
-	/**
+    /**
 	 * Final State - Imported.
 	 */
-	IMPORTED
+    BLOCK_FULLY_IMPORTED
 
 }

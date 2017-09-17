@@ -15,7 +15,7 @@ public interface BitcoinDataService {
      *
      * @return the number of blocks in the block chain.
      */
-    Optional<Long> getBlockCount();
+    Optional<Integer> getBlockCount();
 
     /**
      * Get block data from buffer.
@@ -23,6 +23,6 @@ public interface BitcoinDataService {
      * @param blockHeight block height
      * @return block data
      */
-    Optional<BitcoindBlockData> getBlockData(long blockHeight);
+    Optional<BitcoindBlockData> getBlockData(int blockHeight);
 
 }

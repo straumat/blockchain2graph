@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -21,6 +22,19 @@ public class BitcoinTransactionOutput {
 	 */
 	@GraphId
 	private Long id;
+
+    /**
+     * Link to the transaction where the transaction output is.
+     */
+    @Property(name = "txid")
+    private String txId;
+
+    /**
+     * Key (txid-n).
+     */
+    @Index
+    @Property(name = "key")
+    private String key;
 
 	/**
 	 * The value in BTC.
@@ -50,7 +64,7 @@ public class BitcoinTransactionOutput {
 	 * The required sigs.
 	 */
 	@Property(name = "scriptPubKeyReqSigs")
-	private long scriptPubKeyReqSigs;
+	private int scriptPubKeyReqSigs;
 
 	/**
 	 * The type, eg 'pubkeyhash'.
@@ -72,9 +86,9 @@ public class BitcoinTransactionOutput {
 
 	@Override
 	public final String toString() {
-		StringBuilder description = new StringBuilder(getValue() + " -> ");
+		StringBuilder description = new StringBuilder(getN() + " " + getValue() + " -> ");
 		if (getAddresses() == null || getAddresses().size() == 0) {
-			description.append("No bitcoinAddress");
+			description.append("No bitcoin address");
 		} else {
 			Iterator<String> it = getAddresses().iterator();
 			while (it.hasNext()) {
@@ -109,7 +123,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @return scriptPubKeyReqSigs
 	 */
-	public final long getScriptPubKeyReqSigs() {
+	public final int getScriptPubKeyReqSigs() {
 		return scriptPubKeyReqSigs;
 	}
 
@@ -118,7 +132,7 @@ public class BitcoinTransactionOutput {
 	 *
 	 * @param newScriptPubKeyReqSigs the scriptPubKeyReqSigs to set
 	 */
-	public final void setScriptPubKeyReqSigs(final long newScriptPubKeyReqSigs) {
+	public final void setScriptPubKeyReqSigs(final int newScriptPubKeyReqSigs) {
 		scriptPubKeyReqSigs = newScriptPubKeyReqSigs;
 	}
 
@@ -176,7 +190,23 @@ public class BitcoinTransactionOutput {
 		id = newId;
 	}
 
-	/**
+    /**
+     * Getter.
+     * @return transaction id
+     */
+    public final String getTxId() {
+        return txId;
+    }
+
+    /**
+     * Setter.
+     * @param newTxId new tx id
+     */
+    public final void setTxId(final String newTxId) {
+        this.txId = newTxId;
+    }
+
+    /**
 	 * Getter of value.
 	 *
 	 * @return value
@@ -247,5 +277,52 @@ public class BitcoinTransactionOutput {
 	public final void setScriptPubKeyHex(final String newScriptPubKeyHex) {
 		scriptPubKeyHex = newScriptPubKeyHex;
 	}
+
+    /**
+     * Getter.
+     *
+     * @return key.
+     */
+    public final String getKey() {
+        return key;
+    }
+
+    /**
+     * Setter.
+     * @param newKey key
+     */
+    public final void setKey(final String newKey) {
+        this.key = newKey;
+    }
+
+    /**
+     * Equals.
+     * @param o object
+     * @return true if same object
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BitcoinTransactionOutput)) {
+            return false;
+        }
+
+        BitcoinTransactionOutput that = (BitcoinTransactionOutput) o;
+
+        return getN() == that.getN();
+    }
+
+    /**
+     * Hash.
+     * @return hash
+     */
+    @Override
+    public final int hashCode() {
+        return getN();
+    }
+
+
 
 }

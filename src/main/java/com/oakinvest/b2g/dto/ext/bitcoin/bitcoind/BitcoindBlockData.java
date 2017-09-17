@@ -4,9 +4,11 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Bitcoind block data - not a bitcoind object - created for b2g.
@@ -24,15 +26,22 @@ public class BitcoindBlockData implements Serializable {
 	 */
 	private List<GetRawTransactionResult> transactions = new LinkedList<>();
 
+    /**
+     * Bitcoin addresses used in the block.
+     */
+    private Set<String> addresses = new HashSet<>();
+
 	/**
 	 * Constructor.
 	 *
-	 * @param newBlock        block data
-	 * @param newTransactions transactions data
+	 * @param newBlock          block data
+	 * @param newTransactions   transactions data
+     * @param newAddresses      block addresses
 	 */
-	public BitcoindBlockData(final GetBlockResult newBlock, final List<GetRawTransactionResult> newTransactions) {
+	public BitcoindBlockData(final GetBlockResult newBlock, final List<GetRawTransactionResult> newTransactions, final Set<String> newAddresses) {
 		this.block = newBlock;
 		this.transactions = newTransactions;
+		this.addresses = newAddresses;
 	}
 
 	/**
@@ -53,7 +62,16 @@ public class BitcoindBlockData implements Serializable {
 		return transactions;
 	}
 
-	/**
+    /**
+     * Getter addresses.
+     *
+     * @return addresses used in the block.
+     */
+    public final Set<String> getAddresses() {
+        return addresses;
+    }
+
+    /**
 	 * Return a particular rawTransactionResult.
 	 *
 	 * @param txid transaction hash

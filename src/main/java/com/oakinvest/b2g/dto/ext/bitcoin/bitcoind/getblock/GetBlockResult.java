@@ -17,22 +17,22 @@ public class GetBlockResult implements Serializable {
 	/**
 	 * The number of confirmations, or -1 if the block is not on the main chain.
 	 */
-	private long confirmations;
+	private int confirmations;
 
 	/**
 	 * The block size.
 	 */
-	private long size;
+	private int size;
 
 	/**
 	 * The block height or index.
 	 */
-	private long height;
+	private int height;
 
 	/**
 	 * The block version.
 	 */
-	private long version;
+	private int version;
 
 	/**
 	 * The merkle root.
@@ -125,7 +125,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @return confirmations
 	 */
-	public final long getConfirmations() {
+	public final int getConfirmations() {
 		return confirmations;
 	}
 
@@ -134,7 +134,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @param newConfirmations the confirmations to set
 	 */
-	public final void setConfirmations(final long newConfirmations) {
+	public final void setConfirmations(final int newConfirmations) {
 		confirmations = newConfirmations;
 	}
 
@@ -143,7 +143,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @return size
 	 */
-	public final long getSize() {
+	public final int getSize() {
 		return size;
 	}
 
@@ -152,7 +152,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @param newSize the size to set
 	 */
-	public final void setSize(final long newSize) {
+	public final void setSize(final int newSize) {
 		size = newSize;
 	}
 
@@ -161,7 +161,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @return height
 	 */
-	public final long getHeight() {
+	public final int getHeight() {
 		return height;
 	}
 
@@ -170,7 +170,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @param newHeight the height to set
 	 */
-	public final void setHeight(final long newHeight) {
+	public final void setHeight(final int newHeight) {
 		height = newHeight;
 	}
 
@@ -179,7 +179,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @return version
 	 */
-	public final long getVersion() {
+	public final int getVersion() {
 		return version;
 	}
 
@@ -188,7 +188,7 @@ public class GetBlockResult implements Serializable {
 	 *
 	 * @param newVersion the version to set
 	 */
-	public final void setVersion(final long newVersion) {
+	public final void setVersion(final int newVersion) {
 		version = newVersion;
 	}
 
@@ -353,4 +353,34 @@ public class GetBlockResult implements Serializable {
 	public final void setNextblockhash(final String newNextblockhash) {
 		nextblockhash = newNextblockhash;
 	}
+
+    /**
+     * Equals.
+     *
+     * @param o object
+     * @return true if same
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetBlockResult)) {
+            return false;
+        }
+
+        GetBlockResult that = (GetBlockResult) o;
+
+        return getHash().equals(that.getHash());
+    }
+
+    /**
+     * Hash code.
+     * @return hash
+     */
+    @Override
+    public final int hashCode() {
+        return getHash().hashCode();
+    }
+
 }

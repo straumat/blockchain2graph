@@ -10,6 +10,15 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  */
 public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTransaction> {
 
+    /**
+     * Transaction count.
+     *
+     * @param txId tx id
+     * @return number of transaction
+     */
+    @Query("MATCH (t:BitcoinTransaction) WHERE t.txid = {0} return count(*)")
+    int transactionCount(String txId);
+
 	/**
 	 * Returns 1 if the address is already in the database.
 	 *
@@ -25,6 +34,7 @@ public interface BitcoinTransactionRepository extends GraphRepository<BitcoinTra
 	 * @param txId transaction id
 	 * @return transaction
 	 */
-	BitcoinTransaction findByTxId(String txId);
+    @Query("MATCH (n:BitcoinTransaction) USING INDEX n:BitcoinTransaction(txid) WHERE n.txid = {0} WITH n MATCH p=(n)-[*0..1]-(m) RETURN p, n, m")
+    BitcoinTransaction findByTxId(String txId);
 
 }

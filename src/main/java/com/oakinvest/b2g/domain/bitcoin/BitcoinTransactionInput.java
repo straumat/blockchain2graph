@@ -66,15 +66,6 @@ public class BitcoinTransactionInput {
     @Relationship(type = "ADDRESS", direction = Relationship.INCOMING)
     private BitcoinAddress bitcoinAddress;
 
-    @Override
-	public final String toString() {
-		if (getTxId() == null) {
-			return "Coinbase";
-		} else {
-			return getTxId() + "-" + getvOut();
-		}
-	}
-
     /**
      * Getter.
      *
@@ -244,5 +235,53 @@ public class BitcoinTransactionInput {
 	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
 	}
+
+    @Override
+    public final String toString() {
+        if (getTxId() == null) {
+            return "Coinbase";
+        } else {
+            return getTxId() + "-" + getvOut();
+        }
+    }
+
+    /**
+     * Equals.
+     * @param o object
+     * @return true if same object
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BitcoinTransactionInput)) {
+            return false;
+        }
+
+        // Converting.
+        BitcoinTransactionInput that = (BitcoinTransactionInput) o;
+
+        if (isCoinbase()) {
+            // If it's a coinbase.
+            return that.getTxId() == null && getCoinbase().equals(that.getCoinbase());
+        } else {
+            // if it's a transaction
+            return (getTxId().equals(that.getTxId()) && (getvOut() == that.getvOut()));
+        }
+    }
+
+    /**
+     * Hash.
+     * @return hash
+     */
+    @Override
+    public final int hashCode() {
+        if (isCoinbase()) {
+            return getCoinbase().hashCode();
+        } else {
+            return (getTxId() + getvOut()).hashCode();
+        }
+    }
 
 }

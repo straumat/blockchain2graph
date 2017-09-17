@@ -23,7 +23,7 @@ public class GetRawTransactionVIn implements Serializable {
 	/**
 	 * vout.
 	 */
-	private long vout;
+	private int vout;
 
 	/**
 	 * ScriptSig.
@@ -76,7 +76,7 @@ public class GetRawTransactionVIn implements Serializable {
 	 *
 	 * @return vout
 	 */
-	public final long getVout() {
+	public final int getVout() {
 		return vout;
 	}
 
@@ -85,7 +85,7 @@ public class GetRawTransactionVIn implements Serializable {
 	 *
 	 * @param newVout the vout to set
 	 */
-	public final void setVout(final long newVout) {
+	public final void setVout(final int newVout) {
 		vout = newVout;
 	}
 
@@ -124,5 +124,61 @@ public class GetRawTransactionVIn implements Serializable {
 	public final void setSequence(final long newSequence) {
 		sequence = newSequence;
 	}
+
+    /**
+     * Returns true if it's a coinbase transaction.
+     *
+     * @return coinbase.
+     */
+    public final boolean isCoinbase() {
+        return getCoinbase() != null;
+    }
+
+    /**
+     * Equals method.
+     * @param o object
+     * @return true if equals
+     */
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GetRawTransactionVIn)) {
+            return false;
+        }
+
+        GetRawTransactionVIn that = (GetRawTransactionVIn) o;
+
+        if (isCoinbase()) {
+            // If it's a coinbase.
+            return that.getTxid() == null && getCoinbase().equals(that.getCoinbase());
+        } else {
+            // if it's a transaction
+            return (getTxid().equals(that.getTxid()) && (getVout() == that.getVout()));
+        }
+    }
+
+    /**
+     * Hashcode.
+     * @return hashcode
+     */
+    @Override
+    public final int hashCode() {
+        if (isCoinbase()) {
+            return getCoinbase().hashCode();
+        } else {
+            return (getTxid() + getVout()).hashCode();
+        }
+    }
+
+    /**
+     * toString.
+     * @return value.
+     */
+    @Override
+    public final String toString() {
+        return txid + "-" + vout;
+    }
 
 }

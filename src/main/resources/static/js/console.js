@@ -44,12 +44,6 @@ function configure(url) {
 						}
 						break;
 
-					case "addresses":
-						if (response.messageValue.includes("Addresses batch")) {
-							logs.append("<div>" + response.messageValue.replace("Addresses batch - ", "") + "</div>");
-						}
-						break;
-
 					case "relations":
 						if (response.messageValue.includes("Relations batch")) {
 							logs.append("<div>" + response.messageValue.replace("Relations batch - ", "") + "</div>");

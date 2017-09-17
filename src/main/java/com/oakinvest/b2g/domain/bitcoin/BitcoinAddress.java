@@ -25,7 +25,22 @@ public class BitcoinAddress {
 	@Property(name = "address")
 	private String address;
 
-	/**
+    /**
+     * Default constructor.
+     */
+    public BitcoinAddress() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param newAddress address.
+     */
+    public BitcoinAddress(final String newAddress) {
+        this.address = newAddress;
+    }
+
+    /**
 	 * Getter of id.
 	 *
 	 * @return id

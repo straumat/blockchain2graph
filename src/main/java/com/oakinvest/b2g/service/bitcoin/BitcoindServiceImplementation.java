@@ -122,7 +122,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
 	 */
 	@Override
 	@SuppressWarnings("checkstyle:designforextension")
-	public GetBlockHashResponse getBlockHash(final long blockHeight) {
+	public GetBlockHashResponse getBlockHash(final int blockHeight) {
 		// Setting parameters
 		List<Object> params = new ArrayList<>();
 		params.add(blockHeight);

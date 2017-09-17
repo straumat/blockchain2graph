@@ -13,14 +13,14 @@ public class GetBlockCountResponse extends BitcoindResponse {
 	/**
 	 * The current block count.
 	 */
-	private long result;
+	private int result;
 
 	/**
 	 * Getter of result.
 	 *
 	 * @return result
 	 */
-	public final long getResult() {
+	public final int getResult() {
 		return result;
 	}
 
@@ -29,7 +29,7 @@ public class GetBlockCountResponse extends BitcoindResponse {
 	 *
 	 * @param newResult the result to set
 	 */
-	public final void setResult(final long newResult) {
+	public final void setResult(final int newResult) {
 		result = newResult;
 	}
 

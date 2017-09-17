@@ -32,7 +32,7 @@ public class BitcoinTransaction {
 	/**
 	 * The transaction id (same as provided).
 	 */
-	@Index(unique = true, primary = true)
+    @Index
 	@Property(name = "txid")
 	private String txId;
 
@@ -46,19 +46,19 @@ public class BitcoinTransaction {
 	 * The serialized transaction size.
 	 */
 	@Property(name = "size")
-	private long size;
+	private int size;
 
 	/**
 	 * The virtual transaction size (differs from size for witness transactions).
 	 */
 	@Property(name = "vsize")
-	private long vSize;
+	private int vSize;
 
 	/**
 	 * The version.
 	 */
 	@Property(name = "version")
-	private long version;
+	private int version;
 
 	/**
 	 * The lock time.
@@ -87,13 +87,13 @@ public class BitcoinTransaction {
 	/**
 	 * Inputs.
 	 */
-	@Relationship(type = "INPUTS", direction = Relationship.OUTGOING)
+	@Relationship(type = "INPUTS")
 	private Set<BitcoinTransactionInput> inputs = new HashSet<>();
 
 	/**
 	 * Outputs.
 	 */
-	@Relationship(type = "OUTPUTS", direction = Relationship.OUTGOING)
+	@Relationship(type = "OUTPUTS")
 	private Set<BitcoinTransactionOutput> outputs = new HashSet<>();
 
 	/**
@@ -224,7 +224,7 @@ public class BitcoinTransaction {
 	 *
 	 * @return size
 	 */
-	public final long getSize() {
+	public final int getSize() {
 		return size;
 	}
 
@@ -233,7 +233,7 @@ public class BitcoinTransaction {
 	 *
 	 * @param newSize the size to set
 	 */
-	public final void setSize(final long newSize) {
+	public final void setSize(final int newSize) {
 		size = newSize;
 	}
 
@@ -242,7 +242,7 @@ public class BitcoinTransaction {
 	 *
 	 * @return vSize
 	 */
-	public final long getvSize() {
+	public final int getvSize() {
 		return vSize;
 	}
 
@@ -251,7 +251,7 @@ public class BitcoinTransaction {
 	 *
 	 * @param newVSize the vSize to set
 	 */
-	public final void setvSize(final long newVSize) {
+	public final void setvSize(final int newVSize) {
 		vSize = newVSize;
 	}
 
@@ -260,7 +260,7 @@ public class BitcoinTransaction {
 	 *
 	 * @return version
 	 */
-	public final long getVersion() {
+	public final int getVersion() {
 		return version;
 	}
 
@@ -269,7 +269,7 @@ public class BitcoinTransaction {
 	 *
 	 * @param newVersion the version to set
 	 */
-	public final void setVersion(final long newVersion) {
+	public final void setVersion(final int newVersion) {
 		version = newVersion;
 	}
 
@@ -319,6 +319,18 @@ public class BitcoinTransaction {
 	}
 
 	/**
+     * Returns a particular transaction input.
+     * @param transactionId transaction id
+     * @param vOut vout
+     * @return transaction input
+     */
+	public final Optional<BitcoinTransactionInput> getInput(final String transactionId, final int vOut) {
+        return inputs.stream()
+                .filter(ti -> ti.getTxId().equals(transactionId) && ti.getvOut() == (vOut))
+                .findFirst();
+    }
+
+	/**
 	 * Setter of inputs.
 	 *
 	 * @param newInputs the inputs to set
@@ -335,6 +347,17 @@ public class BitcoinTransaction {
 	public final Set<BitcoinTransactionOutput> getOutputs() {
 		return outputs;
 	}
+
+    /**
+     * Returns a particular transaction output.
+     * @param n vout
+     * @return transaction output
+     */
+    public final Optional<BitcoinTransactionOutput> getOutput(final int n) {
+        return outputs.stream()
+                .filter(to -> to.getN() == n)
+                .findFirst();
+    }
 
 	/**
 	 * Setter of outputs.
