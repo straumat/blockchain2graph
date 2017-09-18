@@ -92,25 +92,25 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                             // -----------------------------------------------------------------------------------------
                             // For each Vin.
                             t.getInputs()
-                                .stream()
-                                .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
+                                    .stream()
+                                    .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // -----------------------------------------------------------------------------
                                         // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                         // -----------------------------------------------------------------------------
                                         // We check if this output is not missing.
                                         if (originTransactionOutput == null) {
-                                                addError("*");
-                                                addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                                BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                                addError("* This is what we found in the database : ");
-                                                missingTransaction.getOutputs()
+                                            addError("*");
+                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                            addError("* This is what we found in the database : ");
+                                            missingTransaction.getOutputs()
                                                     .stream()
                                                     .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN() + " key is " + o.getKey()));
-                                                addError("*");
+                                                    .forEach(o -> addError("* txid : " + o.getTxId() + " - vout : " + o.getN()));
+                                            addError("*");
                                             throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                         }
 
@@ -121,22 +121,22 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                         // -----------------------------------------------------------------------------
                                         // We set all the addresses linked to this input.
                                         originTransactionOutput.getAddresses()
-                                            .stream()
-                                            .filter(Objects::nonNull)
-                                            .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                });
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                    });
 
                             // -----------------------------------------------------------------------------------------
                             // For each Vout.
                             t.getOutputs()
-                                .forEach(vout -> {
-                                    // ---------------------------------------------------------------------------------
-                                    // We set all the addresses linked to this output.
-                                    vout.getAddresses()
-                                        .stream()
-                                        .filter(Objects::nonNull)
-                                        .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                });
+                                    .forEach(vout -> {
+                                        // ---------------------------------------------------------------------------------
+                                        // We set all the addresses linked to this output.
+                                        vout.getAddresses()
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                    });
 
                             // -----------------------------------------------------------------------------------------
                             // Add log to say we are done.
