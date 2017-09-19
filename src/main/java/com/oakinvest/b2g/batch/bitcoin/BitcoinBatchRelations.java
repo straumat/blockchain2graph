@@ -7,7 +7,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -15,7 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_VERIFIED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 
 /**
@@ -36,10 +35,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      * @param newBitcoinRepositories    bitcoin repositories
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
-     * @param newCacheStore             cache store
      */
-    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
+    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
     }
 
     /**
@@ -57,7 +55,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<Integer> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_VERIFIED);
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_IMPORTED);
         if (blockToTreat != null) {
             return Optional.of(blockToTreat.getHeight());
         } else {

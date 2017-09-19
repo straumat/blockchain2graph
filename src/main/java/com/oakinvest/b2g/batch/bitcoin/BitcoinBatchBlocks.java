@@ -44,7 +44,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      * @param newCacheStore             cache store
      */
     public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader, final BitcoinDataServiceCacheStore newCacheStore) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
         bitcoindCacheLoader = newBitcoindCacheLoader;
     }
 
@@ -109,17 +109,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 			if (blockToProcess == null) {
 				blockToProcess = getMapper().blockDataToBitcoinBlock(blockData.get());
             }
-
-            // Only for debug purpose.
-            blockToProcess.getTransactions()
-                    .forEach(t -> {
-                        if (t.getOutputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVout().size()) {
-                            addError("Should never append (outputs)");
-                        }
-                        if (t.getInputs().size() != blockData.get().getRawTransactionResult(t.getTxId()).get().getVin().size()) {
-                            addError("Should never append (inputs)");
-                        }
-                    });
 
             // ---------------------------------------------------------------------------------------------------------
             // We create all the addresses.
