@@ -7,7 +7,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -15,7 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_VERIFIED;
+import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 
 /**
@@ -36,10 +35,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      * @param newBitcoinRepositories    bitcoin repositories
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
-     * @param newCacheStore             cache store
      */
-    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus, newCacheStore);
+    public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
     }
 
     /**
@@ -57,7 +55,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<Integer> getBlockHeightToProcess() {
-        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_VERIFIED);
+        BitcoinBlock blockToTreat = getBlockRepository().findFirstBlockByState(BLOCK_DATA_IMPORTED);
         if (blockToTreat != null) {
             return Optional.of(blockToTreat.getHeight());
         } else {
@@ -92,25 +90,25 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                             // -----------------------------------------------------------------------------------------
                             // For each Vin.
                             t.getInputs()
-                                .stream()
-                                .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
+                                    .stream()
+                                    .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // -----------------------------------------------------------------------------
                                         // We retrieve the original transaction.
-                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByKey(vin.getTxId() + "-" + vin.getvOut());
+                                        BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                         // -----------------------------------------------------------------------------
                                         // We check if this output is not missing.
                                         if (originTransactionOutput == null) {
-                                                addError("*");
-                                                addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                                BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                                addError("* This is what we found in the database : ");
-                                                missingTransaction.getOutputs()
+                                            addError("*");
+                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
+                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
+                                            addError("* This is what we found in the database : ");
+                                            missingTransaction.getOutputs()
                                                     .stream()
                                                     .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                    .forEach(o -> addError("* " + missingTransaction.getTxId() + " - vout : " + o.getN() + " key is " + o.getKey()));
-                                                addError("*");
+                                                    .forEach(o -> addError("* txid : " + o.getTxId() + " - vout : " + o.getN()));
+                                            addError("*");
                                             throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
                                         }
 
@@ -121,22 +119,22 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                         // -----------------------------------------------------------------------------
                                         // We set all the addresses linked to this input.
                                         originTransactionOutput.getAddresses()
-                                            .stream()
-                                            .filter(Objects::nonNull)
-                                            .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                });
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> vin.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                    });
 
                             // -----------------------------------------------------------------------------------------
                             // For each Vout.
                             t.getOutputs()
-                                .forEach(vout -> {
-                                    // ---------------------------------------------------------------------------------
-                                    // We set all the addresses linked to this output.
-                                    vout.getAddresses()
-                                        .stream()
-                                        .filter(Objects::nonNull)
-                                        .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
-                                });
+                                    .forEach(vout -> {
+                                        // ---------------------------------------------------------------------------------
+                                        // We set all the addresses linked to this output.
+                                        vout.getAddresses()
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .forEach(a -> vout.setBitcoinAddress(getAddressRepository().findByAddressWithoutDepth(a)));
+                                    });
 
                             // -----------------------------------------------------------------------------------------
                             // Add log to say we are done.

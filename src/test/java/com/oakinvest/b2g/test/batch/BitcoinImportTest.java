@@ -14,7 +14,6 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +49,7 @@ public class BitcoinImportTest {
 	/**
 	 * setup is done.
 	 */
-	private static boolean databaseReseted = false;
+	private static boolean databaseCleared = false;
 
 	/**
 	 * Spring context.
@@ -105,12 +105,6 @@ public class BitcoinImportTest {
 	@Autowired
 	private BitcoindMock bitcoindMock;
 
-    /**
-     * Cache store.
-     */
-    @Autowired
-    private BitcoinDataServiceCacheStore cacheStore;
-
 	/**
 	 * Importing the data.
 	 *
@@ -119,12 +113,12 @@ public class BitcoinImportTest {
 	@Before
 	public void setUp() throws Exception {
 		// Reset the database.
-		if (!databaseReseted) {
+		if (!databaseCleared) {
 			Map<String, GraphRepository> graphRepositories = ctx.getBeansOfType(GraphRepository.class);
 			for (GraphRepository graphRepository : graphRepositories.values()) {
 				graphRepository.deleteAll();
 			}
-			databaseReseted = true;
+			databaseCleared = true;
 		}
 
 		// Reset errors.
@@ -146,46 +140,6 @@ public class BitcoinImportTest {
 			}
 		}
 	}
-
-	/**
-	 * Test for no empty block.
-	 */
-	@Test
-	public void testEmptyRelations() {
-		// Test all blocks.
-		blockRepository.findAll().forEach(b -> assertThat(b.getTransactions()).as("Block %s's transactions", b.getHeight()).isNotEmpty());
-
-		// Test all transactions.
-		transactionRepository.findAll().forEach(t -> {
-			assertThat(t.getInputs()).as("Transaction %s inputs", t.getTxId()).isNotEmpty();
-			assertThat(t.getOutputs()).as("Transaction %s outputs", t.getTxId()).isNotEmpty();
-		});
-	}
-
-	/**
-	 * Test for recovery after crash.
-	 */
-/*	@Test
-	public final void testRecoveryAfterCrash() {
-		final long blockForTest = NUMBERS_OF_BLOCK_TO_IMPORT - 1;
-
-		// We set the last block as not at all imported
-		BitcoinBlock b = blockRepository.findByHeight(blockForTest);
-		b.setState(BitcoinBlockState.BLOCK_DATA_IMPORTED);
-		blockRepository.save(b);
-
-		// Then, we import it.
-		try {
-			batchAddresses.execute();
-			batchRelations.execute();
-		} catch (Exception e) {
-			fail("Recovery after crash did not work " + e.getMessage());
-		}
-
-		// we check that everything as been imported again on that block
-		assertThat(blockRepository.countBlockByState(BLOCK_FULLY_IMPORTED)).as("Number of blocks imported", NUMBERS_OF_BLOCK_TO_IMPORT);
-		assertThat(blockRepository.findByHeight(blockForTest).getState()).as("Block state").isEqualTo(BLOCK_FULLY_IMPORTED);
-	}*/
 
 	/**
 	 * importBlock() test.
@@ -369,164 +323,255 @@ public class BitcoinImportTest {
 		// Data to test.
 		final String address = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
 		final BitcoinAddress bitcoinAddress = addressRepository.findByAddress(address);
+        Optional<BitcoinTransactionInput> bti1;
+        Optional<BitcoinTransactionOutput> bto1;
+        Optional<BitcoinTransactionOutput> bto2;
 
-        //  Transaction 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9.
-        //  Coinbase                            =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (50)
+        // -------------------------------------------------------------------------------------------------------------
+        // Transaction 0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9.
+        // Coinbase                            =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (50)
         final String transaction1Hash = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
-        assertThat(getTransactionInput(transaction1Hash, 0).isCoinbase())
-                .as("Transaction 1 input 1 - coinbase")
-                .isTrue();
-        assertThat(getTransactionOutput(transaction1Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 1 output 1 - address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction1Hash, 0).getValue())
-                .as("Transaction 1 output 1 - value")
-                .isEqualTo(50f);
+        // Input 1.
+        bti1 = getTransactionInput(transaction1Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 1 input 1 - coinbase")
+                    .isTrue();
+        } else {
+            fail(transaction1Hash + " input 1 not found");
+        }
+        // Output 1.
+        bto1 = getTransactionOutput(transaction1Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 1 output 1 - address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 1 output 1 - value")
+                    .isEqualTo(50f);
+        } else {
+            fail(transaction1Hash + " output 1 not found");
+        }
 
         //  Transaction f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16.
         //  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  =>  1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3  (10)
         //                                      =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (40)
         final String transaction2Hash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
         // Input 1.
-        assertThat(getTransactionInput(transaction2Hash, 0).isCoinbase())
-                .as("Transaction 2 input 1 - not coinbase")
-                .isFalse();
-        assertThat(getTransactionInput(transaction2Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 2 input 1 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionInput(transaction2Hash, 0).getTransactionOutput().getValue())
-                .as("Transaction 2 input 1 - bitcoin address")
-                .isEqualTo(50f);
+        bti1 = getTransactionInput(transaction2Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 2 input 1 - not coinbase")
+                    .isFalse();
+            assertThat(bti1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 2 input 1 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bti1.get().getTransactionOutput().getValue())
+                    .as("Transaction 2 input 1 - bitcoin address")
+                    .isEqualTo(50f);
+        } else {
+            fail(transaction2Hash + " input 1 not found");
+        }
         // Output 1.
-        assertThat(getTransactionOutput(transaction2Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 2 output 1 - bitcoin address")
-                .isEqualTo("1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3");
-        assertThat(getTransactionOutput(transaction2Hash, 0).getValue())
-                .as("Transaction 2 output 1 - bitcoin address")
-                .isEqualTo(10f);
+        bto1 = getTransactionOutput(transaction2Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 2 output 1 - bitcoin address")
+                    .isEqualTo("1Q2TWHE3GMdB6BZKafqwxXtWAWgFt5Jvm3");
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 2 output 1 - bitcoin address")
+                    .isEqualTo(10f);
+        } else {
+            fail(transaction2Hash + " output 1 not found");
+        }
         // Output 2.
-        assertThat(getTransactionOutput(transaction2Hash, 1).getBitcoinAddress().getAddress())
-                .as("Transaction 2 output 2 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction2Hash, 1).getValue())
-                .as("Transaction 2 output 2 - bitcoin address")
-                .isEqualTo(40f);
+        bto2 = getTransactionOutput(transaction2Hash, 1);
+        if (bto2.isPresent()) {
+            assertThat(bto2.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 2 output 2 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto2.get().getValue())
+                    .as("Transaction 2 output 2 - bitcoin address")
+                    .isEqualTo(40f);
+        } else {
+            fail(transaction2Hash + " output 2 not found");
+        }
 
         //  Transaction a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be.
         //  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  =>  1DUDsfc23Dv9sPMEk5RsrtfzCw5ofi5sVW  (10)
         //                                      =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (30)
         final String transaction3Hash = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
         // Input 1.
-        assertThat(getTransactionInput(transaction3Hash, 0).isCoinbase())
-                .as("Transaction 3 input 1 - not coinbase")
-                .isFalse();
-        assertThat(getTransactionInput(transaction3Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 3 input 1 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionInput(transaction3Hash, 0).getTransactionOutput().getValue())
-                .as("Transaction 3 input 1 - bitcoin address")
-                .isEqualTo(40f);
+        bti1 = getTransactionInput(transaction3Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 3 input 1 - not coinbase")
+                    .isFalse();
+            assertThat(bti1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 3 input 1 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bti1.get().getTransactionOutput().getValue())
+                    .as("Transaction 3 input 1 - bitcoin address")
+                    .isEqualTo(40f);
+        } else {
+            fail(transaction3Hash + " input 1 not found");
+        }
         // Output 1.
-        assertThat(getTransactionOutput(transaction3Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 3 output 1 - bitcoin address")
-                .isEqualTo("1DUDsfc23Dv9sPMEk5RsrtfzCw5ofi5sVW");
-        assertThat(getTransactionOutput(transaction3Hash, 0).getValue())
-                .as("Transaction 3 output 1 - bitcoin address")
-                .isEqualTo(10f);
+        bto1 = getTransactionOutput(transaction3Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 3 output 1 - bitcoin address")
+                    .isEqualTo("1DUDsfc23Dv9sPMEk5RsrtfzCw5ofi5sVW");
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 3 output 1 - bitcoin address")
+                    .isEqualTo(10f);
+        } else {
+            fail(transaction3Hash + " output 1 not found");
+        }
         // Output 2.
-        assertThat(getTransactionOutput(transaction3Hash, 1).getBitcoinAddress().getAddress())
-                .as("Transaction 3 output 2 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction3Hash, 1).getValue())
-                .as("Transaction 3 output 2 - bitcoin address")
-                .isEqualTo(30f);
+        bto2 = getTransactionOutput(transaction3Hash, 1);
+        if (bto2.isPresent()) {
+            assertThat(bto2.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 3 output 2 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto2.get().getValue())
+                    .as("Transaction 3 output 2 - bitcoin address")
+                    .isEqualTo(30f);
+        } else {
+            fail(transaction3Hash + " output 2 not found");
+        }
 
         //  Transaction 591e91f809d716912ca1d4a9295e70c3e78bab077683f79350f101da64588073.
         //  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (30)    =>  1LzBzVqEeuQyjD2mRWHes3dgWrT9titxvq  (1)
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (29)
         final String transaction4Hash = "591e91f809d716912ca1d4a9295e70c3e78bab077683f79350f101da64588073";
         // Input 1.
-        assertThat(getTransactionInput(transaction4Hash, 0).isCoinbase())
-                .as("Transaction 4 input 1 - not coinbase")
-                .isFalse();
-        assertThat(getTransactionInput(transaction4Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 4 input 1 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionInput(transaction4Hash, 0).getTransactionOutput().getValue())
-                .as("Transaction 4 input 1 - bitcoin address")
-                .isEqualTo(30f);
+        bti1 = getTransactionInput(transaction4Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 4 input 1 - not coinbase")
+                    .isFalse();
+            assertThat(bti1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 4 input 1 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bti1.get().getTransactionOutput().getValue())
+                    .as("Transaction 4 input 1 - bitcoin address")
+                    .isEqualTo(30f);
+        } else {
+            fail(transaction4Hash + " input 1 not found");
+        }
         // Output 1.
-        assertThat(getTransactionOutput(transaction4Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 4 output 1 - bitcoin address")
-                .isEqualTo("1LzBzVqEeuQyjD2mRWHes3dgWrT9titxvq");
-        assertThat(getTransactionOutput(transaction4Hash, 0).getValue())
-                .as("Transaction 4 output 1 - bitcoin address")
-                .isEqualTo(1);
+        bto1 = getTransactionOutput(transaction4Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 4 output 1 - bitcoin address")
+                    .isEqualTo("1LzBzVqEeuQyjD2mRWHes3dgWrT9titxvq");
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 4 output 1 - bitcoin address")
+                    .isEqualTo(1);
+        } else {
+            fail(transaction4Hash + " output 1 not found");
+        }
         // Output 2.
-        assertThat(getTransactionOutput(transaction4Hash, 1).getBitcoinAddress().getAddress())
-                .as("Transaction 4 output 2 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction4Hash, 1).getValue())
-                .as("Transaction 4 output 2 - bitcoin address")
-                .isEqualTo(29f);
+        bto2 = getTransactionOutput(transaction4Hash, 1);
+        if (bto2.isPresent()) {
+            assertThat(bto2.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 4 output 2 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto2.get().getValue())
+                    .as("Transaction 4 output 2 - bitcoin address")
+                    .isEqualTo(29f);
+        } else {
+            fail(transaction4Hash + " output 2 not found");
+        }
 
         //  Transaction 12b5633bad1f9c167d523ad1aa1947b2732a865bf5414eab2f9e5ae5d5c191ba.
         //  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (29)    =>  13HtsYzne8xVPdGDnmJX8gHgBZerAfJGEf  (1)
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (28)
         final String transaction5Hash = "12b5633bad1f9c167d523ad1aa1947b2732a865bf5414eab2f9e5ae5d5c191ba";
         // Input 1.
-        assertThat(getTransactionInput(transaction5Hash, 0).isCoinbase())
-                .as("Transaction 5 input 1 - not coinbase")
-                .isFalse();
-        assertThat(getTransactionInput(transaction5Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 5 input 1 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionInput(transaction5Hash, 0).getTransactionOutput().getValue())
-                .as("Transaction 5 input 1 - bitcoin address")
-                .isEqualTo(29f);
+        bti1 = getTransactionInput(transaction5Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 5 input 1 - not coinbase")
+                    .isFalse();
+            assertThat(bti1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 5 input 1 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bti1.get().getTransactionOutput().getValue())
+                    .as("Transaction 5 input 1 - bitcoin address")
+                    .isEqualTo(29f);
+        } else {
+            fail(transaction4Hash + " input 1 not found");
+        }
         // Output 1.
-        assertThat(getTransactionOutput(transaction5Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 5 output 1 - bitcoin address")
-                .isEqualTo("13HtsYzne8xVPdGDnmJX8gHgBZerAfJGEf");
-        assertThat(getTransactionOutput(transaction5Hash, 0).getValue())
-                .as("Transaction 5 output 1 - bitcoin address")
-                .isEqualTo(1);
+        bto1 = getTransactionOutput(transaction5Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 5 output 1 - bitcoin address")
+                    .isEqualTo("13HtsYzne8xVPdGDnmJX8gHgBZerAfJGEf");
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 5 output 1 - bitcoin address")
+                    .isEqualTo(1);
+        } else {
+            fail(transaction5Hash + " output 1 not found");
+        }
         // Output 2.
-        assertThat(getTransactionOutput(transaction5Hash, 1).getBitcoinAddress().getAddress())
-                .as("Transaction 5 output 2 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction5Hash, 1).getValue())
-                .as("Transaction 5 output 2 - bitcoin address")
-                .isEqualTo(28f);
+        bto2 = getTransactionOutput(transaction5Hash, 1);
+        if (bto2.isPresent()) {
+            assertThat(bto2.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 5 output 2 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto2.get().getValue())
+                    .as("Transaction 5 output 2 - bitcoin address")
+                    .isEqualTo(28f);
+        } else {
+            fail(transaction5Hash + " output 2 not found");
+        }
 
         //  Transaction 828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe.
         //  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (20)    =>  1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg  (10)
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (18)
         final String transaction6Hash = "828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe";
         // Input 1.
-        assertThat(getTransactionInput(transaction6Hash, 0).isCoinbase())
-                .as("Transaction 6 input 1 - not coinbase")
-                .isFalse();
-        assertThat(getTransactionInput(transaction6Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 6 input 1 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionInput(transaction6Hash, 0).getTransactionOutput().getValue())
-                .as("Transaction 6 input 1 - bitcoin address")
-                .isEqualTo(28f);
+        bti1 = getTransactionInput(transaction6Hash, 0);
+        if (bti1.isPresent()) {
+            assertThat(bti1.get().isCoinbase())
+                    .as("Transaction 6 input 1 - not coinbase")
+                    .isFalse();
+            assertThat(bti1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 6 input 1 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bti1.get().getTransactionOutput().getValue())
+                    .as("Transaction 6 input 1 - bitcoin address")
+                    .isEqualTo(28f);
+        } else {
+            fail(transaction6Hash + " input 1 not found");
+        }
         // Output 1.
-        assertThat(getTransactionOutput(transaction6Hash, 0).getBitcoinAddress().getAddress())
-                .as("Transaction 6 output 1 - bitcoin address")
-                .isEqualTo("1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg");
-        assertThat(getTransactionOutput(transaction6Hash, 0).getValue())
-                .as("Transaction 6 output 1 - bitcoin address")
-                .isEqualTo(10);
+        bto1 = getTransactionOutput(transaction6Hash, 0);
+        if (bto1.isPresent()) {
+            assertThat(bto1.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 6 output 1 - bitcoin address")
+                    .isEqualTo("1ByLSV2gLRcuqUmfdYcpPQH8Npm8cccsFg");
+            assertThat(bto1.get().getValue())
+                    .as("Transaction 6 output 1 - bitcoin address")
+                    .isEqualTo(10);
+        } else {
+            fail(transaction6Hash + " output 1 not found");
+        }
         // Output 2.
-        assertThat(getTransactionOutput(transaction6Hash, 1).getBitcoinAddress().getAddress())
-                .as("Transaction 6 output 2 - bitcoin address")
-                .isEqualTo(bitcoinAddress.getAddress());
-        assertThat(getTransactionOutput(transaction6Hash, 1).getValue())
-                .as("Transaction 6 output 2 - bitcoin address")
-                .isEqualTo(18f);
+        bto2 = getTransactionOutput(transaction6Hash, 1);
+        if (bto2.isPresent()) {
+            assertThat(bto2.get().getBitcoinAddress().getAddress())
+                    .as("Transaction 6 output 2 - bitcoin address")
+                    .isEqualTo(bitcoinAddress.getAddress());
+            assertThat(bto2.get().getValue())
+                    .as("Transaction 6 output 2 - bitcoin address")
+                    .isEqualTo(18f);
+        } else {
+            fail(transaction6Hash + " output 2 not found");
+        }
 	}
 
     /**
@@ -535,16 +580,16 @@ public class BitcoinImportTest {
      * @param index transaction input id
      * @return transaction input
      */
-    private BitcoinTransactionInput getTransactionInput(final String txId, final int index) {
+    private Optional<BitcoinTransactionInput> getTransactionInput(final String txId, final int index) {
         final BitcoinTransaction transaction = transactionRepository.findByTxId(txId);
         int i = 0;
         for (BitcoinTransactionInput input : transaction.getInputs()) {
             if (i == index) {
-                return transactionInputRepository.findOne(input.getId());
+                return Optional.of(transactionInputRepository.findOne(input.getId()));
             }
             i++;
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -553,9 +598,13 @@ public class BitcoinImportTest {
      * @param index transaction input id
      * @return transaction input
      */
-    private BitcoinTransactionOutput getTransactionOutput(final String txId, final int index) {
-        final BitcoinTransaction transaction = transactionRepository.findByTxId(txId);
-        return transactionOutputRepository.findOne(transaction.getOutputByIndex(index).get().getId());
+    private Optional<BitcoinTransactionOutput> getTransactionOutput(final String txId, final int index) {
+        BitcoinTransactionOutput o = transactionOutputRepository.findByTxIdAndN(txId, index);
+        if (o != null) {
+            return Optional.of(o);
+        } else {
+            return Optional.empty();
+        }
     }
 
 }

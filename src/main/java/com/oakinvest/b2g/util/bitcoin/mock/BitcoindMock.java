@@ -40,15 +40,9 @@ public class BitcoindMock {
 	 */
 	private static final int BLOCK_IN_ERROR_1 = 496;
 
-    /**
-     * Transaction with missing VIn Error Occurred.
-     */
-	private static boolean transactionWithMissingVInErrorOccurred = false;
+	//private static boolean transactionWithMissingVInErrorOccurred = false;
 
-    /**
-     * Transaction with missing Vout Error Occurred.
-     */
-    private static boolean transactionWithMissingVOutErrorOccurred = false;
+    //private static boolean transactionWithMissingVOutErrorOccurred = false;
 
 	/**
 	 * Block hash in error.
@@ -169,8 +163,8 @@ public class BitcoindMock {
 		getBlockHashErrors = 0;
 		getBlockErrors = 0;
 		getRawTransactionErrors = 0;
-        transactionWithMissingVInErrorOccurred = false;
-        transactionWithMissingVOutErrorOccurred = false;
+        //transactionWithMissingVInErrorOccurred = false;
+        //transactionWithMissingVOutErrorOccurred = false;
 	}
 
 	/**
@@ -309,7 +303,7 @@ public class BitcoindMock {
 		}
 
 		// We simulate that a vin and a vout are missing - Removing it temporary.
-        final String transactionWithMissingVIn = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
+/*        final String transactionWithMissingVIn = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
 		if (transactionWithMissingVIn.equals(transactionHashValue) && !transactionWithMissingVInErrorOccurred) {
 		    getRawTransactionResponse.getResult().getVin().remove(0);
             transactionWithMissingVInErrorOccurred = true;
@@ -318,7 +312,7 @@ public class BitcoindMock {
         if (transactionWithMissingVOut.equals(transactionHashValue) && !transactionWithMissingVOutErrorOccurred) {
             getRawTransactionResponse.getResult().getVout().remove(1);
             transactionWithMissingVOutErrorOccurred = true;
-        }
+        }*/
 
 		return getRawTransactionResponse;
 	}

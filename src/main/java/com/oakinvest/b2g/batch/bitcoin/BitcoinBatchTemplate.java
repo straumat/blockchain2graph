@@ -2,9 +2,6 @@ package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -13,19 +10,14 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceCacheStore;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_VERIFIED;
 
 /**
  * Bitcoin import batch - abstract model.
@@ -44,9 +36,9 @@ public abstract class BitcoinBatchTemplate {
 	private static final String LOG_SEPARATOR = "=====";
 
 	/**
-	 * Pause to make when there is no block to process (10 seconds).
+	 * Pause to make when there is no block to process (1 second).
 	 */
-	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 10 * 1000;
+	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
 	/**
 	 * Mapper.
@@ -98,27 +90,20 @@ public abstract class BitcoinBatchTemplate {
 	 */
 	private long batchStartTime;
 
-    /**
-     * Cache store.
-     */
-    private final BitcoinDataServiceCacheStore cacheStore;
-
 	/**
 	 * Constructor.
      *
 	 * @param newBitcoinRepositories    bitcoin repositories
      * @param newBitcoinDataService     bitcoin data service
      * @param newStatus                 status
-     * @param newCacheStore             cache store
      */
-	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus, final BitcoinDataServiceCacheStore newCacheStore) {
+	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
 	    this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
 		this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
 		this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
 		this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
-        this.cacheStore = newCacheStore;
 		this.status = newStatus;
 		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
 	}
@@ -169,12 +154,12 @@ public abstract class BitcoinBatchTemplate {
                     // Temporary fix : sometimes vins & vouts are missing. Or there are zero or two transactions.
                     // We check that the block just created have all the vin/vout.
                     // If not, we delete it to recreate it.
-                    if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
+                    /*if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
                         if (verifyBlock(bitcoinBlock.getHeight())) {
                             bitcoinBlock.setState(BLOCK_DATA_VERIFIED);
                             getBlockRepository().save(bitcoinBlock);
                         }
-                    }
+                    }*/
                     // -------------------------------------------------------------------------------------------------
 
                     // -------------------------------------------------------------------------------------------------
@@ -334,11 +319,7 @@ public abstract class BitcoinBatchTemplate {
         return bitcoinDataService;
     }
 
-    /**
-     * Verify a block. If it nos correct we delete it.
-     * @param blockHeight block to verify
-     * @return true if block is ok
-     */
+    /*
     private boolean verifyBlock(final int blockHeight) {
         addLog("Checking data of block " + getFormattedBlockHeight(blockHeight));
         boolean validBlock = true;
@@ -431,5 +412,6 @@ public abstract class BitcoinBatchTemplate {
         }
         return validBlock;
     }
+*/
 
 }
