@@ -9,7 +9,6 @@ import com.oakinvest.b2g.service.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,9 +31,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
     /**
      * Constructor.
      *
-     * @param newBitcoinRepositories    bitcoin repositories
-     * @param newBitcoinDataService     bitcoin data service
-     * @param newStatus                 status
+     * @param newBitcoinRepositories bitcoin repositories
+     * @param newBitcoinDataService  bitcoin data service
+     * @param newStatus              status
      */
     public BitcoinBatchRelations(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatus);
@@ -70,23 +69,27 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
      */
     @Override
     protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
-        BitcoinBlock blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
+        BitcoinBlock blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
         // Sometimes, block is empty. Still don't know why.
         while (blockToProcess == null) {
             addLog("Block " + blockHeight + " not retrieved. It's null.");
-            blockToProcess = getBlockRepository().findFullByHeight(blockHeight);
+            blockToProcess = getBlockRepository().findByHeightWithoutDepth(blockHeight);
         }
 
         // -------------------------------------------------------------------------------------------------------------
         // We link the addresses to the input and the origin transaction.
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
-        blockToProcess.getTransactions()
+        blockToProcess.getTx()
                 .parallelStream()
                 .forEach(
-                        t -> {
+                        txId -> {
+                            // -----------------------------------------------------------------------------------------
+                            // Loading the transaction.
+                            BitcoinTransaction t = getTransactionRepository().findByTxId(txId);
+
                             // -----------------------------------------------------------------------------------------
                             // For each Vin.
                             t.getInputs()
@@ -96,21 +99,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                         // -----------------------------------------------------------------------------
                                         // We retrieve the original transaction.
                                         BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
-
-                                        // -----------------------------------------------------------------------------
-                                        // We check if this output is not missing.
-                                        if (originTransactionOutput == null) {
-                                            addError("*");
-                                            addError("* Transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                            BitcoinTransaction missingTransaction = getTransactionRepository().findByTxId(vin.getTxId());
-                                            addError("* This is what we found in the database : ");
-                                            missingTransaction.getOutputs()
-                                                    .stream()
-                                                    .sorted(Comparator.comparingInt(BitcoinTransactionOutput::getN))
-                                                    .forEach(o -> addError("* txid : " + o.getTxId() + " - vout : " + o.getN()));
-                                            addError("*");
-                                            throw new RuntimeException("Treating transaction " + t.getTxId() + " requires a missing origin transaction output : " + vin.getTxId() + " / " + vin.getvOut());
-                                        }
 
                                         // -----------------------------------------------------------------------------
                                         // We create the link.
@@ -137,8 +125,9 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                                     });
 
                             // -----------------------------------------------------------------------------------------
-                            // Add log to say we are done.
-                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId()  + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
+                            // Save the transaction and add log to say we are done.
+                            getTransactionRepository().save(t);
+                            addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
 
         // -------------------------------------------------------------------------------------------------------------
