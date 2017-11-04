@@ -126,7 +126,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
 
                             // -----------------------------------------------------------------------------------------
                             // Save the transaction and add log to say we are done.
-                            getTransactionRepository().save(t);
+                            //getTransactionRepository().save(t);
                             addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " treated (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                         });
 
