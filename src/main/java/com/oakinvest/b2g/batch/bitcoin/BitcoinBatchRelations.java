@@ -92,7 +92,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                             // -----------------------------------------------------------------------------------------
                             // For each Vin.
                             t.getInputs()
-                                    .stream()
+                                    .parallelStream()
                                     .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                     .forEach(vin -> {
                                         // -----------------------------------------------------------------------------
@@ -114,6 +114,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                             // -----------------------------------------------------------------------------------------
                             // For each Vout.
                             t.getOutputs()
+                                    .parallelStream()
                                     .forEach(vout -> {
                                         // -----------------------------------------------------------------------------
                                         // We set all the addresses linked to this output.
