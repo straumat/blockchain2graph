@@ -83,7 +83,6 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
         final AtomicInteger txCounter = new AtomicInteger();
         final int txSize = blockToProcess.getTx().size();
         blockToProcess.getTx()
-                .stream()
                 .forEach(
                         txId -> {
                             // -----------------------------------------------------------------------------------------
@@ -116,7 +115,7 @@ public class BitcoinBatchRelations extends BitcoinBatchTemplate {
                             // For each Vout.
                             t.getOutputs()
                                     .forEach(vout -> {
-                                        // ---------------------------------------------------------------------------------
+                                        // -----------------------------------------------------------------------------
                                         // We set all the addresses linked to this output.
                                         vout.getAddresses()
                                                 .stream()
