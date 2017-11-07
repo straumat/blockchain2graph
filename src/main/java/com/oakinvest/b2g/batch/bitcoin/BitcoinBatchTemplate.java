@@ -147,6 +147,7 @@ public abstract class BitcoinBatchTemplate {
                 blockToProcess.ifPresent((BitcoinBlock bitcoinBlock) -> {
                     // If the block has been well processed, we change the state and we save it.
                     bitcoinBlock.setState(getNewStateOfProcessedBlock());
+                    addLog("Saving block data");
                     getBlockRepository().save(bitcoinBlock);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
 
@@ -169,7 +170,7 @@ public abstract class BitcoinBatchTemplate {
                     }
                 });
 			} else {
-				// If there     is nothing to process.
+				// If there is nothing to process.
 				addLog("No block to process");
 				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
 			}
