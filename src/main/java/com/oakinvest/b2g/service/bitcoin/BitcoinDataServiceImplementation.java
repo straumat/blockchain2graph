@@ -134,7 +134,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     if (r != null && r.getError() == null && r.getResult() != null) {
                                         // Adding the transaction.
                                         transactions.add(r.getResult());
-                                        //tempTransactionList.put(t, r.getResult());
                                         // Adding the addresses.
                                         r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
                                     } else {
@@ -150,9 +149,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                         }
                                     }
                                 });
-
-                        // Then we add it to the list in the right order.
-                        //blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
 
                     } catch (Exception e) {
                         status.addError("Error retrieving the block : " + e.getMessage(), e);
