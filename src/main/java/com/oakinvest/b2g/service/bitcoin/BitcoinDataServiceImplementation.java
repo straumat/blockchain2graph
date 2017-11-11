@@ -16,10 +16,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Bitcoin data service implementation.
@@ -47,7 +45,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * Constructor.
      *
      * @param newBitcoindService bitcoind service
-     * @param newStatusService status service
+     * @param newStatusService   status service
      */
     public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService) {
         this.status = newStatusService;
@@ -87,7 +85,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             GetBlockCountResponse blockCountResponse = bitcoindService.getBlockCount();
             if (blockCountResponse.getError() == null) {
                 return Optional.of(blockCountResponse.getResult());
-            }  else {
+            } else {
                 // Error while retrieving the number of blocks in bitcoind.
                 status.addError("Error getting the number of blocks : " + blockCountResponse.getError());
                 return Optional.empty();
@@ -128,7 +126,6 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         fixDuplicatedTransaction(blockResponse.getResult());
 
                         // Where to store data.
-                        final Map<String, GetRawTransactionResult> tempTransactionList = new ConcurrentHashMap<>();
                         blockResponse.getResult().getTx()
                                 .parallelStream()
                                 .filter(t -> !GENESIS_BLOCK_TRANSACTION.equals(t))
@@ -136,7 +133,8 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
                                     if (r != null && r.getError() == null && r.getResult() != null) {
                                         // Adding the transaction.
-                                        tempTransactionList.put(t, r.getResult());
+                                        transactions.add(r.getResult());
+                                        //tempTransactionList.put(t, r.getResult());
                                         // Adding the addresses.
                                         r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
                                     } else {
@@ -154,7 +152,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                 });
 
                         // Then we add it to the list in the right order.
-                        blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
+                        //blockResponse.getResult().getTx().forEach(t -> transactions.add(tempTransactionList.get(t)));
 
                     } catch (Exception e) {
                         status.addError("Error retrieving the block : " + e.getMessage(), e);
