@@ -139,7 +139,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                                     } else {
                                         // Error in calling the services.
                                         if (r == null) {
-                                            throw new RuntimeException("Error getting transactions from block " + blockHeight);
+                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : Result is null");
                                         }
                                         if (r.getError() != null) {
                                             throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError().getMessage());
