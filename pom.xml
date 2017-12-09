@@ -1,95 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- =========================================================================================================== -->
-	<!-- Project information -->
-	<groupId>com.oakinvest.b2g</groupId>
-	<artifactId>blockchain2graph</artifactId>
-	<version>1.5-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>blockchain2graph</name>
-	<description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
-	<url>https://straumat.github.io/blockchain2graph</url>
-	<licenses>
-		<license>
-			<name>GNU General Public License, Version 3.0</name>
-			<url>https://raw.githubusercontent.com/straumat/blockchain2graph/master/LICENSE</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- Project information -->
+    <groupId>com.oakinvest.b2g</groupId>
+    <artifactId>blockchain2graph</artifactId>
+    <version>1.5-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>blockchain2graph</name>
+    <description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
+    <url>https://straumat.github.io/blockchain2graph</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License, Version 3.0</name>
+            <url>https://raw.githubusercontent.com/straumat/blockchain2graph/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Organization -->
-	<organization>
-		<name>Oak Invest</name>
-		<url>http://www.oak-invest.com</url>
-	</organization>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- Organization -->
+    <organization>
+        <name>Oak Invest</name>
+        <url>http://www.oak-invest.com</url>
+    </organization>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Developers -->
-	<developers>
-		<!-- Stéphane Traumat (straumat) -->
-		<developer>
-			<id>straumat</id>
-			<name>Stéphane Traumat</name>
-			<email>stephane.traumat@gmail.com</email>
-			<url>https://about.me/straumat</url>
-			<organization>Oak Invest</organization>
-			<organizationUrl>http://www.oak-invest.com</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>Europe/Paris</timezone>
-		</developer>
-	</developers>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- Developers -->
+    <developers>
+        <!-- Stéphane Traumat (straumat) -->
+        <developer>
+            <id>straumat</id>
+            <name>Stéphane Traumat</name>
+            <email>stephane.traumat@gmail.com</email>
+            <url>https://about.me/straumat</url>
+            <organization>Oak Invest</organization>
+            <organizationUrl>http://www.oak-invest.com</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+    </developers>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- SCM -->
-	<scm>
-		<connection>scm:git:git@github.com:straumat/blockchain2graph.git</connection>
-		<url>scm:git:git@github.com:straumat/blockchain2graph.git</url>
-		<developerConnection>scm:git:git@github.com:straumat/blockchain2graph.git</developerConnection>
-	</scm>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@github.com:straumat/blockchain2graph.git</connection>
+        <url>scm:git:git@github.com:straumat/blockchain2graph.git</url>
+        <developerConnection>scm:git:git@github.com:straumat/blockchain2graph.git</developerConnection>
+    </scm>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Project configuration -->
-	<properties>
+    <!-- =========================================================================================================== -->
+    <!-- Project configuration -->
+    <properties>
 
-		<!-- Java project configuration -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<start-class>com.oakinvest.b2g.Application</start-class>
+        <!-- Java project configuration -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <start-class>com.oakinvest.b2g.Application</start-class>
 
-		<!-- Maven plugins -->
+        <!-- Maven plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-        <maven-compiler-plugin.version>3.6.2</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
         <maven-checkstyle-plugin.version>2.15</maven-checkstyle-plugin.version>
         <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
-      	<jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
+        <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
 
-		<!-- Java libraries -->
+        <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
         <neo4j.version>3.2.4</neo4j.version>
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
         <neo4j-driver.version>2.1.5</neo4j-driver.version>
         <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
-        <mapstruct.version>1.2.0.CR2</mapstruct.version>
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <gson.version>2.8.1</gson.version>
+        <gson.version>2.8.2</gson.version>
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
         <assertj.version>3.8.0</assertj.version>
 
-		<!-- Web development -->
+        <!-- Web development -->
         <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator -->
         <webjars-locator.version>0.32-1</webjars-locator.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
@@ -97,256 +98,256 @@
         <!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
         <jquery.version>3.2.1</jquery.version>
 
-	</properties>
-	<!-- =========================================================================================================== -->
+    </properties>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Spring boot -->
-	<parent>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.7.RELEASE</version>
-		<relativePath />
-	</parent>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- Spring boot -->
+    <parent>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.9.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Dependencies configuration -->
-	<dependencies>
+    <!-- =========================================================================================================== -->
+    <!-- Dependencies configuration -->
+    <dependencies>
 
-		<!-- Sprint boot -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
+        <!-- Sprint boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 
-		<!-- Neo4j -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-neo4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j</artifactId>
-			<version>${neo4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-ogm-embedded-driver</artifactId>
-			<version>${neo4j-driver.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-ogm-bolt-driver</artifactId>
-			<version>${neo4j-driver.version}</version>
-		</dependency>
+        <!-- Neo4j -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-neo4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
+            <version>${neo4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-embedded-driver</artifactId>
+            <version>${neo4j-driver.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-bolt-driver</artifactId>
+            <version>${neo4j-driver.version}</version>
+        </dependency>
 
-		<!-- Java utils -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-jdk8</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version>
-		</dependency>
+        <!-- Java utils -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
 
-		<!-- Webjar locator -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator</artifactId>
-			<version>${webjars-locator.version}</version>
-		</dependency>
+        <!-- Webjar locator -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator</artifactId>
+            <version>${webjars-locator.version}</version>
+        </dependency>
 
-		<!-- Javascript -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>${jquery.version}</version>
-		</dependency>
+        <!-- Javascript -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
+        </dependency>
 
-		<!-- CSS -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>${bootstrap.version}</version>
-		</dependency>
+        <!-- CSS -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+        </dependency>
 
-		<!-- Test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<version>${assertj.version}</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
-	<!-- =========================================================================================================== -->
+    </dependencies>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Build configuration -->
-	<build>
-		<finalName>blockchain2graph</finalName>
+    <!-- =========================================================================================================== -->
+    <!-- Build configuration -->
+    <build>
+        <finalName>blockchain2graph</finalName>
 
-		<!-- Plugins -->
-		<plugins>
+        <!-- Plugins -->
+        <plugins>
 
-			<!-- Code coverage -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<rules>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <!-- Code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<!-- Checkstyle -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle-plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<consoleOutput>true</consoleOutput>
-					<configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
-					<failOnViolation>true</failOnViolation>
-					<violationSeverity>warning</violationSeverity>
-				</configuration>
-			</plugin>
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <consoleOutput>true</consoleOutput>
+                    <configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
+                    <failOnViolation>true</failOnViolation>
+                    <violationSeverity>warning</violationSeverity>
+                </configuration>
+            </plugin>
 
-			<!-- Compilation (with mapstruct) -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
+            <!-- Compilation (with mapstruct) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
 
-			<!-- Spring boot -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<addResources>true</addResources>
-				</configuration>
-			</plugin>
+            <!-- Spring boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
 
-			<!-- Release plugin -->
-			<plugin>
-				<groupId>external.atlassian.jgitflow</groupId>
-				<artifactId>jgitflow-maven-plugin</artifactId>
-				<version>${jgitflow-maven-plugin.version}</version>
-				<configuration>
-					<flowInitContext>
-						<masterBranchName>master</masterBranchName>
-						<developBranchName>development</developBranchName>
-						<featureBranchPrefix>feature-</featureBranchPrefix>
-						<releaseBranchPrefix>release-</releaseBranchPrefix>
-						<hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
-						<versionTagPrefix>version-</versionTagPrefix>
-					</flowInitContext>
-					<noDeploy>true</noDeploy>
-					<squash>true</squash>
-					<scmCommentPrefix>[RELEASE] </scmCommentPrefix>
-				</configuration>
-			</plugin>
+            <!-- Release plugin -->
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>${jgitflow-maven-plugin.version}</version>
+                <configuration>
+                    <flowInitContext>
+                        <masterBranchName>master</masterBranchName>
+                        <developBranchName>development</developBranchName>
+                        <featureBranchPrefix>feature-</featureBranchPrefix>
+                        <releaseBranchPrefix>release-</releaseBranchPrefix>
+                        <hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
+                        <versionTagPrefix>version-</versionTagPrefix>
+                    </flowInitContext>
+                    <noDeploy>true</noDeploy>
+                    <squash>true</squash>
+                    <scmCommentPrefix>[RELEASE]</scmCommentPrefix>
+                </configuration>
+            </plugin>
 
-		</plugins>
+        </plugins>
 
-	</build>
-	<!-- =========================================================================================================== -->
+    </build>
+    <!-- =========================================================================================================== -->
 
-	<!-- =========================================================================================================== -->
-	<!-- Reporting -->
-	<reporting>
-		<plugins>
+    <!-- =========================================================================================================== -->
+    <!-- Reporting -->
+    <reporting>
+        <plugins>
 
-			<!-- Code coverage -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
+            <!-- Code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-		</plugins>
-	</reporting>
-	<!-- =========================================================================================================== -->
+        </plugins>
+    </reporting>
+    <!-- =========================================================================================================== -->
 
 </project>
