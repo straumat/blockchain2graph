@@ -98,7 +98,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
             // We create all the addresses.
             addLog("Listing all addresses from " + blockToProcess.getTx().size() + " transaction(s)");
             blockData.get().getAddresses()
-                    .stream() // In parallel.
+                    .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.
                     .filter(address -> !getAddressRepository().exists(address))  // If the address doesn't exists.
                     .forEach(a -> {
@@ -109,10 +109,10 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // -------------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
-            BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
-            blockToProcess.setPreviousBlock(previousBlock);
-            addLog("Setting the previous block of this block");
-            if (previousBlock != null) {
+            if (blockToProcess.getHeight() > 1) {
+                BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(blockToProcess.getPreviousBlockHash());
+                blockToProcess.setPreviousBlock(previousBlock);
+                addLog("Setting the previous block of this block");
                 previousBlock.setNextBlock(blockToProcess);
                 addLog("Setting this block as next block of the previous one");
             }
