@@ -2,6 +2,7 @@ package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.service.StatisticService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,45 +21,49 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-
 public class StatisticServiceTest {
 
-	/**
-	 * Bitcoin statistic service.
-	 */
-	@Autowired
-	private StatisticService statisticService;
+    /**
+     * Bitcoin statistic service.
+     */
+    @Autowired
+    private StatisticService statisticService;
 
-	/**
-	 * Test for addBlockImportDuration().
-	 */
-	@Test
-	public final void getStatisticsTest() {
-		// Simple test with two values
-		assertThat(statisticService.addBlockImportDuration(1000L))
-				.as("First statistic")
-				.isEqualTo(1);
+    @Before
+    public void setUp() throws Exception {
+        statisticService.clear();
+    }
 
-		assertThat(statisticService.addBlockImportDuration(2000L))
-				.as("Second statistic")
-				.isEqualTo(1.5F);
+    /**
+     * Test for addBlockImportDuration().
+     */
+    @Test
+    public final void getStatisticsTest() {
+        // Simple test with two values
+        assertThat(statisticService.addBlockImportDuration(1000L))
+                .as("First statistic")
+                .isEqualTo(1);
 
-		// Adding 100 values to see if the two previous number are disappearing.
-		for (int i = 0; i < 100; i++) {
-			statisticService.addBlockImportDuration(4000);
-		}
-		assertThat(statisticService.addBlockImportDuration(4000L))
-				.as("After 100 new statistics")
-				.isEqualTo(4F);
+        assertThat(statisticService.addBlockImportDuration(2000L))
+                .as("Second statistic")
+                .isEqualTo(1.5F);
 
-		// Adding another value.
-		assertThat(statisticService.addBlockImportDuration(104000L))
-				.as("Another one")
-				.isEqualTo(5F);
+        // Adding 100 values to see if the two previous number are disappearing.
+        for (int i = 0; i < 100; i++) {
+            statisticService.addBlockImportDuration(4000);
+        }
+        assertThat(statisticService.addBlockImportDuration(4000L))
+                .as("After 100 new statistics")
+                .isEqualTo(4F);
 
-		assertThat(statisticService.getAverageBlockImportDuration())
-				.as("Just getting value")
-				.isEqualTo(5F);
-	}
+        // Adding another value.
+        assertThat(statisticService.addBlockImportDuration(104000L))
+                .as("Another one")
+                .isEqualTo(5F);
+
+        assertThat(statisticService.getAverageBlockImportDuration())
+                .as("Just getting value")
+                .isEqualTo(5F);
+    }
 
 }
