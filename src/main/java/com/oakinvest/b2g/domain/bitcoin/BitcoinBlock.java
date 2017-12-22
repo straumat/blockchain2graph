@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
-
 /**
  * Bitcoin block.
  * Created by straumat on 05/09/16.
@@ -128,31 +126,6 @@ public class BitcoinBlock {
 	 */
 	@Property(name = "tx")
 	private ArrayList<String> tx = new ArrayList<>();
-
-	/**
-	 * B2G block state.
-	 */
-	@Index
-	@Property(name = "state")
-	private BitcoinBlockState state = BLOCK_DATA_IMPORTED;
-
-	/**
-	 * Getter state.
-	 *
-	 * @return state
-	 */
-	public final BitcoinBlockState getState() {
-		return state;
-	}
-
-	/**
-	 * Setter state.
-	 *
-	 * @param newState the state to set
-	 */
-	public final void setState(final BitcoinBlockState newState) {
-		state = newState;
-	}
 
 	/**
 	 * For display.

@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.batch.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
@@ -25,40 +24,40 @@ import java.util.Optional;
  */
 public abstract class BitcoinBatchTemplate {
 
-	/**
-	 * How many milli seconds in one second.
-	 */
-	private static final float MILLISECONDS_IN_SECONDS = 1000F;
+    /**
+     * How many milli seconds in one second.
+     */
+    private static final float MILLISECONDS_IN_SECONDS = 1000F;
 
-	/**
-	 * Log separator.
-	 */
-	private static final String LOG_SEPARATOR = "=====";
+    /**
+     * Log separator.
+     */
+    private static final String LOG_SEPARATOR = "==============================";
 
-	/**
-	 * Pause to make when there is no block to process (1 second).
-	 */
-	private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+    /**
+     * Pause to make when there is no block to process (1 second).
+     */
+    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
-	/**
-	 * Mapper.
-	 */
-	private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
+    /**
+     * Mapper.
+     */
+    private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
 
-	/**
-	 * Bitcoin block repository.
-	 */
-	private final BitcoinBlockRepository blockRepository;
+    /**
+     * Bitcoin block repository.
+     */
+    private final BitcoinBlockRepository blockRepository;
 
-	/**
-	 * Bitcoin address repository.
-	 */
-	private final BitcoinAddressRepository addressRepository;
+    /**
+     * Bitcoin address repository.
+     */
+    private final BitcoinAddressRepository addressRepository;
 
-	/**
-	 * Bitcoin transaction repository.
-	 */
-	private final BitcoinTransactionRepository transactionRepository;
+    /**
+     * Bitcoin transaction repository.
+     */
+    private final BitcoinTransactionRepository transactionRepository;
 
     /**
      * Bitcoin transaction input repository.
@@ -71,115 +70,90 @@ public abstract class BitcoinBatchTemplate {
     private final BitcoinTransactionOutputRepository transactionOutputRepository;
 
     /**
-	 * Bitcoin data service.
-	 */
-	private final BitcoinDataService bitcoinDataService;
-
-	/**
-	 * Status service.
-	 */
-	private final StatusService status;
-
-	/**
-	 * Neo4j session.
-	 */
-	private final Session session;
-
-	/**
-	 * time of the start of the batch.
-	 */
-	private long batchStartTime;
-
-	/**
-	 * Constructor.
-     *
-	 * @param newBitcoinRepositories    bitcoin repositories
-     * @param newBitcoinDataService     bitcoin data service
-     * @param newStatus                 status
+     * Bitcoin data service.
      */
-	public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+    private final BitcoinDataService bitcoinDataService;
+
+    /**
+     * Status service.
+     */
+    private final StatusService status;
+
+    /**
+     * Neo4j session.
+     */
+    private final Session session;
+
+    /**
+     * time of the start of the batch.
+     */
+    private long batchStartTime;
+
+    /**
+     * Constructor.
+     *
+     * @param newBitcoinRepositories bitcoin repositories
+     * @param newBitcoinDataService  bitcoin data service
+     * @param newStatus              status
+     */
+    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
-	    this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
-		this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
-		this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
-		this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
+        this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
+        this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
+        this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
+        this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
-		this.status = newStatus;
-		this.session = new SessionFactory("com.oakinvest.b2g").openSession();
-	}
+        this.status = newStatus;
+        this.session = new SessionFactory("com.oakinvest.b2g").openSession();
+    }
 
-	/**
-	 * Returns the elapsed time of the batch.
-	 *
-	 * @return elapsed time of the batch.
-	 */
-	private float getElapsedTime() {
-		return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
-	}
+    /**
+     * Returns the elapsed time of the batch.
+     *
+     * @return elapsed time of the batch.
+     */
+    private float getElapsedTime() {
+        return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
+    }
 
-	/**
-	 * Returns the logger prefix to display in each logger.
-	 *
-	 * @return logger prefix
-	 */
-	protected abstract String getLogPrefix();
-
-	/**
-	 * Execute the batch.
-	 */
+    /**
+     * Execute the batch.
+     */
     @Transactional
-	@Scheduled(fixedDelay = 1)
-	@SuppressWarnings("checkstyle:designforextension")
-	public void execute() {
-		addLog(LOG_SEPARATOR);
-		batchStartTime = System.currentTimeMillis();
-		try {
-			// We retrieve the block to process.
+    @Scheduled(fixedDelay = 1)
+    @SuppressWarnings("checkstyle:designforextension")
+    public void execute() {
+        addLog(LOG_SEPARATOR);
+        batchStartTime = System.currentTimeMillis();
+        try {
+            // We retrieve the block to process.
             Optional<Integer> blockHeightToProcess = getBlockHeightToProcess();
 
-			// If there is a block to process.
-			if (blockHeightToProcess.isPresent()) {
-			    // Process the block.
-				addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess.get()));
+            // If there is a block to process.
+            if (blockHeightToProcess.isPresent()) {
+                // Process the block.
+                addLog("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess.get()));
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
 
                 // If the process ended well.
                 blockToProcess.ifPresent((BitcoinBlock bitcoinBlock) -> {
                     // If the block has been well processed, we change the state and we save it.
-                    bitcoinBlock.setState(getNewStateOfProcessedBlock());
                     addLog("Saving block data");
                     getBlockRepository().save(bitcoinBlock);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
-
-                    // -------------------------------------------------------------------------------------------------
-                    // Temporary fix : sometimes vins & vouts are missing. Or there are zero or two transactions.
-                    // We check that the block just created have all the vin/vout.
-                    // If not, we delete it to recreate it.
-                    /*if (getNewStateOfProcessedBlock().equals(BLOCK_DATA_IMPORTED)) {
-                        if (verifyBlock(bitcoinBlock.getHeight())) {
-                            bitcoinBlock.setState(BLOCK_DATA_VERIFIED);
-                            getBlockRepository().save(bitcoinBlock);
-                        }
-                    }*/
-                    // -------------------------------------------------------------------------------------------------
-
-                    // -------------------------------------------------------------------------------------------------
-                    // If we are in the status "block imported", we update the status of number of blocks imported.
-                    if (getNewStateOfProcessedBlock() == BitcoinBlockState.BLOCK_FULLY_IMPORTED) {
-                        status.setImportedBlockCount(bitcoinBlock.getHeight());
-                    }
+                    status.setImportedBlockCount(bitcoinBlock.getHeight());
                 });
-			} else {
-				// If there is nothing to process.
-				addLog("No block to process");
-				Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
-			}
-		} catch (Exception e) {
-		    addError("An error occurred while processing block : " + e.getMessage(), e);
+            } else {
+                // If there is nothing to process.
+                addLog("No block to process");
+                Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
+            }
+        } catch (Exception e) {
+            addError("An error occurred while processing block : " + e.getMessage(), e);
         } finally {
-			getSession().clear();
-		}
-	}
+            getSession().clear();
+        }
+    }
 
     /**
      * Getter session.
@@ -191,103 +165,97 @@ public abstract class BitcoinBatchTemplate {
     }
 
     /**
-	 * Return the block to process.
-	 *
-	 * @return block to process.
-	 */
-	protected abstract Optional<Integer> getBlockHeightToProcess();
+     * Return the block to process.
+     *
+     * @return block to process.
+     */
+    protected abstract Optional<Integer> getBlockHeightToProcess();
 
-	/**
-	 * Treat block.
-	 *
-	 * @param blockHeight block height to process.
-	 * @return the block processed
-	 */
+    /**
+     * Treat block.
+     *
+     * @param blockHeight block height to process.
+     * @return the block processed
+     */
     protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
 
-	/**
-	 * Return the state to set to the block that has been processed.
-	 *
-	 * @return state to set of the block that has been processed.
-	 */
-	protected abstract BitcoinBlockState getNewStateOfProcessedBlock();
+    /**
+     * Returns the block height in a formatted way.
+     *
+     * @param blockHeight block height
+     * @return formatted block height
+     */
+    final String getFormattedBlockHeight(final int blockHeight) {
+        return String.format("%09d", blockHeight);
+    }
 
-	/**
-	 * Returns the block height in a formatted way.
-	 *
-	 * @param blockHeight block height
-	 * @return formatted block height
-	 */
-	final String getFormattedBlockHeight(final int blockHeight) {
-		return String.format("%09d", blockHeight);
-	}
+    /**
+     * Add a logger to the status and the logs.
+     *
+     * @param message message
+     */
+    final void addLog(final String message) {
+        status.addLog(message);
+    }
 
-	/**
-	 * Add a logger to the status and the logs.
-	 *
-	 * @param message message
-	 */
-	final void addLog(final String message) {
-		status.addLog(getLogPrefix() + " - " + message);
-	}
+    /**
+     * Add an error to the status and the logs.
+     *
+     * @param message message
+     */
+    final void addError(final String message) {
+        status.addError(message, null);
+    }
 
-	/**
-	 * Add an error to the status and the logs.
-	 *
-	 * @param message message
-	 */
-	final void addError(final String message) {
-		status.addError(getLogPrefix() + " - " + message, null);
-	}
+    /**
+     * Add an error to the status and the logs.
+     *
+     * @param message message
+     * @param e       exception raised.
+     */
+    private void addError(final String message, final Exception e) {
+        status.addError(message, e);
+    }
 
-	/**
-	 * Add an error to the status and the logs.
-	 *
-	 * @param message message
-	 * @param e       exception raised.
-	 */
-	private void addError(final String message, final Exception e) {
-		status.addError(getLogPrefix() + " - " + message, e);
-	}
+    /**
+     * Getter mapper.
+     *
+     * @return mapper
+     */
+    final BitcoindToDomainMapper getMapper() {
+        return mapper;
+    }
 
-	/**
-	 * Getter mapper.
-	 *
-	 * @return mapper
-	 */
-	final BitcoindToDomainMapper getMapper() {
-		return mapper;
-	}
+    /**
+     * Getter blockRepository.
+     *
+     * @return blockRepository
+     */
+    final BitcoinBlockRepository getBlockRepository() {
+        return blockRepository;
+    }
 
-	/**
-	 * Getter blockRepository.
-	 *
-	 * @return blockRepository
-	 */
-	final BitcoinBlockRepository getBlockRepository() {
-		return blockRepository;
-	}
+    /**
+     * Getter addressRepository.
+     *
+     * @return addressRepository
+     */
+    final BitcoinAddressRepository getAddressRepository() {
+        return addressRepository;
+    }
 
-	/**
-	 * Getter addressRepository.
-	 *
-	 * @return addressRepository
-	 */
-	final BitcoinAddressRepository getAddressRepository() {
-		return addressRepository;
-	}
-
-	/**
-	 * Getter transactionRepository.
-	 *
-	 * @return transactionRepository
-	 */
+    /**
+     * Getter transactionRepository.
+     *
+     * @return transactionRepository
+     */
     final BitcoinTransactionRepository getTransactionRepository() {
-		return transactionRepository;
-	}
+        return transactionRepository;
+    }
 
     /**
      * Getter.
+     *
      * @return transactionInputRepository
      */
     private BitcoinTransactionInputRepository getTransactionInputRepository() {
@@ -296,6 +264,7 @@ public abstract class BitcoinBatchTemplate {
 
     /**
      * Getter.
+     *
      * @return transactionOutputRepository
      */
     final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
@@ -303,13 +272,13 @@ public abstract class BitcoinBatchTemplate {
     }
 
     /**
-	 * Getter status.
-	 *
-	 * @return status
-	 */
-	final StatusService getStatus() {
-		return status;
-	}
+     * Getter status.
+     *
+     * @return status
+     */
+    final StatusService getStatus() {
+        return status;
+    }
 
     /**
      * Getter bitcoin data service.

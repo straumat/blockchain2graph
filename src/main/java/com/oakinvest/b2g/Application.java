@@ -13,8 +13,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import javax.annotation.PostConstruct;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_FULLY_IMPORTED;
-
 /**
  * Application launcher.
  *
@@ -62,7 +60,8 @@ public class Application extends SpringBootServletInitializer {
     @PostConstruct
     public final void initApplication() {
         // Update the status of the number of block imported.
-        status.setImportedBlockCount(bbr.countBlockByState(BLOCK_FULLY_IMPORTED));
+        // FIXME Take the max
+        status.setImportedBlockCount((int) bbr.count());
 
         // Update the status of the number of block in bitcoind.
         GetBlockCountResponse getBlockCountResponse = bds.getBlockCount();

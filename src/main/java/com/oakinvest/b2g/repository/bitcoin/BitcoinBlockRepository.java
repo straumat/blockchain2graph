@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
@@ -12,24 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
-
-	/**
-	 * Count the number of block by state.
-	 *
-	 * @param state state
-	 * @return number of block with this state
-	 */
-	@Query("MATCH (b:BitcoinBlock) WHERE b.state = {0} return count(*)")
-	int countBlockByState(BitcoinBlockState state);
-
-	/**
-	 * Returns the first bitcoin block with the desired state.
-	 *
-	 * @param state state
-	 * @return first block.
-	 */
-	@Query("MATCH (b:BitcoinBlock) where b.state = {0} RETURN b order by b.height limit 1")
-	BitcoinBlock findFirstBlockByState(BitcoinBlockState state);
 
    /**
 	 * Find a block by its height.

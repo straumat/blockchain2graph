@@ -3,86 +3,68 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
-	<!-- Page configuration -->
-	<meta charset="utf-8"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-	<title>b2g</title>
+    <!-- Page configuration -->
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>b2g</title>
 
-	<!-- Let browser know this website is optimized for mobile-->
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Let browser know this website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-	<!-- CSS lib -->
-	<link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"
-		  rel="stylesheet" type="text/css"/>
+    <!-- CSS lib -->
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"
+          rel="stylesheet" type="text/css"/>
 
-	<!-- Javascript lib -->
-	<script src="../webjars/jquery/jquery.min.js" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-	<script src="../webjars/bootstrap/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- Javascript lib -->
+    <script src="../webjars/jquery/jquery.min.js" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script src="../webjars/bootstrap/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
-	<!-- Custom CSS & Javascript -->
-	<link href="../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet"/>
-	<script src="../static/js/console.js" th:src="@{/js/console.js}"></script>
-	<script th:inline="javascript">
-		configure([[${url}]] + [[${#httpServletRequest.contextPath}]]);
-	</script>
+    <!-- Custom CSS & Javascript -->
+    <link href="../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet"/>
+    <script src="../static/js/console.js" th:src="@{/js/console.js}"></script>
+    <script th:inline="javascript">
+        configure([[${url}]] + [[${#httpServletRequest.contextPath}]]);
+    </script>
 
 </head>
 <body>
 
 <div class="container">
 
-	<!-- =========================================================================================================== -->
-	<!-- Header (Title / number of blocks integrated / total number of blocks -->
-	<div class="row header">
-		<div class="col-sm-8"><h1>Blockchain2graph console</h1></div>
-		<div class="col-sm-4" align="right">
-			<h2>
-				<span id='importedBlockCount' style="display: inline">-</span>
-				<span style="display: inline">/</span>
-				<span id='totalBlockCount' style="display: inline">-</span>
-			</h2>
-		</div>
-	</div>
-	<!-- Log choice -->
-	<div class="row">
-		<div class="col-sm-4">&nbsp;</div>
-		<div class="col-sm-4" align="center">
-			<label for="logType"></label>
-			<select id="logType" autofocus="autofocus">
-				<option value="blocks" selected="selected">View blocks import logs</option>
-				<option value="relations">View relations import logs</option>
-			</select>
-		</div>
-		<div class="col-sm-4">&nbsp;</div>
-	</div>
-	<!-- Last error message -->
-	<div class="row">
-		<div class="col-sm-1">&nbsp;</div>
-		<div class="col-sm-10 errorMessage" id="lastErrorMessage"></div>
-		<div class="col-sm-1">&nbsp;</div>
-	</div>
-	<!-- Log display -->
-	<div class="row logs">
-		<div class="col-sm-12">
-			<div id="logs"></div>
-		</div>
-	</div>
-	<!-- Footer -->
-	<div class="row footer">
-		<div class="col-sm-6" id="executionTimeStatistic" align="left">-</div>
-		<div class="col-sm-6">
-			<p><a href="https://straumat.github.io/blockchain2graph/" target="blockchain2graph">blockchain2graph</a></p>
-		</div>
-	</div>
-	<!-- =========================================================================================================== -->
+    <!-- =========================================================================================================== -->
+    <!-- Header (Title / number of blocks integrated / total number of blocks -->
+    <div class="row header">
+        <div class="col-sm-8"><h1>Blockchain2graph console</h1></div>
+        <div class="col-sm-4" align="right">
+            <h2>
+                <span id='importedBlockCount' style="display: inline">-</span>
+                <span style="display: inline">/</span>
+                <span id='totalBlockCount' style="display: inline">-</span>
+            </h2>
+        </div>
+    </div>
+    <!-- Last error message -->
+        <div class="row">
+        <div class="col-sm-1">&nbsp;</div>
+        <div class="col-sm-10 errorMessage" id="lastErrorMessage"></div>
+        <div class="col-sm-1">&nbsp;</div>
+    </div>
+    <!-- Log display -->
+    <div class="row logs">
+        <div class="col-sm-12">
+            <div id="logs"></div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="row footer">
+        <div class="col-sm-6" id="executionTimeStatistic" align="left">-</div>
+        <div class="col-sm-6">
+            <p><a href="https://straumat.github.io/blockchain2graph/" target="blockchain2graph">blockchain2graph</a></p>
+        </div>
+    </div>
+    <!-- =========================================================================================================== -->
 
 </div>
-
-<script>
-	$("#logType").on('change', function () {
-		$("#logs").empty();
-	})
-</script>
 
 </body>
 </html>
