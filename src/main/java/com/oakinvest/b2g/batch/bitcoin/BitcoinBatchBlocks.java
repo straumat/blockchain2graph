@@ -37,7 +37,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     /**
      * Bitcoin addresses cache.
      */
-    private Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
+    private final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
 
     /**
      * Return the block to process.
@@ -179,13 +179,13 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
-            if (block.getHeight() > 1) {
+/*            if (block.getHeight() > 1) {
                 BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
                 block.setPreviousBlock(previousBlock);
                 addLog("Setting the previous block of this block");
                 previousBlock.setNextBlock(block);
                 addLog("Setting this block as next block of the previous one");
-            }
+            }*/
 
             // ---------------------------------------------------------------------------------------------------------
             // We return the block.

@@ -168,14 +168,14 @@ public class BitcoinImportTest {
         assertThat(b.getBits()).as("Bits").isEqualTo(expectedBits);
         assertThat(b.getChainWork()).as("Chain work").isEqualTo(expectedChainwork);
         assertThat(b.getPreviousBlockHash()).as("Previous block hash").isEqualTo(expectedPreviousblockhash);
-        assertThat(b.getPreviousBlock()).as("Previous block").isNotNull();
+        //assertThat(b.getPreviousBlock()).as("Previous block").isNotNull();
         assertThat(b.getNextBlockHash()).as("Next block hash").isEqualTo(expectedNextblockhash);
-        assertThat(b.getNextBlock()).as("Next block").isNotNull();
+        //assertThat(b.getNextBlock()).as("Next block").isNotNull();
         assertThat(b.getTx()).as("Transaction size").hasSize(expectedTxSize);
 
         assertThat(b.getTransactions()).as("Block transactions").hasSize(expectedTxSize);
 
-        // Test relations between blocks (previous block & next block).
+/*        // Test relations between blocks (previous block & next block).
         assertThat(blockRepository.findByHeight(1))
                 .as("Previous & next block")
                 .extracting("previousBlock", "nextBlock.height")
@@ -189,7 +189,7 @@ public class BitcoinImportTest {
         assertThat(blockRepository.findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT))
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
-                .contains(null, 499);
+                .contains(null, 499);*/
     }
 
     /**

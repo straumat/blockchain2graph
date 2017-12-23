@@ -226,12 +226,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> transactionResponse = getRawTransactionResult(txId);
-                        if (transactionResponse.isPresent()) {
+                        transactionResponse.ifPresent(getRawTransactionResult -> {
                             // Adding the transaction.
-                            transactions.add(transactionResponse.get());
+                            transactions.add(getRawTransactionResult);
                             // Adding the addresses.
-                            transactionResponse.get().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
-                        }
+                            getRawTransactionResult.getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
+                        });
                     });
 
             // We check that we have all transactions.
@@ -255,18 +255,18 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     @Override
     public final void putBlockInCache(final int blockHeight) {
         Optional<GetBlockResult> block = getBlockResultFromBitcoind(blockHeight);
-        if (block.isPresent()) {
+        block.ifPresent(getBlockResult -> {
             // Add the block in cache.
-            cacheStore.addBlockInCache(blockHeight, block.get());
+            cacheStore.addBlockInCache(blockHeight, getBlockResult);
 
             // Add the transactions in cache.
-            block.get().getTx()
+            getBlockResult.getTx()
                     .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
                         result.ifPresent(getRawTransactionResult -> cacheStore.addTransactionInCache(txId, getRawTransactionResult));
                     });
-        }
+        });
     }
 
     /**
@@ -277,11 +277,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     @Override
     public final void removeBlockInCache(final int blockHeight) {
         Optional<GetBlockResult> block = getBlockResult(blockHeight);
-        if (block.isPresent()) {
+        block.ifPresent(getBlockResult -> {
             // Remove the block in cache.
             cacheStore.removeBlockInCache(blockHeight);
             // Remove the transactions in cache.
-            block.get().getTx().forEach(txId -> cacheStore.removeTransactionInCache(txId));
-        }
+            getBlockResult.getTx().forEach(cacheStore::removeTransactionInCache);
+        });
     }
 }

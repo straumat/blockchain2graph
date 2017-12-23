@@ -35,12 +35,12 @@ public class BitcoinDataServiceCacheStore {
     /**
      * Bitcoin blocks cache.
      */
-    private Map<Integer, GetBlockResult> blocksCache = new ConcurrentHashMap<>();
+    private final Map<Integer, GetBlockResult> blocksCache = new ConcurrentHashMap<>();
 
     /**
      * Bitcoin transactions cache.
      */
-    private Map<String, GetRawTransactionResult> transactionsCache = new ConcurrentHashMap<>();
+    private final Map<String, GetRawTransactionResult> transactionsCache = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
