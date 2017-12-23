@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,11 +22,18 @@ public class BitcoinDataServiceCacheAspect {
     private final BitcoinDataServiceCacheStore cacheStore;
 
     /**
+     * Bitcoind cache loader.
+     */
+    private final BitcoinDataServiceCacheLoader bitcoindCacheLoader;
+
+    /**
      * Constructor.
      * @param newCacheStore cache store
+     * @param newBitcoindCacheLoader cache loader
      */
-    public BitcoinDataServiceCacheAspect(final BitcoinDataServiceCacheStore newCacheStore) {
+    public BitcoinDataServiceCacheAspect(final BitcoinDataServiceCacheStore newCacheStore, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader) {
         this.cacheStore = newCacheStore;
+        this.bitcoindCacheLoader = newBitcoindCacheLoader;
     }
 
     /**
@@ -54,6 +62,23 @@ public class BitcoinDataServiceCacheAspect {
                 return Optional.empty();
             }
         }
+    }
+
+    /**
+     * Cache for getBlockDataFromCache().
+     * @param pjp object
+     * @param blockHeight block height
+     * @return block data
+     * @throws Throwable exception
+     */
+    @SuppressWarnings("unchecked")
+    @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockData(..)) && args(blockHeight))")
+    public final Optional<BitcoindBlockData> getBlockData(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
+        // Loading cache.
+        bitcoindCacheLoader.loadCache(blockHeight);
+
+        // Returning the data.
+        return (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });
     }
 
 }

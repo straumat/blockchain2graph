@@ -1,6 +1,12 @@
 package com.oakinvest.b2g.service.bitcoin;
 
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
 
@@ -27,6 +33,16 @@ public class BitcoinDataServiceCacheStore {
     private long lastBlockCountValueAccess = -1;
 
     /**
+     * Bitcoin blocks cache.
+     */
+    private Map<Integer, GetBlockResult> blocksCache = new ConcurrentHashMap<>();
+
+    /**
+     * Bitcoin transactions cache.
+     */
+    private Map<String, GetRawTransactionResult> transactionsCache = new ConcurrentHashMap<>();
+
+    /**
      * Constructor.
      */
     public BitcoinDataServiceCacheStore() {
@@ -39,6 +55,8 @@ public class BitcoinDataServiceCacheStore {
     public void clear() {
         lastBlockCountValue = -1;
         lastBlockCountValueAccess = -1;
+        blocksCache.clear();
+        transactionsCache.clear();
     }
 
     /**
@@ -78,6 +96,79 @@ public class BitcoinDataServiceCacheStore {
     @SuppressWarnings("checkstyle:designforextension")
     public int getBlockCountFromCache() {
         return lastBlockCountValue;
+    }
+
+
+    /**
+     * Add block in cache.
+     *
+     * @param blockHeight    block height
+     * @param getBlockResult block
+     */
+    public final void addBlockInCache(final int blockHeight, final GetBlockResult getBlockResult) {
+        blocksCache.put(blockHeight, getBlockResult);
+    }
+
+    /**
+     * Retrieve a block in cache.
+     *
+     * @param blockHeight block height
+     * @return block result
+     */
+    public final Optional<GetBlockResult> getBlockInCache(final int blockHeight) {
+        GetBlockResult r = blocksCache.get(blockHeight);
+        if (r != null) {
+            // If it's in the cache, we retrieve it.
+            return Optional.of(r);
+        } else {
+            // If it's not in the cache, we return empty.
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Remove block in cache.
+     *
+     * @param blockHeight block height
+     */
+    public final void removeBlockInCache(final int blockHeight) {
+        blocksCache.remove(blockHeight);
+    }
+
+    /**
+     * Add transactions in cache.
+     *
+     * @param txId                    transaction id
+     * @param getRawTransactionResult bitcoin transaction
+     */
+    public final void addTransactionInCache(final String txId, final GetRawTransactionResult getRawTransactionResult) {
+        transactionsCache.put(txId, getRawTransactionResult);
+    }
+
+    /**
+     * Retrieve a transaction in cache.
+     *
+     * @param txid transaction id
+     * @return bitcoin transaction
+     */
+    public final Optional<GetRawTransactionResult> getTransactionInCache(final String txid) {
+        GetRawTransactionResult r = transactionsCache.get(txid);
+        if (r != null) {
+            // If it's in the cache, we retrieve it.
+            return Optional.of(r);
+        } else {
+            // If it's not in the cache, we return empty.
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Remove a transaction in cache.
+     *
+     * @param txId transaction id
+     */
+    public final void removeTransactionInCache(final String txId) {
+        transactionsCache.remove(txId);
     }
 
 }

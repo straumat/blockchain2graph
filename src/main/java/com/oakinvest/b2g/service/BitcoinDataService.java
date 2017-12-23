@@ -25,4 +25,18 @@ public interface BitcoinDataService {
      */
     Optional<BitcoindBlockData> getBlockData(int blockHeight);
 
+    /**
+     * Load block and transactions from a block in cache.
+     *
+     * @param blockHeight block height
+     */
+    void putBlockInCache(int blockHeight);
+
+    /**
+     * Remove block and transactions from a block in cache.
+     *
+     * @param blockHeight block height
+     */
+    void removeBlockInCache(int blockHeight);
+
 }

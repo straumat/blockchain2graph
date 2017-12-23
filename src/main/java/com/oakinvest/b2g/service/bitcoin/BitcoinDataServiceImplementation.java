@@ -42,14 +42,21 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private final BitcoindService bitcoindService;
 
     /**
+     * Cache store.
+     */
+    private final BitcoinDataServiceCacheStore cacheStore;
+
+    /**
      * Constructor.
      *
      * @param newBitcoindService bitcoind service
      * @param newStatusService   status service
+     * @param newCacheStore      cache store
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService) {
+    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceCacheStore newCacheStore) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
+        this.cacheStore = newCacheStore;
     }
 
     /**
@@ -98,6 +105,105 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
+     * Returns the block result from the cache or bitcoind.
+     *
+     * @param blockHeight bloc height
+     * @return block result
+     */
+    private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
+        Optional<GetBlockResult> result = cacheStore.getBlockInCache(blockHeight);
+        if (!result.isPresent()) {
+            result = getBlockResultFromBitcoind(blockHeight);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the transaction result from the cache or bitcoind.
+     *
+     * @param txId transaction id
+     * @return transaction result
+     */
+    private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
+        Optional<GetRawTransactionResult> result = cacheStore.getTransactionInCache(txId);
+        if (!result.isPresent()) {
+            result = getRawTransactionResultFromBitcoind(txId);
+        }
+        return result;
+    }
+
+    /**
+     * Return the block result from bitcoind.
+     *
+     * @param blockHeight block height
+     * @return block result
+     */
+    private Optional<GetBlockResult> getBlockResultFromBitcoind(final int blockHeight) {
+        try {
+            // ---------------------------------------------------------------------------------------------------------
+            // We retrieve the block hash.
+            GetBlockHashResponse blockHashResponse = bitcoindService.getBlockHash(blockHeight);
+            if (blockHashResponse.getError() == null) {
+                // -----------------------------------------------------------------------------------------------------
+                // Then we retrieve the block data.
+                String blockHash = blockHashResponse.getResult();
+                final GetBlockResponse blockResponse = bitcoindService.getBlock(blockHash);
+                if (blockResponse.getError() == null) {
+                    // Fix duplicated transactions.
+                    fixDuplicatedTransaction(blockResponse.getResult());
+                    return Optional.of(blockResponse.getResult());
+                } else {
+                    // Error while retrieving the block information.
+                    status.addError("Error retrieving the block : " + blockResponse.getError(), null);
+                    return Optional.empty();
+                }
+            } else {
+                // Error while retrieving the block information.
+                status.addError("Error retrieving the block : " + blockHashResponse.getError(), null);
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            status.addError("Error getting the block n°" + blockHeight + " : " + e.getMessage(), e);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Return the transaction result from bitcoind.
+     *
+     * @param txId transaction id.
+     * @return transaction result
+     */
+    private Optional<GetRawTransactionResult> getRawTransactionResultFromBitcoind(final String txId) {
+        if (!GENESIS_BLOCK_TRANSACTION.equals(txId)) {
+            try {
+                GetRawTransactionResponse r = bitcoindService.getRawTransaction(txId);
+                if (r != null && r.getError() == null && r.getResult() != null) {
+                    return Optional.of(r.getResult());
+                } else {
+                    // Error in calling the services.
+                    if (r == null) {
+                        status.addError("Error getting transaction " + txId + " : Result is null");
+                    } else {
+                        if (r.getError() != null) {
+                            status.addError("Error getting transaction " + txId + " : " + r.getError().getMessage());
+                        }
+                        if (r.getResult() == null) {
+                            status.addError("Error getting transaction " + txId + " : Empty result");
+                        }
+                    }
+                    return Optional.empty();
+                }
+            } catch (Exception e) {
+                status.addError("Error getting the transaction " + txId + " : " + e.getMessage(), e);
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Get block data from buffer.
      *
      * @param blockHeight block height
@@ -106,73 +212,76 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     @Override
     @SuppressWarnings("checkstyle:designforextension")
     public Optional<BitcoindBlockData> getBlockData(final int blockHeight) {
-        try {
-            // ---------------------------------------------------------------------------------------------------------
-            // We retrieve the block hash...
-            GetBlockHashResponse blockHashResponse = bitcoindService.getBlockHash(blockHeight);
-            if (blockHashResponse.getError() == null) {
-                // -----------------------------------------------------------------------------------------------------
-                // Then we retrieve the block data...
-                String blockHash = blockHashResponse.getResult();
-                final GetBlockResponse blockResponse = bitcoindService.getBlock(blockHash);
-                if (blockResponse.getError() == null) {
-                    // -------------------------------------------------------------------------------------------------
-                    // Then we retrieve the transactions data...
-                    final List<GetRawTransactionResult> transactions = new LinkedList<>();
-                    final Set<String> addresses = Collections.synchronizedSet(new HashSet<String>());
-                    try {
+        Optional<GetBlockResult> block = getBlockResult(blockHeight);
 
-                        // Fix duplicated transactions.
-                        fixDuplicatedTransaction(blockResponse.getResult());
+        // If we have the block.
+        if (block.isPresent()) {
 
-                        // Where to store data.
-                        blockResponse.getResult().getTx()
-                                .parallelStream()
-                                .filter(t -> !GENESIS_BLOCK_TRANSACTION.equals(t))
-                                .forEach(t -> {
-                                    GetRawTransactionResponse r = bitcoindService.getRawTransaction(t);
-                                    if (r != null && r.getError() == null && r.getResult() != null) {
-                                        // Adding the transaction.
-                                        transactions.add(r.getResult());
-                                        // Adding the addresses.
-                                        r.getResult().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
-                                    } else {
-                                        // Error in calling the services.
-                                        if (r == null) {
-                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : Result is null");
-                                        }
-                                        if (r.getError() != null) {
-                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : " + r.getError().getMessage());
-                                        }
-                                        if (r.getResult() == null) {
-                                            throw new RuntimeException("Error getting transactions from block " + blockHeight + " : Empty result");
-                                        }
-                                    }
-                                });
+            // Transactions & addresses.
+            final List<GetRawTransactionResult> transactions = new LinkedList<>();
+            final Set<String> addresses = Collections.synchronizedSet(new HashSet<String>());
 
-                    } catch (Exception e) {
-                        status.addError("Error retrieving the block : " + e.getMessage(), e);
-                        return Optional.empty();
-                    }
+            // We retrieve all
+            block.get().getTx()
+                    .parallelStream()
+                    .forEach(txId -> {
+                        Optional<GetRawTransactionResult> transactionResponse = getRawTransactionResult(txId);
+                        if (transactionResponse.isPresent()) {
+                            // Adding the transaction.
+                            transactions.add(transactionResponse.get());
+                            // Adding the addresses.
+                            transactionResponse.get().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
+                        }
+                    });
 
-                    // -------------------------------------------------------------------------------------------------
-                    // And we end up returning all the block data all at once.
-                    return Optional.of(new BitcoindBlockData(blockResponse.getResult(), transactions, addresses));
-
-                } else {
-                    // Error while retrieving the block information.
-                    status.addError("Error retrieving the block : " + blockResponse.getError(), null);
-                    return Optional.empty();
-                }
-            } else {
-                // Error while retrieving the block hash.
-                status.addError("Error getting the hash of block n°" + blockHeight + " : " + blockHashResponse.getError(), null);
+            // We check that we have all transactions.
+            if (transactions.size() != block.get().getTx().size()) {
                 return Optional.empty();
             }
-        } catch (Exception e) {
-            status.addError("Error getting the block data of block n°" + blockHeight + " : " + e.getMessage(), e);
+
+            // We return the data.
+            return Optional.of(new BitcoindBlockData(block.get(), transactions, addresses));
+
+        } else {
             return Optional.empty();
         }
     }
 
+    /**
+     * Load transactions from a block in cache.
+     *
+     * @param blockHeight block height
+     */
+    @Override
+    public final void putBlockInCache(final int blockHeight) {
+        Optional<GetBlockResult> block = getBlockResultFromBitcoind(blockHeight);
+        if (block.isPresent()) {
+            // Add the block in cache.
+            cacheStore.addBlockInCache(blockHeight, block.get());
+
+            // Add the transactions in cache.
+            block.get().getTx()
+                    .parallelStream()
+                    .forEach(txId -> {
+                        Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
+                        result.ifPresent(getRawTransactionResult -> cacheStore.addTransactionInCache(txId, getRawTransactionResult));
+                    });
+        }
+    }
+
+    /**
+     * Remove block and transactions from a block in cache.
+     *
+     * @param blockHeight block height
+     */
+    @Override
+    public final void removeBlockInCache(final int blockHeight) {
+        Optional<GetBlockResult> block = getBlockResult(blockHeight);
+        if (block.isPresent()) {
+            // Remove the block in cache.
+            cacheStore.removeBlockInCache(blockHeight);
+            // Remove the transactions in cache.
+            block.get().getTx().forEach(txId -> cacheStore.removeTransactionInCache(txId));
+        }
+    }
 }
