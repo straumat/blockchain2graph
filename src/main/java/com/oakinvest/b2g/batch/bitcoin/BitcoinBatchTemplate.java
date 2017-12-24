@@ -32,12 +32,12 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Log separator.
      */
-    private static final String LOG_SEPARATOR = "===================================";
+    protected static final String LOG_SEPARATOR = "===================================";
 
     /**
      * Pause to make when there is no block to process (1 second).
      */
-    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+    protected static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
     /**
      * Mapper.
@@ -112,7 +112,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return elapsed time of the batch.
      */
-    private float getElapsedTime() {
+    protected final float getElapsedTime() {
         return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
     }
 
@@ -141,7 +141,7 @@ public abstract class BitcoinBatchTemplate {
                     addLog("Saving block data");
                     getBlockRepository().save(bitcoinBlock);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
-                    status.setImportedBlockCount(bitcoinBlock.getHeight());
+                    getStatus().setImportedBlockCount(bitcoinBlock.getHeight());
                 });
             } else {
                 // If there is nothing to process.
@@ -160,7 +160,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return session
      */
-    private Session getSession() {
+    protected final Session getSession() {
         return session;
     }
 
@@ -213,7 +213,7 @@ public abstract class BitcoinBatchTemplate {
      * @param message message
      * @param e       exception raised.
      */
-    private void addError(final String message, final Exception e) {
+    final void addError(final String message, final Exception e) {
         status.addError(message, e);
     }
 

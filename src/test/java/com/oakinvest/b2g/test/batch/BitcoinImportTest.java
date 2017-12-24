@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,9 +44,6 @@ public class BitcoinImportTest {
      * Number of blocs to import.
      */
     private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
-
-    @SpringBootApplication
-    static class ExampleConfig {}
 
     /**
      * setup is done.

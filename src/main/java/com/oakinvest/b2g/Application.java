@@ -6,6 +6,7 @@ import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -20,6 +21,7 @@ import javax.annotation.PostConstruct;
  */
 @SpringBootApplication
 @ComponentScan
+@EnableAutoConfiguration
 public class Application extends SpringBootServletInitializer {
 
     /**
