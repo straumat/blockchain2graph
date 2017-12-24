@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * Created by straumat on 22/03/17.
  */
 @Repository
-public interface BitcoinTransactionInputRepository extends GraphRepository<BitcoinTransactionInput> {
+public interface BitcoinTransactionInputRepository extends Neo4jRepository<BitcoinTransactionInput, Long> {
 
 }

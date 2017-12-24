@@ -2,7 +2,7 @@ package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * Created by straumat on 10/09/16.
  */
 @Repository
-public interface BitcoinAddressRepository extends GraphRepository<BitcoinAddress> {
+public interface BitcoinAddressRepository extends Neo4jRepository<BitcoinAddress, Long> {
 
 	/**
 	 * Returns 1 if the address is already in the database.

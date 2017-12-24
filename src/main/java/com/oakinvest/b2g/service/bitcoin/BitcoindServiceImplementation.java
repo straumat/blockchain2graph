@@ -1,5 +1,6 @@
 package com.oakinvest.b2g.service.bitcoin;
 
+import com.google.gson.Gson;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
@@ -7,19 +8,17 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransa
 import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.rest.BitcoindResponseErrorHandler;
 import org.apache.commons.codec.binary.Base64;
-import org.neo4j.ogm.json.JSONException;
-import org.neo4j.ogm.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,35 +28,35 @@ import java.util.List;
 @Service
 public class BitcoindServiceImplementation implements BitcoindService {
 
-	/**
-	 * Command to getblockcount.
-	 */
-	private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
+    /**
+     * Command to getblockcount.
+     */
+    private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
 
-	/**
-	 * Command to getblockhash.
-	 */
-	private static final String COMMAND_GETBLOCKHASH = "getblockhash";
+    /**
+     * Command to getblockhash.
+     */
+    private static final String COMMAND_GETBLOCKHASH = "getblockhash";
 
-	/**
-	 * Command to getblock.
-	 */
-	private static final String COMMAND_GETBLOCK = "getblock";
+    /**
+     * Command to getblock.
+     */
+    private static final String COMMAND_GETBLOCK = "getblock";
 
-	/**
-	 * Command to getrawtransaction.
-	 */
-	private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
+    /**
+     * Command to getrawtransaction.
+     */
+    private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
 
-	/**
-	 * Method parameter.
-	 */
-	private static final String PARAMETER_METHOD = "method";
+    /**
+     * Method parameter.
+     */
+    private static final String PARAMETER_METHOD = "method";
 
-	/**
-	 * Params parameter.
-	 */
-	private static final String PARAMETER_PARAMS = "params";
+    /**
+     * Params parameter.
+     */
+    private static final String PARAMETER_PARAMS = "params";
 
     /**
      * Logger.
@@ -66,148 +65,147 @@ public class BitcoindServiceImplementation implements BitcoindService {
 
 
     /**
-	 * Rest template.
-	 */
-	private final RestTemplate restTemplate;
+     * Rest template.
+     */
+    private final RestTemplate restTemplate;
 
     /**
-	 * Bitcoind hostname.
-	 */
-	@Value("${bitcoind.hostname}")
-	private String hostname;
+     * Gson.
+     */
+    private final Gson gson = new Gson();
 
-	/**
-	 * Bitcoind port.
-	 */
-	@Value("${bitcoind.port}")
-	private String port;
+    /**
+     * Bitcoind hostname.
+     */
+    @Value("${bitcoind.hostname}")
+    private String hostname;
 
-	/**
-	 * Bitcoind username.
-	 */
-	@Value("${bitcoind.username}")
-	private String username;
+    /**
+     * Bitcoind port.
+     */
+    @Value("${bitcoind.port}")
+    private String port;
 
-	/**
-	 * Bitcoind password.
-	 */
-	@Value("${bitcoind.password}")
-	private String password;
+    /**
+     * Bitcoind username.
+     */
+    @Value("${bitcoind.username}")
+    private String username;
 
-	/**
-	 * Constructor.
-	 */
-	public BitcoindServiceImplementation() {
-		restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-		restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
+    /**
+     * Bitcoind password.
+     */
+    @Value("${bitcoind.password}")
+    private String password;
+
+    /**
+     * Headers.
+     */
+    private final HttpHeaders headers;
+
+    /**
+     * URL.
+     */
+    private final String url;
+
+    /**
+     * Constructor.
+     */
+    public BitcoindServiceImplementation() {
+        // Initialization of rest template.
+        restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
+
+        // Generating headers.
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        String authHeader = "Basic " + new String(encodedAuth);
+        headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+
+        // Generating url.
+        url = "http://" + hostname + ":" + port;
     }
 
     /**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final GetBlockCountResponse getBlockCount() {
-		// Setting parameters
-		List<Object> params = new ArrayList<>();
-		JSONObject request = getRequest(COMMAND_GETBLOCKCOUNT, params);
+     * {@inheritDoc}
+     */
+    @Override
+    public final GetBlockCountResponse getBlockCount() {
+        // Setting parameters
+        List<Object> params = new ArrayList<>();
+        String request = getRequest(COMMAND_GETBLOCKCOUNT, params);
 
-		// Making the call.
-		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.debug("Calling getblockCount with " + request);
-		return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
-	}
+        // Making the call.
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        log.debug("Calling getblockCount with " + request);
+        return restTemplate.postForObject(url, entity, GetBlockCountResponse.class);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@SuppressWarnings("checkstyle:designforextension")
-	public GetBlockHashResponse getBlockHash(final int blockHeight) {
-		// Setting parameters
-		List<Object> params = new ArrayList<>();
-		params.add(blockHeight);
-		JSONObject request = getRequest(COMMAND_GETBLOCKHASH, params);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("checkstyle:designforextension")
+    public GetBlockHashResponse getBlockHash(final int blockHeight) {
+        // Setting parameters
+        List<Object> params = new ArrayList<>();
+        params.add(blockHeight);
+        String request = getRequest(COMMAND_GETBLOCKHASH, params);
 
-		// Making the call.
-		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.debug("Calling getblockHash on block " + request);
-		return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
-	}
+        // Making the call.
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        log.debug("Calling getblockHash on block " + request);
+        return restTemplate.postForObject(url, entity, GetBlockHashResponse.class);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@SuppressWarnings("checkstyle:designforextension")
-	public GetBlockResponse getBlock(final String blockHash) {
-		// Setting parameters
-		List<Object> params = new ArrayList<>();
-		params.add(blockHash);
-		JSONObject request = getRequest(COMMAND_GETBLOCK, params);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("checkstyle:designforextension")
+    public GetBlockResponse getBlock(final String blockHash) {
+        // Setting parameters
+        List<Object> params = new ArrayList<>();
+        params.add(blockHash);
+        String request = getRequest(COMMAND_GETBLOCK, params);
 
-		// Making the call.
-		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.debug("Calling getblock on block " + request);
-		return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
-	}
+        // Making the call.
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        log.debug("Calling getblock on block " + request);
+        return restTemplate.postForObject(url, entity, GetBlockResponse.class);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@SuppressWarnings("checkstyle:designforextension")
-	public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
-		// Setting parameters
-		List<Object> params = new ArrayList<>();
-		params.add(transactionHash);
-		params.add(1);
-		JSONObject request = getRequest(COMMAND_GETRAWTRANSACTION, params);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("checkstyle:designforextension")
+    public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
+        // Setting parameters
+        List<Object> params = new ArrayList<>();
+        params.add(transactionHash);
+        params.add(1);
+        String request = getRequest(COMMAND_GETRAWTRANSACTION, params);
 
-		// Making the call.
-		HttpEntity<String> entity = new HttpEntity<>(request.toString(), getHeaders());
-		log.debug("Calling getrawtransaction on transaction " + request);
-		return restTemplate.postForObject(getURL(), entity, GetRawTransactionResponse.class);
-	}
+        // Making the call.
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        log.debug("Calling getrawtransaction on transaction " + request);
+        return restTemplate.postForObject(url, entity, GetRawTransactionResponse.class);
+    }
 
-	/**
-	 * Util method to build the request.
-	 *
-	 * @param command command t call.
-	 * @param params  parameters.
-	 * @return json query.
-	 */
-	private JSONObject getRequest(final String command, final List<Object> params) {
-		JSONObject request = new JSONObject();
-		try {
-			request.put(PARAMETER_METHOD, command);
-			request.put(PARAMETER_PARAMS, params);
-		} catch (JSONException e) {
-			log.error("Error while building the request : " + e.getMessage(), e);
-		}
-		return request;
-	}
-
-	/**
-	 * Getting the URL to call.
-	 *
-	 * @return bitcoind server url
-	 */
-	private String getURL() {
-		return "http://" + hostname + ":" + port;
-	}
-
-	/**
-	 * Manage authentication.
-	 *
-	 * @return required headers
-	 */
-	private HttpHeaders getHeaders() {
-		String auth = username + ":" + password;
-		byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-		String authHeader = "Basic " + new String(encodedAuth);
-		HttpHeaders h = new HttpHeaders();
-		h.set("Authorization", authHeader);
-		return h;
-	}
+    /**
+     * Util method to build the request.
+     *
+     * @param command command t call.
+     * @param params  parameters.
+     * @return json query.
+     */
+    private String getRequest(final String command, final List<Object> params) {
+        HashMap<Object, Object> request = new HashMap<>();
+        request.put(PARAMETER_METHOD, command);
+        request.put(PARAMETER_PARAMS, params);
+        return gson.toJson(request);
+    }
 
 }

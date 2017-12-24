@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 
 import javax.annotation.PostConstruct;
@@ -60,7 +60,7 @@ public class Application extends SpringBootServletInitializer {
     @PostConstruct
     public final void initApplication() {
         // Update the status of the number of block imported.
-        // FIXME Take the max
+        // FIXME Take the max instead of block count.
         status.setImportedBlockCount((int) bbr.count());
 
         // Update the status of the number of block in bitcoind.

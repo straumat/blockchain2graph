@@ -32,7 +32,7 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Log separator.
      */
-    private static final String LOG_SEPARATOR = "==============================";
+    private static final String LOG_SEPARATOR = "===================================";
 
     /**
      * Pause to make when there is no block to process (1 second).
@@ -123,8 +123,8 @@ public abstract class BitcoinBatchTemplate {
     @Scheduled(fixedDelay = 1)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
-        addLog(LOG_SEPARATOR);
         batchStartTime = System.currentTimeMillis();
+        addLog(LOG_SEPARATOR);
         try {
             // We retrieve the block to process.
             Optional<Integer> blockHeightToProcess = getBlockHeightToProcess();

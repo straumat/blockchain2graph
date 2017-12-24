@@ -17,14 +17,16 @@ import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Map;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +45,9 @@ public class BitcoinImportTest {
      * Number of blocs to import.
      */
     private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
+
+    @SpringBootApplication
+    static class ExampleConfig {}
 
     /**
      * setup is done.
@@ -106,10 +111,8 @@ public class BitcoinImportTest {
     public void setUp() throws Exception {
         // Reset the database.
         if (!databaseCleared) {
-            Map<String, GraphRepository> graphRepositories = ctx.getBeansOfType(GraphRepository.class);
-            for (GraphRepository graphRepository : graphRepositories.values()) {
-                graphRepository.deleteAll();
-            }
+            Session session = new SessionFactory("com.oakinvest.b2g").openSession();
+            session.query("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r", Collections.emptyMap());
             databaseCleared = true;
         }
 
@@ -577,7 +580,7 @@ public class BitcoinImportTest {
         int i = 0;
         for (BitcoinTransactionInput input : transaction.getInputs()) {
             if (i == index) {
-                return Optional.of(transactionInputRepository.findOne(input.getId()));
+                return transactionInputRepository.findById(input.getId());
             }
             i++;
         }
