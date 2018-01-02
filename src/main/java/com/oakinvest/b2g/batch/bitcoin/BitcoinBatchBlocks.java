@@ -108,10 +108,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                     .filter(Objects::nonNull) // If the address is not null.
                     .filter(address -> !getAddressRepository().exists(address)) // If the address doesn't exists.
                     .forEach(a -> {
-                        BitcoinAddress address = new BitcoinAddress(a);
-                        getAddressRepository().save(address);
-                        addressesCache.put(a, address);
-                        addLog("- Address " + address + " created with id " + address.getId());
+                        addressesCache.put(a, new BitcoinAddress(a));
+                        addLog("- Address " + a + " created");
                     });
 
             // ---------------------------------------------------------------------------------------------------------
