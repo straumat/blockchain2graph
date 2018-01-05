@@ -20,6 +20,8 @@ import java.util.Collections;
 @EntityScan(basePackages = "com.oakinvest.b2g.domain")
 public class Neo4jConfiguration {
 
+
+
     /**
      * Constructor - Create constraints and indexes.
      */

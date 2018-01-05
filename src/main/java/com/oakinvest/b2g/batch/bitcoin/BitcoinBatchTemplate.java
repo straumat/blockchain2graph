@@ -14,7 +14,6 @@ import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -119,7 +118,6 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Execute the batch.
      */
-    @Transactional
     @Scheduled(fixedDelay = 1)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
