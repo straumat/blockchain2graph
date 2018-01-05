@@ -13,8 +13,10 @@ import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 /**
@@ -31,12 +33,12 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Log separator.
      */
-    protected static final String LOG_SEPARATOR = "===================================";
+    private static final String LOG_SEPARATOR = "===================================";
 
     /**
      * Pause to make when there is no block to process (1 second).
      */
-    protected static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
     /**
      * Mapper.
@@ -79,9 +81,15 @@ public abstract class BitcoinBatchTemplate {
     private final StatusService status;
 
     /**
+     * Session factory.
+     */
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    /**
      * Neo4j session.
      */
-    private final Session session;
+    private Session session;
 
     /**
      * time of the start of the batch.
@@ -103,7 +111,14 @@ public abstract class BitcoinBatchTemplate {
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
         this.status = newStatus;
-        this.session = new SessionFactory("com.oakinvest.b2g").openSession();
+    }
+
+    /**
+     * Initialize sessions.
+     */
+    @PostConstruct
+    public final void createConstraintsAndIndexes() {
+        session = sessionFactory.openSession();
     }
 
     /**
@@ -111,7 +126,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return elapsed time of the batch.
      */
-    protected final float getElapsedTime() {
+    private float getElapsedTime() {
         return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
     }
 
@@ -158,7 +173,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return session
      */
-    protected final Session getSession() {
+    private Session getSession() {
         return session;
     }
 
@@ -211,7 +226,7 @@ public abstract class BitcoinBatchTemplate {
      * @param message message
      * @param e       exception raised.
      */
-    final void addError(final String message, final Exception e) {
+    private void addError(final String message, final Exception e) {
         status.addError(message, e);
     }
 
