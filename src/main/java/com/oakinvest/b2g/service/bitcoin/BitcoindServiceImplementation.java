@@ -5,7 +5,6 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.util.bitcoin.rest.BitcoindResponseErrorHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;

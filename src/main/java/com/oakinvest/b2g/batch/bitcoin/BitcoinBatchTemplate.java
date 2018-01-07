@@ -7,7 +7,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.BitcoinDataService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;

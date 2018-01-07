@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service;
+package com.oakinvest.b2g.service.bitcoin;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 

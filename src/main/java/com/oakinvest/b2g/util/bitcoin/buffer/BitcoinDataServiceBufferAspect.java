@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.buffer;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,26 +14,26 @@ import java.util.Optional;
  */
 @Configuration
 @Aspect
-public class BitcoinDataServiceCacheAspect {
+public class BitcoinDataServiceBufferAspect {
 
     /**
      * Cache store.
      */
-    private final BitcoinDataServiceCacheStore cacheStore;
+    private final BitcoinDataServiceBufferStore bufferStore;
 
     /**
      * Bitcoind cache loader.
      */
-    private final BitcoinDataServiceCacheLoader bitcoindCacheLoader;
+    private final BitcoinDataServiceBufferLoader bitcoindBufferLoader;
 
     /**
      * Constructor.
      * @param newCacheStore cache store
      * @param newBitcoindCacheLoader cache loader
      */
-    public BitcoinDataServiceCacheAspect(final BitcoinDataServiceCacheStore newCacheStore, final BitcoinDataServiceCacheLoader newBitcoindCacheLoader) {
-        this.cacheStore = newCacheStore;
-        this.bitcoindCacheLoader = newBitcoindCacheLoader;
+    public BitcoinDataServiceBufferAspect(final BitcoinDataServiceBufferStore newCacheStore, final BitcoinDataServiceBufferLoader newBitcoindCacheLoader) {
+        this.bufferStore = newCacheStore;
+        this.bitcoindBufferLoader = newBitcoindCacheLoader;
     }
 
     /**
@@ -43,21 +43,21 @@ public class BitcoinDataServiceCacheAspect {
      * @throws Throwable exception
      */
     @SuppressWarnings("unchecked")
-    @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockCount())")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinDataService.getBlockCount())")
     public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
-        // If the data is outdated.
-        if (cacheStore.isBlockCountOutdated()) {
+        if (bufferStore.isBlockCountOutdated()) {
+            // If the data is outdated.
             Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
             if (blockCount.isPresent()) {
-                cacheStore.updateBlockCountInCache(blockCount.get());
+                bufferStore.updateBlockCountInCache(blockCount.get());
                 return Optional.of(blockCount.get());
             } else {
                 return Optional.empty();
             }
-        // If the data is still in cache.
         } else {
-            if (cacheStore.getBlockCountFromCache() != -1) {
-                return Optional.of(cacheStore.getBlockCountFromCache());
+            // If the data is still in cache.
+            if (bufferStore.getBlockCountFromCache() != -1) {
+                return Optional.of(bufferStore.getBlockCountFromCache());
             } else {
                 return Optional.empty();
             }
@@ -72,10 +72,10 @@ public class BitcoinDataServiceCacheAspect {
      * @throws Throwable exception
      */
     @SuppressWarnings("unchecked")
-    @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockData(..)) && args(blockHeight))")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinDataService.getBlockData(..)) && args(blockHeight))")
     public final Optional<BitcoindBlockData> getBlockData(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
         // Loading cache.
-        bitcoindCacheLoader.loadCache(blockHeight);
+        bitcoindBufferLoader.loadCache(blockHeight);
 
         // Returning the data.
         return (Optional<BitcoindBlockData>) pjp.proceed(new Object[]{ blockHeight });

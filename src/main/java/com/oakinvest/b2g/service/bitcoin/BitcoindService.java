@@ -1,12 +1,9 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-
-import java.util.Optional;
 
 /**
  * Provides an easy access to bitcoind server data.
@@ -15,19 +12,10 @@ import java.util.Optional;
 public interface BitcoindService {
 
 	/**
-	 * Returns the block data from bitcoind.
-	 * Util method - not in bitcoind.
-	 *
-	 * @param blockHeight block number
-	 * @return block data or null if a problem occurred.
-	 */
-	Optional<BitcoindBlockData> getBlockData(int blockHeight);
-
-	/**
 	 * The getblockcount RPC returns the number of blocks in the local best block chain.
 	 * curl --user bitcoinrpc:JRkDy3tgCYdmCEqY1VdfdfhTswiRva --data-binary '{"jsonrpc":"1.0","method":"getblockcount","params":[]}' -H 'content-type:text/plain;' -X POST http://5.196.65.205:8332
 	 *
-	 * @return the number of blocks in the local best block chain.
+	 * @return the number of blocks in the block chain.
 	 * @see <a href="https://chainquery.com/bitcoin-api/getblockcount">https://chainquery.com/bitcoin-api/getblockcount</a>
 	 */
 	GetBlockCountResponse getBlockCount();

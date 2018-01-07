@@ -7,9 +7,8 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountRes
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
-import com.oakinvest.b2g.service.BitcoinDataService;
-import com.oakinvest.b2g.service.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -44,7 +43,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Cache store.
      */
-    private final BitcoinDataServiceCacheStore cacheStore;
+    private final BitcoinDataServiceBufferStore cacheStore;
 
     /**
      * Constructor.
@@ -53,7 +52,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * @param newStatusService   status service
      * @param newCacheStore      cache store
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceCacheStore newCacheStore) {
+    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBufferStore newCacheStore) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
         this.cacheStore = newCacheStore;
@@ -236,6 +235,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
 
             // We check that we have all transactions.
             if (transactions.size() != block.get().getTx().size()) {
+                status.addError("All transactions were not retrieved");
                 return Optional.empty();
             }
 
@@ -284,4 +284,5 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             getBlockResult.getTx().forEach(cacheStore::removeTransactionInCache);
         });
     }
+
 }

@@ -40,10 +40,6 @@ public class BitcoindMock {
 	 */
 	private static final int BLOCK_IN_ERROR_1 = 496;
 
-	//private static boolean transactionWithMissingVInErrorOccurred = false;
-
-    //private static boolean transactionWithMissingVOutErrorOccurred = false;
-
 	/**
 	 * Block hash in error.
 	 */
@@ -163,8 +159,6 @@ public class BitcoindMock {
 		getBlockHashErrors = 0;
 		getBlockErrors = 0;
 		getRawTransactionErrors = 0;
-        //transactionWithMissingVInErrorOccurred = false;
-        //transactionWithMissingVOutErrorOccurred = false;
 	}
 
 	/**
@@ -174,7 +168,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockCount())")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockCount())")
 	public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
         log.debug("Using cache for getBlockCountFromCache()");
 		GetBlockCountResponse getBlockCountResponse;
@@ -212,7 +206,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlockHash(..)) && args(blockHeight)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
 	public final Object getBlockHash(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
 		log.debug("Using cache for getBlockHash()");
 		GetBlockHashResponse getBlockHashResponse;
@@ -246,7 +240,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getBlock(..)) && args(blockHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
 	public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
 		log.debug("Using cache for getBlock()");
 		GetBlockResponse getBlockResponse;
@@ -280,7 +274,7 @@ public class BitcoindMock {
 	 * @return value.
 	 * @throws Throwable exception.
 	 */
-	@Around("execution(* com.oakinvest.b2g.service.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
+	@Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
 	public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
 		log.debug("Using cache for getRawTransaction()");
 		GetRawTransactionResponse getRawTransactionResponse;
@@ -301,18 +295,6 @@ public class BitcoindMock {
 		} else {
 			getRawTransactionResponse = (GetRawTransactionResponse) loadObjectFromFile(response);
 		}
-
-		// We simulate that a vin and a vout are missing - Removing it temporary.
-/*        final String transactionWithMissingVIn = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
-		if (transactionWithMissingVIn.equals(transactionHashValue) && !transactionWithMissingVInErrorOccurred) {
-		    getRawTransactionResponse.getResult().getVin().remove(0);
-            transactionWithMissingVInErrorOccurred = true;
-        }
-        final String transactionWithMissingVOut = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-        if (transactionWithMissingVOut.equals(transactionHashValue) && !transactionWithMissingVOutErrorOccurred) {
-            getRawTransactionResponse.getResult().getVout().remove(1);
-            transactionWithMissingVOutErrorOccurred = true;
-        }*/
 
 		return getRawTransactionResponse;
 	}

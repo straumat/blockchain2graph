@@ -8,6 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 /**
  * Web socket configuration class.
  * Created by straumat on 31/10/16.
+ * FIXME Reactive web socket with new release of spring.
  */
 @Configuration
 //@EnableWebSocket

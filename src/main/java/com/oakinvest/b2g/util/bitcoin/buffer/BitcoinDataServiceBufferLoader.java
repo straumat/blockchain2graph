@@ -1,6 +1,6 @@
-package com.oakinvest.b2g.service.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.buffer;
 
-import com.oakinvest.b2g.service.BitcoinDataService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Created by straumat on 04/06/17.
  */
 @Component
-public class BitcoinDataServiceCacheLoader {
+public class BitcoinDataServiceBufferLoader {
 
     /**
      * Bitcoind service.
@@ -21,7 +21,7 @@ public class BitcoinDataServiceCacheLoader {
      *
      * @param newBitcoinDataService bitcoin data service
      */
-    public BitcoinDataServiceCacheLoader(final BitcoinDataService newBitcoinDataService) {
+    public BitcoinDataServiceBufferLoader(final BitcoinDataService newBitcoinDataService) {
         this.bitcoinDataService = newBitcoinDataService;
     }
 

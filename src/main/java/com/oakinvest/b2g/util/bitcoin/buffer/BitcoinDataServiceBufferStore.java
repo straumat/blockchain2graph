@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.buffer;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.oakinvest.b2g.configuration.ParametersConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
+import static com.oakinvest.b2g.configuration.bitcoin.BitcoinConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
 
 /**
  * Bitcoin data service cache store
  * Created by straumat on 30/06/17.
  */
 @Component
-public class BitcoinDataServiceCacheStore {
+public class BitcoinDataServiceBufferStore {
 
     /**
      * How many milli seconds in 1 minute.
@@ -45,7 +45,7 @@ public class BitcoinDataServiceCacheStore {
     /**
      * Constructor.
      */
-    public BitcoinDataServiceCacheStore() {
+    public BitcoinDataServiceBufferStore() {
     }
 
     /**

@@ -2,7 +2,7 @@ package com.oakinvest.b2g;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.service.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -60,7 +60,7 @@ public class Application extends SpringBootServletInitializer {
      * Application initialization.
      */
     @PostConstruct
-    public final void initApplication() {
+    public final void initializeStatistics() {
         // Update the status of the number of block imported.
         // FIXME Take the max instead of block count.
         status.setImportedBlockCount((int) bbr.count());
