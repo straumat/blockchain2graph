@@ -163,9 +163,11 @@ public abstract class BitcoinBatchTemplate {
             }
         } catch (Exception e) {
             addError("An error occurred while processing block : " + e.getMessage(), e);
-        } finally {
-            getSession().clear();
         }
+
+        /*finally {
+            getSession().clear();
+        }*/
     }
 
     /**
