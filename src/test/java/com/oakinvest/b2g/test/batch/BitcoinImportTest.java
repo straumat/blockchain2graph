@@ -17,6 +17,7 @@ import com.oakinvest.b2g.util.bitcoin.mock.BitcoindMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -90,12 +91,6 @@ public class BitcoinImportTest {
     private BitcoindMock bitcoindMock;
 
     /**
-     * Session factory.
-     */
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    /**
      * Importing the data.
      *
      * @throws Exception exception
@@ -104,9 +99,14 @@ public class BitcoinImportTest {
     public void setUp() throws Exception {
         // Reset the database.
         if (!databaseCleared) {
-            sessionFactory.openSession().purgeDatabase();
+            System.out.println("==> Purge ");
+            Session session = new SessionFactory("com.oakinvest.b2g").openSession();
+            session.purgeDatabase();
+            session.clear();
             databaseCleared = true;
         }
+
+        System.out.println("==> " + blockRepository.count());
 
         // Reset errors.
         bitcoindMock.resetErrors();
