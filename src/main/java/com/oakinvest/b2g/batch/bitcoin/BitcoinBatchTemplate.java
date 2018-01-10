@@ -7,15 +7,14 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
@@ -134,7 +133,6 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Execute the batch.
      */
-    @Transactional
     @Scheduled(fixedDelay = 1)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
@@ -165,11 +163,9 @@ public abstract class BitcoinBatchTemplate {
             }
         } catch (Exception e) {
             addError("An error occurred while processing block : " + e.getMessage(), e);
-        }
-
-        /*finally {
+        } finally {
             getSession().clear();
-        }*/
+        }
     }
 
     /**
