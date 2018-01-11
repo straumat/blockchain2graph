@@ -3,13 +3,11 @@ package com.oakinvest.b2g.configuration;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 
 /**
@@ -18,24 +16,19 @@ import java.util.Collections;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableNeo4jRepositories(basePackages = "com.oakinvest.b2g.repository")
+@EnableNeo4jRepositories(basePackages = "com.oakinvest.b2g")
 @EntityScan(basePackages = "com.oakinvest.b2g.domain")
 public class Neo4jConfiguration {
 
-    /**
-     * Session factory.
-     */
-    @Autowired
-    private SessionFactory sessionFactory;
+
 
     /**
-     * Create constraints and indexes.
+     * Constructor - Create constraints and indexes.
      */
-    @PostConstruct
-    public final void createConstraintsAndIndexes() {
+    public Neo4jConfiguration() {
         try {
             // Session.
-            Session session = sessionFactory.openSession();
+            Session session = new SessionFactory("com.oakinvest.b2g").openSession();
             // Constraints.
             session.query("CREATE CONSTRAINT ON (n:BitcoinAddress) ASSERT n.address IS UNIQUE", Collections.emptyMap());
             session.query("CREATE CONSTRAINT ON (n:BitcoinBlock) ASSERT n.hash IS UNIQUE", Collections.emptyMap());

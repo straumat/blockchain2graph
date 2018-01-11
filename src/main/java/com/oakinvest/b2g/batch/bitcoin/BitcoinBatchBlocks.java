@@ -6,8 +6,8 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
