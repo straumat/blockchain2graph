@@ -33,12 +33,12 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Log separator.
      */
-    protected static final String LOG_SEPARATOR = "===================================";
+    private static final String LOG_SEPARATOR = "===================================";
 
     /**
      * Pause to make when there is no block to process (1 second).
      */
-    protected static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
 
     /**
      * Mapper.
@@ -127,7 +127,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return elapsed time of the batch.
      */
-    protected final float getElapsedTime() {
+    private float getElapsedTime() {
         return (System.currentTimeMillis() - batchStartTime) / MILLISECONDS_IN_SECONDS;
     }
 
@@ -174,7 +174,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return session
      */
-    protected final Session getSession() {
+    private Session getSession() {
         return session;
     }
 
@@ -227,7 +227,7 @@ public abstract class BitcoinBatchTemplate {
      * @param message message
      * @param e       exception raised.
      */
-    final void addError(final String message, final Exception e) {
+    private void addError(final String message, final Exception e) {
         status.addError(message, e);
     }
 
