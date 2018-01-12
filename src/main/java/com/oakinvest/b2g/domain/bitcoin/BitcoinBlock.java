@@ -39,13 +39,13 @@ public class BitcoinBlock {
 	/**
 	 * Previous block.
 	 */
-	@Relationship(type = "PREVIOUS_BLOCK", direction = Relationship.OUTGOING)
+	@Relationship(type = "PREVIOUS_BLOCK")
 	private BitcoinBlock previousBlock;
 
 	/**
 	 * Next block.
 	 */
-	@Relationship(type = "NEXT_BLOCK", direction = Relationship.OUTGOING)
+	@Relationship(type = "NEXT_BLOCK")
 	private BitcoinBlock nextBlock;
 
 	/**

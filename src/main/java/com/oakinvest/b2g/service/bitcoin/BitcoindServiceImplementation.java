@@ -133,7 +133,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
     }
 
     /**
-     * Getter de la propriété url.
+     * Getter url.
      *
      * @return url
      */
@@ -142,7 +142,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
     }
 
     /**
-     * Getter de la propriété headers.
+     * Getter headers.
      *
      * @return headers
      */
