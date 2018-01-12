@@ -20,24 +20,6 @@ public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Lo
 	 */
 	BitcoinBlock findByHeight(int height);
 
-	/**
-	 * Find a block by its height.
-	 *
-	 * @param height height
-	 * @return block
-	 */
-	@Query("MATCH (b:BitcoinBlock) WHERE b.height= {0} return b")
-	BitcoinBlock findByHeightWithoutDepth(int height);
-
-    /**
-     * Find a block by it's height get all the data.
-     *
-     * @param height height
-     * @return block
-     */
-    @Query("MATCH (n:BitcoinBlock) WHERE n.height = {0} WITH n MATCH p=(n)-[*0..1]-(m)-[*0..1]-(l) RETURN p, n, m, l")
-    BitcoinBlock findFullByHeight(int height);
-
     /**
 	 * Find a block by its hash.
 	 *

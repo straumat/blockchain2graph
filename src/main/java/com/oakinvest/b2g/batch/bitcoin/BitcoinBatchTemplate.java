@@ -4,9 +4,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
@@ -56,16 +54,6 @@ public abstract class BitcoinBatchTemplate {
     private final BitcoinAddressRepository addressRepository;
 
     /**
-     * Bitcoin transaction repository.
-     */
-    private final BitcoinTransactionRepository transactionRepository;
-
-    /**
-     * Bitcoin transaction input repository.
-     */
-    private final BitcoinTransactionInputRepository transactionInputRepository;
-
-    /**
      * Bitcoin transaction output repository.
      */
     private final BitcoinTransactionOutputRepository transactionOutputRepository;
@@ -106,12 +94,9 @@ public abstract class BitcoinBatchTemplate {
     public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
-        this.transactionRepository = newBitcoinRepositories.getBitcoinTransactionRepository();
-        this.transactionInputRepository = newBitcoinRepositories.getBitcoinTransactionInputRepository();
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
         this.status = newStatus;
-        //this.session = new SessionFactory("com.oakinvest.b2g").openSession();
     }
 
     /**
@@ -259,24 +244,6 @@ public abstract class BitcoinBatchTemplate {
     }
 
     /**
-     * Getter transactionRepository.
-     *
-     * @return transactionRepository
-     */
-    final BitcoinTransactionRepository getTransactionRepository() {
-        return transactionRepository;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return transactionInputRepository
-     */
-    private BitcoinTransactionInputRepository getTransactionInputRepository() {
-        return transactionInputRepository;
-    }
-
-    /**
      * Getter.
      *
      * @return transactionOutputRepository
@@ -302,100 +269,5 @@ public abstract class BitcoinBatchTemplate {
     final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
     }
-
-    /*
-    private boolean verifyBlock(final int blockHeight) {
-        addLog("Checking data of block " + getFormattedBlockHeight(blockHeight));
-        boolean validBlock = true;
-        StringBuilder audit = new StringBuilder("");
-
-        // Getting the data from neo4j.
-        getSession().clear();
-        BitcoinBlock bitcoinBlock = getBlockRepository().findByHeight(blockHeight);
-
-        // Getting the data from bitcoind with and without cache.
-        Optional<BitcoindBlockData> blockDataInCache = getBitcoinDataService().getBlockData(blockHeight);
-        cacheStore.removeBlockDataFromCache(blockHeight);
-        Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
-
-        // Checking all the data.
-        if (blockData.isPresent()) {
-            // Checking all transactions.
-            for (String txId : bitcoinBlock.getTx()) {
-                // Checking that all transactions are unique.
-                if (getTransactionRepository().transactionCount(txId) == 1) {
-
-                    // Getting the data in database & from bitcoind.
-                    BitcoinTransaction bitcoinTransaction = getTransactionRepository().findByTxId(txId);
-                    Optional<GetRawTransactionResult> bitcoindTransaction = blockData.get().getRawTransactionResult(txId);
-                    Optional<GetRawTransactionResult> bitcoindTransactionInCache = blockDataInCache.get().getRawTransactionResult(txId);
-
-                    // Checking transaction is present, vins & vouts.
-                    if (bitcoindTransaction.isPresent()) {
-                        if (bitcoinTransaction.getInputs().size() != bitcoindTransaction.get().getVin().size()) {
-                            audit.append("Inputs are not correct in transaction : ").append(txId).append(".").append(System.getProperty("line.separator"));
-                            bitcoinTransaction.getInputs().forEach(i -> audit.append(" Database : ").append(i).append(System.getProperty("line.separator")));
-                            bitcoindTransaction.get().getVin().forEach(vin -> audit.append(" Bitcoind : ").append(vin).append(System.getProperty("line.separator")));
-                            bitcoindTransactionInCache.get().getVin().forEach(vin -> audit.append(" Bitcoind (cache) : ").append(vin).append(System.getProperty("line.separator")));
-                            validBlock = false;
-                        }
-                        if (bitcoinTransaction.getOutputs().size() != bitcoindTransaction.get().getVout().size()) {
-                            audit.append("Outputs are not correct in transaction : ").append(txId).append(".").append(System.getProperty("line.separator"));
-                            bitcoinTransaction.getOutputs().forEach(o -> audit.append(" Database : ").append(o).append(System.getProperty("line.separator")));
-                            bitcoindTransaction.get().getVout().forEach(vOut -> audit.append(" Bitcoind : ").append(vOut).append(System.getProperty("line.separator")));
-                            bitcoindTransactionInCache.get().getVout().forEach(vOut -> audit.append(" Bitcoind (cache) : ").append(vOut).append(System.getProperty("line.separator")));
-                            validBlock = false;
-                        }
-                    } else {
-                        // Transaction not present in bitcoind response.
-                        audit.append("Transaction ").append(txId).append(" not found in bitcoind response").append(System.getProperty("line.separator"));
-                        validBlock = false;
-                    }
-                } else {
-                    // No transaction or more than one transaction.
-                    audit.append("Transaction ").append(txId).append(" found ").append(getTransactionRepository().transactionCount(txId)).append(" time(s)").append(System.getProperty("line.separator"));
-                    validBlock = false;
-                }
-            }
-        } else {
-            // Not getting data from bitcoind.
-            audit.append("Impossible to get fresh block data from bitcoind. ");
-            validBlock = false;
-        }
-
-        // If the block is invalid, we delete it.
-        if (!validBlock) {
-            addError("Block " + bitcoinBlock.getFormattedHeight() + " is not correct - deleting it");
-            LoggerFactory.getLogger(BitcoinBatchTemplate.class).error("[AUDIT] " + audit);
-
-            // Deleting the block.
-            bitcoinBlock.getTransactions().forEach(t -> {
-                        BitcoinTransaction transactionToRemove = getTransactionRepository().findByTxId(t.getTxId());
-                        if (transactionToRemove != null) {
-                            if (transactionToRemove.getOutputs() != null) {
-                                transactionToRemove.getOutputs().forEach(o -> getTransactionOutputRepository().delete(o));
-                                transactionToRemove.getOutputs().clear();
-                            } else {
-                                addError("Outputs is null");
-                            }
-                            if (transactionToRemove.getInputs() != null) {
-                                transactionToRemove.getInputs().forEach(i -> getTransactionInputRepository().delete(i));
-                                transactionToRemove.getInputs().clear();
-                            } else {
-                                addError("Inputs is null");
-                            }
-                            bitcoinBlock.getTransactions().remove(transactionToRemove);
-                            getTransactionRepository().delete(transactionToRemove);
-                        }
-                    }
-            );
-            bitcoinBlock.getTransactions().clear();
-            getBlockRepository().delete(bitcoinBlock.getId());
-        } else {
-            addLog("Block " + bitcoinBlock.getFormattedHeight() + " is correct");
-        }
-        return validBlock;
-    }
-*/
 
 }

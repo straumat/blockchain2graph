@@ -62,7 +62,6 @@ public class Application extends SpringBootServletInitializer {
     @PostConstruct
     public final void initializeStatistics() {
         // Update the status of the number of block imported.
-        // FIXME Take the max instead of block count.
         status.setImportedBlockCount((int) bbr.count());
 
         // Update the status of the number of block in bitcoind.

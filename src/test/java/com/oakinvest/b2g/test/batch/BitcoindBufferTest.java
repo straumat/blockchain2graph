@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
 import org.junit.Before;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,12 +29,23 @@ public class BitcoindBufferTest {
      */
     private static final int PAUSE_BETWEEN_CALLS = 5000;
 
+    /**
+     * Bitcoin data service.
+     */
     @Autowired
     private BitcoinDataService bitcoinDataService;
 
+    /**
+     * Buffer store.
+     */
     @Autowired
     private BitcoinDataServiceBufferStore buffer;
 
+    /**
+     * Setup.
+     *
+     * @throws Exception exception.
+     */
     @Before
     public void setUp() throws Exception {
         buffer.clear();
@@ -185,7 +199,11 @@ public class BitcoindBufferTest {
         buffer.removeTransactionInCache(transaction2InBlock2);
 
         // We retrieve the block 2.
-        assertThat(bitcoinDataService.getBlockData(testBlock2).isPresent()).isTrue();
+        Optional<BitcoindBlockData> block2 = bitcoinDataService.getBlockData(testBlock2);
+        assertThat(block2.isPresent()).isTrue();
+
+        // We test that the transaction 2 in block 2 is actually retrieved.
+        block2.ifPresent(bitcoindBlockData -> assertThat(bitcoindBlockData.getRawTransactionResult(transaction2InBlock2).isPresent()).isTrue());
     }
 
 }

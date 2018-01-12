@@ -65,7 +65,7 @@ public class BitcoinDataServiceBufferStore {
      * @return true if update is required
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public boolean isBlockCountOutdated() {
+    boolean isBlockCountOutdated() {
         // If getBlockcount has never been call, of course, it's outdated.
         if (lastBlockCountValueAccess == -1) {
             return true;
@@ -83,7 +83,7 @@ public class BitcoinDataServiceBufferStore {
      * @param blockCount block count
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public void updateBlockCountInCache(final int blockCount) {
+    void updateBlockCountInCache(final int blockCount) {
         lastBlockCountValue = blockCount;
         lastBlockCountValueAccess = System.currentTimeMillis();
     }
@@ -94,7 +94,7 @@ public class BitcoinDataServiceBufferStore {
      * @return block count
      */
     @SuppressWarnings("checkstyle:designforextension")
-    public int getBlockCountFromCache() {
+    int getBlockCountFromCache() {
         return lastBlockCountValue;
     }
 
