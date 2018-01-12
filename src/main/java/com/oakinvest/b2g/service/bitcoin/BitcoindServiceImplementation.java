@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,11 +99,55 @@ public class BitcoindServiceImplementation implements BitcoindService {
     private String password;
 
     /**
+     * Bitcoind URL.
+     */
+    private String url;
+
+    /**
+     * Header to use with bitcoind.
+     */
+    private HttpHeaders headers;
+
+    /**
      * Constructor.
      */
     public BitcoindServiceImplementation() {
         restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new BitcoindResponseErrorHandler());
+    }
+
+    /**
+     * Initialize URL and authentication.
+     */
+    @PostConstruct
+    private void initializeURLAndAuthentication() {
+        // Generate url.
+        url = "http://" + hostname + ":" + port;
+        // Generate headers.
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        String authHeader = "Basic " + new String(encodedAuth);
+        HttpHeaders h = new HttpHeaders();
+        h.set("Authorization", authHeader);
+        headers = h;
+    }
+
+    /**
+     * Getter de la propriété url.
+     *
+     * @return url
+     */
+    private String getUrl() {
+        return url;
+    }
+
+    /**
+     * Getter de la propriété headers.
+     *
+     * @return headers
+     */
+    private HttpHeaders getHeaders() {
+        return headers;
     }
 
     /**
@@ -117,7 +162,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
         log.debug("Calling getblockCount with " + request);
-        return restTemplate.postForObject(getURL(), entity, GetBlockCountResponse.class);
+        return restTemplate.postForObject(getUrl(), entity, GetBlockCountResponse.class);
     }
 
     /**
@@ -134,7 +179,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
         log.debug("Calling getblockHash on block " + request);
-        return restTemplate.postForObject(getURL(), entity, GetBlockHashResponse.class);
+        return restTemplate.postForObject(getUrl(), entity, GetBlockHashResponse.class);
     }
 
     /**
@@ -151,7 +196,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
         log.debug("Calling getblock on block " + request);
-        return restTemplate.postForObject(getURL(), entity, GetBlockResponse.class);
+        return restTemplate.postForObject(getUrl(), entity, GetBlockResponse.class);
     }
 
     /**
@@ -169,7 +214,7 @@ public class BitcoindServiceImplementation implements BitcoindService {
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
         log.debug("Calling getrawtransaction on transaction " + request);
-        return restTemplate.postForObject(getURL(), entity, GetRawTransactionResponse.class);
+        return restTemplate.postForObject(getUrl(), entity, GetRawTransactionResponse.class);
     }
 
     /**
@@ -184,29 +229,6 @@ public class BitcoindServiceImplementation implements BitcoindService {
         request.put(PARAMETER_METHOD, command);
         request.put(PARAMETER_PARAMS, params);
         return gson.toJson(request);
-    }
-
-    /**
-     * Getting the URL to call.
-     *
-     * @return bitcoind server url
-     */
-    private String getURL() {
-        return "http://" + hostname + ":" + port;
-    }
-
-    /**
-     * Manage authentication.
-     *
-     * @return required headers
-     */
-    private HttpHeaders getHeaders() {
-        String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-        String authHeader = "Basic " + new String(encodedAuth);
-        HttpHeaders h = new HttpHeaders();
-        h.set("Authorization", authHeader);
-        return h;
     }
 
 }
