@@ -5,7 +5,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
- * Bitcoind cache loader.
+ * Bitcoind buffer loader.
  * Created by straumat on 04/06/17.
  */
 @Component
@@ -26,15 +26,15 @@ public class BitcoinDataServiceBufferLoader {
     }
 
     /**
-     * Load cache. We will load the next block with this method.
+     * Load buffer. We will load the next block with this method.
      *
      * @param requestedBlock id of the block requested.
      */
     @Async
     @SuppressWarnings("checkstyle:designforextension")
-    public void loadCache(final int requestedBlock) {
-        bitcoinDataService.putBlockInCache(requestedBlock + 1);
-        bitcoinDataService.removeBlockInCache(requestedBlock - 1);
+    public void loadBuffer(final int requestedBlock) {
+        bitcoinDataService.putBlockInBuffer(requestedBlock + 1);
+        bitcoinDataService.removeBlockInBuffer(requestedBlock - 1);
     }
 
 }

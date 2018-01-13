@@ -41,21 +41,21 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private final BitcoindService bitcoindService;
 
     /**
-     * Cache store.
+     * Buffer store.
      */
-    private final BitcoinDataServiceBufferStore cacheStore;
+    private final BitcoinDataServiceBufferStore bufferStore;
 
     /**
      * Constructor.
      *
      * @param newBitcoindService bitcoind service
      * @param newStatusService   status service
-     * @param newCacheStore      cache store
+     * @param newBufferStore     buffer store
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBufferStore newCacheStore) {
+    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBufferStore newBufferStore) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
-        this.cacheStore = newCacheStore;
+        this.bufferStore = newBufferStore;
     }
 
     /**
@@ -104,13 +104,13 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Returns the block result from the cache or bitcoind.
+     * Returns the block result from the buffer or bitcoind.
      *
      * @param blockHeight bloc height
      * @return block result
      */
     private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
-        Optional<GetBlockResult> result = cacheStore.getBlockInCache(blockHeight);
+        Optional<GetBlockResult> result = bufferStore.getBlockInBuffer(blockHeight);
         if (!result.isPresent()) {
             result = getBlockResultFromBitcoind(blockHeight);
         }
@@ -118,13 +118,13 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Returns the transaction result from the cache or bitcoind.
+     * Returns the transaction result from the buffer or bitcoind.
      *
      * @param txId transaction id
      * @return transaction result
      */
     private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
-        Optional<GetRawTransactionResult> result = cacheStore.getTransactionInCache(txId);
+        Optional<GetRawTransactionResult> result = bufferStore.getTransactionInBuffer(txId);
         if (!result.isPresent()) {
             result = getRawTransactionResultFromBitcoind(txId);
         }
@@ -222,15 +222,16 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
 
             // We retrieve all
             block.get().getTx()
-                    .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> transactionResponse = getRawTransactionResult(txId);
-                        transactionResponse.ifPresent(getRawTransactionResult -> {
+                        if (transactionResponse.isPresent()) {
                             // Adding the transaction.
-                            transactions.add(getRawTransactionResult);
+                            transactions.add(transactionResponse.get());
                             // Adding the addresses.
-                            getRawTransactionResult.getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
-                        });
+                            transactionResponse.get().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
+                        } else {
+                            status.addError("Transaction " + txId + " missing");
+                        }
                     });
 
             // We check that we have all transactions.
@@ -243,45 +244,47 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             return Optional.of(new BitcoindBlockData(block.get(), transactions, addresses));
 
         } else {
+            status.addError("The block was not retrieved");
             return Optional.empty();
         }
     }
 
     /**
-     * Load transactions from a block in cache.
+     * Load transactions from a block in buffer.
      *
      * @param blockHeight block height
      */
     @Override
-    public final void putBlockInCache(final int blockHeight) {
+    public final void putBlockInBuffer(final int blockHeight) {
         Optional<GetBlockResult> block = getBlockResultFromBitcoind(blockHeight);
         block.ifPresent(getBlockResult -> {
-            // Add the block in cache.
-            cacheStore.addBlockInCache(blockHeight, getBlockResult);
 
-            // Add the transactions in cache.
+            // Add the block in buffer.
+            bufferStore.addBlockInBuffer(blockHeight, getBlockResult);
+
+            // Add the transactions in buffer.
             getBlockResult.getTx()
                     .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
-                        result.ifPresent(getRawTransactionResult -> cacheStore.addTransactionInCache(txId, getRawTransactionResult));
+                        result.ifPresent(getRawTransactionResult -> bufferStore.addTransactionInBuffer(txId, getRawTransactionResult));
                     });
         });
     }
 
     /**
-     * Remove block and transactions from a block in cache.
+     * Remove block and transactions from a block in buffer.
      *
      * @param blockHeight block height
      */
     @Override
-    public final void removeBlockInCache(final int blockHeight) {
+    public final void removeBlockInBuffer(final int blockHeight) {
         Optional<GetBlockResult> block = getBlockResult(blockHeight);
         block.ifPresent(getBlockResult -> {
-            // Remove the block in cache.
-            cacheStore.removeBlockInCache(blockHeight);
-            // Remove the transactions in cache.
-            getBlockResult.getTx().forEach(cacheStore::removeTransactionInCache);
+            // Remove the block in buffer.
+            bufferStore.removeBlockInBuffer(blockHeight);
+            // Remove the transactions in buffer.
+            getBlockResult.getTx().forEach(bufferStore::removeTransactionInBuffer);
         });
     }
 

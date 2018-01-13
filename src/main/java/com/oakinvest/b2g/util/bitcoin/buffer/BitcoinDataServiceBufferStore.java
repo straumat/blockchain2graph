@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.oakinvest.b2g.configuration.bitcoin.BitcoinConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
 
 /**
- * Bitcoin data service cache store
+ * Bitcoin data service buffer & cache store
  * Created by straumat on 30/06/17.
  */
 @Component
@@ -33,14 +33,14 @@ public class BitcoinDataServiceBufferStore {
     private long lastBlockCountValueAccess = -1;
 
     /**
-     * Bitcoin blocks cache.
+     * Bitcoin blocks buffer.
      */
-    private final Map<Integer, GetBlockResult> blocksCache = new ConcurrentHashMap<>();
+    private final Map<Integer, GetBlockResult> blocksBuffer = new ConcurrentHashMap<>();
 
     /**
-     * Bitcoin transactions cache.
+     * Bitcoin transactions buffer.
      */
-    private final Map<String, GetRawTransactionResult> transactionsCache = new ConcurrentHashMap<>();
+    private final Map<String, GetRawTransactionResult> transactionsBuffer = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -49,14 +49,14 @@ public class BitcoinDataServiceBufferStore {
     }
 
     /**
-     * Clear cache.
+     * Clear buffer.
      */
     @SuppressWarnings("checkstyle:designforextension")
     public void clear() {
         lastBlockCountValue = -1;
         lastBlockCountValueAccess = -1;
-        blocksCache.clear();
-        transactionsCache.clear();
+        blocksBuffer.clear();
+        transactionsBuffer.clear();
     }
 
     /**
@@ -100,75 +100,75 @@ public class BitcoinDataServiceBufferStore {
 
 
     /**
-     * Add block in cache.
+     * Add block in buffer.
      *
      * @param blockHeight    block height
      * @param getBlockResult block
      */
-    public final void addBlockInCache(final int blockHeight, final GetBlockResult getBlockResult) {
-        blocksCache.put(blockHeight, getBlockResult);
+    public final void addBlockInBuffer(final int blockHeight, final GetBlockResult getBlockResult) {
+        blocksBuffer.put(blockHeight, getBlockResult);
     }
 
     /**
-     * Retrieve a block in cache.
+     * Retrieve a block in buffer.
      *
      * @param blockHeight block height
      * @return block result
      */
-    public final Optional<GetBlockResult> getBlockInCache(final int blockHeight) {
-        GetBlockResult r = blocksCache.get(blockHeight);
+    public final Optional<GetBlockResult> getBlockInBuffer(final int blockHeight) {
+        GetBlockResult r = blocksBuffer.get(blockHeight);
         if (r != null) {
-            // If it's in the cache, we retrieve it.
+            // If it's in the buffer, we retrieve it.
             return Optional.of(r);
         } else {
-            // If it's not in the cache, we return empty.
+            // If it's not in the buffer, we return empty.
             return Optional.empty();
         }
     }
 
     /**
-     * Remove block in cache.
+     * Remove block in buffer.
      *
      * @param blockHeight block height
      */
-    public final void removeBlockInCache(final int blockHeight) {
-        blocksCache.remove(blockHeight);
+    public final void removeBlockInBuffer(final int blockHeight) {
+        blocksBuffer.remove(blockHeight);
     }
 
     /**
-     * Add transactions in cache.
+     * Add transactions in buffer.
      *
      * @param txId                    transaction id
      * @param getRawTransactionResult bitcoin transaction
      */
-    public final void addTransactionInCache(final String txId, final GetRawTransactionResult getRawTransactionResult) {
-        transactionsCache.put(txId, getRawTransactionResult);
+    public final void addTransactionInBuffer(final String txId, final GetRawTransactionResult getRawTransactionResult) {
+        transactionsBuffer.put(txId, getRawTransactionResult);
     }
 
     /**
-     * Retrieve a transaction in cache.
+     * Retrieve a transaction in buffer.
      *
      * @param txid transaction id
      * @return bitcoin transaction
      */
-    public final Optional<GetRawTransactionResult> getTransactionInCache(final String txid) {
-        GetRawTransactionResult r = transactionsCache.get(txid);
+    public final Optional<GetRawTransactionResult> getTransactionInBuffer(final String txid) {
+        GetRawTransactionResult r = transactionsBuffer.get(txid);
         if (r != null) {
-            // If it's in the cache, we retrieve it.
+            // If it's in the buffer, we retrieve it.
             return Optional.of(r);
         } else {
-            // If it's not in the cache, we return empty.
+            // If it's not in the buffer, we return empty.
             return Optional.empty();
         }
     }
 
     /**
-     * Remove a transaction in cache.
+     * Remove a transaction in buffer.
      *
      * @param txId transaction id
      */
-    public final void removeTransactionInCache(final String txId) {
-        transactionsCache.remove(txId);
+    public final void removeTransactionInBuffer(final String txId) {
+        transactionsBuffer.remove(txId);
     }
 
 }

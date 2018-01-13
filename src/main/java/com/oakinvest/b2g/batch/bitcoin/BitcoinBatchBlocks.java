@@ -69,7 +69,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     }
 
     /**
-     * Retrieve a bitcoin address from the cache or from neo4j.
+     * Retrieve a bitcoin address from the buffer or from neo4j.
      *
      * @param address bitcoin address
      * @return bitcoin address object
