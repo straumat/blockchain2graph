@@ -18,6 +18,8 @@
     <!-- Javascript lib -->
     <script src="../webjars/jquery/jquery.min.js" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script src="../webjars/bootstrap/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="../webjars/sockjs-client/1.1.2/sockjs.min.js"
+            th:src="@{/webjars/sockjs-client/1.1.2/sockjs.min.js}"></script>
 
     <!-- Custom CSS & Javascript -->
     <link href="../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet"/>
@@ -44,7 +46,7 @@
         </div>
     </div>
     <!-- Last error message -->
-        <div class="row">
+    <div class="row">
         <div class="col-sm-1">&nbsp;</div>
         <div class="col-sm-10 errorMessage" id="lastErrorMessage"></div>
         <div class="col-sm-1">&nbsp;</div>

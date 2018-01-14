@@ -2,7 +2,6 @@ package com.oakinvest.b2g.domain.bitcoin;
 
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
@@ -23,7 +22,6 @@ public class BitcoinAddress {
     /**
      * Bitcoin address.
      */
-    @Index(unique = true)
     @Property(name = "address")
     private String address;
 

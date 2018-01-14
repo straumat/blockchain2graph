@@ -95,8 +95,10 @@
         <webjars-locator.version>0.32-1</webjars-locator.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
         <bootstrap.version>3.3.7-1</bootstrap.version>
-        <!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
+        <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
         <jquery.version>3.2.1</jquery.version>
+        <!-- https://mvnrepository.com/artifact/org.webjars/sockjs-client -->
+        <sockjs.version>1.1.2</sockjs.version>
 
     </properties>
     <!-- =========================================================================================================== -->
@@ -194,6 +196,11 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>sockjs-client</artifactId>
+            <version>${sockjs.version}</version>
         </dependency>
 
         <!-- CSS -->

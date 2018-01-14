@@ -28,10 +28,10 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      *
      * @param newBitcoinRepositories bitcoin repositories
      * @param newBitcoinDataService  bitcoin data service
-     * @param newStatus              status
+     * @param newStatusService              status
      */
-    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatus);
+    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatusService);
     }
 
     /**

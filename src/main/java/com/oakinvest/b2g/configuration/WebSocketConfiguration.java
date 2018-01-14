@@ -2,6 +2,7 @@ package com.oakinvest.b2g.configuration;
 
 import com.oakinvest.b2g.web.StatusHandler;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
@@ -11,7 +12,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  * FIXME Reactive web socket with new release of spring.
  */
 @Configuration
-//@EnableWebSocket
+@EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     /**
@@ -35,7 +36,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
      */
     @Override
     public final void registerWebSocketHandlers(final WebSocketHandlerRegistry registry) {
-        registry.addHandler(new StatusHandler(), "/status").setAllowedOrigins("*");
+        registry.addHandler(statusHandler, "/status").setAllowedOrigins("*").withSockJS();
     }
 
 }

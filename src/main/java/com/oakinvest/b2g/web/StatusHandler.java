@@ -198,6 +198,15 @@ public class StatusHandler extends TextWebSocketHandler {
 
     @Override
     protected final void handleTextMessage(final WebSocketSession session, final TextMessage message) throws Exception {
-        super.handleTextMessage(session, message);
+        try {
+            if (session.isOpen()) {
+                session.sendMessage(message);
+            } else {
+                sessions.remove(session);
+            }
+        } catch (Exception e) {
+            log.warn("Error sending message : " + e.getMessage());
+        }
     }
+
 }
