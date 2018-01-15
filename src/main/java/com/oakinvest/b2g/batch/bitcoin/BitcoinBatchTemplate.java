@@ -71,8 +71,7 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Session factory.
      */
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     /**
      * Neo4j session.
@@ -89,14 +88,17 @@ public abstract class BitcoinBatchTemplate {
      *
      * @param newBitcoinRepositories bitcoin repositories
      * @param newBitcoinDataService  bitcoin data service
-     * @param newStatus              status
+     * @param newStatusService       status service
+     * @param newSessionFactory      session factory
      */
-    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatus) {
+    @Autowired
+    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
-        this.status = newStatus;
+        this.status = newStatusService;
+        this.sessionFactory = newSessionFactory;
     }
 
     /**

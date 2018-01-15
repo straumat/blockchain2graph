@@ -8,6 +8,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -28,10 +29,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      *
      * @param newBitcoinRepositories bitcoin repositories
      * @param newBitcoinDataService  bitcoin data service
-     * @param newStatusService              status
+     * @param newStatusService       status
+     * @param newSessionFactory      session factory
      */
-    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatusService);
+    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+        super(newBitcoinRepositories, newBitcoinDataService, newStatusService, newSessionFactory);
     }
 
     /**
@@ -144,16 +146,20 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                                                 }
                                             }
 
-                                            // -------------------------------------------------------------------------
-                                            // We create the link.
-                                            vin.setTransactionOutput(originTransactionOutput);
+                                            if (originTransactionOutput != null) {
+                                                // -------------------------------------------------------------------------
+                                                // We create the link.
+                                                vin.setTransactionOutput(originTransactionOutput);
 
-                                            // -------------------------------------------------------------------------
-                                            // We set all the addresses linked to this input.
-                                            originTransactionOutput.getAddresses()
-                                                    .stream()
-                                                    .filter(Objects::nonNull)
-                                                    .forEach(a -> vin.setBitcoinAddress(getBitcoinAddress(a)));
+                                                // -------------------------------------------------------------------------
+                                                // We set all the addresses linked to this input.
+                                                originTransactionOutput.getAddresses()
+                                                        .stream()
+                                                        .filter(Objects::nonNull)
+                                                        .forEach(a -> vin.setBitcoinAddress(getBitcoinAddress(a)));
+                                            } else {
+                                                throw new RuntimeException("Origin transaction not found " + vin.getTxId() + " / " + vin.getvOut());
+                                            }
                                         });
 
                                 // -------------------------------------------------------------------------------------
