@@ -9,6 +9,7 @@ import java.util.Iterator;
  * vout.
  * Created by straumat on 01/09/16.
  */
+@SuppressWarnings("unused")
 public class GetRawTransactionVOut implements Serializable {
 
 	/**

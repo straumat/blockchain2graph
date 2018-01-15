@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * result inside the getblock response.
  * Created by straumat on 31/08/16.
  */
+@SuppressWarnings("ALL")
 public class GetBlockResult implements Serializable {
 
 	/**

@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Error in bitcoin response.
  * Created by straumat on 01/09/16.
  */
+@SuppressWarnings("unused")
 public class BitcoindResponseError implements Serializable {
 
 	/**

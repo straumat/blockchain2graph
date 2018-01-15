@@ -14,6 +14,7 @@ import java.util.Set;
  * Bitcoin transaction.
  * Created by straumat on 22/09/16.
  */
+@SuppressWarnings("unused")
 @NodeEntity(label = "BitcoinTransaction")
 public class BitcoinTransaction {
 

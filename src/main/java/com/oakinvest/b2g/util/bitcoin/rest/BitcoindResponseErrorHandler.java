@@ -12,6 +12,7 @@ import java.io.IOException;
  * Response handler to deal with 500 error code from bitcoind.
  * Created by straumat on 01/09/16.
  */
+@SuppressWarnings("NullableProblems")
 public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 
 	/**
@@ -41,7 +42,8 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 * @param response the response with the error
 	 * @throws IOException in case of I/O errors
 	 */
-	@Override
+	@SuppressWarnings("NullableProblems")
+    @Override
 	public final void handleError(final ClientHttpResponse response) throws IOException {
 		log.debug("Response error: {} {}", response.getStatusCode(), response.getStatusText());
 	}

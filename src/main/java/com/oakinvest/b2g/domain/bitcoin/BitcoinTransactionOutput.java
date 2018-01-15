@@ -14,6 +14,7 @@ import java.util.Set;
  * Bitcoin transaction output.
  * Created by straumat on 22/09/16.
  */
+@SuppressWarnings("unused")
 @NodeEntity(label = "BitcoinTransactionOutput")
 public class BitcoinTransactionOutput {
 
