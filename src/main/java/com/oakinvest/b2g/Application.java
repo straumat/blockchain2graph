@@ -2,17 +2,14 @@ package com.oakinvest.b2g;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import com.oakinvest.b2g.service.StatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.oakinvest.b2g.service.bitcoin.BitcoindService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Application launcher.
@@ -25,22 +22,22 @@ import javax.annotation.PostConstruct;
 public class Application extends SpringBootServletInitializer {
 
     /**
-     * Bitcoind service.
+     * Constructor.
+     *
+     * @param bitcoindService        Bitcoind service.
+     * @param bitcoinBlockRepository Bitcoin block repository.
+     * @param statusService          Status service.
      */
-    @Autowired
-    private BitcoindService bds;
+    public Application(final BitcoindService bitcoindService, final BitcoinBlockRepository bitcoinBlockRepository, final StatusService statusService) {
+        // Update the status of the number of block imported.
+        statusService.setImportedBlockCount((int) bitcoinBlockRepository.count());
 
-    /**
-     * Bitcoin block repository.
-     */
-    @Autowired
-    private BitcoinBlockRepository bbr;
-
-    /**
-     * Status service.
-     */
-    @Autowired
-    private StatusService status;
+        // Update the status of the number of block in bitcoind.
+        GetBlockCountResponse getBlockCountResponse = bitcoindService.getBlockCount();
+        if (getBlockCountResponse.getError() != null) {
+            statusService.setTotalBlockCount(getBlockCountResponse.getResult());
+        }
+    }
 
     /**
      * Application launcher.
@@ -54,21 +51,6 @@ public class Application extends SpringBootServletInitializer {
     @Override
     protected final SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
         return application.sources(Application.class);
-    }
-
-    /**
-     * Application initialization.
-     */
-    @PostConstruct
-    public final void initializeStatistics() {
-        // Update the status of the number of block imported.
-        status.setImportedBlockCount((int) bbr.count());
-
-        // Update the status of the number of block in bitcoind.
-        GetBlockCountResponse getBlockCountResponse = bds.getBlockCount();
-        if (getBlockCountResponse.getError() != null) {
-            status.setTotalBlockCount(getBlockCountResponse.getResult());
-        }
     }
 
 }
