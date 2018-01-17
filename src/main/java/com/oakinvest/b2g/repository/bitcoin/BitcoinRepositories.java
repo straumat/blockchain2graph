@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
  * Bitcoin repositories.
  * Created by straumat on 11/06/17.
  */
+@SuppressWarnings("unused")
 @Component
 public class BitcoinRepositories {
 

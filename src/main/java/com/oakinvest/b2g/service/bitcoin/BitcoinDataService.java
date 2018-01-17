@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.service;
+package com.oakinvest.b2g.service.bitcoin;
 
 import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
 
@@ -24,5 +24,19 @@ public interface BitcoinDataService {
      * @return block data
      */
     Optional<BitcoindBlockData> getBlockData(int blockHeight);
+
+    /**
+     * Load block and transactions from a block in buffer.
+     *
+     * @param blockHeight block height
+     */
+    void putBlockInBuffer(int blockHeight);
+
+    /**
+     * Remove block and transactions from a block in buffer.
+     *
+     * @param blockHeight block height
+     */
+    void removeBlockInBuffer(int blockHeight);
 
 }

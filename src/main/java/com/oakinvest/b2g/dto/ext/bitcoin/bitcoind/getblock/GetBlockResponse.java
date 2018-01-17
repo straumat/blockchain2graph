@@ -7,6 +7,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.util.BitcoindResponse;
  * getblock response.
  * Created by straumat on 30/08/16.
  */
+@SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetBlockResponse extends BitcoindResponse {
 
@@ -29,7 +30,7 @@ public class GetBlockResponse extends BitcoindResponse {
 	 *
 	 * @param newResult the result to set
 	 */
-	public final void setResult(final GetBlockResult newResult) {
+    public final void setResult(final GetBlockResult newResult) {
 		result = newResult;
 	}
 

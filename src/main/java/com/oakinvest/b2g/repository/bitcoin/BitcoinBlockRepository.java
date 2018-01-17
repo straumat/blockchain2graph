@@ -1,9 +1,8 @@
 package com.oakinvest.b2g.repository.bitcoin;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,25 +10,7 @@ import org.springframework.stereotype.Repository;
  * Created by straumat on 09/09/16.
  */
 @Repository
-public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
-
-	/**
-	 * Count the number of block by state.
-	 *
-	 * @param state state
-	 * @return number of block with this state
-	 */
-	@Query("MATCH (b:BitcoinBlock) WHERE b.state = {0} return count(*)")
-	int countBlockByState(BitcoinBlockState state);
-
-	/**
-	 * Returns the first bitcoin block with the desired state.
-	 *
-	 * @param state state
-	 * @return first block.
-	 */
-	@Query("MATCH (b:BitcoinBlock) where b.state = {0} RETURN b order by b.height limit 1")
-	BitcoinBlock findFirstBlockByState(BitcoinBlockState state);
+public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Long> {
 
    /**
 	 * Find a block by its height.
@@ -38,15 +19,6 @@ public interface BitcoinBlockRepository extends GraphRepository<BitcoinBlock> {
 	 * @return block
 	 */
 	BitcoinBlock findByHeight(int height);
-
-    /**
-     * Find a block by it's height get all the data.
-     *
-     * @param height height
-     * @return block
-     */
-    @Query("MATCH (n:BitcoinBlock) WHERE n.height = {0} WITH n MATCH p=(n)-[*0..1]-(m)-[*0..1]-(l) RETURN p, n, m, l")
-    BitcoinBlock findFullByHeight(int height);
 
     /**
 	 * Find a block by its hash.

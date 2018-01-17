@@ -7,6 +7,7 @@ import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.util.BitcoindResponse;
  * getblockhash response.
  * Created by straumat on 26/08/16.
  */
+@SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetBlockHashResponse extends BitcoindResponse {
 

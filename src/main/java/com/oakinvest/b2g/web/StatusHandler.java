@@ -18,176 +18,195 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Component
 public class StatusHandler extends TextWebSocketHandler {
 
-	/**
-	 * Param for message type.
-	 */
-	private static final String PARAM_MESSAGE_TYPE = "messageType";
+    /**
+     * Param for message type.
+     */
+    private static final String PARAM_MESSAGE_TYPE = "messageType";
 
-	/**
-	 * Param for message value.
-	 */
-	private static final String PARAM_MESSAGE_VALUE = "messageValue";
+    /**
+     * Param for message value.
+     */
+    private static final String PARAM_MESSAGE_VALUE = "messageValue";
 
-	/**
-	 * Imported block count.
-	 */
-	private static final String TYPE_IMPORTED_BLOCK_COUNT = "importedBlockCount";
+    /**
+     * Imported block count.
+     */
+    private static final String TYPE_IMPORTED_BLOCK_COUNT = "importedBlockCount";
 
-	/**
-	 * Total block count.
-	 */
-	private static final String TYPE_TOTAL_BLOCK_COUNT = "totalBlockCount";
+    /**
+     * Total block count.
+     */
+    private static final String TYPE_TOTAL_BLOCK_COUNT = "totalBlockCount";
 
-	/**
-	 * Log type.
-	 */
-	private static final String TYPE_LOG = "log";
+    /**
+     * Log type.
+     */
+    private static final String TYPE_LOG = "log";
 
-	/**
-	 * Error message.
-	 */
-	private static final String TYPE_ERROR = "error";
+    /**
+     * Error message.
+     */
+    private static final String TYPE_ERROR = "error";
 
-	/**
-	 * Execution time.
-	 */
-	private static final String TYPE_AVERAGE_BLOCK_IMPORT_DURATION = "averageBlockImportDuration";
+    /**
+     * Execution time.
+     */
+    private static final String TYPE_AVERAGE_BLOCK_IMPORT_DURATION = "averageBlockImportDuration";
 
-	/**
-	 * Logger.
-	 */
-	private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
+    /**
+     * Logger.
+     */
+    private final Logger log = LoggerFactory.getLogger(StatusHandler.class);
 
-	/**
-	 * Sessions.
-	 */
-	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    /**
+     * Sessions.
+     */
+    private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
-	/**
-	 * Gson.
-	 */
-	private final Gson gson = new Gson();
+    /**
+     * Gson.
+     */
+    private final Gson gson = new Gson();
 
-	/**
-	 * Last log message.
-	 */
-	private String lastLogMessage = "";
+    /**
+     * Last log message.
+     */
+    private String lastLogMessage = "";
 
-	/**
-	 * Last error message.
-	 */
-	private String lastErrorMessage = "";
+    /**
+     * Last error message.
+     */
+    private String lastErrorMessage = "";
 
-	/**
-	 * Total block count.
-	 */
-	private int lastTotalBlockCount = -1;
+    /**
+     * Total block count.
+     */
+    private int lastTotalBlockCount = -1;
 
-	/**
-	 * Imported block count.
-	 */
-	private int lastImportedBlockCount = -1;
+    /**
+     * Imported block count.
+     */
+    private int lastImportedBlockCount = -1;
 
-	/**
-	 * Last average block import duration.
-	 */
-	private float lastAverageBlockImportDuration = -1;
+    /**
+     * Last average block import duration.
+     */
+    private float lastAverageBlockImportDuration = -1;
 
-	@Override
-	public final void afterConnectionEstablished(final WebSocketSession newSession) {
-		this.sessions.add(newSession);
-		updateImportedBlockCount(lastImportedBlockCount);
-		updateTotalBlockCount(lastTotalBlockCount);
-		updateError(lastErrorMessage);
-		updateLog(lastLogMessage);
-		if (lastAverageBlockImportDuration != -1) {
-			updateAverageBlockImportDuration(lastAverageBlockImportDuration);
-		}
-	}
+    /**
+     * Constructor.
+     */
+    public StatusHandler() {
+    }
 
-	/**
-	 * Updates lastImportedBlockCount.
-	 *
-	 * @param count new value.
-	 */
-	public final void updateImportedBlockCount(final int count) {
-		lastImportedBlockCount = count;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
-		information.put(PARAM_MESSAGE_VALUE, count);
-		sendMessage(gson.toJson(information));
-	}
+    @Override
+    public final void afterConnectionEstablished(final WebSocketSession newSession) {
+        this.sessions.add(newSession);
+        updateImportedBlockCount(lastImportedBlockCount);
+        updateTotalBlockCount(lastTotalBlockCount);
+        updateError(lastErrorMessage);
+        updateLog(lastLogMessage);
+        if (lastAverageBlockImportDuration != -1) {
+            updateAverageBlockImportDuration(lastAverageBlockImportDuration);
+        }
+    }
 
-	/**
-	 * Updates lastTotalBlockCount.
-	 *
-	 * @param count new value.
-	 */
-	public final void updateTotalBlockCount(final int count) {
-		lastTotalBlockCount = count;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
-		information.put(PARAM_MESSAGE_VALUE, count);
-		sendMessage(gson.toJson(information));
-	}
+    /**
+     * Updates lastImportedBlockCount.
+     *
+     * @param count new value.
+     */
+    public final void updateImportedBlockCount(final int count) {
+        lastImportedBlockCount = count;
+        HashMap<Object, Object> information = new HashMap<>();
+        information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
+        information.put(PARAM_MESSAGE_VALUE, count);
+        sendMessage(gson.toJson(information));
+    }
 
-	/**
-	 * Update the log.
-	 *
-	 * @param logMessage log message
-	 */
-	public final void updateLog(final String logMessage) {
-		lastLogMessage = logMessage;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
-		information.put(PARAM_MESSAGE_VALUE, logMessage);
-		sendMessage(gson.toJson(information));
-	}
+    /**
+     * Updates lastTotalBlockCount.
+     *
+     * @param count new value.
+     */
+    public final void updateTotalBlockCount(final int count) {
+        lastTotalBlockCount = count;
+        HashMap<Object, Object> information = new HashMap<>();
+        information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
+        information.put(PARAM_MESSAGE_VALUE, count);
+        sendMessage(gson.toJson(information));
+    }
 
-	/**
-	 * Update error message.
-	 *
-	 * @param errorMessage error message.
-	 */
-	public final void updateError(final String errorMessage) {
-		lastErrorMessage = errorMessage;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
-		information.put(PARAM_MESSAGE_VALUE, errorMessage);
-		sendMessage(gson.toJson(information));
-	}
+    /**
+     * Update the log.
+     *
+     * @param logMessage log message
+     */
+    public final void updateLog(final String logMessage) {
+        lastLogMessage = logMessage;
+        HashMap<Object, Object> information = new HashMap<>();
+        information.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
+        information.put(PARAM_MESSAGE_VALUE, logMessage);
+        sendMessage(gson.toJson(information));
+    }
 
-	/**
-	 * Update execution time statistic.
-	 *
-	 * @param averageBlockImportDuration new execution time statistics.
-	 */
-	public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
-		lastAverageBlockImportDuration = averageBlockImportDuration;
-		HashMap<Object, Object> information = new HashMap<>();
-		information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_IMPORT_DURATION);
-		information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
-		sendMessage(gson.toJson(information));
-	}
+    /**
+     * Update error message.
+     *
+     * @param errorMessage error message.
+     */
+    public final void updateError(final String errorMessage) {
+        lastErrorMessage = errorMessage;
+        HashMap<Object, Object> information = new HashMap<>();
+        information.put(PARAM_MESSAGE_TYPE, TYPE_ERROR);
+        information.put(PARAM_MESSAGE_VALUE, errorMessage);
+        sendMessage(gson.toJson(information));
+    }
 
-	/**
-	 * Send a message message to all sessions.
-	 *
-	 * @param message message
-	 */
-	private void sendMessage(final String message) {
-		try {
-			// We send the messages to all opened sessions. We delete the one that are closed
-			for (WebSocketSession session : this.sessions) {
+    /**
+     * Update execution time statistic.
+     *
+     * @param averageBlockImportDuration new execution time statistics.
+     */
+    public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
+        lastAverageBlockImportDuration = averageBlockImportDuration;
+        HashMap<Object, Object> information = new HashMap<>();
+        information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_IMPORT_DURATION);
+        information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
+        sendMessage(gson.toJson(information));
+    }
+
+    /**
+     * Send a message message to all sessions.
+     *
+     * @param message message
+     */
+    private void sendMessage(final String message) {
+        try {
+            // We send the messages to all opened sessions. We delete the one that are closed
+            for (WebSocketSession session : this.sessions) {
                 if (session.isOpen()) {
-				    session.sendMessage(new TextMessage(message));
+                    session.sendMessage(new TextMessage(message));
                 } else {
-				    sessions.remove(session);
+                    sessions.remove(session);
                 }
-			}
-		} catch (Exception e) {
-			log.warn("Error sending message : " + e.getMessage());
-		}
-	}
+            }
+        } catch (Exception e) {
+            log.warn("Error sending message : " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected final void handleTextMessage(final WebSocketSession session, final TextMessage message) throws Exception {
+        try {
+            if (session.isOpen()) {
+                session.sendMessage(message);
+            } else {
+                sessions.remove(session);
+            }
+        } catch (Exception e) {
+            log.warn("Error sending message : " + e.getMessage());
+        }
+    }
 
 }

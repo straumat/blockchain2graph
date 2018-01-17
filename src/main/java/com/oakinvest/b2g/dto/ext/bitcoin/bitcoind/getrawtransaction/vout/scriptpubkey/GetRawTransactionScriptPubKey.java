@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * ScriptPubKey.
  * Created by straumat on 01/09/16.
  */
+@SuppressWarnings("unused")
 public class GetRawTransactionScriptPubKey implements Serializable {
 
 	/**

@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.Index;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -10,25 +10,24 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.oakinvest.b2g.domain.bitcoin.BitcoinBlockState.BLOCK_DATA_IMPORTED;
-
 /**
  * Bitcoin block.
  * Created by straumat on 05/09/16.
  */
+@SuppressWarnings("unused")
 @NodeEntity(label = "BitcoinBlock")
 public class BitcoinBlock {
 
 	/**
 	 * ID.
 	 */
-	@GraphId
+    @Id
+    @GeneratedValue
 	private Long id;
 
 	/**
 	 * Block hash.
 	 */
-    @Index
 	@Property(name = "hash")
 	private String hash;
 
@@ -41,19 +40,18 @@ public class BitcoinBlock {
 	/**
 	 * Previous block.
 	 */
-	@Relationship(type = "PREVIOUS_BLOCK", direction = Relationship.OUTGOING)
+	@Relationship(type = "PREVIOUS_BLOCK")
 	private BitcoinBlock previousBlock;
 
 	/**
 	 * Next block.
 	 */
-	@Relationship(type = "NEXT_BLOCK", direction = Relationship.OUTGOING)
+	@Relationship(type = "NEXT_BLOCK")
 	private BitcoinBlock nextBlock;
 
 	/**
 	 * Block height.
 	 */
-	@Index
 	@Property(name = "height")
 	private int height;
 
@@ -128,31 +126,6 @@ public class BitcoinBlock {
 	 */
 	@Property(name = "tx")
 	private ArrayList<String> tx = new ArrayList<>();
-
-	/**
-	 * B2G block state.
-	 */
-	@Index
-	@Property(name = "state")
-	private BitcoinBlockState state = BLOCK_DATA_IMPORTED;
-
-	/**
-	 * Getter state.
-	 *
-	 * @return state
-	 */
-	public final BitcoinBlockState getState() {
-		return state;
-	}
-
-	/**
-	 * Setter state.
-	 *
-	 * @param newState the state to set
-	 */
-	public final void setState(final BitcoinBlockState newState) {
-		state = newState;
-	}
 
 	/**
 	 * For display.

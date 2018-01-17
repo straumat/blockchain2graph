@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.domain.bitcoin;
 
-import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
@@ -13,13 +14,15 @@ import java.util.Set;
  * Bitcoin transaction output.
  * Created by straumat on 22/09/16.
  */
+@SuppressWarnings("unused")
 @NodeEntity(label = "BitcoinTransactionOutput")
 public class BitcoinTransactionOutput {
 
     /**
      * ID.
      */
-    @GraphId
+    @Id
+    @GeneratedValue
     private Long id;
 
     /**
