@@ -32,7 +32,7 @@ public class BitcoinDataServiceBufferLoader {
      */
     @Async
     @SuppressWarnings("checkstyle:designforextension")
-    void loadBuffer(final int requestedBlock) {
+    public void loadBuffer(final int requestedBlock) {
         bitcoinDataService.putBlockInBuffer(requestedBlock + 1);
         bitcoinDataService.removeBlockInBuffer(requestedBlock - 1);
     }
