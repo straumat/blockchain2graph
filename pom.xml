@@ -330,6 +330,7 @@
                     </flowInitContext>
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
+                    <allowSnapshots>true</allowSnapshots>
                     <scmCommentPrefix>[RELEASE]</scmCommentPrefix>
                 </configuration>
             </plugin>
