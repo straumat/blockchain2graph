@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.oakinvest.b2g.configuration.bitcoin.BitcoinConfiguration.BITCOIN_BLOCK_GENERATION_DELAY;
 
 /**
- * Bitcoin data service buffer & cache store
+ * Bitcoin data service buffer and cache store
  * Created by straumat on 30/06/17.
  */
 @Component
