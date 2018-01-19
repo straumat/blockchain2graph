@@ -1,12 +1,12 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblock.GetBlockResult;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.oakinvest.b2g.util.bitcoin.buffer;
 
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

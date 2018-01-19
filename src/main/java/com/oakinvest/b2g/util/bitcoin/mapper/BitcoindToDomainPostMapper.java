@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.util.bitcoin.mapper;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.dto.ext.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
 import org.junit.Before;
