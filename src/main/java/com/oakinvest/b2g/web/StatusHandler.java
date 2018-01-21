@@ -93,12 +93,6 @@ public class StatusHandler extends TextWebSocketHandler {
      */
     private float lastAverageBlockImportDuration = -1;
 
-    /**
-     * Constructor.
-     */
-    public StatusHandler() {
-    }
-
     @Override
     public final void afterConnectionEstablished(final WebSocketSession newSession) {
         this.sessions.add(newSession);

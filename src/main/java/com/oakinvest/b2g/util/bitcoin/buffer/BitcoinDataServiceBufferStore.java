@@ -43,12 +43,6 @@ public class BitcoinDataServiceBufferStore {
     private final Map<String, GetRawTransactionResult> transactionsBuffer = new ConcurrentHashMap<>();
 
     /**
-     * Constructor.
-     */
-    public BitcoinDataServiceBufferStore() {
-    }
-
-    /**
      * Clear buffer.
      */
     @SuppressWarnings("checkstyle:designforextension")

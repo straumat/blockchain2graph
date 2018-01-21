@@ -26,6 +26,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
     /**
+     * Bitcoin addresses cache.
+     */
+    private final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
+
+    /**
      * Constructor.
      *
      * @param newBitcoinRepositories bitcoin repositories
@@ -36,11 +41,6 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         super(newBitcoinRepositories, newBitcoinDataService, newStatusService, newSessionFactory);
     }
-
-    /**
-     * Bitcoin addresses cache.
-     */
-    private final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
 
     /**
      * Return the block to process.
@@ -140,10 +140,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))
                                                         .findFirst();
-                                                if (temp.isPresent()) {
-                                                    if (temp.get().getOutputByIndex(vin.getvOut()).isPresent()) {
-                                                        originTransactionOutput = temp.get().getOutputByIndex(vin.getvOut()).get();
-                                                    }
+                                                if (temp.isPresent() && temp.get().getOutputByIndex(vin.getvOut()).isPresent()) {
+                                                    originTransactionOutput = temp.get().getOutputByIndex(vin.getvOut()).get();
                                                 }
                                             }
 
