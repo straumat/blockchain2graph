@@ -1,14 +1,5 @@
 function configure(url) {
 
-    /*    var socket = new SockJS("http://" + url + "/status");
-        socket.onmessage = function (e) {
-            // Get the content
-            var content = JSON.parse(e.data);
-            logs.append("<div>" + content.messageValue + "</div>");
-
-        };*/
-
-
     /*global url:true*/
     /*eslint no-undef: "error"*/
     // Websocket connection
