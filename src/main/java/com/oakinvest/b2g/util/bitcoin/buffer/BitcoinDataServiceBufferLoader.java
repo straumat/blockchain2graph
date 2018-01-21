@@ -4,6 +4,8 @@ import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * Bitcoind buffer loader.
  * Created by straumat on 04/06/17.
@@ -32,8 +34,16 @@ public class BitcoinDataServiceBufferLoader {
      */
     @Async
     @SuppressWarnings("checkstyle:designforextension")
-    public void loadBuffer(final int requestedBlock) {
-        bitcoinDataService.putBlockInBuffer(requestedBlock + 1);
+    void loadBuffer(final int requestedBlock) {
+        final int blockToLoadInBuffer = requestedBlock + 1;
+
+        // Do we have the total block count ?
+        Optional<Integer> blockCount = bitcoinDataService.getBlockCount();
+
+        // If there is a block to put in buffer, we do it.
+        if (blockCount.isPresent() && blockToLoadInBuffer <= blockCount.get()) {
+            bitcoinDataService.putBlockInBuffer(blockToLoadInBuffer);
+        }
         bitcoinDataService.removeBlockInBuffer(requestedBlock - 1);
     }
 
