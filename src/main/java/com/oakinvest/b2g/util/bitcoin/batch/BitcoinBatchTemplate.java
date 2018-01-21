@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.batch.bitcoin;
+package com.oakinvest.b2g.util.bitcoin.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
@@ -186,7 +186,7 @@ public abstract class BitcoinBatchTemplate {
      * @param blockHeight block height
      * @return formatted block height
      */
-    final String getFormattedBlockHeight(final int blockHeight) {
+    protected final String getFormattedBlockHeight(final int blockHeight) {
         return String.format("%09d", blockHeight);
     }
 
@@ -195,7 +195,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @param message message
      */
-    final void addLog(final String message) {
+    protected final void addLog(final String message) {
         status.addLog(message);
     }
 
@@ -204,7 +204,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @param message message
      */
-    final void addError(final String message) {
+    protected final void addError(final String message) {
         status.addError(message, null);
     }
 
@@ -223,7 +223,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return mapper
      */
-    final BitcoindToDomainMapper getMapper() {
+    protected final BitcoindToDomainMapper getMapper() {
         return mapper;
     }
 
@@ -232,7 +232,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return blockRepository
      */
-    final BitcoinBlockRepository getBlockRepository() {
+    protected final BitcoinBlockRepository getBlockRepository() {
         return blockRepository;
     }
 
@@ -241,7 +241,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return addressRepository
      */
-    final BitcoinAddressRepository getAddressRepository() {
+    protected final BitcoinAddressRepository getAddressRepository() {
         return addressRepository;
     }
 
@@ -250,7 +250,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return transactionOutputRepository
      */
-    final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+    protected final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
         return transactionOutputRepository;
     }
 
@@ -259,7 +259,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return status
      */
-    final StatusService getStatus() {
+    protected final StatusService getStatus() {
         return status;
     }
 
@@ -268,7 +268,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @return bitcoin data service
      */
-    final BitcoinDataService getBitcoinDataService() {
+    protected final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
     }
 

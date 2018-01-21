@@ -8,6 +8,7 @@ import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
+import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Component;
 
