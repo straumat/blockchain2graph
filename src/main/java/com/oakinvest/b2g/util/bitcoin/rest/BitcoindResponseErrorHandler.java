@@ -42,7 +42,6 @@ public class BitcoindResponseErrorHandler implements ResponseErrorHandler {
 	 * @param response the response with the error
 	 * @throws IOException in case of I/O errors
 	 */
-	@SuppressWarnings("NullableProblems")
     @Override
 	public final void handleError(final ClientHttpResponse response) throws IOException {
 		log.debug("Response error: {} {}", response.getStatusCode(), response.getStatusText());

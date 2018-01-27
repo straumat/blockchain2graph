@@ -47,10 +47,10 @@ public class BitcoinDataServiceCountCacheAspect {
         // If getBlockcount has never been call or more than 10 minutes have passed.
         if (elapsedMinutesSinceLastCall > BITCOIN_BLOCK_GENERATION_DELAY) {
             Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
-            if (blockCount.isPresent()) {
-                lastBlockCountValue = blockCount.get();
+            blockCount.ifPresent(integer -> {
+                lastBlockCountValue = integer;
                 lastBlockCountValueAccess = System.currentTimeMillis();
-            }
+            });
             return blockCount;
         } else {
             // Else we return what's in cache.

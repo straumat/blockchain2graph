@@ -22,8 +22,8 @@ public interface StatisticService {
     float getAverageBlockImportDuration();
 
     /**
-     * Clear all statistics.
+     * Reset all statistics.
      */
-    void clear();
+    void reset();
 
 }

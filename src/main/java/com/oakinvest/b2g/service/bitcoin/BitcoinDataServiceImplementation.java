@@ -50,7 +50,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      *
      * @param newBitcoindService bitcoind service
      * @param newStatusService   status service
-     * @param newBuffer     buffer
+     * @param newBuffer          buffer
      */
     public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
         this.status = newStatusService;

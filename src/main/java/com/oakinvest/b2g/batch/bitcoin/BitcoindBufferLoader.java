@@ -63,7 +63,6 @@ public class BitcoindBufferLoader {
         // The block to load in the buffer.
         int blockToLoadInBuffer = currentBlock + bufferSize;
 
-
         // if the block to load in buffer exists in bitcoind.
         if (blockCount.isPresent() && blockToLoadInBuffer < blockCount.get() && !buffer.isBLockInBuffer(blockToLoadInBuffer)) {
             // We load current block + ${bitcoind.buffer.size} blocks ahead.

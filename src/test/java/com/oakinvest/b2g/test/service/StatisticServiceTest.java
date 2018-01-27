@@ -31,7 +31,7 @@ public class StatisticServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        statisticService.clear();
+        statisticService.reset();
     }
 
     /**

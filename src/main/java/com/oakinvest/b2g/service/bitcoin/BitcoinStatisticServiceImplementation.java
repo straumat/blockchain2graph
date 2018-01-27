@@ -79,10 +79,10 @@ public class BitcoinStatisticServiceImplementation implements StatisticService {
     }
 
     /**
-     * Clear all statistics.
+     * Reset all statistics.
      */
     @Override
-    public final void clear() {
+    public final void reset() {
         blockImportDurations.clear();
         averageBlockImportDuration = 0;
     }
