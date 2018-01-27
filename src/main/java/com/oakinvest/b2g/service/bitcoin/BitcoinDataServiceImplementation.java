@@ -8,7 +8,7 @@ import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
+import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -41,21 +41,21 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private final BitcoindService bitcoindService;
 
     /**
-     * Buffer store.
+     * Buffer.
      */
-    private final BitcoinDataServiceBufferStore bufferStore;
+    private final BitcoinDataServiceBuffer buffer;
 
     /**
      * Constructor.
      *
      * @param newBitcoindService bitcoind service
      * @param newStatusService   status service
-     * @param newBufferStore     buffer store
+     * @param newBuffer     buffer
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBufferStore newBufferStore) {
+    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
-        this.bufferStore = newBufferStore;
+        this.buffer = newBuffer;
     }
 
     /**
@@ -110,7 +110,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * @return block result
      */
     private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
-        Optional<GetBlockResult> result = bufferStore.getBlockInBuffer(blockHeight);
+        Optional<GetBlockResult> result = buffer.getBlockInBuffer(blockHeight);
         if (!result.isPresent()) {
             result = getBlockResultFromBitcoind(blockHeight);
         }
@@ -124,7 +124,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * @return transaction result
      */
     private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
-        Optional<GetRawTransactionResult> result = bufferStore.getTransactionInBuffer(txId);
+        Optional<GetRawTransactionResult> result = buffer.getTransactionInBuffer(txId);
         if (!result.isPresent()) {
             result = getRawTransactionResultFromBitcoind(txId);
         }
@@ -255,36 +255,20 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      * @param blockHeight block height
      */
     @Override
-    public final void putBlockInBuffer(final int blockHeight) {
+    public final void addBlockInBuffer(final int blockHeight) {
         Optional<GetBlockResult> block = getBlockResultFromBitcoind(blockHeight);
         block.ifPresent(getBlockResult -> {
 
             // Add the block in buffer.
-            bufferStore.addBlockInBuffer(blockHeight, getBlockResult);
+            buffer.addBlockInBuffer(blockHeight, getBlockResult);
 
             // Add the transactions in buffer.
             getBlockResult.getTx()
                     .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
-                        result.ifPresent(getRawTransactionResult -> bufferStore.addTransactionInBuffer(txId, getRawTransactionResult));
+                        result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
                     });
-        });
-    }
-
-    /**
-     * Remove block and transactions from a block in buffer.
-     *
-     * @param blockHeight block height
-     */
-    @Override
-    public final void removeBlockInBuffer(final int blockHeight) {
-        Optional<GetBlockResult> block = getBlockResult(blockHeight);
-        block.ifPresent(getBlockResult -> {
-            // Remove the block in buffer.
-            bufferStore.removeBlockInBuffer(blockHeight);
-            // Remove the transactions in buffer.
-            getBlockResult.getTx().forEach(bufferStore::removeTransactionInBuffer);
         });
     }
 

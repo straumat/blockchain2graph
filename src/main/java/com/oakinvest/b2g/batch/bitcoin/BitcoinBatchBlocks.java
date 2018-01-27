@@ -136,12 +136,12 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
                                             // if we don't find in the database, this transaction must be in the block.
                                             if (originTransactionOutput == null) {
-                                                Optional<BitcoinTransaction> temp = block.getTransactions()
+                                                Optional<BitcoinTransaction> missingTransaction = block.getTransactions()
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))
                                                         .findFirst();
-                                                if (temp.isPresent() && temp.get().getOutputByIndex(vin.getvOut()).isPresent()) {
-                                                    originTransactionOutput = temp.get().getOutputByIndex(vin.getvOut()).get();
+                                                if (missingTransaction.isPresent() && missingTransaction.get().getOutputByIndex(vin.getvOut()).isPresent()) {
+                                                    originTransactionOutput = missingTransaction.get().getOutputByIndex(vin.getvOut()).get();
                                                 }
                                             }
 

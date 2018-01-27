@@ -1,13 +1,17 @@
 package com.oakinvest.b2g.test.batch;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
+import com.oakinvest.b2g.batch.bitcoin.BitcoindBufferLoader;
 import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
-import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBufferStore;
+import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -36,10 +40,34 @@ public class BitcoindBufferTest {
     private BitcoinDataService bitcoinDataService;
 
     /**
+     * Import batch.
+     */
+    @Autowired
+    private BitcoinBatchBlocks batchBlocks;
+
+    /**
      * Buffer store.
      */
     @Autowired
-    private BitcoinDataServiceBufferStore buffer;
+    private BitcoinDataServiceBuffer buffer;
+
+    /**
+     * Buffer loader.
+     */
+    @Autowired
+    private BitcoindBufferLoader bufferLoader;
+
+    /**
+     * Session factory.
+     */
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    /**
+     * Buffer size.
+     */
+    @Value("${bitcoind.buffer.size}")
+    private int bufferSize;
 
     /**
      * Setup.
@@ -56,128 +84,186 @@ public class BitcoindBufferTest {
      */
     @Test
     public final void bufferTest() throws InterruptedException {
-        // How buffer works ?
-        // When we get a block, we start to load block + 1 & we start to remove block - 1.
+        // Purge database.
+        sessionFactory.openSession().purgeDatabase();
 
         // Block 1.
-        final int testBlock1 = 67886;
-        final String transaction1InBlock1 = "59ec104adc5e1642bc730aa7aa31e60a07b21e9f8ec2130faea64894850b47c4";
+        final int testBlock1 = 1;
+        final String transaction1InBlock1 = "0e3e2357e806b6cdb1f70b54c3a3a17b6714ee1f0e68bebb44a74b1efd512098";
         // Block 2.
-        final int testBlock2 = 67887;
-        final String transaction1InBlock2 = "e952743233c95c0defde7371c53f0fabab234a0f555455b0e493c4c1fd1704ba";
-        final String transaction2InBlock2 = "0d01c58b8d1ba9d2a4893b5fda4092b3237f04ecc251583b41aefd7ee42ae77d";
-        final String transaction3InBlock2 = "a55124d54eb665825956ec08d74ae1420c501b2fdd6cb68264f45b154daf2e2b";
+        final int testBlock2 = 2;
+        final String transaction1InBlock2 = "9b0fc92260312ce44e74ef369f5c66bbb85848f2eddd5a7a1cde251e54ccfdd5";
         // Block 3.
-        final int testBlock3 = 67888;
-        final String transaction1InBlock3 = "3ea32fb5a2e96e03419a6ee3f7c33aef0134de219676e248f0c8c1fe74ce68e4";
+        final int testBlock3 = 3;
+        final String transaction1InBlock3 = "999e1c837c76a1b7fbb7e57baf87b309960f5ffefbf2a9b95dd890602272f644";
         // Block 4.
-        final int testBlock4 = 67889;
-        final String transaction1InBlock4 = "8026b9bd62d1850c33fd8bf5b67d71ca643fade6f5c7232371329a33447721e3";
-        final String transaction2InBlock4 = "2195dabe6463f6d42e459bb004ede7ba428ee2e52fb015549dec1657892503a0";
-        final String transaction3InBlock4 = "829158b7822bfb2128763e71203cb57e6b364c8e4d47332d71bc3aab65c17e5f";
-        final String transaction4InBlock4 = "bbc93b46d7b2e578b9da6f4cc52ca9a3018d17e3b8b4f167de0af0751414784b";
-        final String transaction5InBlock4 = "de279009954a0f302e6d487a533fa00baccc13d39b8d604463db0d0419b3c414";
+        final int testBlock4 = 4;
+        final String transaction1InBlock4 = "df2b060fa2e5e9c8ed5eaf6a45c13753ec8c63282b2688322eba40cd98ea067a";
         // Block 5.
-        final int testBlock5 = 67890;
-        final String transaction1InBlock5 = "1dbc747765eb6a8b9682d72e3ba423e9cd52fc9ec7dbb81421b5c39cd1a6d2a7";
-        final String transaction2InBlock5 = "737498db30719e82d691183016e0f6467258d66e0cc6fff83adb9ed4f340af5a";
-        final String transaction3InBlock5 = "83546f78b5ded47c35f0f7f0114d672cec5b6e7bef2304982ff3905892552a30";
+        final int testBlock5 = 5;
+        final String transaction1InBlock5 = "63522845d294ee9b0188ae5cac91bf389a0c3723f084ca1025e7d9cdfe481ce1";
+        // Block 6.
+        final int testBlock6 = 6;
+        final String transaction1InBlock6 = "20251a76e64e920e58291a30d4b212939aae976baca40e70818ceaa596fb9d37";
+        // Block 7.
+        final int testBlock7 = 7;
+        final String transaction1InBlock7 = "8aa673bc752f2851fd645d6a0a92917e967083007d9c1684f9423b100540673f";
+        // Block 8.
+        final int testBlock8 = 8;
+        final String transaction1InBlock8 = "a6f7f1c0dad0f2eb6b13c4f33de664b1b0e9f22efad5994a6d5b6086d85e85e3";
+        // Block 9.
+        final int testBlock9 = 9;
+        final String transaction1InBlock9 = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
 
-        // We get the testBlock1.
-        bitcoinDataService.getBlockData(testBlock1);
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 1.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
         Thread.sleep(PAUSE_BETWEEN_CALLS);
-
-        // We check that the data in buffer.
-        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction4InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction5InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock5).isPresent()).isFalse();
-
-        // We get the testBlock2.
-        bitcoinDataService.getBlockData(testBlock2);
-        Thread.sleep(PAUSE_BETWEEN_CALLS);
-
-        // We check that the data in buffer.
-        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock2).isPresent()).isTrue();
-        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
-        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction4InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction5InBlock4).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock5).isPresent()).isFalse();
-
-        // We get the testBlock3.
-        bitcoinDataService.getBlockData(testBlock3);
-        Thread.sleep(PAUSE_BETWEEN_CALLS);
-
-        // We check that the data in buffer.
+        // We check the data in buffer.
         assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
         assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
         assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
         assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock2).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock2).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
-        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction4InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction5InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock5).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock5).isPresent()).isFalse();
-
-        // We get the testBlock4.
-        bitcoinDataService.getBlockData(testBlock4);
-        Thread.sleep(PAUSE_BETWEEN_CALLS);
-
-        // We check that the data in buffer.
-        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock2).isPresent()).isFalse();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock2).isPresent()).isFalse();
         assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
         assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
         assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isTrue();
         assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction4InBlock4).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction5InBlock4).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 2.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
+        Thread.sleep(PAUSE_BETWEEN_CALLS);
+        // We check the data in buffer.
+        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
         assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isTrue();
         assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction2InBlock5).isPresent()).isTrue();
-        assertThat(buffer.getTransactionInBuffer(transaction3InBlock5).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 3.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
+        Thread.sleep(PAUSE_BETWEEN_CALLS);
+        // We check the data in buffer.
+        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 4.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
+        Thread.sleep(PAUSE_BETWEEN_CALLS);
+        // We check the data in buffer.
+        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 5.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
+        Thread.sleep(PAUSE_BETWEEN_CALLS);
+        // We check the data in buffer.
+        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+
+        // -------------------------------------------------------------------------------------------------------------
+        // We import the block 6.
+        batchBlocks.execute();
+        bufferLoader.loadInBuffer();
+        Thread.sleep(PAUSE_BETWEEN_CALLS);
+        // We check the data in buffer.
+        assertThat(buffer.getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(buffer.getBlockInBuffer(testBlock7).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock8).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock8).isPresent()).isTrue();
+        assertThat(buffer.getBlockInBuffer(testBlock9).isPresent()).isTrue();
+        assertThat(buffer.getTransactionInBuffer(transaction1InBlock9).isPresent()).isTrue();
     }
 
     /**

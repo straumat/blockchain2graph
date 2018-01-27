@@ -30,13 +30,6 @@ public interface BitcoinDataService {
      *
      * @param blockHeight block height
      */
-    void putBlockInBuffer(int blockHeight);
-
-    /**
-     * Remove block and transactions from a block in buffer.
-     *
-     * @param blockHeight block height
-     */
-    void removeBlockInBuffer(int blockHeight);
+    void addBlockInBuffer(int blockHeight);
 
 }
