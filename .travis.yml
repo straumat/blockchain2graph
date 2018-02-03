@@ -6,7 +6,7 @@ cache:
   directories:
     - $HOME/.m2
 script:
-    - mvn package
+    - mvn package -Dlive=true
     - mvn com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco/jacoco.xml -DprojectToken=$CODACY_PROJECT_TOKEN -DapiToken=$CODACY_PROJECT_TOKEN
 addons:
   artifacts:
