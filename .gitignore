@@ -108,3 +108,4 @@ crashlytics-build.properties
 fabric.properties
 release.properties
 /data/
+Supprimerait .idea/

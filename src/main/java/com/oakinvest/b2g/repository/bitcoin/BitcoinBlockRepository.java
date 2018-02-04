@@ -5,6 +5,8 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * BitcoinBlock repository.
  * Created by straumat on 09/09/16.
@@ -18,7 +20,7 @@ public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Lo
 	 * @param height height
 	 * @return block
 	 */
-	BitcoinBlock findByHeight(int height);
+   Optional<BitcoinBlock> findByHeight(int height);
 
     /**
 	 * Find a block by its hash.
@@ -26,7 +28,7 @@ public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Lo
 	 * @param hash hash
 	 * @return block
 	 */
-	BitcoinBlock findByHash(String hash);
+    Optional<BitcoinBlock> findByHash(String hash);
 
     /**
      * Find a block by its hash.
@@ -35,6 +37,6 @@ public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Lo
      * @return block
      */
     @Query("MATCH (b:BitcoinBlock) WHERE b.hash= {0} return b")
-    BitcoinBlock findByHashWithoutDepth(String hash);
+    Optional<BitcoinBlock> findByHashWithoutDepth(String hash);
 
 }

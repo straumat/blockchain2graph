@@ -75,39 +75,39 @@ public class BitcoinImportTest extends BaseTest {
         final int expectedTxSize = 2;
 
         // Test.
-        BitcoinBlock b = getBitcoinBlockRepository().findByHash(expectedHash);
-        assertThat(b).as("Block").isNotNull();
-        assertThat(b.getHash()).as("Hash").isEqualTo(expectedHash);
-        assertThat(b.getHeight()).as("Height").isEqualTo(expectedHeight);
-        assertThat(b.getSize()).as("Size").isEqualTo(expectedSize);
-        assertThat(b.getVersion()).as("Version").isEqualTo(expectedVersion);
-        assertThat(b.getMerkleRoot()).as("Merkel root").isEqualTo(expectedMerkleroot);
-        assertThat(b.getTime()).as("Time").isEqualTo(expectedTime);
-        assertThat(b.getMedianTime()).as("Median time").isEqualTo(expectedMedianTime);
-        assertThat(b.getNonce()).as("Nonce").isEqualTo(expectedNonce);
-        assertThat(b.getDifficulty()).as("Difficulty").isEqualTo(expectedDifficulty);
-        assertThat(b.getBits()).as("Bits").isEqualTo(expectedBits);
-        assertThat(b.getChainWork()).as("Chain work").isEqualTo(expectedChainwork);
-        assertThat(b.getPreviousBlockHash()).as("Previous block hash").isEqualTo(expectedPreviousblockhash);
-        assertThat(b.getPreviousBlock()).as("Previous block").isNotNull();
-        assertThat(b.getNextBlockHash()).as("Next block hash").isEqualTo(expectedNextblockhash);
-        assertThat(b.getNextBlock()).as("Next block").isNotNull();
-        assertThat(b.getTx()).as("Transaction size").hasSize(expectedTxSize);
+        Optional<BitcoinBlock> b = getBitcoinBlockRepository().findByHash(expectedHash);
+        assertThat(b.isPresent()).as("Block").isTrue();
+        assertThat(b.get().getHash()).as("Hash").isEqualTo(expectedHash);
+        assertThat(b.get().getHeight()).as("Height").isEqualTo(expectedHeight);
+        assertThat(b.get().getSize()).as("Size").isEqualTo(expectedSize);
+        assertThat(b.get().getVersion()).as("Version").isEqualTo(expectedVersion);
+        assertThat(b.get().getMerkleRoot()).as("Merkel root").isEqualTo(expectedMerkleroot);
+        assertThat(b.get().getTime()).as("Time").isEqualTo(expectedTime);
+        assertThat(b.get().getMedianTime()).as("Median time").isEqualTo(expectedMedianTime);
+        assertThat(b.get().getNonce()).as("Nonce").isEqualTo(expectedNonce);
+        assertThat(b.get().getDifficulty()).as("Difficulty").isEqualTo(expectedDifficulty);
+        assertThat(b.get().getBits()).as("Bits").isEqualTo(expectedBits);
+        assertThat(b.get().getChainWork()).as("Chain work").isEqualTo(expectedChainwork);
+        assertThat(b.get().getPreviousBlockHash()).as("Previous block hash").isEqualTo(expectedPreviousblockhash);
+        assertThat(b.get().getPreviousBlock()).as("Previous block").isNotNull();
+        assertThat(b.get().getNextBlockHash()).as("Next block hash").isEqualTo(expectedNextblockhash);
+        assertThat(b.get().getNextBlock()).as("Next block").isNotNull();
+        assertThat(b.get().getTx()).as("Transaction size").hasSize(expectedTxSize);
 
-        assertThat(b.getTransactions()).as("Block transactions").hasSize(expectedTxSize);
+        assertThat(b.get().getTransactions()).as("Block transactions").hasSize(expectedTxSize);
 
         // Test relations between blocks (previous block & next block).
-        assertThat(getBitcoinBlockRepository().findByHeight(1))
+        assertThat(getBitcoinBlockRepository().findByHeight(1).get())
                 .as("Previous & next block")
                 .extracting("previousBlock", "nextBlock.height")
                 .contains(null, 2);
 
-        assertThat(getBitcoinBlockRepository().findByHeight(6))
+        assertThat(getBitcoinBlockRepository().findByHeight(6).get())
                 .as("Previous & next block")
                 .extracting("previousBlock.height", "nextBlock.height")
                 .contains(5, 7);
 
-        assertThat(getBitcoinBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT))
+        assertThat(getBitcoinBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT).get())
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
                 .contains(null, 499);
@@ -117,7 +117,7 @@ public class BitcoinImportTest extends BaseTest {
         final String nonExistingAddress = "TOTO";
 
         // Existing address.
-        assertThat(getAddressRepository().findByAddress(existingAddress))
+        assertThat(getAddressRepository().findByAddress(existingAddress).get())
                 .as("Address exists")
                 .isNotNull()
                 .as("Address value")
@@ -125,9 +125,9 @@ public class BitcoinImportTest extends BaseTest {
                 .contains(existingAddress);
 
         // Non existing address.
-        assertThat(getAddressRepository().findByAddress(nonExistingAddress))
+        assertThat(getAddressRepository().findByAddress(nonExistingAddress).isPresent())
                 .as("Address does not exists")
-                .isNull();
+                .isFalse();
 
         // Expected value for the transaction of the block 170.
         // Transaction.
@@ -167,21 +167,21 @@ public class BitcoinImportTest extends BaseTest {
 
         // Test.
         // Transaction.
-        BitcoinTransaction transaction = getTransactionRepository().findByTxId(transactionHash);
-        assertThat(transaction).as("Transaction").isNotNull();
-        assertThat(transaction.getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
-        assertThat(transaction.getHex()).as("Hex").isEqualTo(expectedTransactionHex);
-        assertThat(transaction.getHash()).as("Hash").isEqualTo(expectedTransactionHash);
-        assertThat(transaction.getSize()).as("Size").isEqualTo(expectedTransactionSize);
-        assertThat(transaction.getvSize()).as("Vsize").isEqualTo(expectedTransactionVSize);
-        assertThat(transaction.getVersion()).as("Version").isEqualTo(expectedTransactionVersion);
-        assertThat(transaction.getLockTime()).as("Lock time").isEqualTo(expectedTransactionLockTime);
-        assertThat(transaction.getBlockHash()).as("Hash").isEqualTo(expectedBlockHash);
-        assertThat(transaction.getTime()).as("Time").isEqualTo(expectedTransactionTime);
-        assertThat(transaction.getBlockTime()).as("Block time").isEqualTo(expectedTransactionBlockTime);
+        Optional<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(transactionHash);
+        assertThat(transaction.isPresent()).as("Transaction").isTrue();
+        assertThat(transaction.get().getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
+        assertThat(transaction.get().getHex()).as("Hex").isEqualTo(expectedTransactionHex);
+        assertThat(transaction.get().getHash()).as("Hash").isEqualTo(expectedTransactionHash);
+        assertThat(transaction.get().getSize()).as("Size").isEqualTo(expectedTransactionSize);
+        assertThat(transaction.get().getvSize()).as("Vsize").isEqualTo(expectedTransactionVSize);
+        assertThat(transaction.get().getVersion()).as("Version").isEqualTo(expectedTransactionVersion);
+        assertThat(transaction.get().getLockTime()).as("Lock time").isEqualTo(expectedTransactionLockTime);
+        assertThat(transaction.get().getBlockHash()).as("Hash").isEqualTo(expectedBlockHash);
+        assertThat(transaction.get().getTime()).as("Time").isEqualTo(expectedTransactionTime);
+        assertThat(transaction.get().getBlockTime()).as("Block time").isEqualTo(expectedTransactionBlockTime);
 
         // Vin 1.
-        BitcoinTransactionInput vin1 = transaction.getInputs().iterator().next();
+        BitcoinTransactionInput vin1 = transaction.get().getInputs().iterator().next();
         assertThat(vin1.getTxId()).as("Txid").isEqualTo(expectedVin1Txid);
         assertThat(vin1.getvOut()).as("Vout").isEqualTo(expectedVin1Vout);
         assertThat(vin1.getScriptSigAsm()).as("Asm").isEqualTo(expectedVin1ScriptSigAsm);
@@ -191,8 +191,8 @@ public class BitcoinImportTest extends BaseTest {
         assertThat(vin1.isCoinbase()).as("Is coinbase").isFalse();
 
         // VOut 1.
-        assertThat(transaction.getOutputByIndex(0).isPresent()).as("Vout 1").isTrue();
-        BitcoinTransactionOutput vout1 = transaction.getOutputByIndex(0).get();
+        assertThat(transaction.get().getOutputByIndex(0).isPresent()).as("Vout 1").isTrue();
+        BitcoinTransactionOutput vout1 = transaction.get().getOutputByIndex(0).get();
         assertThat(vout1.getValue()).as("Value").isEqualTo(expectedVout1Value);
         assertThat(vout1.getN()).as("N").isEqualTo(expectedVout1N);
         assertThat(vout1.getScriptPubKeyAsm()).as("Asm").isEqualTo(expectedVout1ScriptPubKeyAsm);
@@ -202,8 +202,8 @@ public class BitcoinImportTest extends BaseTest {
         assertThat(vout1.getAddresses()).as("Address").contains(expectedVout1ScriptPubKeyAddress);
 
         // VOut 2.
-        assertThat(transaction.getOutputByIndex(1).isPresent()).as("Vout 2").isTrue();
-        BitcoinTransactionOutput vout2 = transaction.getOutputByIndex(1).get();
+        assertThat(transaction.get().getOutputByIndex(1).isPresent()).as("Vout 2").isTrue();
+        BitcoinTransactionOutput vout2 = transaction.get().getOutputByIndex(1).get();
         assertThat(vout2.getValue()).as("Value").isEqualTo(expectedVout2Value);
         assertThat(vout2.getN()).as("N").isEqualTo(expectedVout2N);
         assertThat(vout2.getScriptPubKeyAsm()).as("Asm").isEqualTo(expectedVout2ScriptPubKeyAsm);
@@ -214,7 +214,8 @@ public class BitcoinImportTest extends BaseTest {
 
         // Data to test.
         final String address = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
-        final BitcoinAddress bitcoinAddress = getAddressRepository().findByAddress(address);
+        final Optional<BitcoinAddress> bitcoinAddress = getAddressRepository().findByAddress(address);
+        assertThat(bitcoinAddress.isPresent()).as("Bitcoin address").isTrue();
         Optional<BitcoinTransactionInput> bti1;
         Optional<BitcoinTransactionOutput> bto1;
         Optional<BitcoinTransactionOutput> bto2;
@@ -237,7 +238,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto1.isPresent()) {
             assertThat(bto1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 1 output 1 - address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto1.get().getValue())
                     .as("Transaction 1 output 1 - value")
                     .isEqualTo(50f);
@@ -257,7 +258,7 @@ public class BitcoinImportTest extends BaseTest {
                     .isFalse();
             assertThat(bti1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 2 input 1 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bti1.get().getTransactionOutput().getValue())
                     .as("Transaction 2 input 1 - bitcoin address")
                     .isEqualTo(50f);
@@ -281,7 +282,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto2.isPresent()) {
             assertThat(bto2.get().getBitcoinAddress().getAddress())
                     .as("Transaction 2 output 2 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto2.get().getValue())
                     .as("Transaction 2 output 2 - bitcoin address")
                     .isEqualTo(40f);
@@ -301,7 +302,7 @@ public class BitcoinImportTest extends BaseTest {
                     .isFalse();
             assertThat(bti1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 3 input 1 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bti1.get().getTransactionOutput().getValue())
                     .as("Transaction 3 input 1 - bitcoin address")
                     .isEqualTo(40f);
@@ -325,7 +326,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto2.isPresent()) {
             assertThat(bto2.get().getBitcoinAddress().getAddress())
                     .as("Transaction 3 output 2 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto2.get().getValue())
                     .as("Transaction 3 output 2 - bitcoin address")
                     .isEqualTo(30f);
@@ -345,7 +346,7 @@ public class BitcoinImportTest extends BaseTest {
                     .isFalse();
             assertThat(bti1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 4 input 1 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bti1.get().getTransactionOutput().getValue())
                     .as("Transaction 4 input 1 - bitcoin address")
                     .isEqualTo(30f);
@@ -369,7 +370,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto2.isPresent()) {
             assertThat(bto2.get().getBitcoinAddress().getAddress())
                     .as("Transaction 4 output 2 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto2.get().getValue())
                     .as("Transaction 4 output 2 - bitcoin address")
                     .isEqualTo(29f);
@@ -389,7 +390,7 @@ public class BitcoinImportTest extends BaseTest {
                     .isFalse();
             assertThat(bti1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 5 input 1 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bti1.get().getTransactionOutput().getValue())
                     .as("Transaction 5 input 1 - bitcoin address")
                     .isEqualTo(29f);
@@ -413,7 +414,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto2.isPresent()) {
             assertThat(bto2.get().getBitcoinAddress().getAddress())
                     .as("Transaction 5 output 2 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto2.get().getValue())
                     .as("Transaction 5 output 2 - bitcoin address")
                     .isEqualTo(28f);
@@ -433,7 +434,7 @@ public class BitcoinImportTest extends BaseTest {
                     .isFalse();
             assertThat(bti1.get().getBitcoinAddress().getAddress())
                     .as("Transaction 6 input 1 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bti1.get().getTransactionOutput().getValue())
                     .as("Transaction 6 input 1 - bitcoin address")
                     .isEqualTo(28f);
@@ -457,7 +458,7 @@ public class BitcoinImportTest extends BaseTest {
         if (bto2.isPresent()) {
             assertThat(bto2.get().getBitcoinAddress().getAddress())
                     .as("Transaction 6 output 2 - bitcoin address")
-                    .isEqualTo(bitcoinAddress.getAddress());
+                    .isEqualTo(bitcoinAddress.get().getAddress());
             assertThat(bto2.get().getValue())
                     .as("Transaction 6 output 2 - bitcoin address")
                     .isEqualTo(18f);
@@ -474,13 +475,15 @@ public class BitcoinImportTest extends BaseTest {
      * @return transaction input
      */
     private Optional<BitcoinTransactionInput> getTransactionInput(final String txId, final int index) {
-        final BitcoinTransaction transaction = getTransactionRepository().findByTxId(txId);
+        final Optional<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(txId);
         int i = 0;
-        for (BitcoinTransactionInput input : transaction.getInputs()) {
-            if (i == index) {
-                return getTransactionInputRepository().findById(input.getId());
+        if (transaction.isPresent()) {
+            for (BitcoinTransactionInput input : transaction.get().getInputs()) {
+                if (i == index) {
+                    return getTransactionInputRepository().findById(input.getId());
+                }
+                i++;
             }
-            i++;
         }
         return Optional.empty();
     }
@@ -493,12 +496,7 @@ public class BitcoinImportTest extends BaseTest {
      * @return transaction input
      */
     private Optional<BitcoinTransactionOutput> getTransactionOutput(final String txId, final int index) {
-        BitcoinTransactionOutput o = getTransactionOutputRepository().findByTxIdAndN(txId, index);
-        if (o != null) {
-            return Optional.of(o);
-        } else {
-            return Optional.empty();
-        }
+        return getTransactionOutputRepository().findByTxIdAndN(txId, index);
     }
 
 }

@@ -80,7 +80,10 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
     private BitcoinAddress getBitcoinAddress(final String address) {
         BitcoinAddress bitcoinAddress = addressesCache.get(address);
         if (bitcoinAddress == null) {
-            bitcoinAddress = getAddressRepository().findByAddressWithoutDepth(address);
+            Optional<BitcoinAddress> addressInRepository = getAddressRepository().findByAddressWithoutDepth(address);
+            if (addressInRepository.isPresent()) {
+                bitcoinAddress = addressInRepository.get();
+            }
         }
         return bitcoinAddress;
     }
@@ -132,27 +135,27 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                                         .forEach(vin -> {
                                             // -------------------------------------------------------------------------
                                             // We retrieve the original transaction.
-                                            BitcoinTransactionOutput originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
+                                            Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                             // if we don't find in the database, this transaction must be in the block.
-                                            if (originTransactionOutput == null) {
+                                            if (originTransactionOutput.isPresent()) {
                                                 Optional<BitcoinTransaction> missingTransaction = block.getTransactions()
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))
                                                         .findFirst();
                                                 if (missingTransaction.isPresent() && missingTransaction.get().getOutputByIndex(vin.getvOut()).isPresent()) {
-                                                    originTransactionOutput = missingTransaction.get().getOutputByIndex(vin.getvOut()).get();
+                                                    originTransactionOutput = Optional.of(missingTransaction.get().getOutputByIndex(vin.getvOut()).get());
                                                 }
                                             }
 
-                                            if (originTransactionOutput != null) {
+                                            if (originTransactionOutput.isPresent()) {
                                                 // -------------------------------------------------------------------------
                                                 // We create the link.
-                                                vin.setTransactionOutput(originTransactionOutput);
+                                                vin.setTransactionOutput(originTransactionOutput.get());
 
                                                 // -------------------------------------------------------------------------
                                                 // We set all the addresses linked to this input.
-                                                originTransactionOutput.getAddresses()
+                                                originTransactionOutput.get().getAddresses()
                                                         .stream()
                                                         .filter(Objects::nonNull)
                                                         .forEach(a -> vin.setBitcoinAddress(getBitcoinAddress(a)));
@@ -182,11 +185,11 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
-            if (block.getHeight() > 1) {
-                BitcoinBlock previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
-                block.setPreviousBlock(previousBlock);
+            Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
+            if (previousBlock.isPresent()) {
+                block.setPreviousBlock(previousBlock.get());
                 addLog("Setting the previous block of this block");
-                previousBlock.setNextBlock(block);
+                previousBlock.get().setNextBlock(block);
                 addLog("Setting this block as next block of the previous one");
             }
 
