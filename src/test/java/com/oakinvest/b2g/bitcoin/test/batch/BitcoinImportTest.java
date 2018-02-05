@@ -9,7 +9,6 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutputType;
 import org.junit.Test;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,13 +23,13 @@ public class BitcoinImportTest extends BaseTest {
     /**
      * Number of blocs to import.
      */
-    private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 500;
+    private static final int NUMBERS_OF_BLOCK_TO_IMPORT = 600;
 
     /**
-     * Importing the data.
+     * importBlock() test.
      */
-    @PostConstruct
-    public void importBlock() {
+    @Test
+    public final void blocksDataTest() {
         // Reset the database.
         getSessionFactory().openSession().purgeDatabase();
 
@@ -51,13 +50,7 @@ public class BitcoinImportTest extends BaseTest {
                 fail("Error while importing : " + e.getMessage());
             }
         }
-    }
 
-    /**
-     * importBlock() test.
-     */
-    @Test
-    public final void blocksDataTest() {
         // Expected values.
         final String expectedHash = "00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee";
         final int expectedHeight = 170;
@@ -110,7 +103,7 @@ public class BitcoinImportTest extends BaseTest {
         assertThat(getBitcoinBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT).get())
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
-                .contains(null, 499);
+                .contains(null, NUMBERS_OF_BLOCK_TO_IMPORT - 1);
 
         // Testing that the address of block 500 is imported and that non existing address does not.
         final String existingAddress = "1C1ENNWdkPMyhZ7xTEM4Kwq1FTUifZNCRd";

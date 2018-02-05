@@ -138,7 +138,7 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                                             Optional<BitcoinTransactionOutput> originTransactionOutput = getTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                             // if we don't find in the database, this transaction must be in the block.
-                                            if (originTransactionOutput.isPresent()) {
+                                            if (!originTransactionOutput.isPresent()) {
                                                 Optional<BitcoinTransaction> missingTransaction = block.getTransactions()
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))
@@ -160,6 +160,8 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
                                                         .filter(Objects::nonNull)
                                                         .forEach(a -> vin.setBitcoinAddress(getBitcoinAddress(a)));
                                             } else {
+                                                //addError("In block " + getFormattedBlockHeight(block.getHeight()));
+                                                //addError("Impossible to find the origin transaction of " + vin.getTxId() + " / " + vin.getvOut());
                                                 throw new RuntimeException("Origin transaction not found " + vin.getTxId() + " / " + vin.getvOut());
                                             }
                                         });

@@ -1,8 +1,5 @@
 *target*
 
-# Bitcoind cache data
-src/test/resources/cache
-
 # eclipse specific git ignore
 bin/**
 .tmp/
