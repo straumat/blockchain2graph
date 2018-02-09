@@ -4,8 +4,6 @@ import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
 import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,12 +22,12 @@ public class BitcoindBlockData implements Serializable {
 	/**
 	 * Bitcoin transactions.
 	 */
-	private List<GetRawTransactionResult> transactions = new LinkedList<>();
+	private List<GetRawTransactionResult> transactions;
 
     /**
      * Bitcoin addresses used in the block.
      */
-    private Set<String> addresses = new HashSet<>();
+    private Set<String> addresses;
 
 	/**
 	 * Constructor.
