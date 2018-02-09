@@ -11,7 +11,6 @@ import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.PostConstruct;
@@ -91,7 +90,6 @@ public abstract class BitcoinBatchTemplate {
      * @param newStatusService       status service
      * @param newSessionFactory      session factory
      */
-    @Autowired
     public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
