@@ -98,7 +98,9 @@ public class StatusHandler extends TextWebSocketHandler {
         this.sessions.add(newSession);
         updateImportedBlockCount(lastImportedBlockCount);
         updateTotalBlockCount(lastTotalBlockCount);
-        updateError(lastErrorMessage);
+        if (!"".equals(lastErrorMessage)) {
+            updateError(lastErrorMessage);
+        }
         updateLog(lastLogMessage);
         if (lastAverageBlockImportDuration != -1) {
             updateAverageBlockImportDuration(lastAverageBlockImportDuration);

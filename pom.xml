@@ -80,7 +80,7 @@
 
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
-        <neo4j.version>3.3.2</neo4j.version>
+        <neo4j.version>3.3.3</neo4j.version>
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
         <neo4j-driver.version>3.0.2</neo4j-driver.version>
         <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
@@ -94,11 +94,9 @@
         <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator -->
         <webjars-locator.version>0.32-1</webjars-locator.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
-        <bootstrap.version>3.3.7-1</bootstrap.version>
+        <bootstrap.version>4.0.0</bootstrap.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
-        <jquery.version>3.2.1</jquery.version>
-        <!-- https://mvnrepository.com/artifact/org.webjars/sockjs-client -->
-        <sockjs.version>1.1.2</sockjs.version>
+        <jquery.version>3.3.1</jquery.version>
 
     </properties>
     <!-- =========================================================================================================== -->
@@ -196,11 +194,6 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>sockjs-client</artifactId>
-            <version>${sockjs.version}</version>
         </dependency>
 
         <!-- CSS -->
