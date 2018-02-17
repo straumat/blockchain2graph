@@ -11,6 +11,7 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -262,8 +263,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             // Add the block in buffer.
             buffer.addBlockInBuffer(blockHeight, getBlockResult);
 
+            // Invert the tx order to start by the end.
+            ArrayList<String> transactions = getBlockResult.getTx();
+            Collections.reverse(transactions);
+
             // Add the transactions in buffer.
-            getBlockResult.getTx()
+            transactions
                     .parallelStream()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
