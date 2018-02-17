@@ -8,6 +8,7 @@ import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by straumat on 27/02/17.
  */
 @Component
-public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
+public class BitcoinBatch extends BitcoinBatchTemplate {
 
     /**
      * Bitcoin addresses cache.
@@ -35,11 +36,12 @@ public class BitcoinBatchBlocks extends BitcoinBatchTemplate {
      *
      * @param newBitcoinRepositories bitcoin repositories
      * @param newBitcoinDataService  bitcoin data service
+     * @param newBitcoinDataServiceBufferLoader bitcoin data service buffer loader
      * @param newStatusService       status
      * @param newSessionFactory      session factory
      */
-    public BitcoinBatchBlocks(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
-        super(newBitcoinRepositories, newBitcoinDataService, newStatusService, newSessionFactory);
+    public BitcoinBatch(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+        super(newBitcoinRepositories, newBitcoinDataService, newBitcoinDataServiceBufferLoader, newStatusService, newSessionFactory);
     }
 
     /**

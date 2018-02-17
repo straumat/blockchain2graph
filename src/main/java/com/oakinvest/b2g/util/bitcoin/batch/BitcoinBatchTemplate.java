@@ -7,6 +7,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
@@ -63,6 +64,11 @@ public abstract class BitcoinBatchTemplate {
     private final BitcoinDataService bitcoinDataService;
 
     /**
+     * Bitcoind data service buffer loader.
+     */
+    private final BitcoinDataServiceBufferLoader bitcoinDataServiceBufferLoader;
+
+    /**
      * Status service.
      */
     private final StatusService status;
@@ -85,16 +91,18 @@ public abstract class BitcoinBatchTemplate {
     /**
      * Constructor.
      *
-     * @param newBitcoinRepositories bitcoin repositories
-     * @param newBitcoinDataService  bitcoin data service
-     * @param newStatusService       status service
-     * @param newSessionFactory      session factory
+     * @param newBitcoinRepositories            bitcoin repositories
+     * @param newBitcoinDataService             bitcoin data service
+     * @param newBitcoinDataServiceBufferLoader bitcoind data service buffer loader
+     * @param newStatusService                  status service
+     * @param newSessionFactory                 session factory
      */
-    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
+        this.bitcoinDataServiceBufferLoader = newBitcoinDataServiceBufferLoader;
         this.status = newStatusService;
         this.sessionFactory = newSessionFactory;
     }
@@ -136,6 +144,9 @@ public abstract class BitcoinBatchTemplate {
 
                 // If the process ended well.
                 blockToProcess.ifPresent((BitcoinBlock bitcoinBlock) -> {
+                    // Before saving it, we start to load the next block to load in the buffer.
+                    bitcoinDataServiceBufferLoader.loadBlockInBuffer(blockHeightToProcess.get() + 1);
+
                     // If the block has been well processed, we change the state and we save it.
                     addLog("Saving block data");
                     getBlockRepository().save(bitcoinBlock);

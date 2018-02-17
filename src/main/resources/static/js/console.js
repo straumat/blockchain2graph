@@ -38,7 +38,7 @@ function configure(url) {
             case "log":
                 logs.append("<div>" + response.messageValue.replace("Blocks batch - ", "") + "</div>");
                 // We clean to avoid having too much logs.
-                if (logs.children().length > 19) {
+                if (logs.children().length > 18) {
                     logs.children().eq(0).remove();
                 }
                 break;

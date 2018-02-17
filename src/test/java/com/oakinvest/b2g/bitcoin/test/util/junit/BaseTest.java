@@ -1,8 +1,7 @@
 package com.oakinvest.b2g.bitcoin.test.util.junit;
 
 import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.bitcoin.BitcoinBatchBlocks;
-import com.oakinvest.b2g.batch.bitcoin.BitcoindBufferLoader;
+import com.oakinvest.b2g.batch.bitcoin.BitcoinBatch;
 import com.oakinvest.b2g.bitcoin.test.util.mock.BitcoindMock;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
@@ -85,19 +84,13 @@ public abstract class BaseTest {
      * Import batch.
      */
     @Autowired
-    private BitcoinBatchBlocks batchBlocks;
+    private BitcoinBatch batchBlocks;
 
     /**
      * Buffer store.
      */
     @Autowired
     private BitcoinDataServiceBuffer buffer;
-
-    /**
-     * Buffer loader.
-     */
-    @Autowired
-    private BitcoindBufferLoader bufferLoader;
 
     /**
      * Bitcoind service.
@@ -144,7 +137,7 @@ public abstract class BaseTest {
      *
      * @return batchBlocks
      */
-    public final BitcoinBatchBlocks getBatchBlocks() {
+    public final BitcoinBatch getBatchBlocks() {
         return batchBlocks;
     }
 
@@ -155,15 +148,6 @@ public abstract class BaseTest {
      */
     public final BitcoinDataServiceBuffer getBuffer() {
         return buffer;
-    }
-
-    /**
-     * Getter bufferLoader.
-     *
-     * @return bufferLoader
-     */
-    public final BitcoindBufferLoader getBufferLoader() {
-        return bufferLoader;
     }
 
     /**
