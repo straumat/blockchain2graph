@@ -97,7 +97,7 @@ public abstract class BitcoinBatchTemplate {
      * @param newStatusService                  status service
      * @param newSessionFactory                 session factory
      */
-    public BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+    protected BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();

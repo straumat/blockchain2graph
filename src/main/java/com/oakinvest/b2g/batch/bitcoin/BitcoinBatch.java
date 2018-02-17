@@ -190,12 +190,12 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
             // ---------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
             Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
-            if (previousBlock.isPresent()) {
-                block.setPreviousBlock(previousBlock.get());
+            previousBlock.ifPresent(bitcoinBlock -> {
+                block.setPreviousBlock(bitcoinBlock);
                 addLog("Setting the previous block of this block");
-                previousBlock.get().setNextBlock(block);
+                bitcoinBlock.setNextBlock(block);
                 addLog("Setting this block as next block of the previous one");
-            }
+            });
 
             // ---------------------------------------------------------------------------------------------------------
             // We return the block.

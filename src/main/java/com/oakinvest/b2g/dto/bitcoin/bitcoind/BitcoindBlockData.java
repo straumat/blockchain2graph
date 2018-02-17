@@ -22,12 +22,12 @@ public class BitcoindBlockData implements Serializable {
 	/**
 	 * Bitcoin transactions.
 	 */
-	private List<GetRawTransactionResult> transactions;
+	private final List<GetRawTransactionResult> transactions;
 
     /**
      * Bitcoin addresses used in the block.
      */
-    private Set<String> addresses;
+    private final Set<String> addresses;
 
 	/**
 	 * Constructor.

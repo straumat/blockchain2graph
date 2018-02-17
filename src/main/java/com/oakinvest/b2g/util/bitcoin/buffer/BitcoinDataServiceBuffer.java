@@ -126,7 +126,7 @@ public class BitcoinDataServiceBuffer {
      *
      * @param txId transaction id
      */
-    public final void removeTransactionInBuffer(final String txId) {
+    private void removeTransactionInBuffer(final String txId) {
         transactionsBuffer.remove(txId);
     }
 
