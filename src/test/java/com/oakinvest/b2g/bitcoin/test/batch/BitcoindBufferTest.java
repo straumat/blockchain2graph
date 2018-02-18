@@ -56,8 +56,8 @@ public class BitcoindBufferTest extends BaseTest {
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
@@ -82,8 +82,8 @@ public class BitcoindBufferTest extends BaseTest {
         // We check the data in getBuffer().
         assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
@@ -108,8 +108,8 @@ public class BitcoindBufferTest extends BaseTest {
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
         assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
@@ -134,8 +134,8 @@ public class BitcoindBufferTest extends BaseTest {
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
         assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
@@ -160,8 +160,8 @@ public class BitcoindBufferTest extends BaseTest {
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
         assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
@@ -186,8 +186,8 @@ public class BitcoindBufferTest extends BaseTest {
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
         assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
-        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isTrue();
         assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
         assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();

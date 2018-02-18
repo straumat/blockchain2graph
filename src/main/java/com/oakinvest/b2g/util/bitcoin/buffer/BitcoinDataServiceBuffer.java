@@ -41,7 +41,7 @@ public class BitcoinDataServiceBuffer {
     public final void purge(final int lastBlockProcessed) {
         blocksBuffer.forEach((blockHeight, block) -> {
             // If the block is under the current block height, we remove everything
-            if (blockHeight <= lastBlockProcessed) {
+            if (blockHeight < lastBlockProcessed) {
                 block.getTx().forEach(this::removeTransactionInBuffer);
                 removeBlockInBuffer(blockHeight);
             }
@@ -56,16 +56,6 @@ public class BitcoinDataServiceBuffer {
      */
     public final void addBlockInBuffer(final int blockHeight, final GetBlockResult getBlockResult) {
         blocksBuffer.put(blockHeight, getBlockResult);
-    }
-
-    /**
-     * Returns true if the block is in the buffer.
-     *
-     * @param blockHeight block height
-     * @return true if it's in the buffer
-     */
-    public final boolean isBLockInBuffer(final int blockHeight) {
-        return getBlockInBuffer(blockHeight).isPresent();
     }
 
     /**

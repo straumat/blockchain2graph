@@ -114,6 +114,8 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
         Optional<GetBlockResult> result = buffer.getBlockInBuffer(blockHeight);
         if (!result.isPresent()) {
             result = getBlockResultFromBitcoind(blockHeight);
+            // We add it so the buffer loader won't try to add it.
+            result.ifPresent(getBlockResult -> buffer.addBlockInBuffer(blockHeight, getBlockResult));
         }
         return result;
     }
@@ -128,6 +130,8 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
         Optional<GetRawTransactionResult> result = buffer.getTransactionInBuffer(txId);
         if (!result.isPresent()) {
             result = getRawTransactionResultFromBitcoind(txId);
+            // We add it so the buffer loader won't try to add it.
+            result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
         }
         return result;
     }
@@ -268,8 +272,8 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             Collections.reverse(transactions);
 
             // Add the transactions in buffer.
-            transactions
-                    .parallelStream()
+            transactions.parallelStream()
+                    .filter(txId -> !buffer.getTransactionInBuffer(txId).isPresent())
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoind(txId);
                         result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
