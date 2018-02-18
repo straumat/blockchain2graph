@@ -34,11 +34,11 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
     /**
      * Constructor.
      *
-     * @param newBitcoinRepositories bitcoin repositories
-     * @param newBitcoinDataService  bitcoin data service
+     * @param newBitcoinRepositories            bitcoin repositories
+     * @param newBitcoinDataService             bitcoin data service
      * @param newBitcoinDataServiceBufferLoader bitcoin data service buffer loader
-     * @param newStatusService       status
-     * @param newSessionFactory      session factory
+     * @param newStatusService                  status
+     * @param newSessionFactory                 session factory
      */
     public BitcoinBatch(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
         super(newBitcoinRepositories, newBitcoinDataService, newBitcoinDataServiceBufferLoader, newStatusService, newSessionFactory);
@@ -132,7 +132,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                 // -------------------------------------------------------------------------------------
                                 // For each Vin.
                                 t.getInputs()
-                                        .parallelStream()
+                                        .stream()
                                         .filter(vin -> !vin.isCoinbase()) // If it's NOT a coinbase transaction.
                                         .forEach(vin -> {
                                             // -------------------------------------------------------------------------
@@ -171,7 +171,6 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                 // -------------------------------------------------------------------------------------
                                 // For each Vout.
                                 t.getOutputs()
-                                        .parallelStream()
                                         .forEach(vout -> {
                                             // -------------------------------------------------------------------------
                                             // We set all the addresses linked to this output.
