@@ -50,7 +50,7 @@ function configure(url) {
 
             // -------------------------------------------------------------------------------------------------------------
             case "error":
-                $("#error").attr('style', '');
+                $("#error").attr("style", "");
                 $("#lastErrorMessage").text(response.messageValue);
                 break;
         }
