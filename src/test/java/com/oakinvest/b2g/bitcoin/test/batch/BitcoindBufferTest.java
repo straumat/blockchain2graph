@@ -20,7 +20,6 @@ public class BitcoindBufferTest extends BaseTest {
      * Buffer test.
      */
     @Test
-    @Ignore
     public final void bufferTest() throws InterruptedException {
         // Purge database.
         getSessionFactory().openSession().purgeDatabase();

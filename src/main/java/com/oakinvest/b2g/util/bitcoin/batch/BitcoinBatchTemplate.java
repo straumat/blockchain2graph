@@ -145,7 +145,7 @@ public abstract class BitcoinBatchTemplate {
                 // If the process ended well.
                 blockToProcess.ifPresent((BitcoinBlock bitcoinBlock) -> {
                     // Before saving it, we start to load the next block to load in the buffer.
-                    //bitcoinDataServiceBufferLoader.loadBlockInBuffer(blockHeightToProcess.get() + 1);
+                    bitcoinDataServiceBufferLoader.loadBlockInBuffer(blockHeightToProcess.get() + 1);
 
                     // If the block has been well processed, we change the state and we save it.
                     addLog("Saving block data");
