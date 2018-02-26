@@ -69,11 +69,9 @@ public class BitcoindServiceTest extends BaseTest {
 
     /**
      * Setup.
-     *
-     * @throws Exception exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getBitcoindMock().resetErrors();
     }
 
