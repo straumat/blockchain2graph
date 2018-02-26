@@ -117,7 +117,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                     .filter(address -> !getAddressRepository().exists(address)) // If the address doesn't exists.
                     .forEach(a -> {
                         addressesCache.put(a, new BitcoinAddress(a));
-                        addLog("- Address " + a + " created");
+                        addLog("- Address " + a + " is new");
                     });
 
             // ---------------------------------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
-            Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHashWithoutDepth(block.getPreviousBlockHash());
+            Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHeight(block.getHeight() - 1);
             previousBlock.ifPresent(previous -> {
                 block.setPreviousBlock(previous);
                 addLog("Setting the previous block of this block");
