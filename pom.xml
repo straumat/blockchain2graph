@@ -88,7 +88,7 @@
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <gson.version>2.8.2</gson.version>
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
-        <assertj.version>3.9.0</assertj.version>
+        <assertj.version>3.9.1</assertj.version>
 
         <!-- Web development -->
         <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator -->
@@ -107,7 +107,7 @@
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.RC2</version>
+        <version>2.0.0.RELEASE</version>
         <relativePath/>
     </parent>
     <!-- =========================================================================================================== -->

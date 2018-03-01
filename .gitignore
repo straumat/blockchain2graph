@@ -1,5 +1,7 @@
 *target*
 
+src/test/resources/cache/*
+
 # eclipse specific git ignore
 bin/**
 .tmp/
