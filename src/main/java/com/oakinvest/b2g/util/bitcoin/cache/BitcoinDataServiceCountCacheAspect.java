@@ -18,6 +18,11 @@ import static com.oakinvest.b2g.configuration.bitcoin.BitcoinConfiguration.BITCO
 public class BitcoinDataServiceCountCacheAspect {
 
     /**
+     * Number of blocks before the cache activate.
+     */
+    private static final int BLOCK_CACHE_START = 10000;
+
+    /**
      * How many milli seconds in 1 minute.
      */
     private static final float MILLISECONDS_IN_ONE_MINUTE = 60F * 1000F;
@@ -44,11 +49,12 @@ public class BitcoinDataServiceCountCacheAspect {
     public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
         float elapsedMinutesSinceLastCall = (System.currentTimeMillis() - lastBlockCountValueAccess) / MILLISECONDS_IN_ONE_MINUTE;
 
-        // If getBlockcount has never been call or more than 10 minutes have passed.
-        if (elapsedMinutesSinceLastCall > BITCOIN_BLOCK_GENERATION_DELAY) {
+        // We retrieve the value from server.
+        // If getBlockcount has never been call or more than 10 minutes have passed since last call or we are under 10000 blocks.
+        if (elapsedMinutesSinceLastCall > BITCOIN_BLOCK_GENERATION_DELAY || lastBlockCountValue < BLOCK_CACHE_START) {
             Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
-            blockCount.ifPresent(integer -> {
-                lastBlockCountValue = integer;
+            blockCount.ifPresent(count -> {
+                lastBlockCountValue = count;
                 lastBlockCountValueAccess = System.currentTimeMillis();
             });
             return blockCount;
