@@ -92,11 +92,16 @@
 
         <!-- Web development -->
         <!-- https://mvnrepository.com/artifact/org.webjars/webjars-locator -->
-        <webjars-locator.version>0.32-1</webjars-locator.version>
+        <webjars-locator.version>0.33</webjars-locator.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
         <bootstrap.version>4.0.0</bootstrap.version>
         <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
         <jquery.version>3.3.1</jquery.version>
+
+        <!-- Docker -->
+        <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
+        <dockerfile-maven-plugin.version>1.4.0</dockerfile-maven-plugin.version>
+        <docker.image.prefix>straumat</docker.image.prefix>
 
     </properties>
     <!-- =========================================================================================================== -->
@@ -214,6 +219,13 @@
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Docker -->
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>dockerfile-maven-plugin</artifactId>
+            <version>${dockerfile-maven-plugin.version}</version>
         </dependency>
 
     </dependencies>
@@ -336,6 +348,29 @@
                 </configuration>
             </plugin>
 
+            <!-- Docker plugin -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>./target/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+
         </plugins>
 
     </build>
@@ -369,6 +404,9 @@
         <!-- Produces a jar -->
         <profile>
             <id>jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <packaging.type>jar</packaging.type>
             </properties>
@@ -382,9 +420,6 @@
         <!-- Produces a war -->
         <profile>
             <id>war</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <packaging.type>war</packaging.type>
             </properties>
