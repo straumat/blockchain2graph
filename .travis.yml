@@ -1,18 +1,20 @@
 language: java
 jdk:
-  - oraclejdk8
+    - oraclejdk8
 sudo: required
 cache:
   directories:
     - $HOME/.m2
 before_install:
-  - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
+    - sudo apt-get install jq
+    - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
 script:
-    - mvn package -P war -Dlive=true
+    - mvn package -P war -Dlive=true -Ddockerfile.skip
     - mvn package -P jar
 after_success:
     - java -jar ~/codacy-coverage-reporter-assembly-latest.jar -l Java -r target/site/jacoco/jacoco.xml
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+    - docker push $DOCKER_USERNAME/blockchain2graph
 addons:
   artifacts:
     paths:
