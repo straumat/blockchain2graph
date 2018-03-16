@@ -12,9 +12,9 @@ before_install:
     - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
 script:
     - mvn package -P war -Dlive=true -Ddockerfile.skip
-    - java -jar ~/codacy-coverage-reporter-assembly-latest.jar -l Java -r target/site/jacoco/jacoco.xml
     - mvn package -P jar
 after_success:
+    - java -jar ~/codacy-coverage-reporter-assembly-latest.jar -l Java -r target/site/jacoco/jacoco.xml
     - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
     - docker push $DOCKER_USERNAME/blockchain2graph
 addons:

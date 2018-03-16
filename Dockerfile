@@ -4,12 +4,11 @@ MAINTAINER Stéphane Traumat, stephane.traumat@gmail.com
 
 # Environment.
 ENV DEBIAN_FRONTEND noninteractive
-ENV JAVA_HOME   /usr/lib/jvm/java-8-oracle
 
 # Debian configuration & util packages installation.
 RUN apt-get update && \
     # Util packages.
-    apt-get install -y ca-certificates acl wget apt-utils initscripts && \
+    apt-get install -y ca-certificates wget apt-utils && \
     # Oracle package configuration.
     echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections && \
     echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu yakkety main" | tee /etc/apt/sources.list.d/webupd8team-java-trusty.list && \
@@ -38,12 +37,9 @@ ENV SPRING_DATA_NEO4J_URI   bolt://neo4j:neo4j@localhost:7687
 
 # Container volume configuration.
 VOLUME /var/lib/neo4j/data
-VOLUME /tmp
 
 # Container port configuration.
-EXPOSE  7474
-EXPOSE  7687
-EXPOSE  8080
+EXPOSE  747 7687 8080
 
 # Container entry point configuration.
 COPY ./docker-service-neo4j.sh /
@@ -52,5 +48,4 @@ COPY ./docker-service-blockchain2graph.sh /
 RUN ["chmod", "+x", "/docker-service-blockchain2graph.sh"]
 COPY ./docker-entrypoint.sh /
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
-
 CMD ["/docker-entrypoint.sh"]
