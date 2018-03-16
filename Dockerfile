@@ -39,7 +39,7 @@ ENV SPRING_DATA_NEO4J_URI   bolt://neo4j:neo4j@localhost:7687
 VOLUME /var/lib/neo4j/data
 
 # Container port configuration.
-EXPOSE  747 7687 8080
+EXPOSE 7474 7687 8080
 
 # Container entry point configuration.
 COPY ./docker-service-neo4j.sh /
