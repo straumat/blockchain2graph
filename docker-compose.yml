@@ -1,0 +1,25 @@
+version: '2'
+services:
+  # --------------------------------------------------------------------------------------------------------------------
+  neo4j:
+    image: neo4j:3.3.3
+    volumes:
+      - /opt/neo4j:/var/lib/neo4j/data
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - NEO4J_AUTH=neo4j/neo4j123
+  # --------------------------------------------------------------------------------------------------------------------
+  blockchain2graph:
+    image: straumat/blockchain2graph:2.1-SNAPSHOT
+    ports:
+      - 8080:8080
+    links:
+      - neo4j
+    environment:
+      - BLOCKCHAIN2GRAPH_ADDRESS=localhost
+      - BITCOIND_HOSTNAME=5.196.65.205
+      - BITCOIND_USERNAME=bitcoinrpc
+      - BITCOIND_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      - SPRING_DATA_NEO4J_URI=bolt://neo4j:neo4j123@neo4j:7687
