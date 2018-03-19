@@ -4,7 +4,7 @@ services:
   bitcoind:
     image: ruimarinho/bitcoin-core:0.15.1
     volumes:
-      - ./target/docker/bitcoind:/home/bitcoin/.bitcoin
+      - ./docker/bitcoind:/home/bitcoin/.bitcoin
     ports:
       - 8332:8332
     command:
@@ -19,7 +19,7 @@ services:
   neo4j:
     image: neo4j:3.3.3
     volumes:
-      - ./target/docker/neo4j:/var/lib/neo4j/data
+      - ./docker/neo4j:/var/lib/neo4j/data
     ports:
       - 7474:7474
       - 7687:7687

@@ -108,3 +108,5 @@ fabric.properties
 release.properties
 /data/
 Supprimerait .idea/
+/docker/
+/src/test/resources/cache/
