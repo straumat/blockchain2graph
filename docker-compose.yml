@@ -17,7 +17,7 @@ services:
       -rpcallowip=::/0
   # ====================================================================================================================
   neo4j:
-    image: neo4j:3.3.3
+    image: neo4j:3.3.4
     volumes:
       - ./docker/neo4j:/var/lib/neo4j/data
     ports:
