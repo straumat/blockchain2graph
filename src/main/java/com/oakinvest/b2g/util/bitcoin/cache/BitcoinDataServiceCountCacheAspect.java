@@ -20,7 +20,7 @@ public class BitcoinDataServiceCountCacheAspect {
     /**
      * Number of blocks before the cache activate.
      */
-    private static final int BLOCK_CACHE_START = 10000;
+    private static final int BLOCK_CACHE_START = 100000;
 
     /**
      * How many milli seconds in 1 minute.

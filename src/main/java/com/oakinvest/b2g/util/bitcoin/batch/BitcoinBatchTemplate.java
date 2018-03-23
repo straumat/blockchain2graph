@@ -35,9 +35,9 @@ public abstract class BitcoinBatchTemplate {
     private static final String LOG_SEPARATOR = "===================================";
 
     /**
-     * Pause to make when there is no block to process (1 second).
+     * Pause to make when there is no block to process (60 seconds).
      */
-    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 1000;
+    private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 60000;
 
     /**
      * Mapper.
@@ -129,7 +129,7 @@ public abstract class BitcoinBatchTemplate {
      * Execute the batch.
      */
     @Transactional
-    @Scheduled(fixedDelay = 1)
+    @Scheduled(fixedDelay = 1, initialDelay = PAUSE_WHEN_NO_BLOCK_TO_PROCESS)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
         batchStartTime = System.currentTimeMillis();
