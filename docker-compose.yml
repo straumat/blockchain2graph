@@ -27,7 +27,7 @@ services:
       - NEO4J_AUTH=neo4j/neo4j123
   # ====================================================================================================================
   blockchain2graph:
-    image: straumat/blockchain2graph:2.1-SNAPSHOT
+    image: straumat/blockchain2graph:2.1
     ports:
       - 8080:8080
     links:
