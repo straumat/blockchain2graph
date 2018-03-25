@@ -1,33 +1,41 @@
 version: '2'
 services:
-  bitcoin:
-    image: kylemanna/bitcoind
+  # ====================================================================================================================
+  bitcoind:
+    image: ruimarinho/bitcoin-core:0.15.1
+    volumes:
+      - ./docker/bitcoind:/home/bitcoin/.bitcoin
     ports:
       - 8332:8332
-    environment:
-      - TXINDEX=1
-      - RPCUSER=bitcoinrpc
-      - RPCPASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
-      - REST=1
+    command:
+      -server=1
+      -rest=1
+      -rpcuser=bitcoinrpc
+      -rpcpassword=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      -txindex=1
+      -rpcallowip=0.0.0.0/0
+      -rpcallowip=::/0
+  # ====================================================================================================================
   neo4j:
-    image: neo4j:3.1.4
+    image: neo4j:3.3.4
+    volumes:
+      - ./docker/neo4j:/var/lib/neo4j/data
     ports:
       - 7474:7474
       - 7687:7687
     environment:
       - NEO4J_AUTH=neo4j/neo4j123
-  tomcat:
-    image: tomcat
+  # ====================================================================================================================
+  blockchain2graph:
+    image: straumat/blockchain2graph:2.1
     ports:
       - 8080:8080
-    volumes:
-      - ./target/blockchain2graph.war:/usr/local/tomcat/webapps/blockchain2graph.war
     links:
-      - bitcoin
+      - bitcoind
       - neo4j
     environment:
       - BLOCKCHAIN2GRAPH_ADDRESS=localhost
-      - BITCOIND_HOSTNAME=bitcoin
+      - BITCOIND_HOSTNAME=bitcoind # Public server : 5.196.65.205
       - BITCOIND_USERNAME=bitcoinrpc
       - BITCOIND_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
       - SPRING_DATA_NEO4J_URI=bolt://neo4j:neo4j123@neo4j:7687
