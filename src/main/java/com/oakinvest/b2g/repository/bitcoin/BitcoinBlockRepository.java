@@ -14,20 +14,29 @@ import java.util.Optional;
 @Repository
 public interface BitcoinBlockRepository extends Neo4jRepository<BitcoinBlock, Long> {
 
-   /**
-	 * Find a block by its height.
-	 *
-	 * @param height height
-	 * @return block
-	 */
-   Optional<BitcoinBlock> findByHeight(int height);
+    /**
+     * Find a block by its height.
+     *
+     * @param height height
+     * @return block
+     */
+    Optional<BitcoinBlock> findByHeight(int height);
 
     /**
-	 * Find a block by its hash.
-	 *
-	 * @param hash hash
-	 * @return block
-	 */
+     * Find a block by its height.
+     *
+     * @param height height
+     * @return block
+     */
+    @Query("MATCH (b:BitcoinBlock) WHERE b.height= {0} return b")
+    Optional<BitcoinBlock> findByHeightWithoutDepth(int height);
+
+    /**
+     * Find a block by its hash.
+     *
+     * @param hash hash
+     * @return block
+     */
     Optional<BitcoinBlock> findByHash(String hash);
 
     /**
