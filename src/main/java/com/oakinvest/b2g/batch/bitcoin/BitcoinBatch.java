@@ -27,11 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BitcoinBatch extends BitcoinBatchTemplate {
 
     /**
-     * Bitcoin addresses cache.
-     */
-    private final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
-
-    /**
      * Constructor.
      *
      * @param newBitcoinRepositories            bitcoin repositories
@@ -74,23 +69,6 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
     }
 
     /**
-     * Retrieve a bitcoin address from the buffer or from neo4j.
-     *
-     * @param address bitcoin address
-     * @return bitcoin address object
-     */
-    private BitcoinAddress getBitcoinAddress(final String address) {
-        BitcoinAddress bitcoinAddress = addressesCache.get(address);
-        if (bitcoinAddress == null) {
-            Optional<BitcoinAddress> addressInRepository = getAddressRepository().findByAddressWithoutDepth(address);
-            if (addressInRepository.isPresent()) {
-                bitcoinAddress = addressInRepository.get();
-            }
-        }
-        return bitcoinAddress;
-    }
-
-    /**
      * Process block.
      *
      * @param blockHeight block height to process.
@@ -108,16 +86,21 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
             final BitcoinBlock block = getMapper().blockDataToBitcoinBlock(blockData.get());
 
             // ---------------------------------------------------------------------------------------------------------
-            // We create all the addresses.
-            addressesCache.clear();
-            addLog("Treating addresses from " + block.getTx().size() + " transaction(s)");
+            // We get all the addresses.
+            addLog("Getting addresses from " + block.getTx().size() + " transaction(s)");
+            final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
             blockData.get().getAddresses()
                     .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.
-                    .filter(address -> !getAddressRepository().exists(address)) // If the address doesn't exists.
                     .forEach(a -> {
-                        addressesCache.put(a, new BitcoinAddress(a));
-                        addLog("- Address " + a + " is new");
+                        Optional<BitcoinAddress> addressInRepository = getAddressRepository().findByAddressWithoutDepth(a);
+                        if (addressInRepository.isPresent()) {
+                            addressesCache.put(a, addressInRepository.get());
+                            addLog("- Address " + a + " already exists");
+                        } else {
+                            addressesCache.put(a, new BitcoinAddress(a));
+                            addLog("- Address " + a + " is new");
+                        }
                     });
 
             // ---------------------------------------------------------------------------------------------------------
@@ -160,7 +143,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                                 originTransactionOutput.get().getAddresses()
                                                         .stream()
                                                         .filter(Objects::nonNull)
-                                                        .forEach(a -> vin.setBitcoinAddress(getBitcoinAddress(a)));
+                                                        .forEach(a -> vin.setBitcoinAddress(addressesCache.get(a)));
                                             } else {
                                                 //addError("In block " + getFormattedBlockHeight(block.getHeight()));
                                                 //addError("Impossible to find the origin transaction of " + vin.getTxId() + " / " + vin.getvOut());
@@ -177,7 +160,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                             vout.getAddresses()
                                                     .stream()
                                                     .filter(Objects::nonNull)
-                                                    .forEach(a -> vout.setBitcoinAddress(getBitcoinAddress(a)));
+                                                    .forEach(a -> vout.setBitcoinAddress(addressesCache.get(a)));
                                         });
 
                                 // -------------------------------------------------------------------------------------
@@ -188,7 +171,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // We set the previous and the next block.
-            Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHeight(block.getHeight() - 1);
+            Optional<BitcoinBlock> previousBlock = getBlockRepository().findByHeightWithoutDepth(block.getHeight() - 1);
             previousBlock.ifPresent(previous -> {
                 block.setPreviousBlock(previous);
                 addLog("Setting the previous block of this block");
