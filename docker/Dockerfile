@@ -2,9 +2,6 @@
 FROM openjdk:8-jre-alpine
 MAINTAINER Stéphane Traumat, stephane.traumat@gmail.com
 
-# Environment.
-ENV DEBIAN_FRONTEND noninteractive
-
 # Install and configure blockchain2graph.
 ARG JAR_FILE
 ADD ${JAR_FILE} /app.jar

@@ -1,6 +1,7 @@
-*target*
-
-src/test/resources/cache/*
+# Linked to the back end.
+project-back-end/target*
+#project-back-end/src/test/resources/cache/*
+docker/data*
 
 # eclipse specific git ignore
 bin/**
@@ -108,4 +109,5 @@ fabric.properties
 release.properties
 /data/
 Supprimerait .idea/
-/docker/
+/project-front-end/dist/
+/docker/blockchain2graph.jar

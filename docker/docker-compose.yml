@@ -4,7 +4,7 @@ services:
   bitcoind:
     image: ruimarinho/bitcoin-core:0.15.1
     volumes:
-      - ./docker/bitcoind:/home/bitcoin/.bitcoin
+      - ./data/bitcoind:/home/bitcoin/.bitcoin
     ports:
       - 8332:8332
     command:
@@ -19,7 +19,7 @@ services:
   neo4j:
     image: neo4j:3.3.4
     volumes:
-      - ./docker/neo4j:/var/lib/neo4j/data
+      - ./data/neo4j:/var/lib/neo4j/data
     ports:
       - 7474:7474
       - 7687:7687
@@ -27,7 +27,7 @@ services:
       - NEO4J_AUTH=neo4j/neo4j123
   # ====================================================================================================================
   blockchain2graph:
-    image: straumat/blockchain2graph:2.2
+    image: straumat/blockchain2graph:2.3-SNAPSHOT
     ports:
       - 8080:8080
     links:
