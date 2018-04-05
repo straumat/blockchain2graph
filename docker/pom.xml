@@ -30,22 +30,8 @@
     <!-- =========================================================================================================== -->
 
     <!-- =========================================================================================================== -->
-    <!-- Dependencies configuration -->
-    <dependencies>
-        <!-- Docker -->
-        <dependency>
-            <groupId>com.spotify</groupId>
-            <artifactId>dockerfile-maven-plugin</artifactId>
-            <version>${dockerfile-maven-plugin.version}</version>
-        </dependency>
-    </dependencies>
-    <!-- =========================================================================================================== -->
-
-    <!-- =========================================================================================================== -->
     <!-- Build configuration -->
     <build>
-        <!-- Project final name -->
-        <finalName>${project.finalName}</finalName>
         <!-- Plugins -->
         <plugins>
             <!-- Docker plugin -->
@@ -66,7 +52,7 @@
                     <repository>${docker.image.prefix}/${project.finalName}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                        <JAR_FILE>${project.finalName}.jar</JAR_FILE>
                     </buildArgs>
                 </configuration>
             </plugin>

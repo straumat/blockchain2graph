@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('blockchain2graph App', () => {
+describe('project-front-end App', () => {
   let page: AppPage;
 
   beforeEach(() => {

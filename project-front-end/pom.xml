@@ -38,7 +38,7 @@
   <!-- =========================================================================================================== -->
   <!-- Build configuration -->
   <build>
-    <!-- Files build for the web -->
+    <!-- Files for the webjar -->
     <resources>
       <resource>
         <directory>dist</directory>
