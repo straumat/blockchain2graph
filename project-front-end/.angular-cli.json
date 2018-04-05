@@ -24,7 +24,6 @@
         "styles.css"
       ],
       "scripts": [
-        "../node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
