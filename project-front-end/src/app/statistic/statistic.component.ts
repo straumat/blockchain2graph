@@ -12,7 +12,7 @@ export class StatisticComponent implements OnInit {
   @Input() backgroundColor = 'bg-info';
   @Input() icon = 'fa-question';
   @Input() title = 'Component title';
-  value  = 'n/a';
+  value = 'n/a';
 
   constructor() {
   }
