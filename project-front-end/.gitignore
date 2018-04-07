@@ -10,6 +10,7 @@
 /node_modules
 
 # IDEs and editors
+target/
 /.idea
 .project
 .classpath
