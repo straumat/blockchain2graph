@@ -2,6 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {StatisticComponent} from './statistic/statistic.component';
+import {Blockchain2graphService} from './blockchain2graph.service';
 
 
 @NgModule({
@@ -12,7 +13,7 @@ import {StatisticComponent} from './statistic/statistic.component';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [Blockchain2graphService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

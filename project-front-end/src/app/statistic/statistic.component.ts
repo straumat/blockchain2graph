@@ -9,6 +9,7 @@ export class StatisticComponent implements OnInit {
 
   @HostBinding('class') class = 'card mb-4 text-white';
 
+  @Input() id = 'no-id';
   @Input() backgroundColor = 'bg-info';
   @Input() icon = 'fa-question';
   @Input() title = 'Component title';
@@ -18,6 +19,10 @@ export class StatisticComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  updateValue(newValue: string) {
+    this.value = newValue;
   }
 
 }

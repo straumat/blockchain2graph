@@ -9,8 +9,7 @@ describe('StatisticComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [StatisticComponent]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -24,12 +23,18 @@ describe('StatisticComponent', () => {
   });
 
   it('Should be initialized', () => {
-    const scFixture = TestBed.createComponent(StatisticComponent);
-    scFixture.detectChanges();
-    const compiled = scFixture.debugElement.nativeElement;
+    const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.fa.fa-question')).not.toBeNull();
     expect(compiled.querySelector('h4').textContent).toContain('Component title');
     expect(compiled.querySelector('h5').textContent).toContain('n/a');
+  });
+
+  it('Value should be updated', async () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('h5').textContent).toContain('n/a');
+    component.updateValue('100');
+    fixture.detectChanges();
+    expect(compiled.querySelector('h5').textContent).toContain('100');
   });
 
 });
