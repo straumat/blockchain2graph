@@ -1,6 +1,8 @@
 import {TestBed, async} from '@angular/core/testing';
 import {AppComponent} from './app.component';
 import {StatisticComponent} from './statistic/statistic.component';
+import {Server} from 'mock-socket';
+import {Blockchain2graphService} from './blockchain2graph.service';
 
 describe('AppComponent', () => {
 
@@ -10,6 +12,7 @@ describe('AppComponent', () => {
         AppComponent,
         StatisticComponent
       ],
+      providers: [Blockchain2graphService]
     }).compileComponents();
   }));
 
@@ -36,6 +39,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
+
     // All icons are set.
     expect(compiled.querySelector('.fa.fa-question')).toBeNull();
 
@@ -53,6 +57,51 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('.fa.fa-hourglass-half')).not.toBeNull();
     expect(compiled.querySelectorAll('h4')[2].textContent).toContain('Block import duration');
     expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+  }));
+
+  it('Should update statistic blocks', async(() => {
+    const mockServer = new Server('ws://localhost:8080');
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+
+    // Checking that we have n/a.
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+    // New message (blocksInBitcoinCore) from blockchain2graph server.
+    const blocksInBitcoinCore1 = {
+      'messageType': 'blocksInBitcoinCore',
+      'messageValue': 2
+    };
+    mockServer.send(blocksInBitcoinCore1);
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+    // New message (blocksInNeo4j) from blockchain2graph server.
+    const blocksInNeo4j1 = {
+      'messageType': 'blocksInNeo4j',
+      'messageValue': 3
+    };
+    mockServer.send(blocksInNeo4j1);
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+    // New message (blockImportDuration) from blockchain2graph server.
+    const blockImportDuration1 = {
+      'messageType': 'blockImportDuration',
+      'messageValue': 4
+    };
+    mockServer.send(blockImportDuration1);
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('4');
   }));
 
 });

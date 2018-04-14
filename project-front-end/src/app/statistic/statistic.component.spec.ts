@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {StatisticComponent} from './statistic.component';
+import {Blockchain2graphService} from '../blockchain2graph.service';
 
 describe('StatisticComponent', () => {
   let component: StatisticComponent;
@@ -8,7 +8,8 @@ describe('StatisticComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StatisticComponent]
+      declarations: [StatisticComponent],
+      providers: [Blockchain2graphService]
     }).compileComponents();
   }));
 
@@ -32,9 +33,9 @@ describe('StatisticComponent', () => {
   it('Value should be updated', async () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h5').textContent).toContain('n/a');
-    component.updateValue('100');
+    component.updateValue('1000');
     fixture.detectChanges();
-    expect(compiled.querySelector('h5').textContent).toContain('100');
+    expect(compiled.querySelector('h5').textContent).toContain('1000');
   });
 
 });
