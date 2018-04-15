@@ -6,14 +6,14 @@ function configure(url) {
     let connection = new WebSocket("ws://" + url + "/status/websocket"), response;
 
     connection.onmessage = function (e) {
-        let logs = $("#logs");
+        //let logs = $("#logs");
 
         // We parse the response.
         let responseModel = {messageType: "", messageValue: ""};
         response = jQuery.extend(responseModel, JSON.parse(e.data));
 
         // Switch on message type.
-        switch (response.messageType) {
+        /*switch (response.messageType) {
 
             // -------------------------------------------------------------------------------------------------------------
             case "importedBlockCount":
@@ -53,7 +53,7 @@ function configure(url) {
                 $("#error").attr("style", "");
                 $("#lastErrorMessage").text(response.messageValue);
                 break;
-        }
+        }*/
 
     };
 }

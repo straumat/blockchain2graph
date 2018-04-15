@@ -108,7 +108,7 @@ public abstract class BaseTest {
      * If we have the profile "live" active, we delete the cached data from bitcoind.
      */
     @PostConstruct
-    private void deleteCache() {
+    public void deleteCache() {
         if (PARAMETER_LIVE_VALUE.equals(System.getProperty(PARAMETER_LIVE))) {
             getBitcoindMock().deleteCache();
         }
@@ -119,7 +119,7 @@ public abstract class BaseTest {
      *
      * @return bds
      */
-    public final BitcoindService getBitcoindService() {
+    protected final BitcoindService getBitcoindService() {
         return bitcoindService;
     }
 
@@ -128,7 +128,7 @@ public abstract class BaseTest {
      *
      * @return bitcoinDataService
      */
-    public final BitcoinDataService getBitcoinDataService() {
+    protected final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
     }
 
@@ -137,7 +137,7 @@ public abstract class BaseTest {
      *
      * @return batchBlocks
      */
-    public final BitcoinBatch getBatchBlocks() {
+    protected final BitcoinBatch getBatchBlocks() {
         return batchBlocks;
     }
 
@@ -146,7 +146,7 @@ public abstract class BaseTest {
      *
      * @return buffer
      */
-    public final BitcoinDataServiceBuffer getBuffer() {
+    protected final BitcoinDataServiceBuffer getBuffer() {
         return buffer;
     }
 
@@ -155,7 +155,7 @@ public abstract class BaseTest {
      *
      * @return sessionFactory
      */
-    public final SessionFactory getSessionFactory() {
+    protected final SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
@@ -164,7 +164,7 @@ public abstract class BaseTest {
      *
      * @return addressRepository
      */
-    public final BitcoinAddressRepository getAddressRepository() {
+    protected final BitcoinAddressRepository getAddressRepository() {
         return addressRepository;
     }
 
@@ -173,7 +173,7 @@ public abstract class BaseTest {
      *
      * @return transactionRepository
      */
-    public final BitcoinTransactionRepository getTransactionRepository() {
+    protected final BitcoinTransactionRepository getTransactionRepository() {
         return transactionRepository;
     }
 
@@ -182,7 +182,7 @@ public abstract class BaseTest {
      *
      * @return transactionInputRepository
      */
-    public final BitcoinTransactionInputRepository getTransactionInputRepository() {
+    protected final BitcoinTransactionInputRepository getTransactionInputRepository() {
         return transactionInputRepository;
     }
 
@@ -191,7 +191,7 @@ public abstract class BaseTest {
      *
      * @return transactionOutputRepository
      */
-    public final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+    protected final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
         return transactionOutputRepository;
     }
 
@@ -200,7 +200,7 @@ public abstract class BaseTest {
      *
      * @return bitcoindMock
      */
-    public final BitcoindMock getBitcoindMock() {
+    protected final BitcoindMock getBitcoindMock() {
         return bitcoindMock;
     }
 
@@ -209,7 +209,8 @@ public abstract class BaseTest {
      *
      * @return bitcoinBlockRepository
      */
-    public final BitcoinBlockRepository getBitcoinBlockRepository() {
+    protected final BitcoinBlockRepository getBitcoinBlockRepository() {
         return bitcoinBlockRepository;
     }
+
 }

@@ -10,6 +10,7 @@ import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
+import com.oakinvest.b2g.util.bitcoin.exception.OriginTransactionNotFoundException;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +75,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
      * @param blockHeight block height to process.
      */
     @Override
-    protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
+    protected final Optional<BitcoinBlock> processBlock(final int blockHeight) throws OriginTransactionNotFoundException {
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
@@ -147,7 +148,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                             } else {
                                                 //addError("In block " + getFormattedBlockHeight(block.getHeight()));
                                                 //addError("Impossible to find the origin transaction of " + vin.getTxId() + " / " + vin.getvOut());
-                                                throw new RuntimeException("Origin transaction not found " + vin.getTxId() + " / " + vin.getvOut());
+                                                throw new OriginTransactionNotFoundException("Origin transaction not found " + vin.getTxId() + " / " + vin.getvOut());
                                             }
                                         });
 

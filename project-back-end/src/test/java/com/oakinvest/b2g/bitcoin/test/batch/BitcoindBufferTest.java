@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.bitcoin.test.batch;
 
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

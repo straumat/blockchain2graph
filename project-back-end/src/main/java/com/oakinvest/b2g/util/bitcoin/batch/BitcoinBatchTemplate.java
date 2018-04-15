@@ -8,6 +8,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
+import com.oakinvest.b2g.util.bitcoin.exception.OriginTransactionNotFoundException;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
 import org.mapstruct.factory.Mappers;
 import org.neo4j.ogm.session.Session;
@@ -188,8 +189,9 @@ public abstract class BitcoinBatchTemplate {
      *
      * @param blockHeight block height to process.
      * @return the block processed
+     * @throws OriginTransactionNotFoundException origin transaction not found
      */
-    protected abstract Optional<BitcoinBlock> processBlock(int blockHeight);
+    protected abstract Optional<BitcoinBlock> processBlock(int blockHeight) throws OriginTransactionNotFoundException;
 
     /**
      * Returns the block height in a formatted way.
