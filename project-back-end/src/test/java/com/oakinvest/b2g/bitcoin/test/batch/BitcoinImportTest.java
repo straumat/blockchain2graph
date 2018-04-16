@@ -29,7 +29,7 @@ public class BitcoinImportTest extends BaseTest {
      * importBlock() test.
      */
     @Test
-    public final void blocksDataTest() {
+    public final void blocksDataTeist() {
         // Reset the database.
         getSessionFactory().openSession().purgeDatabase();
 

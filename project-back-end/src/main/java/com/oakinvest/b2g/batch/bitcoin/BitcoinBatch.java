@@ -75,7 +75,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
      * @param blockHeight block height to process.
      */
     @Override
-    protected final Optional<BitcoinBlock> processBlock(final int blockHeight) throws OriginTransactionNotFoundException {
+    protected final Optional<BitcoinBlock> processBlock(final int blockHeight) {
         Optional<BitcoindBlockData> blockData = getBitcoinDataService().getBlockData(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
