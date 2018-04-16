@@ -25,19 +25,25 @@ export class StatisticComponent implements OnInit, OnDestroy {
     switch (this.type) {
       case Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE:
         this.blockchain2graphService.blocksInBitcoinCore.subscribe((value: string) => {
-          this.updateValue(value);
+          if (value !== 'n/a') {
+            this.updateValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+          }
         });
         break;
       // Number of blocks in neo4j.
       case Blockchain2graphMessageType.BLOCKS_IN_NEO4J:
         this.blockchain2graphService.blocksInNeo4j.subscribe((value: string) => {
-          this.updateValue(value);
+          if (value !== 'n/a') {
+            this.updateValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+          }
         });
         break;
       // Average block import duration.
       case Blockchain2graphMessageType.BLOCK_IMPORT_DURATION:
         this.blockchain2graphService.blockImportDuration.subscribe((value: string) => {
-          this.updateValue(value);
+          if (value !== 'n/a') {
+            this.updateValue(parseFloat(value).toFixed(2) + ' s');
+          }
         });
         break;
     }

@@ -73,35 +73,35 @@ describe('AppComponent', () => {
     // New message (blocksInBitcoinCore) from blockchain2graph server.
     const blocksInBitcoinCore1 = {
       'messageType': 'blocksInBitcoinCore',
-      'messageValue': 2
+      'messageValue': 2000
     };
     mockServer.send(blocksInBitcoinCore1);
     fixture.detectChanges();
-    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
     expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
     expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
 
     // New message (blocksInNeo4j) from blockchain2graph server.
     const blocksInNeo4j1 = {
       'messageType': 'blocksInNeo4j',
-      'messageValue': 3
+      'messageValue': 3000
     };
     mockServer.send(blocksInNeo4j1);
     fixture.detectChanges();
-    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
-    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3 000');
     expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
 
     // New message (blockImportDuration) from blockchain2graph server.
     const blockImportDuration1 = {
       'messageType': 'blockImportDuration',
-      'messageValue': 4
+      'messageValue': 11114.123
     };
     mockServer.send(blockImportDuration1);
     fixture.detectChanges();
-    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
-    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
-    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('4');
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3 000');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('11114.12 s');
   }));
 
 });
