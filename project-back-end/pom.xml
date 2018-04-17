@@ -149,10 +149,10 @@
                 <version>${jacoco-maven-plugin.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>*.configuration.*</exclude>
-                        <exclude>*.domain.*</exclude>
-                        <exclude>*.dto.*</exclude>
-                        <exclude>*.web.*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/configuration/**/*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/domain/**/*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/dto/**/*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/web/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -223,8 +223,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-			<executable>true</executable>
-			<addResources>true</addResources>
+                    <executable>true</executable>
+                    <addResources>true</addResources>
                 </configuration>
             </plugin>
             <plugin>
