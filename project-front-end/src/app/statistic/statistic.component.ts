@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input, HostBinding} from '@angular/core';
+import {Component, OnInit, Input, HostBinding} from '@angular/core';
 import {Blockchain2graphService} from '../blockchain2graph.service';
 import {Blockchain2graphMessageType} from '../Blockchain2graphMessageType';
 
@@ -8,7 +8,7 @@ import {Blockchain2graphMessageType} from '../Blockchain2graphMessageType';
   styleUrls: ['./statistic.component.css'],
   providers: [Blockchain2graphService]
 })
-export class StatisticComponent implements OnInit, OnDestroy {
+export class StatisticComponent implements OnInit {
 
   @HostBinding('class') class = 'card mb-4 text-white';
 
@@ -47,9 +47,6 @@ export class StatisticComponent implements OnInit, OnDestroy {
         });
         break;
     }
-  }
-
-  ngOnDestroy(): void {
   }
 
   updateValue(newValue: string) {

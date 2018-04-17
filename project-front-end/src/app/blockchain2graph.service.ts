@@ -1,13 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Blockchain2graphMessageType} from './Blockchain2graphMessageType';
 import {Observable} from 'rxjs/Observable';
 
 @Injectable()
-export class Blockchain2graphService {
-
-  // Constant.
-  static naValue = 'n/a';
+export class Blockchain2graphService implements OnDestroy {
 
   // Websocket connexion.
   private static serverUrl = 'ws://localhost:8080';
@@ -45,6 +42,10 @@ export class Blockchain2graphService {
         this.blockImportDurationSubject.next(message.data.messageValue);
         break;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.webSocket.close();
   }
 
 }
