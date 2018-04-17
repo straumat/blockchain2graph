@@ -1,4 +1,5 @@
 */**.jar
+target/**
 
 # eclipse specific git ignore
 bin/**
