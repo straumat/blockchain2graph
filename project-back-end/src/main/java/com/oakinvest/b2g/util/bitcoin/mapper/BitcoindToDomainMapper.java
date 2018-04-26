@@ -5,17 +5,17 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
+import com.oakinvest.b2g.dto.bitcoin.core.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.vin.GetRawTransactionVIn;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.vout.GetRawTransactionVOut;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 /**
- * Mapper from bitcoind to domain.
+ * Mapper from core to domain.
  * Created by straumat on 09/09/16.
  */
 @SuppressWarnings("unused")
@@ -25,7 +25,7 @@ public interface BitcoindToDomainMapper {
     /**
      * Maps block data to block.
      *
-     * @param bitcoindBlockData bitcoind block data
+     * @param bitcoindBlockData core block data
      * @return domain block
      */
     @Mappings({

@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.bitcoin.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
 import com.oakinvest.b2g.service.StatisticService;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class StatisticServiceTest {
+public class StatisticServiceTest extends BaseTest {
 
     /**
      * Bitcoin statistic service.

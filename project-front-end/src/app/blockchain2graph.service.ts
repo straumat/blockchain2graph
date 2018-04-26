@@ -1,13 +1,13 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Blockchain2graphMessageType} from './Blockchain2graphMessageType';
 import {Observable} from 'rxjs/Observable';
+import {Blockchain2graphMessageType} from './Blockchain2graphMessageType';
 
 @Injectable()
 export class Blockchain2graphService implements OnDestroy {
 
   // Websocket connexion.
-  private static serverUrl = 'ws://localhost:8080';
+  private static serverUrl = 'ws://localhost:8080/status/websocket';
   private webSocket: WebSocket;
 
   // Status values.
@@ -23,23 +23,23 @@ export class Blockchain2graphService implements OnDestroy {
   constructor() {
     this.webSocket = new WebSocket(Blockchain2graphService.serverUrl);
     this.webSocket.addEventListener('message', message => {
-      this.processMessage(message);
+      this.processMessage(JSON.parse(message.data));
     });
   }
 
-  public processMessage(message) {
-    switch (message.data.messageType) {
+  public processMessage(b2gMessage) {
+    switch (b2gMessage.messageType) {
       // Number of blocks in bitcoin core.
       case Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE:
-        this.blocksInBitcoinCoreSubject.next(message.data.messageValue);
+        this.blocksInBitcoinCoreSubject.next(b2gMessage.messageValue);
         break;
       // Number of blocks in neo4j.
       case Blockchain2graphMessageType.BLOCKS_IN_NEO4J:
-        this.blocksInNeo4jSubject.next(message.data.messageValue);
+        this.blocksInNeo4jSubject.next(b2gMessage.messageValue);
         break;
       // Average block import duration.
       case Blockchain2graphMessageType.BLOCK_IMPORT_DURATION:
-        this.blockImportDurationSubject.next(message.data.messageValue);
+        this.blockImportDurationSubject.next(b2gMessage.messageValue);
         break;
     }
   }

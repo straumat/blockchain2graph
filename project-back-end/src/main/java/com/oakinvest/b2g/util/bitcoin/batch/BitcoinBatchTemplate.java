@@ -94,7 +94,7 @@ public abstract class BitcoinBatchTemplate {
      *
      * @param newBitcoinRepositories            bitcoin repositories
      * @param newBitcoinDataService             bitcoin data service
-     * @param newBitcoinDataServiceBufferLoader bitcoind data service buffer loader
+     * @param newBitcoinDataServiceBufferLoader core data service buffer loader
      * @param newStatusService                  status service
      * @param newSessionFactory                 session factory
      */

@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.util.bitcoin.buffer;
 
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResult;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

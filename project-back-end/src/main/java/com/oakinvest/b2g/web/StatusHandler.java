@@ -29,14 +29,19 @@ public class StatusHandler extends TextWebSocketHandler {
     private static final String PARAM_MESSAGE_VALUE = "messageValue";
 
     /**
-     * Imported block count.
+     * Blocks in bitcoin core.
      */
-    private static final String TYPE_IMPORTED_BLOCK_COUNT = "importedBlockCount";
+    private static final String TYPE_BLOCKS_IN_BITCOIN_CORE = "blocksInBitcoinCore";
 
     /**
-     * Total block count.
+     * Blocks in neo4j.
      */
-    private static final String TYPE_TOTAL_BLOCK_COUNT = "totalBlockCount";
+    private static final String TYPE_BLOCKS_IN_NEO4J = "blocksInNeo4j";
+
+    /**
+     * Block import duration.
+     */
+    private static final String TYPE_BLOCK_IMPORT_DURATION = "blockImportDuration";
 
     /**
      * Log type.
@@ -47,11 +52,6 @@ public class StatusHandler extends TextWebSocketHandler {
      * Error message.
      */
     private static final String TYPE_ERROR = "error";
-
-    /**
-     * Execution time.
-     */
-    private static final String TYPE_AVERAGE_BLOCK_IMPORT_DURATION = "averageBlockImportDuration";
 
     /**
      * Logger.
@@ -96,8 +96,8 @@ public class StatusHandler extends TextWebSocketHandler {
     @Override
     public final void afterConnectionEstablished(final WebSocketSession newSession) {
         this.sessions.add(newSession);
-        updateImportedBlockCount(lastImportedBlockCount);
-        updateTotalBlockCount(lastTotalBlockCount);
+        updateBlocksInNeo4j(lastImportedBlockCount);
+        updateBlocksInBitcoinCore(lastTotalBlockCount);
         if (!"".equals(lastErrorMessage)) {
             updateError(lastErrorMessage);
         }
@@ -108,27 +108,27 @@ public class StatusHandler extends TextWebSocketHandler {
     }
 
     /**
-     * Updates lastImportedBlockCount.
+     * Blocks in neo4j.
      *
      * @param count new value.
      */
-    public final void updateImportedBlockCount(final int count) {
+    public final void updateBlocksInNeo4j(final int count) {
         lastImportedBlockCount = count;
         HashMap<Object, Object> information = new HashMap<>();
-        information.put(PARAM_MESSAGE_TYPE, TYPE_IMPORTED_BLOCK_COUNT);
+        information.put(PARAM_MESSAGE_TYPE, TYPE_BLOCKS_IN_NEO4J);
         information.put(PARAM_MESSAGE_VALUE, count);
         sendMessage(gson.toJson(information));
     }
 
     /**
-     * Updates lastTotalBlockCount.
+     * Blocks in bitcoin core.
      *
      * @param count new value.
      */
-    public final void updateTotalBlockCount(final int count) {
+    public final void updateBlocksInBitcoinCore(final int count) {
         lastTotalBlockCount = count;
         HashMap<Object, Object> information = new HashMap<>();
-        information.put(PARAM_MESSAGE_TYPE, TYPE_TOTAL_BLOCK_COUNT);
+        information.put(PARAM_MESSAGE_TYPE, TYPE_BLOCKS_IN_BITCOIN_CORE);
         information.put(PARAM_MESSAGE_VALUE, count);
         sendMessage(gson.toJson(information));
     }
@@ -143,7 +143,7 @@ public class StatusHandler extends TextWebSocketHandler {
         HashMap<Object, Object> information = new HashMap<>();
         information.put(PARAM_MESSAGE_TYPE, TYPE_LOG);
         information.put(PARAM_MESSAGE_VALUE, logMessage);
-        sendMessage(gson.toJson(information));
+        //sendMessage(gson.toJson(information));
     }
 
     /**
@@ -167,7 +167,7 @@ public class StatusHandler extends TextWebSocketHandler {
     public final void updateAverageBlockImportDuration(final float averageBlockImportDuration) {
         lastAverageBlockImportDuration = averageBlockImportDuration;
         HashMap<Object, Object> information = new HashMap<>();
-        information.put(PARAM_MESSAGE_TYPE, TYPE_AVERAGE_BLOCK_IMPORT_DURATION);
+        information.put(PARAM_MESSAGE_TYPE, TYPE_BLOCK_IMPORT_DURATION);
         information.put(PARAM_MESSAGE_VALUE, averageBlockImportDuration);
         sendMessage(gson.toJson(information));
     }

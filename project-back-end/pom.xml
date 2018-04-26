@@ -195,6 +195,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <excludes>**/mapper/**/*</excludes>
                     <consoleOutput>true</consoleOutput>
                     <configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
                     <failOnViolation>true</failOnViolation>

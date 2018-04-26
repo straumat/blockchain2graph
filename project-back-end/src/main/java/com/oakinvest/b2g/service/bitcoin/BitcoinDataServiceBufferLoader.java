@@ -25,7 +25,7 @@ public class BitcoinDataServiceBufferLoader {
     /**
      * Constructor.
      *
-     * @param newBitcoinDataService bitcoind data service
+     * @param newBitcoinDataService core data service
      * @param newBuffer             buffer
      */
     public BitcoinDataServiceBufferLoader(final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBuffer newBuffer) {
@@ -42,10 +42,10 @@ public class BitcoinDataServiceBufferLoader {
     @SuppressWarnings("checkstyle:designforextension")
     public void loadBlockInBuffer(final int blockToLoad) {
         // We get the required data.
-        // Total block count in bitcoind.
+        // Total block count in core.
         Optional<Integer> blockCount = bitcoinDataService.getBlockCount();
 
-        // if the block to load in buffer exists in bitcoind.
+        // if the block to load in buffer exists in core.
         if (blockCount.isPresent() && blockToLoad <= blockCount.get()) {
             // We load the block requested.
             bitcoinDataService.addBlockInBuffer(blockToLoad);

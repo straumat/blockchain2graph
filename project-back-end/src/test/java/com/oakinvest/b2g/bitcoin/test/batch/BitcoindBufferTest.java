@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for bitcoind getBuffer().
+ * Tests for core getBuffer().
  */
 public class BitcoindBufferTest extends BaseTest {
 

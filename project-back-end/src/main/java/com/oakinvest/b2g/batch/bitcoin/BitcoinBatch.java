@@ -4,7 +4,7 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.core.BitcoindBlockData;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
@@ -64,7 +64,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                 return Optional.empty();
             }
         } else {
-            // Error while retrieving the number of blocks in bitcoind.
+            // Error while retrieving the number of blocks in core.
             return Optional.empty();
         }
     }
@@ -83,7 +83,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
         if (blockData.isPresent()) {
 
             // ---------------------------------------------------------------------------------------------------------
-            // We create the block to save. We retrieve the data from bitcoind and map it.
+            // We create the block to save. We retrieve the data from core and map it.
             final BitcoinBlock block = getMapper().blockDataToBitcoinBlock(blockData.get());
 
             // ---------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
 
         } else {
             // Or nothing if we did not retrieve the data.
-            addError("No response from bitcoind for block n°" + getFormattedBlockHeight(blockHeight));
+            addError("No response from core for block n°" + getFormattedBlockHeight(blockHeight));
             return Optional.empty();
         }
     }

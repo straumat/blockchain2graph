@@ -103,7 +103,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	@Override
 	public final void setTotalBlockCount(final int newTotalBlockCount) {
 		totalBlockCount = newTotalBlockCount;
-		statusHandler.updateTotalBlockCount(totalBlockCount);
+		statusHandler.updateBlocksInBitcoinCore(totalBlockCount);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 
 			// Update status.
 			importedBlockCount = newImportedBlockCount;
-			statusHandler.updateImportedBlockCount(importedBlockCount);
+			statusHandler.updateBlocksInNeo4j(importedBlockCount);
 		}
 	}
 

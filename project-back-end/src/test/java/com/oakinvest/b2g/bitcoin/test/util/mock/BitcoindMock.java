@@ -1,10 +1,10 @@
 package com.oakinvest.b2g.bitcoin.test.util.mock;
 
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.util.BitcoindResponseError;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.util.BitcoindResponseError;
 import org.apache.commons.io.FileUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -67,7 +67,7 @@ public class BitcoindMock {
     private static final String NON_EXISTING_TRANSACTION_HASH = "NON_EXISTING_TRANSACTION_HASH";
 
     /**
-     * bitcoind directory.
+     * core directory.
      */
     private static final String BITCOIND_CACHE_DIRECTORY = "src/test/resources/cache";
 
@@ -154,7 +154,7 @@ public class BitcoindMock {
     }
 
     /**
-     * Delete cached data of bitcoind.
+     * Delete cached data of core.
      */
     public void deleteCache() {
         try {
@@ -183,13 +183,13 @@ public class BitcoindMock {
      * @return value.
      * @throws Throwable exception.
      */
-    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockCount())")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinCoreService.getBlockCount())")
     public final Object getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
         log.debug("Using cache for getBlockCountFromCache()");
         GetBlockCountResponse getBlockCountResponse;
         File response = new File(getBlockCountDirectory.getPath() + "/response.ser");
 
-        // if the file doesn't exists, we call the bitcoind server and save the file.
+        // if the file doesn't exists, we call the core server and save the file.
         if (!response.exists()) {
             getBlockCountResponse = (GetBlockCountResponse) pjp.proceed(new Object[]{});
             writeObjectToFile(getBlockCountDirectory.getPath(), "response.ser", getBlockCountResponse);
@@ -221,7 +221,7 @@ public class BitcoindMock {
      * @return value.
      * @throws Throwable exception.
      */
-    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlockHash(..)) && args(blockHeight)")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinCoreService.getBlockHash(..)) && args(blockHeight)")
     public final Object getBlockHash(final ProceedingJoinPoint pjp, final int blockHeight) throws Throwable {
         log.debug("Using cache for getBlockHash()");
         GetBlockHashResponse getBlockHashResponse;
@@ -235,7 +235,7 @@ public class BitcoindMock {
             getBlockHashErrors++;
         }
 
-        // if the file doesn't exists, we call the bitcoind server and save the file.
+        // if the file doesn't exists, we call the core server and save the file.
         File response = new File(getBlockHashDirectory.getPath() + "/response-" + blockHeightValue + ".ser");
         if (!response.exists()) {
             getBlockHashResponse = (GetBlockHashResponse) pjp.proceed(new Object[]{blockHeightValue});
@@ -255,7 +255,7 @@ public class BitcoindMock {
      * @return value.
      * @throws Throwable exception.
      */
-    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getBlock(..)) && args(blockHash)")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinCoreService.getBlock(..)) && args(blockHash)")
     public final Object getBlock(final ProceedingJoinPoint pjp, final String blockHash) throws Throwable {
         log.debug("Using cache for getBlock()");
         GetBlockResponse getBlockResponse;
@@ -269,7 +269,7 @@ public class BitcoindMock {
             getBlockErrors++;
         }
 
-        // if the file doesn't exists, we call the bitcoind server and save the file.
+        // if the file doesn't exists, we call the core server and save the file.
         File response = new File(getBlockDirectory.getPath() + "/response-" + blockHashValue + ".ser");
         if (!response.exists()) {
             getBlockResponse = (GetBlockResponse) pjp.proceed(new Object[]{blockHashValue});
@@ -289,7 +289,7 @@ public class BitcoindMock {
      * @return value.
      * @throws Throwable exception.
      */
-    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoindService.getRawTransaction(..)) && args(transactionHash)")
+    @Around("execution(* com.oakinvest.b2g.service.bitcoin.BitcoinCoreService.getRawTransaction(..)) && args(transactionHash)")
     public final Object getRawTransaction(final ProceedingJoinPoint pjp, final String transactionHash) throws Throwable {
         log.debug("Using cache for getRawTransaction()");
         GetRawTransactionResponse getRawTransactionResponse;
@@ -303,7 +303,7 @@ public class BitcoindMock {
             getRawTransactionErrors++;
         }
         File response = new File(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser");
-        // if the file doesn't exists, we call the bitcoind server and save the file.
+        // if the file doesn't exists, we call the core server and save the file.
         if (!response.exists()) {
             getRawTransactionResponse = (GetRawTransactionResponse) pjp.proceed(new Object[]{transactionHashValue});
             writeObjectToFile(getRawTransactionDirectory.getPath(), "response-" + transactionHashValue + ".ser", getRawTransactionResponse);

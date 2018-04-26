@@ -5,8 +5,7 @@ import {Blockchain2graphMessageType} from '../Blockchain2graphMessageType';
 @Component({
   selector: 'app-statistic',
   templateUrl: './statistic.component.html',
-  styleUrls: ['./statistic.component.css'],
-  providers: [Blockchain2graphService]
+  styleUrls: ['./statistic.component.css']
 })
 export class StatisticComponent implements OnInit {
 

@@ -9,7 +9,7 @@ import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinCoreService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
 import org.junit.runner.RunWith;
 import org.neo4j.ogm.session.SessionFactory;
@@ -96,7 +96,7 @@ public abstract class BaseTest {
      * Bitcoind service.
      */
     @Autowired
-    private BitcoindService bitcoindService;
+    private BitcoinCoreService bitcoindService;
 
     /**
      * Session factory.
@@ -105,7 +105,7 @@ public abstract class BaseTest {
     private SessionFactory sessionFactory;
 
     /**
-     * If we have the profile "live" active, we delete the cached data from bitcoind.
+     * If we have the profile "live" active, we delete the cached data from core.
      */
     @PostConstruct
     public void deleteCache() {
@@ -119,7 +119,7 @@ public abstract class BaseTest {
      *
      * @return bds
      */
-    protected final BitcoindService getBitcoindService() {
+    protected final BitcoinCoreService getBitcoindService() {
         return bitcoindService;
     }
 

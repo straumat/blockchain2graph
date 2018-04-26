@@ -1,10 +1,10 @@
 package com.oakinvest.b2g.bitcoin.test.service;
 
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.vin.GetRawTransactionVIn;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.vout.GetRawTransactionVOut;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.vin.GetRawTransactionVIn;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.vout.GetRawTransactionVOut;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 /**
- * Tests for BitcoindService.
+ * Tests for BitcoinCoreService.
  * Created by straumat on 29/08/16.
  */
 public class BitcoindServiceTest extends BaseTest {

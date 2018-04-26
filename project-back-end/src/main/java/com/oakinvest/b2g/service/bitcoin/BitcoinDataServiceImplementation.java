@@ -1,12 +1,12 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblock.GetBlockResult;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockhash.GetBlockHashResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResponse;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getrawtransaction.GetRawTransactionResult;
+import com.oakinvest.b2g.dto.bitcoin.core.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResult;
+import com.oakinvest.b2g.dto.bitcoin.core.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getblockhash.GetBlockHashResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResult;
 import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Bitcoind service.
      */
-    private final BitcoindService bitcoindService;
+    private final BitcoinCoreService bitcoindService;
 
     /**
      * Buffer.
@@ -49,11 +49,11 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Constructor.
      *
-     * @param newBitcoindService bitcoind service
+     * @param newBitcoindService core service
      * @param newStatusService   status service
      * @param newBuffer          buffer
      */
-    public BitcoinDataServiceImplementation(final BitcoindService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
+    public BitcoinDataServiceImplementation(final BitcoinCoreService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
         this.status = newStatusService;
         this.bitcoindService = newBitcoindService;
         this.buffer = newBuffer;
@@ -93,19 +93,19 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             if (blockCountResponse.getError() == null) {
                 return Optional.of(blockCountResponse.getResult());
             } else {
-                // Error while retrieving the number of blocks in bitcoind.
+                // Error while retrieving the number of blocks in core.
                 status.addError("Error getting the number of blocks : " + blockCountResponse.getError());
                 return Optional.empty();
             }
         } catch (Exception e) {
-            // Error while retrieving the number of blocks in bitcoind.
+            // Error while retrieving the number of blocks in core.
             status.addError("Error getting the number of blocks : " + e.getMessage(), e);
             return Optional.empty();
         }
     }
 
     /**
-     * Returns the block result from the buffer or bitcoind.
+     * Returns the block result from the buffer or core.
      *
      * @param blockHeight bloc height
      * @return block result
@@ -121,7 +121,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Returns the transaction result from the buffer or bitcoind.
+     * Returns the transaction result from the buffer or core.
      *
      * @param txId transaction id
      * @return transaction result
@@ -137,7 +137,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Return the block result from bitcoind.
+     * Return the block result from core.
      *
      * @param blockHeight block height
      * @return block result
@@ -173,7 +173,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Return the transaction result from bitcoind.
+     * Return the transaction result from core.
      *
      * @param txId transaction id.
      * @return transaction result

@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.util.bitcoin.mapper;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.core.BitcoindBlockData;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -18,7 +18,7 @@ public abstract class BitcoindToDomainPostMapper {
     /**
      * After mapping for bitcoin block.
      *
-     * @param bitcoindBlockData block data from bitcoind
+     * @param bitcoindBlockData block data from core
      * @param bitcoinBlock      bitcoin block
      */
     @AfterMapping

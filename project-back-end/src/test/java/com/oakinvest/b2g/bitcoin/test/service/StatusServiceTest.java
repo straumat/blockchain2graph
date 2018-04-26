@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.bitcoin.test.service;
 
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
 import com.oakinvest.b2g.service.StatusService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,62 +21,62 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class StatusServiceTest {
+public class StatusServiceTest extends BaseTest {
 
-	/**
-	 * Status service.
-	 */
-	@Autowired
-	private StatusService statusService;
+    /**
+     * Status service.
+     */
+    @Autowired
+    private StatusService statusService;
 
-	/**
-	 * Test for getTotalBlockCount().
-	 */
-	@Test
-	public final void getTotalBlockCountTest() {
-		final int expectedTotalBlockCount = 150;
-		statusService.setTotalBlockCount(expectedTotalBlockCount);
-		// Test.
-		assertThat(statusService.getTotalBlockCount())
-				.as("Check total block count")
-				.isEqualTo(expectedTotalBlockCount);
-	}
+    /**
+     * Test for getTotalBlockCount().
+     */
+    @Test
+    public final void getTotalBlockCountTest() {
+        final int expectedTotalBlockCount = 150;
+        statusService.setTotalBlockCount(expectedTotalBlockCount);
+        // Test.
+        assertThat(statusService.getTotalBlockCount())
+                .as("Check total block count")
+                .isEqualTo(expectedTotalBlockCount);
+    }
 
-	/**
-	 * Test for getImportedBlockCount().
-	 */
-	@Test
-	public final void getImportedBlockCountTest() {
-		final int expectedImportedBlockCount = 140;
-		statusService.setImportedBlockCount(expectedImportedBlockCount);
-		// Test.
-		assertThat(statusService.getImportedBlockCount())
-				.as("Check imported block count")
-				.isEqualTo(expectedImportedBlockCount);
-	}
+    /**
+     * Test for getImportedBlockCount().
+     */
+    @Test
+    public final void getImportedBlockCountTest() {
+        final int expectedImportedBlockCount = 140;
+        statusService.setImportedBlockCount(expectedImportedBlockCount);
+        // Test.
+        assertThat(statusService.getImportedBlockCount())
+                .as("Check imported block count")
+                .isEqualTo(expectedImportedBlockCount);
+    }
 
-	/**
-	 * Test for getLastLog().
-	 */
-	@Test
-	public final void getLastLogTest() {
-		statusService.addLog("Hi !");
-		// Test.
-		assertThat(statusService.getLastLog())
-				.as("Check last log")
-				.endsWith("Hi !");
-	}
+    /**
+     * Test for getLastLog().
+     */
+    @Test
+    public final void getLastLogTest() {
+        statusService.addLog("Hi !");
+        // Test.
+        assertThat(statusService.getLastLog())
+                .as("Check last log")
+                .endsWith("Hi !");
+    }
 
-	/**
-	 * Test for getLastError().
-	 */
-	@Test
-	public final void getLastErrorTest() {
-		statusService.addError("Error !", null);
-		// Test.
-		assertThat(statusService.getLastError())
-				.as("Check last error")
-				.endsWith("Error !");
-	}
+    /**
+     * Test for getLastError().
+     */
+    @Test
+    public final void getLastErrorTest() {
+        statusService.addError("Error !", null);
+        // Test.
+        assertThat(statusService.getLastError())
+                .as("Check last error")
+                .endsWith("Error !");
+    }
 
 }

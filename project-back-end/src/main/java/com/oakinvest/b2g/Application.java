@@ -1,9 +1,9 @@
 package com.oakinvest.b2g;
 
-import com.oakinvest.b2g.dto.bitcoin.bitcoind.getblockcount.GetBlockCountResponse;
+import com.oakinvest.b2g.dto.bitcoin.core.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.service.StatusService;
-import com.oakinvest.b2g.service.bitcoin.BitcoindService;
+import com.oakinvest.b2g.service.bitcoin.BitcoinCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -28,7 +28,7 @@ public class Application extends SpringBootServletInitializer {
      * Bitcoind service.
      */
     @Autowired
-    private BitcoindService bds;
+    private BitcoinCoreService bds;
 
     /**
      * Bitcoin block repository.
@@ -64,7 +64,7 @@ public class Application extends SpringBootServletInitializer {
         // Update the status of the number of block imported.
         status.setImportedBlockCount((int) bbr.count());
 
-        // Update the status of the number of block in bitcoind.
+        // Update the status of the number of block in core.
         GetBlockCountResponse getBlockCountResponse = bds.getBlockCount();
         if (getBlockCountResponse.getError() != null) {
             status.setTotalBlockCount(getBlockCountResponse.getResult());

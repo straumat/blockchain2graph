@@ -4,7 +4,7 @@ services:
   bitcoind:
     image: ruimarinho/bitcoin-core:0.15.1
     volumes:
-      - ./data/bitcoind:/home/bitcoin/.bitcoin
+      - ./data/core:/home/bitcoin/.bitcoin
     ports:
       - 8332:8332
     command:
@@ -31,11 +31,11 @@ services:
     ports:
       - 8080:8080
     links:
-      - bitcoind
+      - core
       - neo4j
     environment:
       - BLOCKCHAIN2GRAPH_ADDRESS=localhost
-      - BITCOIND_HOSTNAME=bitcoind # Public server : 5.196.65.205
+      - BITCOIND_HOSTNAME=core # Public server : 5.196.65.205
       - BITCOIND_USERNAME=bitcoinrpc
       - BITCOIND_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
       - SPRING_DATA_NEO4J_URI=bolt://neo4j:neo4j123@neo4j:7687
