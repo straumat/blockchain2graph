@@ -23,10 +23,10 @@
   <!-- Project configuration -->
   <properties>
     <!-- Maven plugins -->
-    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <!-- https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin -->
     <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
     <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-clean-plugin -->
-    <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <!-- Web development -->
     <!-- https://nodejs.org/en/download/releases/ -->
     <node.version>v8.11.1</node.version>
