@@ -1,0 +1,136 @@
+package com.oakinvest.b2g.dto.bitcoin.status;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * Application status DTO.
+ */
+@Component
+public class ApplicationStatusDTO {
+
+    /**
+     * Non available value.
+     */
+    private static final String NON_AVAILABLE_VALUE_STRING = "n/a";
+
+    /**
+     * Non available value.
+     */
+    private static final int NON_AVAILABLE_VALUE_NUMBER = -1;
+
+    /**
+     * Number of blocks in Bitcoin core (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     */
+    private int blocksCountInBitcoinCore = NON_AVAILABLE_VALUE_NUMBER;
+
+    /**
+     * Number of blocks in neo4j (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     */
+    private int blocksCountInNeo4j = NON_AVAILABLE_VALUE_NUMBER;
+
+    /**
+     * Status of the block being processed.
+     */
+    private CurrentBlockStatusDTO currentBlockStatus = new CurrentBlockStatusDTO();
+
+    /**
+     * Average block process duration (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     */
+    private float averageBlockProcessDuration = NON_AVAILABLE_VALUE_NUMBER;
+
+    /**
+     * Last error message (if no error, value is set to NON_AVAILABLE_VALUE_STRING).
+     */
+    private String lastErrorMessage = NON_AVAILABLE_VALUE_STRING;
+
+    /**
+     * Gets blocksCountInBitcoinCore.
+     *
+     * @return value of blocksCountInBitcoinCore
+     */
+    public final int getBlocksCountInBitcoinCore() {
+        return blocksCountInBitcoinCore;
+    }
+
+    /**
+     * Sets blocksCountInBitcoinCore.
+     *
+     * @param newBlocksCountInBitcoinCore blocksCountInBitcoinCore
+     */
+    public final void setBlocksCountInBitcoinCore(final int newBlocksCountInBitcoinCore) {
+        blocksCountInBitcoinCore = newBlocksCountInBitcoinCore;
+    }
+
+    /**
+     * Gets blocksCountInNeo4j.
+     *
+     * @return value of blocksCountInNeo4j
+     */
+    public final int getBlocksCountInNeo4j() {
+        return blocksCountInNeo4j;
+    }
+
+    /**
+     * Sets blocksCountInNeo4j.
+     *
+     * @param newBlocksCountInNeo4j blocksCountInNeo4j
+     */
+    public final void setBlocksCountInNeo4j(final int newBlocksCountInNeo4j) {
+        blocksCountInNeo4j = newBlocksCountInNeo4j;
+    }
+
+    /**
+     * Gets currentBlockStatus.
+     *
+     * @return value of currentBlockStatus
+     */
+    public final CurrentBlockStatusDTO getCurrentBlockStatus() {
+        return currentBlockStatus;
+    }
+
+    /**
+     * Sets currentBlockStatus.
+     *
+     * @param newCurrentBlockStatus currentBlockStatus
+     */
+    public final void setCurrentBlockStatus(final CurrentBlockStatusDTO newCurrentBlockStatus) {
+        currentBlockStatus = newCurrentBlockStatus;
+    }
+
+    /**
+     * Gets averageBlockProcessDuration.
+     *
+     * @return value of averageBlockProcessDuration
+     */
+    public final float getAverageBlockProcessDuration() {
+        return averageBlockProcessDuration;
+    }
+
+    /**
+     * Sets averageBlockProcessDuration.
+     *
+     * @param newAverageBlockProcessDuration averageBlockProcessDuration
+     */
+    public final void setAverageBlockProcessDuration(final float newAverageBlockProcessDuration) {
+        averageBlockProcessDuration = newAverageBlockProcessDuration;
+    }
+
+    /**
+     * Gets lastErrorMessage.
+     *
+     * @return value of lastErrorMessage
+     */
+    public final String getLastErrorMessage() {
+        return lastErrorMessage;
+    }
+
+    /**
+     * Sets lastErrorMessage.
+     *
+     * @param newLastErrorMessage lastErrorMessage
+     */
+    public final void setLastErrorMessage(final String newLastErrorMessage) {
+        lastErrorMessage = newLastErrorMessage;
+    }
+
+}
