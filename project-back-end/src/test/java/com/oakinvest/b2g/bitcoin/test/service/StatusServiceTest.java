@@ -2,7 +2,7 @@ package com.oakinvest.b2g.bitcoin.test.service;
 
 import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
-import com.oakinvest.b2g.service.StatusService;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatusDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.LOADING_DATA_FROM_BITCOIN_CORE;
+import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NOTHING_TO_PROCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -24,59 +26,142 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StatusServiceTest extends BaseTest {
 
     /**
+     * Non available value.
+     */
+    private static final String NON_AVAILABLE_VALUE_STRING = "n/a";
+
+    /**
+     * Non available value.
+     */
+    private static final int NON_AVAILABLE_VALUE_NUMBER = -1;
+
+    /**
      * Status service.
      */
     @Autowired
-    private StatusService statusService;
+    private ApplicationStatusDTO status;
 
     /**
-     * Test for getTotalBlockCount().
+     * Test for initial values.
      */
     @Test
-    public final void getTotalBlockCountTest() {
-        final int expectedTotalBlockCount = 150;
-        statusService.setTotalBlockCount(expectedTotalBlockCount);
-        // Test.
-        assertThat(statusService.getTotalBlockCount())
-                .as("Check total block count")
-                .isEqualTo(expectedTotalBlockCount);
+    public final void initialValuesTest() {
+        assertThat(status.getBlocksCountInBitcoinCore())
+                .as("Check number of blocks in Bitcoin core")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getBlocksCountInNeo4j())
+                .as("Check number of blocks in neo4j")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getCurrentBlockStatus().getBlockHeight())
+                .as("Check the block being processed")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getCurrentBlockStatus().getProcessStep())
+                .as("Check the step in the process")
+                .isEqualTo(NOTHING_TO_PROCESS);
+        assertThat(status.getCurrentBlockStatus().getProcessedAddresses())
+                .as("Check number of addresses processed")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getCurrentBlockStatus().getAddressesCount())
+                .as("Check number of addresses in the current block")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getCurrentBlockStatus().getProcessedTransactions())
+                .as("Check number of transactions processed")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getCurrentBlockStatus().getTransactionsCount())
+                .as("Check number of transactions in the current block")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getAverageBlockProcessDuration())
+                .as("Check average block process duration")
+                .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(status.getLastErrorMessage())
+                .as("Check average block process duration")
+                .isEqualTo(NON_AVAILABLE_VALUE_STRING);
     }
 
     /**
-     * Test for getImportedBlockCount().
+     * Test for observable behavior.
      */
     @Test
-    public final void getImportedBlockCountTest() {
-        final int expectedImportedBlockCount = 140;
-        statusService.setImportedBlockCount(expectedImportedBlockCount);
-        // Test.
-        assertThat(statusService.getImportedBlockCount())
-                .as("Check imported block count")
-                .isEqualTo(expectedImportedBlockCount);
-    }
+    public final void observableBehaviorTest() {
+        StatusObserver statusObserver = new StatusObserver();
+        status.addObserver(statusObserver);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that the status is clean")
+                .isFalse();
 
-    /**
-     * Test for getLastLog().
-     */
-    @Test
-    public final void getLastLogTest() {
-        statusService.addLog("Hi !");
-        // Test.
-        assertThat(statusService.getLastLog())
-                .as("Check last log")
-                .endsWith("Hi !");
-    }
+        // Changing number of blocks in Bitcoin core.
+        statusObserver.reset();
+        status.setBlocksCountInBitcoinCore(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing number of blocks in Bitcoin core triggered observable")
+                .isTrue();
+        statusObserver.reset();
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that reset method works")
+                .isFalse();
 
-    /**
-     * Test for getLastError().
-     */
-    @Test
-    public final void getLastErrorTest() {
-        statusService.addError("Error !", null);
-        // Test.
-        assertThat(statusService.getLastError())
-                .as("Check last error")
-                .endsWith("Error !");
+        // Changing number of blocks in Neo4j.
+        statusObserver.reset();
+        status.setBlocksCountInNeo4j(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing number of blocks in neo4j triggered observable")
+                .isTrue();
+
+        // Changing the block being processed.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setBlockHeight(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the block being processed triggered observable")
+                .isTrue();
+
+        // Changing the step process.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setProcessStep(LOADING_DATA_FROM_BITCOIN_CORE);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the step process triggered observable")
+                .isTrue();
+
+        // Changing the number of addresses processed.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setProcessedAddresses(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the number of addresses processed triggered observable")
+                .isTrue();
+
+        // Changing the number of addresses in the current block.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setAddressesCount(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the number of addresses in the current block processed triggered observable")
+                .isTrue();
+
+        // Changing the number of transactions processed.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setProcessedTransactions(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the number of transaction processed triggered observable")
+                .isTrue();
+
+        // Changing the number of transactions in the current block.
+        statusObserver.reset();
+        status.getCurrentBlockStatus().setTransactionsCount(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the number of transactions in the current block processed triggered observable")
+                .isTrue();
+
+        // Changing the average block process duration.
+        statusObserver.reset();
+        status.setAverageBlockProcessDuration(1);
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the average block process duration triggered observable")
+                .isTrue();
+
+        // Changing the last error message.
+        statusObserver.reset();
+        status.setLastErrorMessage("");
+        assertThat(statusObserver.isStatusChanged())
+                .as("Check that changing the last error message triggered observable")
+                .isTrue();
     }
 
 }

@@ -1,9 +1,12 @@
 package com.oakinvest.b2g.dto.bitcoin.status;
 
+import java.util.Observable;
+
 /**
  * Status of the current block being processed.
  */
-class CurrentBlockStatusDTO {
+@SuppressWarnings("unused")
+public class CurrentBlockStatusDTO extends Observable {
 
     /**
      * Non available value.
@@ -41,6 +44,26 @@ class CurrentBlockStatusDTO {
     private int transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
+     * Gets blockHeight.
+     *
+     * @return value of blockHeight
+     */
+    public final int getBlockHeight() {
+        return blockHeight;
+    }
+
+    /**
+     * Sets blockHeight.
+     *
+     * @param newBlockHeight blockHeight
+     */
+    public final void setBlockHeight(final int newBlockHeight) {
+        blockHeight = newBlockHeight;
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
      * Gets processStep.
      *
      * @return value of processStep
@@ -56,6 +79,8 @@ class CurrentBlockStatusDTO {
      */
     public final void setProcessStep(final CurrentBlockStatusProcessStep newProcessStep) {
         processStep = newProcessStep;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -74,6 +99,8 @@ class CurrentBlockStatusDTO {
      */
     public final void setProcessedAddresses(final int newProcessedAddresses) {
         processedAddresses = newProcessedAddresses;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -92,6 +119,8 @@ class CurrentBlockStatusDTO {
      */
     public final void setAddressesCount(final int newAddressesCount) {
         addressesCount = newAddressesCount;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -110,6 +139,8 @@ class CurrentBlockStatusDTO {
      */
     public final void setProcessedTransactions(final int newProcessedTransactions) {
         processedTransactions = newProcessedTransactions;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -128,6 +159,8 @@ class CurrentBlockStatusDTO {
      */
     public final void setTransactionsCount(final int newTransactionsCount) {
         transactionsCount = newTransactionsCount;
+        setChanged();
+        notifyObservers();
     }
 
 }

@@ -2,11 +2,16 @@ package com.oakinvest.b2g.dto.bitcoin.status;
 
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.Observable;
+import java.util.Observer;
+
 /**
  * Application status DTO.
  */
 @Component
-public class ApplicationStatusDTO {
+@SuppressWarnings("unused")
+public class ApplicationStatusDTO extends Observable implements Observer {
 
     /**
      * Non available value.
@@ -44,6 +49,20 @@ public class ApplicationStatusDTO {
     private String lastErrorMessage = NON_AVAILABLE_VALUE_STRING;
 
     /**
+     * Configuration.
+     */
+    @PostConstruct
+    public final void configure() {
+        currentBlockStatus.addObserver(this);
+    }
+
+    @Override
+    public final void update(final Observable o, final Object arg) {
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
      * Gets blocksCountInBitcoinCore.
      *
      * @return value of blocksCountInBitcoinCore
@@ -59,6 +78,8 @@ public class ApplicationStatusDTO {
      */
     public final void setBlocksCountInBitcoinCore(final int newBlocksCountInBitcoinCore) {
         blocksCountInBitcoinCore = newBlocksCountInBitcoinCore;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -77,6 +98,8 @@ public class ApplicationStatusDTO {
      */
     public final void setBlocksCountInNeo4j(final int newBlocksCountInNeo4j) {
         blocksCountInNeo4j = newBlocksCountInNeo4j;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -95,6 +118,8 @@ public class ApplicationStatusDTO {
      */
     public final void setCurrentBlockStatus(final CurrentBlockStatusDTO newCurrentBlockStatus) {
         currentBlockStatus = newCurrentBlockStatus;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -113,6 +138,8 @@ public class ApplicationStatusDTO {
      */
     public final void setAverageBlockProcessDuration(final float newAverageBlockProcessDuration) {
         averageBlockProcessDuration = newAverageBlockProcessDuration;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -131,6 +158,8 @@ public class ApplicationStatusDTO {
      */
     public final void setLastErrorMessage(final String newLastErrorMessage) {
         lastErrorMessage = newLastErrorMessage;
+        setChanged();
+        notifyObservers();
     }
 
 }
