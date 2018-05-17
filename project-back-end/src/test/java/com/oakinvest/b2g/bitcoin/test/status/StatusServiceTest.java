@@ -2,7 +2,7 @@ package com.oakinvest.b2g.bitcoin.test.status;
 
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
 import com.oakinvest.b2g.bitcoin.test.util.status.StatusWebSocketSessionHandler;
-import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatusDTO;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -42,7 +42,7 @@ public class StatusServiceTest extends BaseTest {
      * Status service.
      */
     @Autowired
-    private ApplicationStatusDTO status;
+    private ApplicationStatus status;
 
     /**
      * Test for initial values.
@@ -89,7 +89,7 @@ public class StatusServiceTest extends BaseTest {
     public final void observableBehaviorTest() throws InterruptedException, TimeoutException, ExecutionException {
         // Objects used to retrieve replies from websocket.
         StatusWebSocketSessionHandler webSocketResponse = new StatusWebSocketSessionHandler();
-        ApplicationStatusDTO valueFromWebSocket;
+        ApplicationStatus valueFromWebSocket;
 
         // Transports layers for websocket.
         List<Transport> transports = new ArrayList<>(2);

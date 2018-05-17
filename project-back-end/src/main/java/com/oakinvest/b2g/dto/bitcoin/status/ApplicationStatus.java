@@ -11,7 +11,7 @@ import java.util.Observer;
  */
 @Component
 @SuppressWarnings("unused")
-public class ApplicationStatusDTO extends Observable implements Observer {
+public class ApplicationStatus extends Observable implements Observer {
 
     /**
      * Non available value.
@@ -36,7 +36,7 @@ public class ApplicationStatusDTO extends Observable implements Observer {
     /**
      * Status of the block being processed.
      */
-    private CurrentBlockStatusDTO currentBlockStatus = new CurrentBlockStatusDTO();
+    private CurrentBlockStatus currentBlockStatus = new CurrentBlockStatus();
 
     /**
      * Average block process duration (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
@@ -107,7 +107,7 @@ public class ApplicationStatusDTO extends Observable implements Observer {
      *
      * @return value of currentBlockStatus
      */
-    public final CurrentBlockStatusDTO getCurrentBlockStatus() {
+    public final CurrentBlockStatus getCurrentBlockStatus() {
         return currentBlockStatus;
     }
 
@@ -116,7 +116,7 @@ public class ApplicationStatusDTO extends Observable implements Observer {
      *
      * @param newCurrentBlockStatus currentBlockStatus
      */
-    public final void setCurrentBlockStatus(final CurrentBlockStatusDTO newCurrentBlockStatus) {
+    public final void setCurrentBlockStatus(final CurrentBlockStatus newCurrentBlockStatus) {
         currentBlockStatus = newCurrentBlockStatus;
         setChanged();
         notifyObservers();

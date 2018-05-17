@@ -34,6 +34,8 @@
         <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
         <maven-dependency-plugin.version>3.1.0</maven-dependency-plugin.version>
+        <!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-maven-plugin -->
+        <typescript-generator-maven-plugin.version>2.2.413</typescript-generator-maven-plugin.version>
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
         <neo4j.version>3.3.5</neo4j.version>
@@ -256,6 +258,28 @@
                     <outputDirectory>../docker</outputDirectory>
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+            </plugin>
+            <!-- Typescript generator -->
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>${typescript-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classes>
+                        <class>com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus</class>
+                    </classes>
+                    <outputKind>module</outputKind>
                 </configuration>
             </plugin>
 

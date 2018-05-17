@@ -1,6 +1,5 @@
 import {Component, OnInit, Input, HostBinding} from '@angular/core';
 import {Blockchain2graphService} from '../blockchain2graph.service';
-import {Blockchain2graphMessageType} from '../Blockchain2graphMessageType';
 
 @Component({
   selector: 'app-statistic',
@@ -9,47 +8,65 @@ import {Blockchain2graphMessageType} from '../Blockchain2graphMessageType';
 })
 export class StatisticComponent implements OnInit {
 
+  static readonly nonAvailableValue = -1;
+  static readonly nonAvailableDisplay = 'n/a';
+
+  static readonly typeBlocksCountInBitcoinCore = 'blocksCountInBitcoinCore';
+  static readonly typeBlocksCountInNeo4j = 'blocksCountInNeo4j';
+  static readonly typeAverageBlockProcessDuration = 'averageBlockProcessDuration';
+
   @HostBinding('class') class = 'card mb-4 text-white';
 
   @Input() backgroundColor = 'bg-info';
   @Input() icon = 'fa-question';
   @Input() title = 'Component title';
   @Input() type: string;
-  value = 'n/a';
+  receivedValue = -1;
+  displayedValue = 'n/a';
 
   constructor(private blockchain2graphService: Blockchain2graphService) {
   }
 
   ngOnInit() {
     switch (this.type) {
-      case Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE:
-        this.blockchain2graphService.blocksInBitcoinCore.subscribe((value: string) => {
-          if (value !== 'n/a') {
-            this.updateValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+      // Number of blocks in bitcoin core.
+      case StatisticComponent.typeBlocksCountInBitcoinCore:
+        this.blockchain2graphService.blocksCountInBitcoinCore.subscribe((value: number) => {
+          this.receivedValue = value;
+          if (value !== StatisticComponent.nonAvailableValue) {
+            this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+          } else {
+            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
           }
         });
         break;
       // Number of blocks in neo4j.
-      case Blockchain2graphMessageType.BLOCKS_IN_NEO4J:
-        this.blockchain2graphService.blocksInNeo4j.subscribe((value: string) => {
-          if (value !== 'n/a') {
-            this.updateValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+      case StatisticComponent.typeBlocksCountInNeo4j:
+        this.blockchain2graphService.blocksCountInNeo4j.subscribe((value: number) => {
+          this.receivedValue = value;
+          if (value !== StatisticComponent.nonAvailableValue) {
+            this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+          } else {
+            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
           }
         });
         break;
       // Average block import duration.
-      case Blockchain2graphMessageType.BLOCK_IMPORT_DURATION:
-        this.blockchain2graphService.blockImportDuration.subscribe((value: string) => {
-          if (value !== 'n/a') {
-            this.updateValue(parseFloat(value).toFixed(2) + ' s');
+      case StatisticComponent.typeAverageBlockProcessDuration:
+        this.blockchain2graphService.averageBlockProcessDuration.subscribe((value: number) => {
+          this.receivedValue = value;
+          if (value !== StatisticComponent.nonAvailableValue) {
+            this.updateDisplayedValue(Intl.NumberFormat('en-us', {minimumFractionDigits: 2}).format(value) + ' s');
+          } else {
+            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
           }
         });
         break;
     }
   }
 
-  updateValue(newValue: string) {
-    this.value = newValue;
+  updateDisplayedValue(newDisplayedValue: string) {
+    this.displayedValue = newDisplayedValue;
   }
 
 }

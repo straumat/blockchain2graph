@@ -1,8 +1,7 @@
 package com.oakinvest.b2g.bitcoin.test.util.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatusDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -22,8 +21,7 @@ public class StatusWebSocketSessionHandler extends TextWebSocketHandler {
     /**
      * Last status of the application.
      */
-    @Autowired
-    private ApplicationStatusDTO lastStatus;
+    private ApplicationStatus lastStatus;
 
     /**
      * True is a new message has been received.
@@ -33,7 +31,7 @@ public class StatusWebSocketSessionHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(final WebSocketSession session, final TextMessage message) {
         try {
-            lastStatus = mapper.readValue(message.getPayload(), ApplicationStatusDTO.class);
+            lastStatus = mapper.readValue(message.getPayload(), ApplicationStatus.class);
             newMessageReceived = true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,7 +42,7 @@ public class StatusWebSocketSessionHandler extends TextWebSocketHandler {
      * Wait for a new message from a websocket and returns it.
      * @return new status
      */
-    public ApplicationStatusDTO getNewMessage() {
+    public ApplicationStatus getNewMessage() {
         // We wait until a new message is here.
         while (!newMessageReceived) {
             try {

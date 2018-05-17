@@ -2,7 +2,7 @@ package com.oakinvest.b2g.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatusDTO;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +41,13 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
      * Status service.
      */
     @Autowired
-    private ApplicationStatusDTO applicationStatus;
+    private ApplicationStatus applicationStatus;
 
     /**
      * Constructor.
      * @param newStatus applicationStatus
      */
-    public StatusHandler(final ApplicationStatusDTO newStatus) {
+    public StatusHandler(final ApplicationStatus newStatus) {
         this.applicationStatus = newStatus;
         applicationStatus.addObserver(this);
     }

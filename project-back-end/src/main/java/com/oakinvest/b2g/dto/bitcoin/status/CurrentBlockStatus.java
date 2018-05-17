@@ -9,7 +9,7 @@ import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep
  * Status of the current block being processed.
  */
 @SuppressWarnings("unused")
-public class CurrentBlockStatusDTO extends Observable {
+public class CurrentBlockStatus extends Observable {
 
     /**
      * Non available value.

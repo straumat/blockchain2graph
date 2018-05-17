@@ -33,7 +33,7 @@ describe('StatisticComponent', () => {
   it('Value should be updated', async () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h5').textContent).toContain('n/a');
-    component.updateValue('1000');
+    component.updateDisplayedValue('1000');
     fixture.detectChanges();
     expect(compiled.querySelector('h5').textContent).toContain('1000');
   });

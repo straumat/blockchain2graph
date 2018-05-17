@@ -3,7 +3,6 @@ import {AppComponent} from './app.component';
 import {StatisticComponent} from './statistic/statistic.component';
 import {Server} from 'mock-socket';
 import {Blockchain2graphService} from './blockchain2graph.service';
-import {Blockchain2graphMessageType} from './Blockchain2graphMessageType';
 
 describe('AppComponent', () => {
 
@@ -61,20 +60,111 @@ describe('AppComponent', () => {
   }));
 
   it('Should update statistic blocks', async(() => {
-      const mockServer = new Server('ws://localhost:8080/status/websocket');
-      const fixture = TestBed.createComponent(AppComponent);
-      fixture.detectChanges();
-      const compiled = fixture.debugElement.nativeElement;
+    const mockServer = new Server('ws://localhost:8080/status/websocket');
+    const fixture = TestBed.createComponent(AppComponent);
+    let message;
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
 
-      // Checking that we have n/a.
-      expect(compiled.querySelectorAll('h4')[0].textContent).toContain('Blocks in bitcoin core');
-      expect(compiled.querySelectorAll('h4')[1].textContent).toContain('Blocks in neo4j');
-      expect(compiled.querySelectorAll('h4')[2].textContent).toContain('Block import duration');
+    // Checking that we have n/a.
+    expect(compiled.querySelectorAll('h4')[0].textContent).toContain('Blocks in bitcoin core');
+    expect(compiled.querySelectorAll('h4')[1].textContent).toContain('Blocks in neo4j');
+    expect(compiled.querySelectorAll('h4')[2].textContent).toContain('Block import duration');
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+    // Sending a message with nothing to see that we still display nothing.
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":-1,
+            "processStep":"NOTHING_TO_PROCESS",
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+      mockServer.send(JSON.stringify(message));
+      fixture.detectChanges();
       expect(compiled.querySelectorAll('h5')[0].textContent).toContain('n/a');
       expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
       expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
 
-      // New message (blocksInBitcoinCore) from blockchain2graph server.
+    // Changing the blocks count in bitcoin core.
+    message = `
+      {
+        "blocksCountInBitcoinCore":2,
+        "blocksCountInNeo4j":3,
+          "currentBlockStatus":{
+            "blockHeight":-1,
+            "processStep":"NOTHING_TO_PROCESS",
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+    // Changing the average block import duration.
+    message = `
+      {
+        "blocksCountInBitcoinCore":2,
+        "blocksCountInNeo4j":3,
+          "currentBlockStatus":{
+            "blockHeight":-1,
+            "processStep":"NOTHING_TO_PROCESS",
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":2.3,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('2.30 s');
+
+    // We reset everything.
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":-1,
+            "processStep":"NOTHING_TO_PROCESS",
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h5')[0].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
+    expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
+
+
+
+      /*// New message (blocksInBitcoinCore) from blockchain2graph server.
       const blocksInBitcoinCore1 = {
         'messageType': Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE,
         'messageValue': 2000
@@ -105,7 +195,7 @@ describe('AppComponent', () => {
       fixture.detectChanges();
       expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
       expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3 000');
-      expect(compiled.querySelectorAll('h5')[2].textContent).toContain('11114.12 s');
+      expect(compiled.querySelectorAll('h5')[2].textContent).toContain('11114.12 s');*/
     })
   );
 

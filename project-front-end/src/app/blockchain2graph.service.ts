@@ -1,7 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {Blockchain2graphMessageType} from './Blockchain2graphMessageType';
 
 @Injectable()
 export class Blockchain2graphService implements OnDestroy {
@@ -11,14 +10,14 @@ export class Blockchain2graphService implements OnDestroy {
   private webSocket: WebSocket;
 
   // Status values.
-  private readonly blocksInBitcoinCoreSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>('n/a');
-  private readonly blocksInNeo4jSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>('n/a');
-  private readonly blockImportDurationSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>('n/a');
+  private readonly blocksCountInBitcoinCoreSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
+  private readonly blocksCountInNeo4jSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
+  private readonly averageBlockProcessDurationSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
 
   // Observable.
-  public readonly blocksInBitcoinCore: Observable<Object> = this.blocksInBitcoinCoreSubject.asObservable();
-  public readonly blocksInNeo4j: Observable<Object> = this.blocksInNeo4jSubject.asObservable();
-  public readonly blockImportDuration: Observable<Object> = this.blockImportDurationSubject.asObservable();
+  public readonly blocksCountInBitcoinCore: Observable<Object> = this.blocksCountInBitcoinCoreSubject.asObservable();
+  public readonly blocksCountInNeo4j: Observable<Object> = this.blocksCountInNeo4jSubject.asObservable();
+  public readonly averageBlockProcessDuration: Observable<Object> = this.averageBlockProcessDurationSubject.asObservable();
 
   constructor() {
     this.webSocket = new WebSocket(Blockchain2graphService.serverUrl);
@@ -27,20 +26,26 @@ export class Blockchain2graphService implements OnDestroy {
     });
   }
 
-  public processMessage(b2gMessage) {
-    switch (b2gMessage.messageType) {
-      // Number of blocks in bitcoin core.
-      case Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE:
-        this.blocksInBitcoinCoreSubject.next(b2gMessage.messageValue);
-        break;
-      // Number of blocks in neo4j.
-      case Blockchain2graphMessageType.BLOCKS_IN_NEO4J:
-        this.blocksInNeo4jSubject.next(b2gMessage.messageValue);
-        break;
-      // Average block import duration.
-      case Blockchain2graphMessageType.BLOCK_IMPORT_DURATION:
-        this.blockImportDurationSubject.next(b2gMessage.messageValue);
-        break;
+  /**
+   * Triggered when a new message is coming from the server.
+   * @param message blockchain2graph server message.
+   */
+  public processMessage(message) {
+    const status = JSON.parse(message);
+
+    // blocksCountInBitcoinCoreSubject.
+    if (status.blocksCountInBitcoinCore !== this.blocksCountInBitcoinCoreSubject.getValue()) {
+      this.blocksCountInBitcoinCoreSubject.next(status.blocksCountInBitcoinCore);
+    }
+
+    // blocksCountInNeo4j.
+    if (status.blocksCountInNeo4j !== this.blocksCountInNeo4jSubject.getValue()) {
+      this.blocksCountInNeo4jSubject.next(status.blocksCountInNeo4j);
+    }
+
+    // averageBlockProcessDuration.
+    if (status.averageBlockProcessDuration !== this.averageBlockProcessDurationSubject.getValue()) {
+      this.averageBlockProcessDurationSubject.next(status.averageBlockProcessDuration);
     }
   }
 
