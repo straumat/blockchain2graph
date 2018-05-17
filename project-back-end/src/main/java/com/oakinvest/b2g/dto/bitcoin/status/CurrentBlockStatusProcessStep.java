@@ -11,6 +11,11 @@ public enum CurrentBlockStatusProcessStep {
     NOTHING_TO_PROCESS,
 
     /**
+     * New block.
+     */
+    NEW_BLOCK_TO_PROCESS,
+
+    /**
      * Loading data from bitcoin core.
      */
     LOADING_DATA_FROM_BITCOIN_CORE,
@@ -28,6 +33,10 @@ public enum CurrentBlockStatusProcessStep {
     /**
      * Saving block.
      */
-    SAVING_BLOCK
+    SAVING_BLOCK,
 
+    /**
+     * Block saved.
+     */
+    BLOCK_SAVED
 }

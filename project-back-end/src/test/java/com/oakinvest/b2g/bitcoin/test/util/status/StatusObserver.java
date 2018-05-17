@@ -1,4 +1,4 @@
-package com.oakinvest.b2g.bitcoin.test.service;
+package com.oakinvest.b2g.bitcoin.test.util.status;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -18,14 +18,14 @@ public class StatusObserver implements Observer {
      *
      * @return value of statusChanged
      */
-    final boolean isStatusChanged() {
+    public final boolean isStatusChanged() {
         return statusChanged;
     }
 
     /**
      * Make the observer ready for another test.
      */
-    void reset() {
+    public void reset() {
         statusChanged = false;
     }
 

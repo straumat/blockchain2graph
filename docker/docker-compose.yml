@@ -1,10 +1,11 @@
 version: '2'
 services:
   # ====================================================================================================================
-  bitcoind:
-    image: ruimarinho/bitcoin-core:0.15.1
+  # https://hub.docker.com/r/ruimarinho/bitcoin-core/
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core:0.16.0
     volumes:
-      - ./data/core:/home/bitcoin/.bitcoin
+      - ./data/bitcoin-core:/home/bitcoin/.bitcoin
     ports:
       - 8332:8332
     command:
@@ -16,8 +17,9 @@ services:
       -rpcallowip=0.0.0.0/0
       -rpcallowip=::/0
   # ====================================================================================================================
+  # https://hub.docker.com/_/neo4j/
   neo4j:
-    image: neo4j:3.3.4
+    image: neo4j:3.3.5
     volumes:
       - ./data/neo4j:/var/lib/neo4j/data
     ports:
@@ -26,12 +28,13 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/neo4j123
   # ====================================================================================================================
+  # https://hub.docker.com/r/straumat/blockchain2graph/
   blockchain2graph:
     image: straumat/blockchain2graph:2.3-SNAPSHOT
     ports:
       - 8080:8080
     links:
-      - core
+      - bitcoin-core
       - neo4j
     environment:
       - BLOCKCHAIN2GRAPH_ADDRESS=localhost

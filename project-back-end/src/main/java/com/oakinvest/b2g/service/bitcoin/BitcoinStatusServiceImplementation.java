@@ -103,7 +103,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	@Override
 	public final void setTotalBlockCount(final int newTotalBlockCount) {
 		totalBlockCount = newTotalBlockCount;
-		statusHandler.updateBlocksInBitcoinCore(totalBlockCount);
+		//statusHandler.updateBlocksInBitcoinCore(totalBlockCount);
 	}
 
 	/**
@@ -127,11 +127,11 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 			// Set statistic time and reset clock.
 			float averageBlockImportDuration = statisticService.addBlockImportDuration(System.currentTimeMillis() - timeSinceLastImport);
 			timeSinceLastImport = System.currentTimeMillis();
-			statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
+			//statusHandler.updateAverageBlockImportDuration(averageBlockImportDuration);
 
 			// Update status.
 			importedBlockCount = newImportedBlockCount;
-			statusHandler.updateBlocksInNeo4j(importedBlockCount);
+			//statusHandler.updateBlocksInNeo4j(importedBlockCount);
 		}
 	}
 
@@ -154,7 +154,7 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	public final void addLog(final String logMessage) {
 		String date = getFormattedCurrentDate();
 		lastLog = "[" + date + "] " + logMessage;
-		statusHandler.updateLog("[" + date + "] " + logMessage);
+		//statusHandler.updateLog("[" + date + "] " + logMessage);
 		log.info(logMessage);
 	}
 
@@ -177,8 +177,8 @@ public class BitcoinStatusServiceImplementation implements StatusService {
     public final void addError(final String errorMessage) {
         String date = getFormattedCurrentDate();
         lastError = "[" + date + "] " + errorMessage;
-        statusHandler.updateLog("[" + date + "] " + errorMessage);
-        statusHandler.updateError("[" + date + "] " + errorMessage);
+        //statusHandler.updateLog("[" + date + "] " + errorMessage);
+        //statusHandler.updateError("[" + date + "] " + errorMessage);
     }
 
     /**
@@ -191,8 +191,8 @@ public class BitcoinStatusServiceImplementation implements StatusService {
 	public final void addError(final String errorMessage, final Exception e) {
 		String date = getFormattedCurrentDate();
 		lastError = "[" + date + "] " + errorMessage;
-		statusHandler.updateLog("[" + date + "] " + errorMessage);
-		statusHandler.updateError("[" + date + "] " + errorMessage);
+		//statusHandler.updateLog("[" + date + "] " + errorMessage);
+		//statusHandler.updateError("[" + date + "] " + errorMessage);
 		if (e == null) {
 			log.error(lastError);
 		} else {

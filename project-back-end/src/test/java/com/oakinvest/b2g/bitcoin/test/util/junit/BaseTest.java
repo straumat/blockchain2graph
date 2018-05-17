@@ -25,7 +25,7 @@ import javax.annotation.PostConstruct;
  */
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class BaseTest {
 
     /**

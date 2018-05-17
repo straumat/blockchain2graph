@@ -18,9 +18,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
  * Statistic service test.
  * Created by straumat on 25/03/17.
  */
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StatisticServiceTest extends BaseTest {
 

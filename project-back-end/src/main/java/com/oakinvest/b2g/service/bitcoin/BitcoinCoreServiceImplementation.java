@@ -69,10 +69,6 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
      */
     private final RestTemplate restTemplate;
 
-    /**
-     * Gson.
-     */
-    private final Gson gson = new Gson();
 
     /**
      * Bitcoind hostname.
@@ -107,6 +103,11 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
      * Header to use with core.
      */
     private HttpHeaders headers;
+
+    /**
+     * Gson.
+     */
+    private final Gson gson = new Gson();
 
     /**
      * Constructor.
@@ -228,6 +229,12 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         HashMap<Object, Object> request = new HashMap<>();
         request.put(PARAMETER_METHOD, command);
         request.put(PARAMETER_PARAMS, params);
+/*        try {
+            return new ObjectMapper().writeValueAsString(request);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;*/
         return gson.toJson(request);
     }
 
