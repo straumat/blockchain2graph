@@ -1,21 +1,28 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.2.413 on 2018-05-17 11:35:01.
+// Generated using typescript-generator version 2.2.413 on 2018-05-18 21:35:29.
 
-export interface ApplicationStatus {
-    blocksCountInBitcoinCore: number;
-    blocksCountInNeo4j: number;
-    currentBlockStatus: CurrentBlockStatus;
-    averageBlockProcessDuration: number;
-    lastErrorMessage: string;
+export interface ApplicationStatus extends Observable, Observer {
+  blocksCountInBitcoinCore: number;
+  blocksCountInNeo4j: number;
+  currentBlockStatus: CurrentBlockStatus;
+  averageBlockProcessDuration: number;
+  lastErrorMessage: string;
 }
 
-export interface CurrentBlockStatus {
-    blockHeight: number;
-    processStep: CurrentBlockStatusProcessStep;
-    processedAddresses: number;
-    addressesCount: number;
-    processedTransactions: number;
-    transactionsCount: number;
+export interface CurrentBlockStatus extends Observable {
+  blockHeight: number;
+  processStep: CurrentBlockStatusProcessStep;
+  transactionsCount: number;
+  addressesCount: number;
+  loadedTransactions: number;
+  processedAddresses: number;
+  processedTransactions: number;
+}
+
+export interface Observable {
+}
+
+export interface Observer {
 }
 
 export type CurrentBlockStatusProcessStep = "NOTHING_TO_PROCESS" | "NEW_BLOCK_TO_PROCESS" | "LOADING_DATA_FROM_BITCOIN_CORE" | "CREATING_ADDRESSES" | "CREATING_TRANSACTIONS" | "SAVING_BLOCK" | "BLOCK_SAVED";

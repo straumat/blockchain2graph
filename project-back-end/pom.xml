@@ -25,6 +25,7 @@
     <properties>
         <!-- Java project configuration -->
         <start-class>com.oakinvest.b2g.Application</start-class>
+
         <!-- Maven plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -36,6 +37,9 @@
         <maven-dependency-plugin.version>3.1.0</maven-dependency-plugin.version>
         <!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-maven-plugin -->
         <typescript-generator-maven-plugin.version>2.2.413</typescript-generator-maven-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
         <neo4j.version>3.3.5</neo4j.version>
@@ -230,6 +234,7 @@
                     <addResources>true</addResources>
                 </configuration>
             </plugin>
+            <!-- Copy blockchain2.jar for docker -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -260,6 +265,29 @@
                     <overWriteSnapshots>true</overWriteSnapshots>
                 </configuration>
             </plugin>
+           <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/typescript-generator/extra-resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/non-packaged-resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             <!-- Typescript generator -->
             <plugin>
                 <groupId>cz.habarta.typescript-generator</groupId>

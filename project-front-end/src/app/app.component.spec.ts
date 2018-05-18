@@ -3,6 +3,8 @@ import {AppComponent} from './app.component';
 import {StatisticComponent} from './statistic/statistic.component';
 import {Server} from 'mock-socket';
 import {Blockchain2graphService} from './blockchain2graph.service';
+import {CurrentBlockStatusComponent} from './current-block-status/current-block-status.component';
+
 
 describe('AppComponent', () => {
 
@@ -10,7 +12,8 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        StatisticComponent
+        StatisticComponent,
+        CurrentBlockStatusComponent
       ],
       providers: [Blockchain2graphService]
     }).compileComponents();

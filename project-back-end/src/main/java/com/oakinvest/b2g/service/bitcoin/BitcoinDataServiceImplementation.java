@@ -37,9 +37,9 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     private final StatusService status;
 
     /**
-     * Bitcoind service.
+     * Bitcoin core service.
      */
-    private final BitcoinCoreService bitcoindService;
+    private final BitcoinCoreService bitcoinCoreService;
 
     /**
      * Buffer.
@@ -49,47 +49,26 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     /**
      * Constructor.
      *
-     * @param newBitcoindService core service
+     * @param newBitcoinCoreService core service
      * @param newStatusService   status service
      * @param newBuffer          buffer
      */
-    public BitcoinDataServiceImplementation(final BitcoinCoreService newBitcoindService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
+    public BitcoinDataServiceImplementation(final BitcoinCoreService newBitcoinCoreService, final StatusService newStatusService, final BitcoinDataServiceBuffer newBuffer) {
         this.status = newStatusService;
-        this.bitcoindService = newBitcoindService;
+        this.bitcoinCoreService = newBitcoinCoreService;
         this.buffer = newBuffer;
-    }
-
-    /**
-     * Suppress duplicated transaction in blocks.
-     *
-     * @param getBlockResult block
-     */
-    private void fixDuplicatedTransaction(final GetBlockResult getBlockResult) {
-        // First duplicated transaction.
-        final int duplicatedTxIdBlock1 = 91812;
-        final String duplicatedTxId1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
-        if (getBlockResult.getHeight() == duplicatedTxIdBlock1) {
-            getBlockResult.getTx().remove(duplicatedTxId1);
-        }
-
-        // Second duplicated transaction.
-        final int duplicatedTxIdBlock2 = 91722;
-        final String duplicatedTxId2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
-        if (getBlockResult.getHeight() == duplicatedTxIdBlock2) {
-            getBlockResult.getTx().remove(duplicatedTxId2);
-        }
     }
 
     /**
      * Return getblockcount (The result stays in cache for 10 minutes).
      *
-     * @return the number of blocks in the block chain and -1 if error.
+     * @return the number of blocks in the block chain.
      */
     @Override
     @SuppressWarnings("checkstyle:designforextension")
     public Optional<Integer> getBlockCount() {
         try {
-            GetBlockCountResponse blockCountResponse = bitcoindService.getBlockCount();
+            GetBlockCountResponse blockCountResponse = bitcoinCoreService.getBlockCount();
             if (blockCountResponse.getError() == null) {
                 return Optional.of(blockCountResponse.getResult());
             } else {
@@ -105,110 +84,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
-     * Returns the block result from the buffer or core.
-     *
-     * @param blockHeight bloc height
-     * @return block result
-     */
-    private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
-        Optional<GetBlockResult> result = buffer.getBlockInBuffer(blockHeight);
-        if (!result.isPresent()) {
-            result = getBlockResultFromBitcoind(blockHeight);
-            // We add it so the buffer loader won't try to add it.
-            result.ifPresent(getBlockResult -> buffer.addBlockInBuffer(blockHeight, getBlockResult));
-        }
-        return result;
-    }
-
-    /**
-     * Returns the transaction result from the buffer or core.
-     *
-     * @param txId transaction id
-     * @return transaction result
-     */
-    private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
-        Optional<GetRawTransactionResult> result = buffer.getTransactionInBuffer(txId);
-        if (!result.isPresent()) {
-            result = getRawTransactionResultFromBitcoind(txId);
-            // We add it so the buffer loader won't try to add it.
-            result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
-        }
-        return result;
-    }
-
-    /**
-     * Return the block result from core.
-     *
-     * @param blockHeight block height
-     * @return block result
-     */
-    private Optional<GetBlockResult> getBlockResultFromBitcoind(final int blockHeight) {
-        try {
-            // ---------------------------------------------------------------------------------------------------------
-            // We retrieve the block hash.
-            GetBlockHashResponse blockHashResponse = bitcoindService.getBlockHash(blockHeight);
-            if (blockHashResponse.getError() == null) {
-                // -----------------------------------------------------------------------------------------------------
-                // Then we retrieve the block data.
-                String blockHash = blockHashResponse.getResult();
-                final GetBlockResponse blockResponse = bitcoindService.getBlock(blockHash);
-                if (blockResponse.getError() == null) {
-                    // Fix duplicated transactions.
-                    fixDuplicatedTransaction(blockResponse.getResult());
-                    return Optional.of(blockResponse.getResult());
-                } else {
-                    // Error while retrieving the block information.
-                    status.addError("Error retrieving the block : " + blockResponse.getError(), null);
-                    return Optional.empty();
-                }
-            } else {
-                // Error while retrieving the block information.
-                status.addError("Error retrieving the block : " + blockHashResponse.getError(), null);
-                return Optional.empty();
-            }
-        } catch (Exception e) {
-            status.addError("Error getting the block n°" + blockHeight + " : " + e.getMessage(), e);
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Return the transaction result from core.
-     *
-     * @param txId transaction id.
-     * @return transaction result
-     */
-    private Optional<GetRawTransactionResult> getRawTransactionResultFromBitcoind(final String txId) {
-        if (!GENESIS_BLOCK_TRANSACTION.equals(txId)) {
-            try {
-                GetRawTransactionResponse r = bitcoindService.getRawTransaction(txId);
-                if (r != null && r.getError() == null && r.getResult() != null) {
-                    return Optional.of(r.getResult());
-                } else {
-                    // Error in calling the services.
-                    if (r == null) {
-                        status.addError("Error getting transaction " + txId + " : Result is null");
-                    } else {
-                        if (r.getError() != null) {
-                            status.addError("Error getting transaction " + txId + " : " + r.getError().getMessage());
-                        }
-                        if (r.getResult() == null) {
-                            status.addError("Error getting transaction " + txId + " : Empty result");
-                        }
-                    }
-                    return Optional.empty();
-                }
-            } catch (Exception e) {
-                status.addError("Error getting the transaction " + txId + " : " + e.getMessage(), e);
-                return Optional.empty();
-            }
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Get block data from buffer.
+     * Get block data.
      *
      * @param blockHeight block height
      * @return block data
@@ -255,6 +131,109 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
     }
 
     /**
+     * Returns the block result from the buffer or core.
+     *
+     * @param blockHeight bloc height
+     * @return block result
+     */
+    private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
+        Optional<GetBlockResult> result = buffer.getBlockInBuffer(blockHeight);
+        if (!result.isPresent()) {
+            result = getBlockResultFromBitcoind(blockHeight);
+            // We add it so the buffer loader won't try to add it.
+            result.ifPresent(getBlockResult -> buffer.addBlockInBuffer(blockHeight, getBlockResult));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the transaction result from the buffer or core.
+     *
+     * @param txId transaction id
+     * @return transaction result
+     */
+    private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
+        Optional<GetRawTransactionResult> result = buffer.getTransactionInBuffer(txId);
+        if (!result.isPresent()) {
+            result = getRawTransactionResultFromBitcoind(txId);
+            // We add it so the buffer loader won't try to add it.
+            result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
+        }
+        return result;
+    }
+
+    /**
+     * Return the block result from core.
+     *
+     * @param blockHeight block height
+     * @return block result
+     */
+    private Optional<GetBlockResult> getBlockResultFromBitcoind(final int blockHeight) {
+        try {
+            // ---------------------------------------------------------------------------------------------------------
+            // We retrieve the block hash.
+            GetBlockHashResponse blockHashResponse = bitcoinCoreService.getBlockHash(blockHeight);
+            if (blockHashResponse.getError() == null) {
+                // -----------------------------------------------------------------------------------------------------
+                // Then we retrieve the block data.
+                String blockHash = blockHashResponse.getResult();
+                final GetBlockResponse blockResponse = bitcoinCoreService.getBlock(blockHash);
+                if (blockResponse.getError() == null) {
+                    // Fix duplicated transactions.
+                    fixDuplicatedTransaction(blockResponse.getResult());
+                    return Optional.of(blockResponse.getResult());
+                } else {
+                    // Error while retrieving the block information.
+                    status.addError("Error retrieving the block : " + blockResponse.getError(), null);
+                    return Optional.empty();
+                }
+            } else {
+                // Error while retrieving the block information.
+                status.addError("Error retrieving the block : " + blockHashResponse.getError(), null);
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            status.addError("Error getting the block n°" + blockHeight + " : " + e.getMessage(), e);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Return the transaction result from core.
+     *
+     * @param txId transaction id.
+     * @return transaction result
+     */
+    private Optional<GetRawTransactionResult> getRawTransactionResultFromBitcoind(final String txId) {
+        if (!GENESIS_BLOCK_TRANSACTION.equals(txId)) {
+            try {
+                GetRawTransactionResponse r = bitcoinCoreService.getRawTransaction(txId);
+                if (r != null && r.getError() == null && r.getResult() != null) {
+                    return Optional.of(r.getResult());
+                } else {
+                    // Error in calling the services.
+                    if (r == null) {
+                        status.addError("Error getting transaction " + txId + " : Result is null");
+                    } else {
+                        if (r.getError() != null) {
+                            status.addError("Error getting transaction " + txId + " : " + r.getError().getMessage());
+                        }
+                        if (r.getResult() == null) {
+                            status.addError("Error getting transaction " + txId + " : Empty result");
+                        }
+                    }
+                    return Optional.empty();
+                }
+            } catch (Exception e) {
+                status.addError("Error getting the transaction " + txId + " : " + e.getMessage(), e);
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Load transactions from a block in buffer.
      *
      * @param blockHeight block height
@@ -279,6 +258,27 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                         result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
                     });
         });
+    }
+
+    /**
+     * Suppress duplicated transaction in blocks.
+     *
+     * @param getBlockResult block
+     */
+    private void fixDuplicatedTransaction(final GetBlockResult getBlockResult) {
+        // First duplicated transaction.
+        final int duplicatedTxIdBlock1 = 91812;
+        final String duplicatedTxId1 = "d5d27987d2a3dfc724e359870c6644b40e497bdc0589a033220fe15429d88599";
+        if (getBlockResult.getHeight() == duplicatedTxIdBlock1) {
+            getBlockResult.getTx().remove(duplicatedTxId1);
+        }
+
+        // Second duplicated transaction.
+        final int duplicatedTxIdBlock2 = 91722;
+        final String duplicatedTxId2 = "e3bf3d07d4b0375638d5f1db5255fe07ba2c4cb067cd81b84ee974b6585fb468";
+        if (getBlockResult.getHeight() == duplicatedTxIdBlock2) {
+            getBlockResult.getTx().remove(duplicatedTxId2);
+        }
     }
 
 }

@@ -16,19 +16,19 @@ public enum CurrentBlockStatusProcessStep {
     NEW_BLOCK_TO_PROCESS,
 
     /**
-     * Loading data from bitcoin core.
+     * Loading transactions from bitcoin core.
      */
-    LOADING_DATA_FROM_BITCOIN_CORE,
+    LOADING_TRANSACTIONS_FROM_BITCOIN_CORE,
 
     /**
      * Creating addresses.
      */
-    CREATING_ADDRESSES,
+    PROCESSING_ADDRESSES,
 
     /**
      * Creating transactions.
      */
-    CREATING_TRANSACTIONS,
+    PROCESSING_TRANSACTIONS,
 
     /**
      * Saving block.

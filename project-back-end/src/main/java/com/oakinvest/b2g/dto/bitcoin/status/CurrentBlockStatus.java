@@ -27,9 +27,9 @@ public class CurrentBlockStatus extends Observable {
     private CurrentBlockStatusProcessStep processStep = CurrentBlockStatusProcessStep.NOTHING_TO_PROCESS;
 
     /**
-     * Number of addresses processed (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     * Number of transactions in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
+    private int transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Number of addresses in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
@@ -37,14 +37,20 @@ public class CurrentBlockStatus extends Observable {
     private int addressesCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
+     * Number of loaded transactions from bitcoin core.
+     */
+    private int loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
+
+    /**
+     * Number of addresses processed (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     */
+    private int processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
+
+    /**
      * Number of transactions processed (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
     private int processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
 
-    /**
-     * Number of transactions in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
-     */
-    private int transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Gets blockHeight.
@@ -63,10 +69,11 @@ public class CurrentBlockStatus extends Observable {
     public final void setBlockHeight(final int newBlockHeight) {
         blockHeight = newBlockHeight;
         processStep = NEW_BLOCK_TO_PROCESS;
-        processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
-        addressesCount = NON_AVAILABLE_VALUE_NUMBER;
-        processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
+        addressesCount = NON_AVAILABLE_VALUE_NUMBER;
+        loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
+        processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
+        processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         setChanged();
         notifyObservers();
     }
@@ -87,16 +94,35 @@ public class CurrentBlockStatus extends Observable {
      */
     public final void setProcessStep(final CurrentBlockStatusProcessStep newProcessStep) {
         processStep = newProcessStep;
-
         // If there there is nothing to process, we change the other values to non avaliable.
         if (newProcessStep.equals(NOTHING_TO_PROCESS)) {
             blockHeight = NON_AVAILABLE_VALUE_NUMBER;
-            processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
-            addressesCount = NON_AVAILABLE_VALUE_NUMBER;
-            processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
             transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
+            addressesCount = NON_AVAILABLE_VALUE_NUMBER;
+            loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
+            processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
+            processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         }
+        setChanged();
+        notifyObservers();
+    }
 
+    /**
+     * Gets loadedTransactions.
+     *
+     * @return value of loadedTransactions
+     */
+    public final int getLoadedTransactions() {
+        return loadedTransactions;
+    }
+
+    /**
+     * Sets loadedTransactions.
+     *
+     * @param newLoadedTransactions loadedTransactions
+     */
+    public final void setLoadedTransactions(final int newLoadedTransactions) {
+        loadedTransactions = newLoadedTransactions;
         setChanged();
         notifyObservers();
     }
