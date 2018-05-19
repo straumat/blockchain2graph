@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.service.bitcoin;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oakinvest.b2g.dto.bitcoin.core.getblock.GetBlockResponse;
 import com.oakinvest.b2g.dto.bitcoin.core.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.bitcoin.core.getblockhash.GetBlockHashResponse;
@@ -103,11 +104,6 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
      * Header to use with core.
      */
     private HttpHeaders headers;
-
-    /**
-     * Gson.
-     */
-    private final Gson gson = new Gson();
 
     /**
      * Constructor.
@@ -229,13 +225,12 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         HashMap<Object, Object> request = new HashMap<>();
         request.put(PARAMETER_METHOD, command);
         request.put(PARAMETER_PARAMS, params);
-/*        try {
+        try {
             return new ObjectMapper().writeValueAsString(request);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Error building the request " + e.getMessage());
+            return null;
         }
-        return null;*/
-        return gson.toJson(request);
     }
 
 }
