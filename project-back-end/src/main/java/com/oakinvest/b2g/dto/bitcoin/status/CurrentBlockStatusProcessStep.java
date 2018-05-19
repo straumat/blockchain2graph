@@ -6,9 +6,9 @@ package com.oakinvest.b2g.dto.bitcoin.status;
 public enum CurrentBlockStatusProcessStep {
 
     /**
-     * No block being processed.
+     * No block to process.
      */
-    NOTHING_TO_PROCESS,
+    NO_BLOCK_TO_PROCESS,
 
     /**
      * New block.

@@ -165,42 +165,184 @@ describe('AppComponent', () => {
     expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
     expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
 
-
-
-      /*// New message (blocksInBitcoinCore) from blockchain2graph server.
-      const blocksInBitcoinCore1 = {
-        'messageType': Blockchain2graphMessageType.BLOCKS_IN_BITCOIN_CORE,
-        'messageValue': 2000
-      };
-      mockServer.send(JSON.stringify(blocksInBitcoinCore1));
-      fixture.detectChanges();
-      expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
-      expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
-      expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
-
-      // New message (blocksInNeo4j) from blockchain2graph server.
-      const blocksInNeo4j1 = {
-        'messageType': Blockchain2graphMessageType.BLOCKS_IN_NEO4J,
-        'messageValue': 3000
-      };
-      mockServer.send(JSON.stringify(blocksInNeo4j1));
-      fixture.detectChanges();
-      expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
-      expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3 000');
-      expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
-
-      // New message (blockImportDuration) from blockchain2graph server.
-      const blockImportDuration1 = {
-        'messageType': Blockchain2graphMessageType.BLOCK_IMPORT_DURATION,
-        'messageValue': 11114.123
-      };
-      mockServer.send(JSON.stringify(blockImportDuration1));
-      fixture.detectChanges();
-      expect(compiled.querySelectorAll('h5')[0].textContent).toContain('2 000');
-      expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3 000');
-      expect(compiled.querySelectorAll('h5')[2].textContent).toContain('11114.12 s');*/
+    mockServer.close();
     })
   );
 
-})
-;
+  it('Should update statistic blocks', async(() => {
+      const mockServer = new Server('ws://localhost:8080/status/websocket');
+      const fixture = TestBed.createComponent(AppComponent);
+      let message;
+      fixture.detectChanges();
+      const compiled = fixture.debugElement.nativeElement;
+
+      // Checking that we have nothing.
+      expect(compiled.querySelectorAll('h4')[3].textContent).toContain('No block to process');
+      expect(compiled.querySelector('div.progress-bar')).toBeNull();
+
+      // Sending a message with nothing to see.
+      message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":-1,
+            "processStep":"NOTHING_TO_PROCESS",
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+      mockServer.send(JSON.stringify(message));
+      fixture.detectChanges();
+      expect(compiled.querySelectorAll('h4')[3].textContent).toContain('No block to process');
+      expect(compiled.querySelector('div.progress-bar')).toBeNull();
+
+      // Sending a message of a new block to process (NEW_BLOCK_TO_PROCESS).
+      message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"NEW_BLOCK_TO_PROCESS",
+            "loadedTransactions":-1,
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":-1
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+      mockServer.send(JSON.stringify(message));
+      fixture.detectChanges();
+      expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+      expect(compiled.querySelector('div.progress-bar')).toBeNull();
+
+      // Sending a message of loading block transactions (LOADING_TRANSACTIONS_FROM_BITCOIN_CORE).
+      message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"LOADING_TRANSACTIONS_FROM_BITCOIN_CORE",
+            "loadedTransactions":200,
+            "processedAddresses":-1,
+            "addressesCount":-1,
+            "processedTransactions":-1,
+            "transactionsCount":1000
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+      mockServer.send(JSON.stringify(message));
+      fixture.detectChanges();
+      expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+      expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Loading transactions from bitcoin core...');
+      expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
+      expect(compiled.querySelector('div.progress-bar').textContent).toContain('20 %');
+
+    // Sending a message of processing addresses (PROCESSING_ADDRESSES).
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"PROCESSING_ADDRESSES",
+            "loadedTransactions":200,
+            "processedAddresses":25,
+            "addressesCount":100,
+            "processedTransactions":-1,
+            "transactionsCount":1000
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+    expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Processing addresses...');
+    expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
+    expect(compiled.querySelector('div.progress-bar').textContent).toContain('25 %');
+
+    // Sending a message of processing transactions (PROCESSING_TRANSACTIONS).
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"PROCESSING_TRANSACTIONS",
+            "loadedTransactions":200,
+            "processedAddresses":25,
+            "addressesCount":100,
+            "processedTransactions":351,
+            "transactionsCount":1000
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+    expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Processing transactions...');
+    expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
+    expect(compiled.querySelector('div.progress-bar').textContent).toContain('35 %');
+
+    // Sending a message of saving block (SAVING_BLOCK).
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"SAVING_BLOCK",
+            "loadedTransactions":200,
+            "processedAddresses":25,
+            "addressesCount":100,
+            "processedTransactions":351,
+            "transactionsCount":1000
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+    expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Saving block...');
+    expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
+    expect(compiled.querySelector('div.progress-bar').textContent).toContain('100 %');
+
+    // Sending a message of block saved (BLOCK_SAVED).
+    message = `
+      {
+        "blocksCountInBitcoinCore":-1,
+        "blocksCountInNeo4j":-1,
+          "currentBlockStatus":{
+            "blockHeight":10,
+            "processStep":"BLOCK_SAVED",
+            "loadedTransactions":200,
+            "processedAddresses":25,
+            "addressesCount":100,
+            "processedTransactions":351,
+            "transactionsCount":1000
+          },
+        "averageBlockProcessDuration":-1.0,
+        "lastErrorMessage":"n/a"
+      }`;
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
+    expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Block saved');
+    expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
+
+  }));
+
+
+});

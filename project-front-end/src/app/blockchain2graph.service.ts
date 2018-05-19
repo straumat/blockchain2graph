@@ -38,7 +38,7 @@ export class Blockchain2graphService implements OnDestroy {
     // Instantiate a current block state.
     const currentBlockStatus = <CurrentBlockStatus>{};
     currentBlockStatus.blockHeight = Blockchain2graphService.nonAvailableValue;
-    currentBlockStatus.processStep = 'NOTHING_TO_PROCESS';
+    currentBlockStatus.processStep = 'NO_BLOCK_TO_PROCESS';
     currentBlockStatus.transactionsCount = Blockchain2graphService.nonAvailableValue;
     currentBlockStatus.addressesCount = Blockchain2graphService.nonAvailableValue;
     currentBlockStatus.loadedTransactions = Blockchain2graphService.nonAvailableValue;

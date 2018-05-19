@@ -3,7 +3,7 @@ package com.oakinvest.b2g.dto.bitcoin.status;
 import java.util.Observable;
 
 import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NEW_BLOCK_TO_PROCESS;
-import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NOTHING_TO_PROCESS;
+import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
 
 /**
  * Status of the current block being processed.
@@ -24,7 +24,7 @@ public class CurrentBlockStatus extends Observable {
     /**
      * Step in the process.
      */
-    private CurrentBlockStatusProcessStep processStep = CurrentBlockStatusProcessStep.NOTHING_TO_PROCESS;
+    private CurrentBlockStatusProcessStep processStep = CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
 
     /**
      * Number of transactions in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
@@ -95,7 +95,7 @@ public class CurrentBlockStatus extends Observable {
     public final void setProcessStep(final CurrentBlockStatusProcessStep newProcessStep) {
         processStep = newProcessStep;
         // If there there is nothing to process, we change the other values to non avaliable.
-        if (newProcessStep.equals(NOTHING_TO_PROCESS)) {
+        if (newProcessStep.equals(NO_BLOCK_TO_PROCESS)) {
             blockHeight = NON_AVAILABLE_VALUE_NUMBER;
             transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
             addressesCount = NON_AVAILABLE_VALUE_NUMBER;
