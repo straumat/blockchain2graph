@@ -375,4 +375,15 @@ public class BitcoindServiceTest extends BaseTest {
                 .contains(expectedErrorCode, expectedErrorMessage);
     }
 
+    /**
+     * Strange error on tx 1629a9db1fbc15db21e62574d613e66fe3c3aec8f28f238d3e448c5999ccc7a7 in the logs.
+     */
+    @Test
+    public final void testStrangeRedult() {
+        final int blockInEroor = 416351;
+        assertThat(getBitcoinDataService().getBlockData(blockInEroor).isPresent())
+                .as("Error with 1629a9db1fbc15db21e62574d613e66fe3c3aec8f28f238d3e448c5999ccc7a7")
+                .isTrue();
+    }
+
 }
