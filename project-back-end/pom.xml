@@ -301,6 +301,7 @@
                         <class>com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus</class>
                     </classes>
                     <outputKind>module</outputKind>
+                    <mapEnum>asEnum</mapEnum>
                 </configuration>
             </plugin>
 

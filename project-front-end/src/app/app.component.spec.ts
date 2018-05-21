@@ -4,6 +4,7 @@ import {StatisticComponent} from './statistic/statistic.component';
 import {Server} from 'mock-socket';
 import {Blockchain2graphService} from './blockchain2graph.service';
 import {CurrentBlockStatusComponent} from './current-block-status/current-block-status.component';
+import {ErrorComponent} from './error/error.component';
 
 
 describe('AppComponent', () => {
@@ -13,7 +14,8 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         StatisticComponent,
-        CurrentBlockStatusComponent
+        CurrentBlockStatusComponent,
+        ErrorComponent
       ],
       providers: [Blockchain2graphService]
     }).compileComponents();
@@ -79,18 +81,18 @@ describe('AppComponent', () => {
 
     // Sending a message with nothing to see that we still display nothing.
     message = {
-        "blocksCountInBitcoinCore":2000,
-        "blocksCountInNeo4j":1000,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': 2000,
+        'blocksCountInNeo4j': 1000,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":17.4545,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': 17.4545,
+        'lastErrorMessage': 'n/a'
       };
 
     mockServer.send(JSON.stringify(message));
@@ -102,18 +104,18 @@ describe('AppComponent', () => {
 
     // Sending a message with nothing to see that we still display nothing.
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
       mockServer.send(JSON.stringify(message));
       fixture.detectChanges();
@@ -123,18 +125,18 @@ describe('AppComponent', () => {
 
     // Changing the blocks count in bitcoin core.
     message = {
-        "blocksCountInBitcoinCore":2,
-        "blocksCountInNeo4j":3,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': 2,
+        'blocksCountInNeo4j': 3,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -144,18 +146,18 @@ describe('AppComponent', () => {
 
     // Changing the average block import duration.
     message = {
-        "blocksCountInBitcoinCore":2,
-        "blocksCountInNeo4j":3,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': 2,
+        'blocksCountInNeo4j': 3,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":2.3,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': 2.3,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -165,18 +167,18 @@ describe('AppComponent', () => {
 
     // We reset everything.
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -201,18 +203,18 @@ describe('AppComponent', () => {
 
       // Sending a message with nothing to see.
       message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":-1,
-            "processStep":"NOTHING_TO_PROCESS",
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': -1,
+            'processStep': 'NOTHING_TO_PROCESS',
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
       mockServer.send(JSON.stringify(message));
       fixture.detectChanges();
@@ -221,40 +223,40 @@ describe('AppComponent', () => {
 
       // Sending a message of a new block to process (NEW_BLOCK_TO_PROCESS).
       message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"NEW_BLOCK_TO_PROCESS",
-            "loadedTransactions":-1,
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":-1
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'NEW_BLOCK_TO_PROCESS',
+            'loadedTransactions': -1,
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': -1
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
       mockServer.send(JSON.stringify(message));
       fixture.detectChanges();
       expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
-      expect(compiled.querySelector('div.progress-bar')).toBeNull();
+      expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
 
       // Sending a message of loading block transactions (LOADING_TRANSACTIONS_FROM_BITCOIN_CORE).
       message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"LOADING_TRANSACTIONS_FROM_BITCOIN_CORE",
-            "loadedTransactions":200,
-            "processedAddresses":-1,
-            "addressesCount":-1,
-            "processedTransactions":-1,
-            "transactionsCount":1000
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'LOADING_TRANSACTIONS_FROM_BITCOIN_CORE',
+            'loadedTransactions': 200,
+            'processedAddresses': -1,
+            'addressesCount': -1,
+            'processedTransactions': -1,
+            'transactionsCount': 1000
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
       mockServer.send(JSON.stringify(message));
       fixture.detectChanges();
@@ -265,19 +267,19 @@ describe('AppComponent', () => {
 
     // Sending a message of processing addresses (PROCESSING_ADDRESSES).
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"PROCESSING_ADDRESSES",
-            "loadedTransactions":200,
-            "processedAddresses":25,
-            "addressesCount":100,
-            "processedTransactions":-1,
-            "transactionsCount":1000
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'PROCESSING_ADDRESSES',
+            'loadedTransactions': 200,
+            'processedAddresses': 25,
+            'addressesCount': 100,
+            'processedTransactions': -1,
+            'transactionsCount': 1000
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -288,19 +290,19 @@ describe('AppComponent', () => {
 
     // Sending a message of processing transactions (PROCESSING_TRANSACTIONS).
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"PROCESSING_TRANSACTIONS",
-            "loadedTransactions":200,
-            "processedAddresses":25,
-            "addressesCount":100,
-            "processedTransactions":351,
-            "transactionsCount":1000
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'PROCESSING_TRANSACTIONS',
+            'loadedTransactions': 200,
+            'processedAddresses': 25,
+            'addressesCount': 100,
+            'processedTransactions': 351,
+            'transactionsCount': 1000
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -311,19 +313,19 @@ describe('AppComponent', () => {
 
     // Sending a message of saving block (SAVING_BLOCK).
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"SAVING_BLOCK",
-            "loadedTransactions":200,
-            "processedAddresses":25,
-            "addressesCount":100,
-            "processedTransactions":351,
-            "transactionsCount":1000
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'SAVING_BLOCK',
+            'loadedTransactions': 200,
+            'processedAddresses': 25,
+            'addressesCount': 100,
+            'processedTransactions': 351,
+            'transactionsCount': 1000
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -334,19 +336,19 @@ describe('AppComponent', () => {
 
     // Sending a message of block saved (BLOCK_SAVED).
     message = {
-        "blocksCountInBitcoinCore":-1,
-        "blocksCountInNeo4j":-1,
-          "currentBlockStatus":{
-            "blockHeight":10,
-            "processStep":"BLOCK_SAVED",
-            "loadedTransactions":200,
-            "processedAddresses":25,
-            "addressesCount":100,
-            "processedTransactions":351,
-            "transactionsCount":1000
+        'blocksCountInBitcoinCore': -1,
+        'blocksCountInNeo4j': -1,
+          'currentBlockStatus': {
+            'blockHeight': 10,
+            'processStep': 'BLOCK_SAVED',
+            'loadedTransactions': 200,
+            'processedAddresses': 25,
+            'addressesCount': 100,
+            'processedTransactions': 351,
+            'transactionsCount': 1000
           },
-        "averageBlockProcessDuration":-1.0,
-        "lastErrorMessage":"n/a"
+        'averageBlockProcessDuration': -1.0,
+        'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
     fixture.detectChanges();
@@ -357,5 +359,56 @@ describe('AppComponent', () => {
     mockServer.close();
   }));
 
+  it('Should update errors', async(() => {
+    const mockServer = new Server('ws://localhost:8080/status/websocket');
+    const fixture = TestBed.createComponent(AppComponent);
+    let message;
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+
+    // Checking that we have no error by default.
+    expect(compiled.querySelector('div.card-header.bg-danger')).toBeNull();
+    expect(compiled.querySelector('div.body.bg-danger')).toBeNull();
+
+    // Sending a message with nothing to see and check that there is no error.
+    message = {
+      'blocksCountInBitcoinCore': -1,
+      'blocksCountInNeo4j': -1,
+      'currentBlockStatus': {
+        'blockHeight': -1,
+        'processStep': 'NOTHING_TO_PROCESS',
+        'processedAddresses': -1,
+        'addressesCount': -1,
+        'processedTransactions': -1,
+        'transactionsCount': -1
+      },
+      'averageBlockProcessDuration': -1.0,
+      'lastErrorMessage': 'n/a'
+    };
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelector('div.bg-danger')).toBeNull();
+
+    // Sending an error message.
+    message = {
+      'blocksCountInBitcoinCore': -1,
+      'blocksCountInNeo4j': -1,
+      'currentBlockStatus': {
+        'blockHeight': -1,
+        'processStep': 'NOTHING_TO_PROCESS',
+        'processedAddresses': -1,
+        'addressesCount': -1,
+        'processedTransactions': -1,
+        'transactionsCount': -1
+      },
+      'averageBlockProcessDuration': -1.0,
+      'lastErrorMessage': 'This is an error message'
+    };
+    mockServer.send(JSON.stringify(message));
+    fixture.detectChanges();
+    expect(compiled.querySelector('div.bg-danger')[0]).not.toBeNull();
+    expect(compiled.querySelector('div.bg-danger')[1]).not.toBeNull();
+    expect(compiled.querySelectorAll('h5')[3].textContent).toContain('This is an error message');
+  }));
 
 });

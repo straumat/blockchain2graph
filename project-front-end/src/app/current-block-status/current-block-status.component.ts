@@ -48,52 +48,51 @@ export class CurrentBlockStatusComponent implements OnInit {
     switch (blockStatus.processStep) {
 
       // Nothing to process.
-      case 'NO_BLOCK_TO_PROCESS':
+      case CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS:
         this.processStepDescription = CurrentBlockStatusComponent.noBlockToProcessDescription;
         this.viewDetails = false;
         break;
 
       // New block to process.
-      case 'NEW_BLOCK_TO_PROCESS':
+      case CurrentBlockStatusProcessStep.NEW_BLOCK_TO_PROCESS:
         this.processStepDescription = CurrentBlockStatusComponent.newBlockToProcessDescription;
-        this.viewDetails = false;
+        this.viewDetails = true;
         break;
 
       // Loading transactions from bitcoin core.
-      case 'LOADING_TRANSACTIONS_FROM_BITCOIN_CORE':
+      case CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BITCOIN_CORE:
         this.processStepDescription = CurrentBlockStatusComponent.loadingTransactionsFromBitcoinCoreDescription;
         this.viewDetails = true;
         this.setProgression(blockStatus.loadedTransactions, blockStatus.transactionsCount);
         break;
 
       // Processing addresses.
-      case 'PROCESSING_ADDRESSES':
+      case CurrentBlockStatusProcessStep.PROCESSING_ADDRESSES:
         this.processStepDescription = CurrentBlockStatusComponent.processingAddressesDescription;
         this.viewDetails = true;
         this.setProgression(blockStatus.processedAddresses, blockStatus.addressesCount);
         break;
 
       // Processing transactions.
-      case 'PROCESSING_TRANSACTIONS':
+      case CurrentBlockStatusProcessStep.PROCESSING_TRANSACTIONS:
         this.processStepDescription = CurrentBlockStatusComponent.processingTransactionsDescription;
         this.viewDetails = true;
         this.setProgression(blockStatus.processedTransactions, blockStatus.transactionsCount);
         break;
 
       // Saving block.
-      case 'SAVING_BLOCK':
+      case CurrentBlockStatusProcessStep.SAVING_BLOCK:
         this.processStepDescription = CurrentBlockStatusComponent.savingBlockDescription;
         this.viewDetails = true;
         this.setProgression(100, 100);
         break;
 
       // Block saved.
-      case 'BLOCK_SAVED':
+      case CurrentBlockStatusProcessStep.BLOCK_SAVED:
         this.processStepDescription = CurrentBlockStatusComponent.savedBlockDescription;
         this.viewDetails = true;
         this.setProgression(100, 100);
         break;
-
     }
   }
 

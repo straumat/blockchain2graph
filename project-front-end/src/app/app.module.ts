@@ -4,13 +4,15 @@ import {AppComponent} from './app.component';
 import {StatisticComponent} from './statistic/statistic.component';
 import {Blockchain2graphService} from './blockchain2graph.service';
 import {CurrentBlockStatusComponent} from './current-block-status/current-block-status.component';
+import { ErrorComponent } from './error/error.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     StatisticComponent,
-    CurrentBlockStatusComponent
+    CurrentBlockStatusComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule
