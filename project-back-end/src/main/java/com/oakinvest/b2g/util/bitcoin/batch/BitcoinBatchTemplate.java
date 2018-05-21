@@ -1,11 +1,12 @@
 package com.oakinvest.b2g.util.bitcoin.batch;
 
 import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
+import com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
-import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
 import com.oakinvest.b2g.util.bitcoin.mapper.BitcoindToDomainMapper;
@@ -40,6 +41,11 @@ public abstract class BitcoinBatchTemplate {
     private static final int PAUSE_WHEN_NO_BLOCK_TO_PROCESS = 60000;
 
     /**
+     * Pause before starting (10 seconds).
+     */
+    private static final int PAUSE_BEFORE_STARTING = 10000;
+
+    /**
      * Mapper.
      */
     private final BitcoindToDomainMapper mapper = Mappers.getMapper(BitcoindToDomainMapper.class);
@@ -70,9 +76,9 @@ public abstract class BitcoinBatchTemplate {
     private final BitcoinDataServiceBufferLoader bitcoinDataServiceBufferLoader;
 
     /**
-     * Status service.
+     * Status component.
      */
-    private final StatusService status;
+    private final ApplicationStatus status;
 
     /**
      * Session factory.
@@ -95,16 +101,16 @@ public abstract class BitcoinBatchTemplate {
      * @param newBitcoinRepositories            bitcoin repositories
      * @param newBitcoinDataService             bitcoin data service
      * @param newBitcoinDataServiceBufferLoader core data service buffer loader
-     * @param newStatusService                  status service
+     * @param newApplicationStatus              spplication status
      * @param newSessionFactory                 session factory
      */
-    protected BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+    protected BitcoinBatchTemplate(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final ApplicationStatus newApplicationStatus, final SessionFactory newSessionFactory) {
         this.addressRepository = newBitcoinRepositories.getBitcoinAddressRepository();
         this.blockRepository = newBitcoinRepositories.getBitcoinBlockRepository();
         this.transactionOutputRepository = newBitcoinRepositories.getBitcoinTransactionOutputRepository();
         this.bitcoinDataService = newBitcoinDataService;
         this.bitcoinDataServiceBufferLoader = newBitcoinDataServiceBufferLoader;
-        this.status = newStatusService;
+        this.status = newApplicationStatus;
         this.sessionFactory = newSessionFactory;
     }
 
@@ -129,7 +135,7 @@ public abstract class BitcoinBatchTemplate {
      * Execute the batch.
      */
     @Transactional
-    @Scheduled(fixedDelay = 1, initialDelay = PAUSE_WHEN_NO_BLOCK_TO_PROCESS)
+    @Scheduled(fixedDelay = 1, initialDelay = PAUSE_BEFORE_STARTING)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
         batchStartTime = System.currentTimeMillis();
@@ -151,14 +157,18 @@ public abstract class BitcoinBatchTemplate {
 
                     // If the block has been well processed, we change the state and we save it.
                     addLog("Saving block data");
+                    getStatus().getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.SAVING_BLOCK);
                     getBlockRepository().save(bitcoinBlock);
+                    getStatus().getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.BLOCK_SAVED);
                     addLog("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + getElapsedTime() + " secs");
-                    getStatus().setImportedBlockCount(bitcoinBlock.getHeight());
+                    status.setAverageBlockProcessDuration(getElapsedTime());
+                    status.setBlocksCountInNeo4j(bitcoinBlock.getHeight());
                 });
             } else {
                 // If there is nothing to process.
                 addLog("No block to process");
                 Thread.sleep(PAUSE_WHEN_NO_BLOCK_TO_PROCESS);
+                getStatus().getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS);
             }
         } catch (Exception e) {
             addError("An error occurred while processing block : " + e.getMessage(), e);
@@ -207,7 +217,8 @@ public abstract class BitcoinBatchTemplate {
      * @param message message
      */
     protected final void addLog(final String message) {
-        status.addLog(message);
+        // TODO Refactor logs.
+        //status.addLog(message);
     }
 
     /**
@@ -216,7 +227,8 @@ public abstract class BitcoinBatchTemplate {
      * @param message message
      */
     protected final void addError(final String message) {
-        status.addError(message, null);
+        // TODO Refactor logs.
+        //status.addError(message, null);
     }
 
     /**
@@ -226,7 +238,8 @@ public abstract class BitcoinBatchTemplate {
      * @param e       exception raised.
      */
     private void addError(final String message, final Exception e) {
-        status.addError(message, e);
+        // TODO Refactor logs.
+        //status.addError(message, e);
     }
 
     /**
@@ -266,21 +279,21 @@ public abstract class BitcoinBatchTemplate {
     }
 
     /**
-     * Getter status.
-     *
-     * @return status
-     */
-    protected final StatusService getStatus() {
-        return status;
-    }
-
-    /**
      * Getter bitcoin data service.
      *
      * @return bitcoin data service
      */
     protected final BitcoinDataService getBitcoinDataService() {
         return bitcoinDataService;
+    }
+
+    /**
+     * Gets status.
+     *
+     * @return value of status
+     */
+    public final ApplicationStatus getStatus() {
+        return status;
     }
 
 }

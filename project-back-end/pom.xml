@@ -126,7 +126,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Front end -->
-
+<!--        <dependency>
+            <groupId>com.oakinvest.b2g</groupId>
+            <artifactId>project-front-end</artifactId>
+            <version>${project.version}</version>
+        </dependency>-->
     </dependencies>
     <!-- =========================================================================================================== -->
 

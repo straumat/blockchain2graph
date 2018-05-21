@@ -56,7 +56,8 @@ export class StatisticComponent implements OnInit {
         this.blockchain2graphService.averageBlockProcessDuration.subscribe((value: number) => {
           this.receivedValue = value;
           if (value !== StatisticComponent.nonAvailableValue) {
-            this.updateDisplayedValue(Intl.NumberFormat('en-us', {minimumFractionDigits: 2}).format(value) + ' s');
+            const formatedValue = Intl.NumberFormat('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(value) + ' s';
+            this.updateDisplayedValue(formatedValue);
           } else {
             this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
           }

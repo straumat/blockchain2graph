@@ -5,8 +5,9 @@ import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
 import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
 import com.oakinvest.b2g.dto.bitcoin.core.BitcoindBlockData;
+import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
+import com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep;
 import com.oakinvest.b2g.repository.bitcoin.BitcoinRepositories;
-import com.oakinvest.b2g.service.StatusService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
 import com.oakinvest.b2g.service.bitcoin.BitcoinDataServiceBufferLoader;
 import com.oakinvest.b2g.util.bitcoin.batch.BitcoinBatchTemplate;
@@ -36,7 +37,7 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
      * @param newStatusService                  status
      * @param newSessionFactory                 session factory
      */
-    public BitcoinBatch(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatusService newStatusService, final SessionFactory newSessionFactory) {
+    public BitcoinBatch(final BitcoinRepositories newBitcoinRepositories, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final ApplicationStatus newStatusService, final SessionFactory newSessionFactory) {
         super(newBitcoinRepositories, newBitcoinDataService, newBitcoinDataServiceBufferLoader, newStatusService, newSessionFactory);
     }
 
@@ -54,11 +55,12 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
         // We check if that next block exists by retrieving the block count.
         if (totalBlockCount.isPresent()) {
             // We update the global status of blockcount (if needed).
-            if (totalBlockCount.get() != getStatus().getTotalBlockCount()) {
-                getStatus().setTotalBlockCount(totalBlockCount.get());
+            if (totalBlockCount.get() != getStatus().getBlocksCountInBitcoinCore()) {
+                getStatus().setBlocksCountInBitcoinCore(totalBlockCount.get());
             }
             // We return the block to process.
             if (blockToProcess <= totalBlockCount.get()) {
+                getStatus().getCurrentBlockStatus().setBlockHeight(blockToProcess);
                 return Optional.of(blockToProcess);
             } else {
                 return Optional.empty();
@@ -88,7 +90,9 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
 
             // ---------------------------------------------------------------------------------------------------------
             // We get all the addresses.
+            getStatus().getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.PROCESSING_ADDRESSES);
             addLog("Getting addresses from " + block.getTx().size() + " transaction(s)");
+            final AtomicInteger addressesCounter = new AtomicInteger(0);
             final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
             blockData.get().getAddresses()
                     .parallelStream() // In parallel.
@@ -102,11 +106,13 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                             addressesCache.put(a, new BitcoinAddress(a));
                             addLog("- Address " + a + " is new");
                         }
+                        getStatus().getCurrentBlockStatus().setAddressesCount(addressesCounter.incrementAndGet());
                     });
 
             // ---------------------------------------------------------------------------------------------------------
             // We link the addresses to the input and the origin transaction.
-            final AtomicInteger txCounter = new AtomicInteger();
+            getStatus().getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.PROCESSING_TRANSACTIONS);
+            final AtomicInteger transactionCounter = new AtomicInteger(0);
             final int txSize = block.getTx().size();
             addLog("Treating " + txSize + " transaction(s)");
             block.getTransactions()
@@ -167,7 +173,8 @@ public class BitcoinBatch extends BitcoinBatchTemplate {
                                 // -------------------------------------------------------------------------------------
                                 // Save the transaction and add log to say we are done.
                                 //getTransactionRepository().save(t);
-                                addLog("- Transaction " + txCounter.incrementAndGet() + "/" + txSize + " created (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
+                                getStatus().getCurrentBlockStatus().setTransactionsCount(transactionCounter.incrementAndGet());
+                                addLog("- Transaction " + transactionCounter.get() + "/" + txSize + " created (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                             });
 
             // ---------------------------------------------------------------------------------------------------------

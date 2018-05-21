@@ -14,27 +14,21 @@ export class Blockchain2graphService implements OnDestroy {
   private webSocket: WebSocket;
 
   // Status values.
-  private readonly blocksCountInBitcoinCoreSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
-  private readonly blocksCountInNeo4jSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
-  private readonly averageBlockProcessDurationSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(-1);
-  private readonly currentBlockStatusSubject: BehaviorSubject<CurrentBlockStatus> = new BehaviorSubject<CurrentBlockStatus>(null);
+  private readonly blocksCountInBitcoinCoreSubject: BehaviorSubject<Object>;
+  private readonly blocksCountInNeo4jSubject: BehaviorSubject<Object>;
+  private readonly averageBlockProcessDurationSubject: BehaviorSubject<Object>;
+  private readonly currentBlockStatusSubject: BehaviorSubject<CurrentBlockStatus>;
 
   // Observable.
-  public readonly blocksCountInBitcoinCore: Observable<Object> = this.blocksCountInBitcoinCoreSubject.asObservable();
-  public readonly blocksCountInNeo4j: Observable<Object> = this.blocksCountInNeo4jSubject.asObservable();
-  public readonly averageBlockProcessDuration: Observable<Object> = this.averageBlockProcessDurationSubject.asObservable();
-  public readonly currentBlockStatus: Observable<CurrentBlockStatus> = this.currentBlockStatusSubject.asObservable();
+  public readonly blocksCountInBitcoinCore: Observable<Object>;
+  public readonly blocksCountInNeo4j: Observable<Object>;
+  public readonly averageBlockProcessDuration: Observable<Object>;
+  public readonly currentBlockStatus: Observable<CurrentBlockStatus>;
 
   /**
    * Constructor.
    */
   constructor() {
-    // Connecting and subscribing to the websocket.
-    this.webSocket = new WebSocket(Blockchain2graphService.serverUrl);
-    this.webSocket.addEventListener('message', message => {
-      this.processMessage(JSON.parse(message.data));
-    });
-
     // Instantiate a current block state.
     const currentBlockStatus = <CurrentBlockStatus>{};
     currentBlockStatus.blockHeight = Blockchain2graphService.nonAvailableValue;
@@ -44,7 +38,24 @@ export class Blockchain2graphService implements OnDestroy {
     currentBlockStatus.loadedTransactions = Blockchain2graphService.nonAvailableValue;
     currentBlockStatus.processedAddresses = Blockchain2graphService.nonAvailableValue;
     currentBlockStatus.processedTransactions = Blockchain2graphService.nonAvailableValue;
-    this.currentBlockStatusSubject.next(currentBlockStatus);
+
+    // Initiate observer.
+    this.blocksCountInBitcoinCoreSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValue);
+    this.blocksCountInNeo4jSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValue);
+    this.averageBlockProcessDurationSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValue);
+    this.currentBlockStatusSubject = new BehaviorSubject<CurrentBlockStatus>(currentBlockStatus);
+
+    // Observable.
+    this.blocksCountInBitcoinCore = this.blocksCountInBitcoinCoreSubject.asObservable();
+    this.blocksCountInNeo4j = this.blocksCountInNeo4jSubject.asObservable();
+    this.averageBlockProcessDuration = this.averageBlockProcessDurationSubject.asObservable();
+    this.currentBlockStatus = this.currentBlockStatusSubject.asObservable();
+
+    // Connecting and subscribing to the websocket.
+    this.webSocket = new WebSocket(Blockchain2graphService.serverUrl);
+    this.webSocket.addEventListener('message', message => {
+      this.processMessage(JSON.parse(message.data));
+    });
   }
 
   /**
@@ -52,26 +63,24 @@ export class Blockchain2graphService implements OnDestroy {
    * @param message blockchain2graph server message.
    */
   public processMessage(message) {
-    const status = JSON.parse(message);
-
     // blocksCountInBitcoinCoreSubject.
-    if (status.blocksCountInBitcoinCore !== this.blocksCountInBitcoinCoreSubject.getValue()) {
-      this.blocksCountInBitcoinCoreSubject.next(status.blocksCountInBitcoinCore);
+    if (message.blocksCountInBitcoinCore !== this.blocksCountInBitcoinCoreSubject.getValue()) {
+      this.blocksCountInBitcoinCoreSubject.next(message.blocksCountInBitcoinCore);
     }
 
     // blocksCountInNeo4j.
-    if (status.blocksCountInNeo4j !== this.blocksCountInNeo4jSubject.getValue()) {
-      this.blocksCountInNeo4jSubject.next(status.blocksCountInNeo4j);
+    if (message.blocksCountInNeo4j !== this.blocksCountInNeo4jSubject.getValue()) {
+      this.blocksCountInNeo4jSubject.next(message.blocksCountInNeo4j);
     }
 
     // averageBlockProcessDuration.
-    if (status.averageBlockProcessDuration !== this.averageBlockProcessDurationSubject.getValue()) {
-      this.averageBlockProcessDurationSubject.next(status.averageBlockProcessDuration);
+    if (message.averageBlockProcessDuration !== this.averageBlockProcessDurationSubject.getValue()) {
+      this.averageBlockProcessDurationSubject.next(message.averageBlockProcessDuration);
     }
 
     // currentBlockStatus.
-    if (this.isCurrentBlockStatusDifferent(status.currentBlockStatus)) {
-      this.currentBlockStatusSubject.next(status.currentBlockStatus);
+    if (this.isCurrentBlockStatusDifferent(message.currentBlockStatus)) {
+      this.currentBlockStatusSubject.next(message.currentBlockStatus);
     }
   }
 

@@ -103,6 +103,13 @@ public class CurrentBlockStatus extends Observable {
             processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
             processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         }
+        if (newProcessStep.equals(NEW_BLOCK_TO_PROCESS)) {
+            transactionsCount = 0;
+            addressesCount = 0;
+            loadedTransactions = 0;
+            processedAddresses = 0;
+            processedTransactions = 0;
+        }
         setChanged();
         notifyObservers();
     }

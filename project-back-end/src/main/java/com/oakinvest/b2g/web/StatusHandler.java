@@ -74,7 +74,7 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
                 }
             }
         } catch (Exception e) {
-            log.warn("Error sending message : " + e.getMessage());
+            log.warn("Error sending message : " + e.getMessage(), e);
         }
     }
 
@@ -84,8 +84,7 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
             try {
                 sendMessage(mapper.writeValueAsString(applicationStatus));
             } catch (JsonProcessingException e) {
-                // TODO make a propoer log
-                e.printStackTrace();
+                log.error("Error parsing message : " + e.getMessage(), e);
             }
         }
     }
