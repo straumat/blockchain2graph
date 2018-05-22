@@ -2,14 +2,18 @@ language: java
 sudo: required
 addons:
   chrome: stable
+  apt:
+    packages:
+    - jq
+    - wget
+    - curl
+    - libssl1.0.0
 services:
   - docker
 cache:
   directories:
     - $HOME/.m2
 before_install:
-    - sudo apt-get install jq wget curl libssl1.0.0
-    - curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest
     - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
     - export CHROME_BIN=chromium-browser
     - export DISPLAY=:99.0
