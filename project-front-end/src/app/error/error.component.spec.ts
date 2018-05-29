@@ -35,6 +35,11 @@ describe('ErrorComponent', () => {
     fixture.detectChanges();
     expect(compiled.querySelector('div.card-body')).not.toBeNull();
     expect(compiled.querySelector('div.card-body')).not.toBeNull();
+    // Check that it can be disabled.
+    component.viewError = false;
+    fixture.detectChanges();
+    expect(compiled.querySelector('div.card-body')).toBeNull();
+    expect(compiled.querySelector('div.card-body')).toBeNull();
   });
 
 });
