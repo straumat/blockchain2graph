@@ -3,6 +3,7 @@ sudo: required
 addons:
   chrome: stable
   apt:
+    update: true
     packages:
     - jq
     - wget
