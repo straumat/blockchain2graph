@@ -1,16 +1,11 @@
 package com.oakinvest.b2g.bitcoin.test.service;
 
-import com.oakinvest.b2g.Application;
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
-import com.oakinvest.b2g.service.StatisticService;
+import com.oakinvest.b2g.bitcoin.service.StatisticService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -28,7 +23,7 @@ public class StatisticServiceTest extends BaseTest {
     private StatisticService statisticService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         statisticService.reset();
     }
 

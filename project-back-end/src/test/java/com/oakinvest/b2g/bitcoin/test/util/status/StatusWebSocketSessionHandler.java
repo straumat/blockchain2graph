@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.bitcoin.test.util.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
+import com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;

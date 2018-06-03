@@ -1,16 +1,16 @@
 package com.oakinvest.b2g.bitcoin.test.util.junit;
 
-import com.oakinvest.b2g.Application;
-import com.oakinvest.b2g.batch.bitcoin.BitcoinBatch;
-import com.oakinvest.b2g.bitcoin.test.util.mock.BitcoindMock;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinAddressRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinBlockRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionInputRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionOutputRepository;
-import com.oakinvest.b2g.repository.bitcoin.BitcoinTransactionRepository;
-import com.oakinvest.b2g.service.bitcoin.BitcoinDataService;
-import com.oakinvest.b2g.service.bitcoin.BitcoinCoreService;
-import com.oakinvest.b2g.util.bitcoin.buffer.BitcoinDataServiceBuffer;
+import com.oakinvest.b2g.bitcoin.Application;
+import com.oakinvest.b2g.bitcoin.batch.ImportBatch;
+import com.oakinvest.b2g.bitcoin.test.util.mock.BitcoinCoreMock;
+import com.oakinvest.b2g.bitcoin.repository.AddressRepository;
+import com.oakinvest.b2g.bitcoin.repository.BlockRepository;
+import com.oakinvest.b2g.bitcoin.repository.TransactionInputRepository;
+import com.oakinvest.b2g.bitcoin.repository.TransactionOutputRepository;
+import com.oakinvest.b2g.bitcoin.repository.TransactionRepository;
+import com.oakinvest.b2g.bitcoin.service.BitcoinDataService;
+import com.oakinvest.b2g.bitcoin.service.BitcoinCoreService;
+import com.oakinvest.b2g.bitcoin.util.buffer.BitcoinDataServiceBuffer;
 import org.junit.runner.RunWith;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,49 +44,43 @@ public abstract class BaseTest {
      * Bitcoin address repository.
      */
     @Autowired
-    private BitcoinAddressRepository addressRepository;
+    private AddressRepository addressRepository;
 
     /**
      * Bitcoin block repository.
      */
     @Autowired
-    private BitcoinBlockRepository bitcoinBlockRepository;
+    private BlockRepository blockRepository;
 
     /**
      * Bitcoin transaction repository.
      */
     @Autowired
-    private BitcoinTransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     /**
      * Transaction import repository.
      */
     @Autowired
-    private BitcoinTransactionInputRepository transactionInputRepository;
+    private TransactionInputRepository transactionInputRepository;
 
     /**
      * Transaction output repository.
      */
     @Autowired
-    private BitcoinTransactionOutputRepository transactionOutputRepository;
+    private TransactionOutputRepository transactionOutputRepository;
 
     /**
-     * Bitcoind mock.
+     * Bitcoin core mock.
      */
     @Autowired
-    private BitcoindMock bitcoindMock;
-
-    /**
-     * Bitcoin data service.
-     */
-    @Autowired
-    private BitcoinDataService bitcoinDataService;
+    private BitcoinCoreMock bitcoinCoreMock;
 
     /**
      * Import batch.
      */
     @Autowired
-    private BitcoinBatch batchBlocks;
+    private ImportBatch batchBlocks;
 
     /**
      * Buffer store.
@@ -95,10 +89,10 @@ public abstract class BaseTest {
     private BitcoinDataServiceBuffer buffer;
 
     /**
-     * Bitcoind service.
+     * Bitcoin core service.
      */
     @Autowired
-    private BitcoinCoreService bitcoindService;
+    private BitcoinCoreService bitcoinCoreService;
 
     /**
      * Session factory.
@@ -112,26 +106,17 @@ public abstract class BaseTest {
     @PostConstruct
     public void deleteCache() {
         if (PARAMETER_LIVE_VALUE.equals(System.getProperty(PARAMETER_LIVE))) {
-            getBitcoindMock().deleteCache();
+            getBitcoinCoreMock().deleteCache();
         }
     }
 
     /**
-     * Getter de la propriété bds.
+     * Getter bds.
      *
      * @return bds
      */
-    protected final BitcoinCoreService getBitcoindService() {
-        return bitcoindService;
-    }
-
-    /**
-     * Getter bitcoinDataService.
-     *
-     * @return bitcoinDataService
-     */
-    protected final BitcoinDataService getBitcoinDataService() {
-        return bitcoinDataService;
+    protected final BitcoinCoreService getBitcoinCoreService() {
+        return bitcoinCoreService;
     }
 
     /**
@@ -139,7 +124,7 @@ public abstract class BaseTest {
      *
      * @return batchBlocks
      */
-    protected final BitcoinBatch getBatchBlocks() {
+    protected final ImportBatch getBatchBlocks() {
         return batchBlocks;
     }
 
@@ -166,7 +151,7 @@ public abstract class BaseTest {
      *
      * @return addressRepository
      */
-    protected final BitcoinAddressRepository getAddressRepository() {
+    protected final AddressRepository getAddressRepository() {
         return addressRepository;
     }
 
@@ -175,7 +160,7 @@ public abstract class BaseTest {
      *
      * @return transactionRepository
      */
-    protected final BitcoinTransactionRepository getTransactionRepository() {
+    protected final TransactionRepository getTransactionRepository() {
         return transactionRepository;
     }
 
@@ -184,7 +169,7 @@ public abstract class BaseTest {
      *
      * @return transactionInputRepository
      */
-    protected final BitcoinTransactionInputRepository getTransactionInputRepository() {
+    protected final TransactionInputRepository getTransactionInputRepository() {
         return transactionInputRepository;
     }
 
@@ -193,26 +178,26 @@ public abstract class BaseTest {
      *
      * @return transactionOutputRepository
      */
-    protected final BitcoinTransactionOutputRepository getTransactionOutputRepository() {
+    protected final TransactionOutputRepository getTransactionOutputRepository() {
         return transactionOutputRepository;
     }
 
     /**
-     * Getter bitcoindMock.
+     * Getter bitcoin core mock.
      *
-     * @return bitcoindMock
+     * @return bitcoinCoreMock
      */
-    protected final BitcoindMock getBitcoindMock() {
-        return bitcoindMock;
+    protected final BitcoinCoreMock getBitcoinCoreMock() {
+        return bitcoinCoreMock;
     }
 
     /**
-     * Getter de la propriété bitcoinBlockRepository.
+     * Getter bitcoinBlockRepository.
      *
      * @return bitcoinBlockRepository
      */
-    protected final BitcoinBlockRepository getBitcoinBlockRepository() {
-        return bitcoinBlockRepository;
+    protected final BlockRepository getBlockRepository() {
+        return blockRepository;
     }
 
 }

@@ -2,7 +2,7 @@ package com.oakinvest.b2g.bitcoin.test.status;
 
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
 import com.oakinvest.b2g.bitcoin.test.util.status.StatusWebSocketSessionHandler;
-import com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus;
+import com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -17,9 +17,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.PROCESSING_TRANSACTIONS;
-import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NEW_BLOCK_TO_PROCESS;
-import static com.oakinvest.b2g.dto.bitcoin.status.CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
+import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.PROCESSING_TRANSACTIONS;
+import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.NEW_BLOCK_TO_PROCESS;
+import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

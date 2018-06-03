@@ -24,7 +24,7 @@
     <!-- Project configuration -->
     <properties>
         <!-- Java project configuration -->
-        <start-class>com.oakinvest.b2g.Application</start-class>
+        <start-class>com.oakinvest.b2g.bitcoin.Application</start-class>
 
         <!-- Maven plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
@@ -298,7 +298,7 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classes>
-                        <class>com.oakinvest.b2g.dto.bitcoin.status.ApplicationStatus</class>
+                        <class>com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus</class>
                     </classes>
                     <outputKind>module</outputKind>
                     <mapEnum>asEnum</mapEnum>

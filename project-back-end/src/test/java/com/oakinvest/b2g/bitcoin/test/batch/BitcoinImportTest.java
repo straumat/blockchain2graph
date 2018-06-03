@@ -1,12 +1,12 @@
 package com.oakinvest.b2g.bitcoin.test.batch;
 
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinAddress;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinBlock;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransaction;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionInput;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutput;
-import com.oakinvest.b2g.domain.bitcoin.BitcoinTransactionOutputType;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinAddress;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinBlock;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinTransaction;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinTransactionInput;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinTransactionOutput;
+import com.oakinvest.b2g.bitcoin.domain.BitcoinTransactionOutputType;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -34,12 +34,12 @@ public class BitcoinImportTest extends BaseTest {
         getSessionFactory().openSession().purgeDatabase();
 
         // Reset errors.
-        getBitcoindMock().resetErrors();
+        getBitcoinCoreMock().resetErrors();
 
         // Launch block importation.
         int iterations = 0;
         final int maxIterations = 1000;
-        while (getBitcoinBlockRepository().count() < NUMBERS_OF_BLOCK_TO_IMPORT) {
+        while (getBlockRepository().count() < NUMBERS_OF_BLOCK_TO_IMPORT) {
             try {
                 getBatchBlocks().execute();
                 iterations++;
@@ -68,7 +68,7 @@ public class BitcoinImportTest extends BaseTest {
         final int expectedTxSize = 2;
 
         // Test.
-        Optional<BitcoinBlock> b = getBitcoinBlockRepository().findByHash(expectedHash);
+        Optional<BitcoinBlock> b = getBlockRepository().findByHash(expectedHash);
         assertThat(b.isPresent()).as("Block").isTrue();
         assertThat(b.get().getHash()).as("Hash").isEqualTo(expectedHash);
         assertThat(b.get().getHeight()).as("Height").isEqualTo(expectedHeight);
@@ -90,17 +90,17 @@ public class BitcoinImportTest extends BaseTest {
         assertThat(b.get().getTransactions()).as("Block transactions").hasSize(expectedTxSize);
 
         // Test relations between blocks (previous block & next block).
-        assertThat(getBitcoinBlockRepository().findByHeight(1).get())
+        assertThat(getBlockRepository().findByHeight(1).get())
                 .as("Previous & next block")
                 .extracting("previousBlock", "nextBlock.height")
                 .contains(null, 2);
 
-        assertThat(getBitcoinBlockRepository().findByHeight(6).get())
+        assertThat(getBlockRepository().findByHeight(6).get())
                 .as("Previous & next block")
                 .extracting("previousBlock.height", "nextBlock.height")
                 .contains(5, 7);
 
-        assertThat(getBitcoinBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT).get())
+        assertThat(getBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT).get())
                 .as("Previous & next block")
                 .extracting("nextBlock", "previousBlock.height")
                 .contains(null, NUMBERS_OF_BLOCK_TO_IMPORT - 1);
@@ -218,7 +218,7 @@ public class BitcoinImportTest extends BaseTest {
         // Coinbase                            =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (50)
         final String transaction1Hash = "0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9";
         // Input 1.
-        bti1 = getTransactionInput(transaction1Hash, 0);
+        bti1 = getFirstTransactionInput(transaction1Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 1 input 1 - coinbase")
@@ -244,7 +244,7 @@ public class BitcoinImportTest extends BaseTest {
         //                                      =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (40)
         final String transaction2Hash = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
         // Input 1.
-        bti1 = getTransactionInput(transaction2Hash, 0);
+        bti1 = getFirstTransactionInput(transaction2Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 2 input 1 - not coinbase")
@@ -288,7 +288,7 @@ public class BitcoinImportTest extends BaseTest {
         //                                      =>  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (30)
         final String transaction3Hash = "a16f3ce4dd5deb92d98ef5cf8afeaf0775ebca408f708b2146c4fb42b41e14be";
         // Input 1.
-        bti1 = getTransactionInput(transaction3Hash, 0);
+        bti1 = getFirstTransactionInput(transaction3Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 3 input 1 - not coinbase")
@@ -332,7 +332,7 @@ public class BitcoinImportTest extends BaseTest {
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (29)
         final String transaction4Hash = "591e91f809d716912ca1d4a9295e70c3e78bab077683f79350f101da64588073";
         // Input 1.
-        bti1 = getTransactionInput(transaction4Hash, 0);
+        bti1 = getFirstTransactionInput(transaction4Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 4 input 1 - not coinbase")
@@ -376,7 +376,7 @@ public class BitcoinImportTest extends BaseTest {
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (28)
         final String transaction5Hash = "12b5633bad1f9c167d523ad1aa1947b2732a865bf5414eab2f9e5ae5d5c191ba";
         // Input 1.
-        bti1 = getTransactionInput(transaction5Hash, 0);
+        bti1 = getFirstTransactionInput(transaction5Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 5 input 1 - not coinbase")
@@ -420,7 +420,7 @@ public class BitcoinImportTest extends BaseTest {
         //                                                  12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S  (18)
         final String transaction6Hash = "828ef3b079f9c23829c56fe86e85b4a69d9e06e5b54ea597eef5fb3ffef509fe";
         // Input 1.
-        bti1 = getTransactionInput(transaction6Hash, 0);
+        bti1 = getFirstTransactionInput(transaction6Hash);
         if (bti1.isPresent()) {
             assertThat(bti1.get().isCoinbase())
                     .as("Transaction 6 input 1 - not coinbase")
@@ -464,15 +464,14 @@ public class BitcoinImportTest extends BaseTest {
      * Return a specified transaction input.
      *
      * @param txId  transaction id
-     * @param index transaction input id
      * @return transaction input
      */
-    private Optional<BitcoinTransactionInput> getTransactionInput(final String txId, final int index) {
+    private Optional<BitcoinTransactionInput> getFirstTransactionInput(final String txId) {
         final Optional<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(txId);
         int i = 0;
         if (transaction.isPresent()) {
             for (BitcoinTransactionInput input : transaction.get().getInputs()) {
-                if (i == index) {
+                if (i == 0) {
                     return getTransactionInputRepository().findById(input.getId());
                 }
                 i++;
