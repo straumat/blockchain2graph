@@ -39,4 +39,5 @@ public enum CurrentBlockStatusProcessStep {
      * Block saved.
      */
     BLOCK_SAVED
+
 }

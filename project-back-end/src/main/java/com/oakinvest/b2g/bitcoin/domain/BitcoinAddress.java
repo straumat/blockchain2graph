@@ -7,6 +7,7 @@ import org.neo4j.ogm.annotation.Property;
 
 /**
  * Represents a bitcoin address.
+ *
  * Created by straumat on 10/09/16.
  */
 @SuppressWarnings("unused")

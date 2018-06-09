@@ -20,9 +20,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin data service implementation.
+ *
  * Created by straumat on 11/06/17.
  */
 @Service
@@ -53,13 +55,12 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     private final BitcoinDataServiceBuffer buffer;
 
-
     /**
      * Constructor.
      *
      * @param newBitcoinCoreService core service
-     * @param newStatusService   status service
-     * @param newBuffer          buffer
+     * @param newStatusService      status service
+     * @param newBuffer             buffer
      */
     public BitcoinDataServiceImplementation(final BitcoinCoreService newBitcoinCoreService, final ApplicationStatus newStatusService, final BitcoinDataServiceBuffer newBuffer) {
         this.status = newStatusService;
@@ -112,6 +113,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
             final Set<String> addresses = Collections.synchronizedSet(new HashSet<>());
 
             // We retrieve all
+            final AtomicInteger loadedTransactionsCounter = new AtomicInteger(0);
             block.get().getTx()
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> transactionResponse = getRawTransactionResult(txId);
@@ -120,6 +122,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                             transactions.add(transactionResponse.get());
                             // Adding the addresses.
                             transactionResponse.get().getVout().forEach(o -> addresses.addAll(o.getScriptPubKey().getAddresses()));
+                            status.getCurrentBlockStatus().setLoadedTransactions(loadedTransactionsCounter.incrementAndGet());
                         } else {
                             log.error("Transaction " + txId + " missing");
                             status.setLastErrorMessage("Transaction " + txId + " missing");

@@ -20,6 +20,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,8 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.LOG_SEPARATOR;
+import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.PAUSE_BEFORE_STARTING_APPLICATION;
+import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BITCOIN_CORE;
 
 /**
@@ -87,10 +90,10 @@ public class ImportBatch {
      * Execute the batch.
      */
     @Transactional
-    @Scheduled(fixedDelay = 1, initialDelay = 1) // TODO Fix it
+    @Scheduled(fixedDelay = 1, initialDelay = PAUSE_BEFORE_STARTING_APPLICATION)
     @SuppressWarnings("checkstyle:designforextension")
     public void execute() {
-        long batchStartTime = System.currentTimeMillis();
+        Instant batchStartTime = Instant.now();
         log.info(LOG_SEPARATOR);
         try {
             // We retrieve the block to process.
@@ -100,6 +103,7 @@ public class ImportBatch {
             if (blockHeightToProcess.isPresent()) {
                 // Process the block.
                 log.info("Starting to process block " + getFormattedBlockHeight(blockHeightToProcess.get()));
+                status.getCurrentBlockStatus().setBlockHeight(blockHeightToProcess.get());
                 Optional<BitcoinBlock> blockToProcess = processBlock(blockHeightToProcess.get());
 
                 // If the process ended well.
@@ -112,12 +116,18 @@ public class ImportBatch {
                     status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.SAVING_BLOCK);
                     repositories.getBlockRepository().save(bitcoinBlock);
 
-                    // Once saved, we set status & statistics.
-                    long elapsedTime = System.currentTimeMillis() - batchStartTime;
-                    log.info("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + TimeUnit.MILLISECONDS.toSeconds(elapsedTime) + " secs");
-                    status.setAverageBlockProcessDuration(elapsedTime);
+                    // We calculate time.
+                    Duration batchDuration = Duration.between(batchStartTime, Instant.now());
+                    long secondsDuration = batchDuration.getSeconds();
+                    // TODO Improve when there won't be anymore this error : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
+                    long millisecondsDuration = TimeUnit.NANOSECONDS.toMillis(batchDuration.minusSeconds(secondsDuration).getNano());
+                    log.info("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + secondsDuration + "."  + millisecondsDuration + " secs");
+                    // TODO Improve when JDK8 won't have this error anymore : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
+                    status.setLastBlockProcessDuration(TimeUnit.NANOSECONDS.toMillis(batchDuration.getNano()));
+
+                    // We set status.
                     status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.BLOCK_SAVED);
-                    status.setBlocksCountInNeo4j(bitcoinBlock.getHeight());
+                    status.setBlockCountInNeo4j(bitcoinBlock.getHeight());
                 });
             } else {
                 // If there is nothing to process.
@@ -126,12 +136,12 @@ public class ImportBatch {
                 Thread.sleep(BLOCK_GENERATION_DELAY);
             }
         } catch (Exception e) {
+            status.setLastErrorMessage("An error occurred while processing block : " + e.getMessage());
             log.error("An error occurred while processing block : " + e.getMessage(), e);
         } finally {
             session.clear();
         }
     }
-
 
     /**
      * Return the block to process.
@@ -146,12 +156,11 @@ public class ImportBatch {
         // We check if that next block exists by retrieving the block count.
         if (totalBlockCount.isPresent()) {
             // We update the global status of blockcount (if needed).
-            if (totalBlockCount.get() != status.getBlocksCountInBitcoinCore()) {
-                status.setBlocksCountInBitcoinCore(totalBlockCount.get());
+            if (totalBlockCount.get() != status.getBlockCountInBitcoinCore()) {
+                status.setBlockCountInBitcoinCore(totalBlockCount.get());
             }
             // We return the block to process.
             if (blockToProcess <= totalBlockCount.get()) {
-                status.getCurrentBlockStatus().setBlockHeight(blockToProcess);
                 return Optional.of(blockToProcess);
             } else {
                 return Optional.empty();
@@ -170,6 +179,7 @@ public class ImportBatch {
      */
     private Optional<BitcoinBlock> processBlock(final int blockHeight) {
         status.getCurrentBlockStatus().setProcessStep(LOADING_TRANSACTIONS_FROM_BITCOIN_CORE);
+        log.info("Loading block data from Bitcoin core");
         Optional<BitcoinCoreBlockData> blockData = services.getBitcoinDataService().getBlockData(blockHeight);
 
         // -------------------------------------------------------------------------------------------------------------
@@ -178,14 +188,16 @@ public class ImportBatch {
 
             // ---------------------------------------------------------------------------------------------------------
             // We create the block to save. We retrieve the data from core and map it.
+            status.getCurrentBlockStatus().setTransactionCount(blockData.get().getTransactions().size());
+            status.getCurrentBlockStatus().setAddressCount(blockData.get().getAddresses().size());
             final BitcoinBlock block = mapper.blockDataToBitcoinBlock(blockData.get());
 
             // ---------------------------------------------------------------------------------------------------------
             // We get all the addresses.
             status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.PROCESSING_ADDRESSES);
-            log.info("Getting addresses from " + block.getTx().size() + " transaction(s)");
             final AtomicInteger addressesCounter = new AtomicInteger(0);
             final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
+            log.info("Treating " + addressesCache.size() + " address(es)");
             blockData.get().getAddresses()
                     .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.
@@ -196,9 +208,9 @@ public class ImportBatch {
                             log.info("- Address " + a + " already exists");
                         } else {
                             addressesCache.put(a, new BitcoinAddress(a));
-                            log.info("- Creating Address " + a);
+                            log.info("- Creating address " + a);
                         }
-                        status.getCurrentBlockStatus().setAddressesCount(addressesCounter.incrementAndGet());
+                        status.getCurrentBlockStatus().setAddressCount(addressesCounter.incrementAndGet());
                     });
 
             // ---------------------------------------------------------------------------------------------------------
@@ -244,8 +256,6 @@ public class ImportBatch {
                                                         .filter(Objects::nonNull)
                                                         .forEach(a -> vin.setBitcoinAddress(addressesCache.get(a)));
                                             } else {
-                                                //addError("In block " + getFormattedBlockHeight(block.getHeight()));
-                                                //addError("Impossible to find the origin transaction of " + vin.getTxId() + " / " + vin.getvOut());
                                                 throw new OriginTransactionNotFoundException("Origin transaction not found " + vin.getTxId() + " / " + vin.getvOut());
                                             }
                                         });
@@ -263,9 +273,8 @@ public class ImportBatch {
                                         });
 
                                 // -------------------------------------------------------------------------------------
-                                // Save the transaction and add log to say we are done.
-                                //getTransactionRepository().save(t);
-                                status.getCurrentBlockStatus().setTransactionsCount(transactionCounter.incrementAndGet());
+                                // Logging.
+                                status.getCurrentBlockStatus().setTransactionCount(transactionCounter.incrementAndGet());
                                 log.info("- Transaction " + transactionCounter.get() + "/" + txSize + " created (" + t.getTxId() + " : " + t.getInputs().size() + " vin(s) & " + t.getOutputs().size() + " vout(s))");
                             });
 
@@ -273,10 +282,9 @@ public class ImportBatch {
             // We set the previous and the next block.
             Optional<BitcoinBlock> previousBlock = repositories.getBlockRepository().findByHeightWithoutDepth(block.getHeight() - 1);
             previousBlock.ifPresent(previous -> {
+                log.info("Linking this block to the previous one");
                 block.setPreviousBlock(previous);
-                log.info("Setting the previous block of this block");
                 previous.setNextBlock(block);
-                log.info("Setting this block as next block of the previous one");
             });
 
             // ---------------------------------------------------------------------------------------------------------
@@ -285,6 +293,7 @@ public class ImportBatch {
 
         } else {
             // Or nothing if we did not retrieve the data.
+            status.setLastErrorMessage("No response from core for block n°" + getFormattedBlockHeight(blockHeight));
             log.error("No response from core for block n°" + getFormattedBlockHeight(blockHeight));
             return Optional.empty();
         }

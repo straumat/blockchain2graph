@@ -9,6 +9,7 @@ import java.util.Optional;
 
 /**
  * BitcoinAddress repository.
+ *
  * Created by straumat on 10/09/16.
  */
 @Repository

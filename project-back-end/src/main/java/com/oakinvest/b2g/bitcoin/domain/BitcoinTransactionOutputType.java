@@ -2,7 +2,7 @@ package com.oakinvest.b2g.bitcoin.domain;
 
 /**
  * Bitcoin transaction output type.
- * <p>
+ *
  * Created by straumat on 06/11/16.
  */
 @SuppressWarnings("unused")

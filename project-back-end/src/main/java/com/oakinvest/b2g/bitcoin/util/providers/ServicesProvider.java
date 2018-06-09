@@ -1,9 +1,8 @@
 package com.oakinvest.b2g.bitcoin.util.providers;
 
-import com.oakinvest.b2g.bitcoin.service.StatisticService;
 import com.oakinvest.b2g.bitcoin.service.BitcoinCoreService;
 import com.oakinvest.b2g.bitcoin.service.BitcoinDataService;
-import com.oakinvest.b2g.bitcoin.service.BitcoinDataServiceBufferLoader;
+import com.oakinvest.b2g.bitcoin.util.buffer.BitcoinDataServiceBufferLoader;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,22 +30,15 @@ public class ServicesProvider {
     private final BitcoinDataServiceBufferLoader bitcoinDataServiceBufferLoader;
 
     /**
-     * Statistic service.
-     */
-    private final StatisticService statisticService;
-
-    /**
      * Constructor.
      * @param newBitcoinCoreService bitcoin core service
      * @param newBitcoinDataService bitcoin data service
      * @param newBitcoinDataServiceBufferLoader bitcoin data service buffer
-     * @param newStatisticService statistic service
      */
-    public ServicesProvider(final BitcoinCoreService newBitcoinCoreService, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader, final StatisticService newStatisticService) {
+    public ServicesProvider(final BitcoinCoreService newBitcoinCoreService, final BitcoinDataService newBitcoinDataService, final BitcoinDataServiceBufferLoader newBitcoinDataServiceBufferLoader) {
         this.bitcoinCoreService = newBitcoinCoreService;
         this.bitcoinDataService = newBitcoinDataService;
         this.bitcoinDataServiceBufferLoader = newBitcoinDataServiceBufferLoader;
-        this.statisticService = newStatisticService;
     }
 
     /**
@@ -71,14 +63,6 @@ public class ServicesProvider {
      */
     public final BitcoinDataServiceBufferLoader getBitcoinDataServiceBufferLoader() {
         return bitcoinDataServiceBufferLoader;
-    }
-
-    /**
-     * Get statistic service.
-     * @return statistic service
-     */
-    public final StatisticService getStatisticService() {
-        return statisticService;
     }
 
 }

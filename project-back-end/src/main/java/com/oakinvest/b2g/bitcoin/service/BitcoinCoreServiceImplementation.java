@@ -24,52 +24,51 @@ import java.util.List;
 
 /**
  * Default implementation of core call.
+ *
  * Created by straumat on 26/08/16.
  */
 @Service
 public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
 
     /**
-     * Command to getblockcount.
-     */
-    private static final String COMMAND_GETBLOCKCOUNT = "getblockcount";
-
-    /**
-     * Command to getblockhash.
-     */
-    private static final String COMMAND_GETBLOCKHASH = "getblockhash";
-
-    /**
-     * Command to getblock.
-     */
-    private static final String COMMAND_GETBLOCK = "getblock";
-
-    /**
-     * Command to getrawtransaction.
-     */
-    private static final String COMMAND_GETRAWTRANSACTION = "getrawtransaction";
-
-    /**
-     * Method parameter.
-     */
-    private static final String PARAMETER_METHOD = "method";
-
-    /**
-     * Params parameter.
-     */
-    private static final String PARAMETER_PARAMS = "params";
-
-    /**
      * Logger.
      */
     private final Logger log = LoggerFactory.getLogger(BitcoinCoreService.class);
 
+    /**
+     * getblockcount command.
+     */
+    private static final String GETBLOCKCOUNT_COMMAND = "getblockcount";
+
+    /**
+     * getblockhash command.
+     */
+    private static final String GETBLOCKHASH_COMMAND = "getblockhash";
+
+    /**
+     * getblock command.
+     */
+    private static final String GETBLOCK_COMMAND = "getblock";
+
+    /**
+     * getrawtransaction command.
+     */
+    private static final String GETRAWTRANSACTION_COMMAND = "getrawtransaction";
+
+    /**
+     * Method parameter.
+     */
+    private static final String METHOD_PARAMETER = "method";
+
+    /**
+     * Params parameter.
+     */
+    private static final String PARAMS_PARAMETER = "params";
 
     /**
      * Rest template.
      */
     private final RestTemplate restTemplate;
-
 
     /**
      * Bitcoin core hostname.
@@ -154,7 +153,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
     public final GetBlockCountResponse getBlockCount() {
         // Setting parameters
         List<Object> params = new ArrayList<>();
-        String request = getRequest(COMMAND_GETBLOCKCOUNT, params);
+        String request = getRequest(GETBLOCKCOUNT_COMMAND, params);
 
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
@@ -171,7 +170,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         // Setting parameters
         List<Object> params = new ArrayList<>();
         params.add(blockHeight);
-        String request = getRequest(COMMAND_GETBLOCKHASH, params);
+        String request = getRequest(GETBLOCKHASH_COMMAND, params);
 
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
@@ -188,7 +187,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         // Setting parameters
         List<Object> params = new ArrayList<>();
         params.add(blockHash);
-        String request = getRequest(COMMAND_GETBLOCK, params);
+        String request = getRequest(GETBLOCK_COMMAND, params);
 
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
@@ -206,7 +205,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         List<Object> params = new ArrayList<>();
         params.add(transactionHash);
         params.add(1);
-        String request = getRequest(COMMAND_GETRAWTRANSACTION, params);
+        String request = getRequest(GETRAWTRANSACTION_COMMAND, params);
 
         // Making the call.
         HttpEntity<String> entity = new HttpEntity<>(request, getHeaders());
@@ -223,8 +222,8 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
      */
     private String getRequest(final String command, final List<Object> params) {
         HashMap<Object, Object> request = new HashMap<>();
-        request.put(PARAMETER_METHOD, command);
-        request.put(PARAMETER_PARAMS, params);
+        request.put(METHOD_PARAMETER, command);
+        request.put(PARAMS_PARAMETER, params);
         try {
             return new ObjectMapper().writeValueAsString(request);
         } catch (JsonProcessingException e) {

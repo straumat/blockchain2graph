@@ -7,15 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Console controller.
+ *
  * Created by straumat on 02/11/16.
  */
 @Controller
-public class ConsoleController {
+public class ConfigurationController {
 
     /**
      * Console view.
      */
-    private static final String CONSOLE_VIEW = "console";
+    private static final String CONFIGURATION_VIEW = "configuration";
 
     /**
      * Server address.
@@ -35,10 +36,10 @@ public class ConsoleController {
      * @param model model.
      * @return page to display.
      */
-    @RequestMapping(value = "/")
-    public final String index(final Model model) {
+    @RequestMapping(value = "/configuration")
+    public final String getConfigurationView(final Model model) {
         model.addAttribute("url", address + ":" + port);
-        return CONSOLE_VIEW;
+        return CONFIGURATION_VIEW;
     }
 
 }

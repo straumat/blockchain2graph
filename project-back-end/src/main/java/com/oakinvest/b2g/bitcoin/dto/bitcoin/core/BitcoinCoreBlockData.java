@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * Bitcoin core block data - not a core object - created for b2g.
+ *
  * Created by straumat on 16/03/17.
  */
 public class BitcoinCoreBlockData implements Serializable {

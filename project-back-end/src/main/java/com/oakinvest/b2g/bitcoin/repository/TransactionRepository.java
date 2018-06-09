@@ -7,6 +7,7 @@ import java.util.Optional;
 
 /**
  * BitcoinTransaction repository.
+ *
  * Created by straumat on 27/09/16.
  */
 public interface TransactionRepository extends Neo4jRepository<BitcoinTransaction, Long> {

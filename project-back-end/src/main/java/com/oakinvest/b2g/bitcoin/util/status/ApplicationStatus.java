@@ -26,12 +26,12 @@ public class ApplicationStatus extends Observable implements Observer {
     /**
      * Number of blocks in Bitcoin core (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int blocksCountInBitcoinCore = NON_AVAILABLE_VALUE_NUMBER;
+    private int blockCountInBitcoinCore = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Number of blocks in neo4j (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int blocksCountInNeo4j = NON_AVAILABLE_VALUE_NUMBER;
+    private int blockCountInNeo4j = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Status of the block being processed.
@@ -39,9 +39,9 @@ public class ApplicationStatus extends Observable implements Observer {
     private CurrentBlockStatus currentBlockStatus = new CurrentBlockStatus();
 
     /**
-     * Average block process duration (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
+     * Last block process duration (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private float averageBlockProcessDuration = NON_AVAILABLE_VALUE_NUMBER;
+    private float lastBlockProcessDuration = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Last error message (if no error, value is set to NON_AVAILABLE_VALUE_STRING).
@@ -63,41 +63,41 @@ public class ApplicationStatus extends Observable implements Observer {
     }
 
     /**
-     * Gets blocksCountInBitcoinCore.
+     * Gets blockCountInBitcoinCore.
      *
-     * @return value of blocksCountInBitcoinCore
+     * @return value of blockCountInBitcoinCore
      */
-    public final int getBlocksCountInBitcoinCore() {
-        return blocksCountInBitcoinCore;
+    public final int getBlockCountInBitcoinCore() {
+        return blockCountInBitcoinCore;
     }
 
     /**
-     * Sets blocksCountInBitcoinCore.
+     * Sets blockCountInBitcoinCore.
      *
-     * @param newBlocksCountInBitcoinCore blocksCountInBitcoinCore
+     * @param newBlocksCountInBitcoinCore blockCountInBitcoinCore
      */
-    public final void setBlocksCountInBitcoinCore(final int newBlocksCountInBitcoinCore) {
-        blocksCountInBitcoinCore = newBlocksCountInBitcoinCore;
+    public final void setBlockCountInBitcoinCore(final int newBlocksCountInBitcoinCore) {
+        blockCountInBitcoinCore = newBlocksCountInBitcoinCore;
         setChanged();
         notifyObservers();
     }
 
     /**
-     * Gets blocksCountInNeo4j.
+     * Gets blockCountInNeo4j.
      *
-     * @return value of blocksCountInNeo4j
+     * @return value of blockCountInNeo4j
      */
-    public final int getBlocksCountInNeo4j() {
-        return blocksCountInNeo4j;
+    public final int getBlockCountInNeo4j() {
+        return blockCountInNeo4j;
     }
 
     /**
-     * Sets blocksCountInNeo4j.
+     * Sets blockCountInNeo4j.
      *
-     * @param newBlocksCountInNeo4j blocksCountInNeo4j
+     * @param newBlocksCountInNeo4j blockCountInNeo4j
      */
-    public final void setBlocksCountInNeo4j(final int newBlocksCountInNeo4j) {
-        blocksCountInNeo4j = newBlocksCountInNeo4j;
+    public final void setBlockCountInNeo4j(final int newBlocksCountInNeo4j) {
+        blockCountInNeo4j = newBlocksCountInNeo4j;
         setChanged();
         notifyObservers();
     }
@@ -123,21 +123,21 @@ public class ApplicationStatus extends Observable implements Observer {
     }
 
     /**
-     * Gets averageBlockProcessDuration.
+     * Gets lastBlockProcessDuration.
      *
-     * @return value of averageBlockProcessDuration
+     * @return value of lastBlockProcessDuration
      */
-    public final float getAverageBlockProcessDuration() {
-        return averageBlockProcessDuration;
+    public final float getLastBlockProcessDuration() {
+        return lastBlockProcessDuration;
     }
 
     /**
-     * Sets averageBlockProcessDuration.
+     * Sets lastBlockProcessDuration.
      *
-     * @param newAverageBlockProcessDuration averageBlockProcessDuration
+     * @param newAverageBlockProcessDuration lastBlockProcessDuration
      */
-    public final void setAverageBlockProcessDuration(final float newAverageBlockProcessDuration) {
-        averageBlockProcessDuration = newAverageBlockProcessDuration;
+    public final void setLastBlockProcessDuration(final float newAverageBlockProcessDuration) {
+        lastBlockProcessDuration = newAverageBlockProcessDuration;
         setChanged();
         notifyObservers();
     }

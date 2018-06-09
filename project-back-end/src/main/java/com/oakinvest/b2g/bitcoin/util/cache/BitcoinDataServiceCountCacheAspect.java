@@ -6,7 +6,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.BLOCK_COUNT_CACHE_ACTIVATION_HEIGHT;
 import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 
 /**
@@ -16,16 +18,6 @@ import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.B
 @Configuration
 @Aspect
 public class BitcoinDataServiceCountCacheAspect {
-
-    /**
-     * Number of blocks before the cache activate.
-     */
-    private static final int BLOCK_CACHE_START = 100000;
-
-    /**
-     * How many milli seconds in 1 minute.
-     */
-    private static final float MILLISECONDS_IN_ONE_MINUTE = 60F * 1000F;
 
     /**
      * Last block count value.
@@ -47,11 +39,11 @@ public class BitcoinDataServiceCountCacheAspect {
     @SuppressWarnings("unchecked")
     @Around("execution(* com.oakinvest.b2g.bitcoin.service.BitcoinDataService.getBlockCount())")
     public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
-        float elapsedMinutesSinceLastCall = (System.currentTimeMillis() - lastBlockCountValueAccess) / MILLISECONDS_IN_ONE_MINUTE;
+        float elapsedMinutesSinceLastCall = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastBlockCountValueAccess);
 
-        // We retrieve the value from server.
         // If getBlockcount has never been call or more than 10 minutes have passed since last call or we are under 10000 blocks.
-        if (elapsedMinutesSinceLastCall > BLOCK_GENERATION_DELAY || lastBlockCountValue < BLOCK_CACHE_START) {
+        // We retrieve the value from server.
+        if (elapsedMinutesSinceLastCall > BLOCK_GENERATION_DELAY || lastBlockCountValue < BLOCK_COUNT_CACHE_ACTIVATION_HEIGHT) {
             Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
             blockCount.ifPresent(count -> {
                 lastBlockCountValue = count;

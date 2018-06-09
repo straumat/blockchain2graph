@@ -1,6 +1,6 @@
-package com.oakinvest.b2g.bitcoin.service;
+package com.oakinvest.b2g.bitcoin.util.buffer;
 
-import com.oakinvest.b2g.bitcoin.util.buffer.BitcoinDataServiceBuffer;
+import com.oakinvest.b2g.bitcoin.service.BitcoinDataService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +41,6 @@ public class BitcoinDataServiceBufferLoader {
     @Async
     @SuppressWarnings("checkstyle:designforextension")
     public void loadBlockInBuffer(final int blockToLoad) {
-        // We get the required data.
         // Total block count in core.
         Optional<Integer> blockCount = bitcoinDataService.getBlockCount();
 

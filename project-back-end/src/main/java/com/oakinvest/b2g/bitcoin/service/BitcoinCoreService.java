@@ -7,6 +7,7 @@ import com.oakinvest.b2g.bitcoin.dto.bitcoin.core.getrawtransaction.GetRawTransa
 
 /**
  * Provides an easy access to core server data.
+ *
  * Created by straumat on 25/08/16.
  */
 public interface BitcoinCoreService {

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Generic reply from bitcoin.
+ *
  * Created by straumat on 30/08/16.
  */
 public abstract class BitcoinCoreResponse implements Serializable {

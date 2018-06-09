@@ -2,14 +2,13 @@ package com.oakinvest.b2g.bitcoin.test.util.junit;
 
 import com.oakinvest.b2g.bitcoin.Application;
 import com.oakinvest.b2g.bitcoin.batch.ImportBatch;
-import com.oakinvest.b2g.bitcoin.test.util.mock.BitcoinCoreMock;
 import com.oakinvest.b2g.bitcoin.repository.AddressRepository;
 import com.oakinvest.b2g.bitcoin.repository.BlockRepository;
 import com.oakinvest.b2g.bitcoin.repository.TransactionInputRepository;
 import com.oakinvest.b2g.bitcoin.repository.TransactionOutputRepository;
 import com.oakinvest.b2g.bitcoin.repository.TransactionRepository;
-import com.oakinvest.b2g.bitcoin.service.BitcoinDataService;
 import com.oakinvest.b2g.bitcoin.service.BitcoinCoreService;
+import com.oakinvest.b2g.bitcoin.test.util.mock.BitcoinCoreMock;
 import com.oakinvest.b2g.bitcoin.util.buffer.BitcoinDataServiceBuffer;
 import org.junit.runner.RunWith;
 import org.neo4j.ogm.session.SessionFactory;
@@ -33,12 +32,12 @@ public abstract class BaseTest {
     /**
      * Parameter for live test.
      */
-    private static final String PARAMETER_LIVE = "live";
+    private static final String LIVE_PARAMETER = "live";
 
     /**
      * Parameter expected for live test
      */
-    private static final String PARAMETER_LIVE_VALUE = "true";
+    private static final String LIVE_PARAMETER_VALUE = "true";
 
     /**
      * Bitcoin address repository.
@@ -105,7 +104,7 @@ public abstract class BaseTest {
      */
     @PostConstruct
     public void deleteCache() {
-        if (PARAMETER_LIVE_VALUE.equals(System.getProperty(PARAMETER_LIVE))) {
+        if (LIVE_PARAMETER_VALUE.equalsIgnoreCase(System.getProperty(LIVE_PARAMETER))) {
             getBitcoinCoreMock().deleteCache();
         }
     }

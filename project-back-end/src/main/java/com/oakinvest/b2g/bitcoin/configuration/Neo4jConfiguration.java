@@ -19,7 +19,7 @@ import java.util.Collections;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableNeo4jRepositories(basePackages = "com.oakinvest.b2g")
+@EnableNeo4jRepositories(basePackages = "com.oakinvest.b2g.bitcoin")
 @EntityScan(basePackages = "com.oakinvest.b2g.bitcoin.domain")
 public class Neo4jConfiguration {
 
@@ -43,9 +43,8 @@ public class Neo4jConfiguration {
     @PostConstruct
     public final void createConstraintsAndIndexes() {
         Logger log = LoggerFactory.getLogger(Neo4jConfiguration.class);
-
         try {
-            log.info("Constraints and indexes creation");
+            log.info("Creating constraints and indexes...");
             // Session.
             Session session = sessionFactory.openSession();
             // Constraints.
@@ -53,8 +52,9 @@ public class Neo4jConfiguration {
             // Indexes.
             session.query("CREATE INDEX ON :BitcoinBlock(height)", Collections.emptyMap());
             session.query("CREATE INDEX ON :BitcoinTransactionOutput(txid, n)", Collections.emptyMap());
+            log.info("Constraints and indexes created");
         } catch (Exception e) {
-            log.error("Error creating constraints & indexes : " + e.getMessage(), e);
+            log.error("Error creating constraints and indexes : " + e.getMessage(), e);
         }
     }
 

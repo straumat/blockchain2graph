@@ -8,6 +8,7 @@ import java.util.Optional;
 
 /**
  * BitcoinTransactionOutput repository.
+ *
  * Created by straumat on 22/03/17.
  */
 @Repository

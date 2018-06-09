@@ -9,6 +9,7 @@ import java.util.Optional;
 
 /**
  * BitcoinBlock repository.
+ *
  * Created by straumat on 09/09/16.
  */
 @Repository
@@ -23,7 +24,7 @@ public interface BlockRepository extends Neo4jRepository<BitcoinBlock, Long> {
     Optional<BitcoinBlock> findByHeight(int height);
 
     /**
-     * Find a block by its height.
+     * Find a block by its height without depth.
      *
      * @param height height
      * @return block

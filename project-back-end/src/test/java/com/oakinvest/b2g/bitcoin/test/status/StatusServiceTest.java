@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for the status service.
+ *
  * Created by straumat on 28/10/16.
  */
 public class StatusServiceTest extends BaseTest {
@@ -49,10 +50,10 @@ public class StatusServiceTest extends BaseTest {
      */
     @Test
     public final void initialValuesTest() {
-        assertThat(status.getBlocksCountInBitcoinCore())
+        assertThat(status.getBlockCountInBitcoinCore())
                 .as("Check number of blocks in Bitcoin core")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(status.getBlocksCountInNeo4j())
+        assertThat(status.getBlockCountInNeo4j())
                 .as("Check number of blocks in neo4j")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(status.getCurrentBlockStatus().getBlockHeight())
@@ -64,16 +65,16 @@ public class StatusServiceTest extends BaseTest {
         assertThat(status.getCurrentBlockStatus().getProcessedAddresses())
                 .as("Check number of addresses processed")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(status.getCurrentBlockStatus().getAddressesCount())
+        assertThat(status.getCurrentBlockStatus().getAddressCount())
                 .as("Check number of addresses in the current block")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(status.getCurrentBlockStatus().getProcessedTransactions())
                 .as("Check number of transactions processed")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(status.getCurrentBlockStatus().getTransactionsCount())
+        assertThat(status.getCurrentBlockStatus().getTransactionCount())
                 .as("Check number of transactions in the current block")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(status.getAverageBlockProcessDuration())
+        assertThat(status.getLastBlockProcessDuration())
                 .as("Check average block process duration")
                 .isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(status.getLastErrorMessage())
@@ -101,168 +102,168 @@ public class StatusServiceTest extends BaseTest {
         sockJsClient.doHandshake(webSocketResponse,"ws://localhost:8080/status/").get(1, TimeUnit.MINUTES);
 
         // Change blocksCountInBitcoinCore.
-        status.setBlocksCountInBitcoinCore(1);
+        status.setBlockCountInBitcoinCore(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(NO_BLOCK_TO_PROCESS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change blocksCountInNeo4j.
-        status.setBlocksCountInNeo4j(1);
+        status.setBlockCountInNeo4j(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(NO_BLOCK_TO_PROCESS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.processStep.
         status.getCurrentBlockStatus().setProcessStep(PROCESSING_TRANSACTIONS);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.loadedTransactions.
         status.getCurrentBlockStatus().setLoadedTransactions(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.processedAddresses.
         status.getCurrentBlockStatus().setProcessedAddresses(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.addressesCount.
-        status.getCurrentBlockStatus().setAddressesCount(1);
+        status.getCurrentBlockStatus().setAddressCount(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.processedTransactions.
         status.getCurrentBlockStatus().setProcessedTransactions(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change currentBlockStatus.transactionsCount.
-        status.getCurrentBlockStatus().setTransactionsCount(1);
+        status.getCurrentBlockStatus().setTransactionCount(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change averageBlockProcessDuration.
-        status.setAverageBlockProcessDuration(1);
+        status.setLastBlockProcessDuration(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(1);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo(NON_AVAILABLE_VALUE_STRING);
 
         // Change lastErrorMessage.
         status.setLastErrorMessage("");
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(PROCESSING_TRANSACTIONS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(1);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo("");
 
         // If currentBlockStatus.blockHeight value change, automatically set others fields.
         status.getCurrentBlockStatus().setBlockHeight(1);
         valueFromWebSocket = webSocketResponse.getNewMessage();
-        assertThat(valueFromWebSocket.getBlocksCountInBitcoinCore()).isEqualTo(1);
-        assertThat(valueFromWebSocket.getBlocksCountInNeo4j()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInBitcoinCore()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getBlockCountInNeo4j()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getBlockHeight()).isEqualTo(1);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(NEW_BLOCK_TO_PROCESS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(1);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo("");
 
         // If currentBlockStatus.processStep change to NO_BLOCK_TO_PROCESS, automatically set others fields.
@@ -270,11 +271,11 @@ public class StatusServiceTest extends BaseTest {
         webSocketResponse.getNewMessage();
         status.getCurrentBlockStatus().setProcessedAddresses(1);
         webSocketResponse.getNewMessage();
-        status.getCurrentBlockStatus().setAddressesCount(1);
+        status.getCurrentBlockStatus().setAddressCount(1);
         webSocketResponse.getNewMessage();
         status.getCurrentBlockStatus().setProcessedTransactions(1);
         webSocketResponse.getNewMessage();
-        status.getCurrentBlockStatus().setTransactionsCount(1);
+        status.getCurrentBlockStatus().setTransactionCount(1);
         webSocketResponse.getNewMessage();
         status.getCurrentBlockStatus().setProcessStep(NO_BLOCK_TO_PROCESS);
         valueFromWebSocket = webSocketResponse.getNewMessage();
@@ -282,10 +283,10 @@ public class StatusServiceTest extends BaseTest {
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessStep()).isEqualTo(NO_BLOCK_TO_PROCESS);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getLoadedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedAddresses()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressesCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getAddressCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
         assertThat(valueFromWebSocket.getCurrentBlockStatus().getProcessedTransactions()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionsCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
-        assertThat(valueFromWebSocket.getAverageBlockProcessDuration()).isEqualTo(1);
+        assertThat(valueFromWebSocket.getCurrentBlockStatus().getTransactionCount()).isEqualTo(NON_AVAILABLE_VALUE_NUMBER);
+        assertThat(valueFromWebSocket.getLastBlockProcessDuration()).isEqualTo(1);
         assertThat(valueFromWebSocket.getLastErrorMessage()).isEqualTo("");
     }
 

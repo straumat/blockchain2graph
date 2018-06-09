@@ -8,6 +8,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 /**
  * Bitcoin transaction input.
+ *
  * Created by straumat on 22/09/16.
  */
 @SuppressWarnings("unused")

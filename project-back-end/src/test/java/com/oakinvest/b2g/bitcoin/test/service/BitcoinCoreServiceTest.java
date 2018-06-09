@@ -13,6 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 /**
  * Tests for BitcoinCoreService.
+ *
  * Created by straumat on 29/08/16.
  */
 public class BitcoinCoreServiceTest extends BaseTest {

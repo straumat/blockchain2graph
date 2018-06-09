@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * BitcoinTransactionInput repository.
+ *
  * Created by straumat on 22/03/17.
  */
 @Repository

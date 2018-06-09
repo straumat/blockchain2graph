@@ -29,12 +29,12 @@ public class CurrentBlockStatus extends Observable {
     /**
      * Number of transactions in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
+    private int transactionCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Number of addresses in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int addressesCount = NON_AVAILABLE_VALUE_NUMBER;
+    private int addressCount = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Number of loaded transactions from bitcoin core.
@@ -69,8 +69,8 @@ public class CurrentBlockStatus extends Observable {
     public final void setBlockHeight(final int newBlockHeight) {
         blockHeight = newBlockHeight;
         processStep = NEW_BLOCK_TO_PROCESS;
-        transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
-        addressesCount = NON_AVAILABLE_VALUE_NUMBER;
+        transactionCount = NON_AVAILABLE_VALUE_NUMBER;
+        addressCount = NON_AVAILABLE_VALUE_NUMBER;
         loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
         processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
@@ -97,15 +97,15 @@ public class CurrentBlockStatus extends Observable {
         // If there there is nothing to process, we change the other values to non available.
         if (newProcessStep.equals(NO_BLOCK_TO_PROCESS)) {
             blockHeight = NON_AVAILABLE_VALUE_NUMBER;
-            transactionsCount = NON_AVAILABLE_VALUE_NUMBER;
-            addressesCount = NON_AVAILABLE_VALUE_NUMBER;
+            transactionCount = NON_AVAILABLE_VALUE_NUMBER;
+            addressCount = NON_AVAILABLE_VALUE_NUMBER;
             loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
             processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
             processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         }
         if (newProcessStep.equals(NEW_BLOCK_TO_PROCESS)) {
-            transactionsCount = 0;
-            addressesCount = 0;
+            transactionCount = 0;
+            addressCount = 0;
             loadedTransactions = 0;
             processedAddresses = 0;
             processedTransactions = 0;
@@ -155,21 +155,21 @@ public class CurrentBlockStatus extends Observable {
     }
 
     /**
-     * Gets addressesCount.
+     * Gets addressCount.
      *
-     * @return value of addressesCount
+     * @return value of addressCount
      */
-    public final int getAddressesCount() {
-        return addressesCount;
+    public final int getAddressCount() {
+        return addressCount;
     }
 
     /**
-     * Sets addressesCount.
+     * Sets addressCount.
      *
-     * @param newAddressesCount addressesCount
+     * @param newAddressesCount addressCount
      */
-    public final void setAddressesCount(final int newAddressesCount) {
-        addressesCount = newAddressesCount;
+    public final void setAddressCount(final int newAddressesCount) {
+        addressCount = newAddressesCount;
         setChanged();
         notifyObservers();
     }
@@ -195,21 +195,21 @@ public class CurrentBlockStatus extends Observable {
     }
 
     /**
-     * Gets transactionsCount.
+     * Gets transactionCount.
      *
-     * @return value of transactionsCount
+     * @return value of transactionCount
      */
-    public final int getTransactionsCount() {
-        return transactionsCount;
+    public final int getTransactionCount() {
+        return transactionCount;
     }
 
     /**
-     * Sets transactionsCount.
+     * Sets transactionCount.
      *
-     * @param newTransactionsCount transactionsCount
+     * @param newTransactionsCount transactionCount
      */
-    public final void setTransactionsCount(final int newTransactionsCount) {
-        transactionsCount = newTransactionsCount;
+    public final void setTransactionCount(final int newTransactionsCount) {
+        transactionCount = newTransactionsCount;
         setChanged();
         notifyObservers();
     }

@@ -16,6 +16,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 
 /**
  * Tests for bitcoin blockchain import.
+ *
  * Created by straumat on 04/09/16.
  */
 public class BitcoinImportTest extends BaseTest {
@@ -69,56 +70,77 @@ public class BitcoinImportTest extends BaseTest {
 
         // Test.
         Optional<BitcoinBlock> b = getBlockRepository().findByHash(expectedHash);
-        assertThat(b.isPresent()).as("Block").isTrue();
-        assertThat(b.get().getHash()).as("Hash").isEqualTo(expectedHash);
-        assertThat(b.get().getHeight()).as("Height").isEqualTo(expectedHeight);
-        assertThat(b.get().getSize()).as("Size").isEqualTo(expectedSize);
-        assertThat(b.get().getVersion()).as("Version").isEqualTo(expectedVersion);
-        assertThat(b.get().getMerkleRoot()).as("Merkel root").isEqualTo(expectedMerkleroot);
-        assertThat(b.get().getTime()).as("Time").isEqualTo(expectedTime);
-        assertThat(b.get().getMedianTime()).as("Median time").isEqualTo(expectedMedianTime);
-        assertThat(b.get().getNonce()).as("Nonce").isEqualTo(expectedNonce);
-        assertThat(b.get().getDifficulty()).as("Difficulty").isEqualTo(expectedDifficulty);
-        assertThat(b.get().getBits()).as("Bits").isEqualTo(expectedBits);
-        assertThat(b.get().getChainWork()).as("Chain work").isEqualTo(expectedChainwork);
-        assertThat(b.get().getPreviousBlockHash()).as("Previous block hash").isEqualTo(expectedPreviousblockhash);
-        assertThat(b.get().getPreviousBlock()).as("Previous block").isNotNull();
-        assertThat(b.get().getNextBlockHash()).as("Next block hash").isEqualTo(expectedNextblockhash);
-        assertThat(b.get().getNextBlock()).as("Next block").isNotNull();
-        assertThat(b.get().getTx()).as("Transaction size").hasSize(expectedTxSize);
-
-        assertThat(b.get().getTransactions()).as("Block transactions").hasSize(expectedTxSize);
+        if (b.isPresent()) {
+            assertThat(b.get().getHash()).as("Hash").isEqualTo(expectedHash);
+            assertThat(b.get().getHeight()).as("Height").isEqualTo(expectedHeight);
+            assertThat(b.get().getSize()).as("Size").isEqualTo(expectedSize);
+            assertThat(b.get().getVersion()).as("Version").isEqualTo(expectedVersion);
+            assertThat(b.get().getMerkleRoot()).as("Merkel root").isEqualTo(expectedMerkleroot);
+            assertThat(b.get().getTime()).as("Time").isEqualTo(expectedTime);
+            assertThat(b.get().getMedianTime()).as("Median time").isEqualTo(expectedMedianTime);
+            assertThat(b.get().getNonce()).as("Nonce").isEqualTo(expectedNonce);
+            assertThat(b.get().getDifficulty()).as("Difficulty").isEqualTo(expectedDifficulty);
+            assertThat(b.get().getBits()).as("Bits").isEqualTo(expectedBits);
+            assertThat(b.get().getChainWork()).as("Chain work").isEqualTo(expectedChainwork);
+            assertThat(b.get().getPreviousBlockHash()).as("Previous block hash").isEqualTo(expectedPreviousblockhash);
+            assertThat(b.get().getPreviousBlock()).as("Previous block").isNotNull();
+            assertThat(b.get().getNextBlockHash()).as("Next block hash").isEqualTo(expectedNextblockhash);
+            assertThat(b.get().getNextBlock()).as("Next block").isNotNull();
+            assertThat(b.get().getTx()).as("Transaction size").hasSize(expectedTxSize);
+            assertThat(b.get().getTransactions()).as("Block transactions").hasSize(expectedTxSize);
+        } else {
+            fail("block is not present");
+        }
 
         // Test relations between blocks (previous block & next block).
-        assertThat(getBlockRepository().findByHeight(1).get())
-                .as("Previous & next block")
-                .extracting("previousBlock", "nextBlock.height")
-                .contains(null, 2);
-
-        assertThat(getBlockRepository().findByHeight(6).get())
-                .as("Previous & next block")
-                .extracting("previousBlock.height", "nextBlock.height")
-                .contains(5, 7);
-
-        assertThat(getBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT).get())
-                .as("Previous & next block")
-                .extracting("nextBlock", "previousBlock.height")
-                .contains(null, NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+        Optional<BitcoinBlock> b1 = getBlockRepository().findByHeight(1);
+        if (b1.isPresent()) {
+            assertThat(b1.get())
+                    .as("Previous & next block")
+                    .extracting("previousBlock", "nextBlock.height")
+                    .contains(null, 2);
+        } else {
+            fail("Block 1 not found");
+        }
+        Optional<BitcoinBlock> b6 = getBlockRepository().findByHeight(6);
+        if (b6.isPresent()) {
+            assertThat(b6.get())
+                    .as("Previous & next block")
+                    .extracting("previousBlock.height", "nextBlock.height")
+                    .contains(5, 7);
+        } else {
+            fail("Block 6 not found");
+        }
+        Optional<BitcoinBlock> bMax = getBlockRepository().findByHeight(NUMBERS_OF_BLOCK_TO_IMPORT);
+        if (bMax.isPresent()) {
+            assertThat(bMax.get())
+                    .as("Previous & next block")
+                    .extracting("nextBlock", "previousBlock.height")
+                    .contains(null, NUMBERS_OF_BLOCK_TO_IMPORT - 1);
+        } else {
+            fail("Block " + bMax + " not found");
+        }
 
         // Testing that the address of block 500 is imported and that non existing address does not.
         final String existingAddress = "1C1ENNWdkPMyhZ7xTEM4Kwq1FTUifZNCRd";
         final String nonExistingAddress = "TOTO";
 
         // Existing address.
-        assertThat(getAddressRepository().findByAddress(existingAddress).get())
-                .as("Address exists")
-                .isNotNull()
-                .as("Address value")
-                .extracting("address")
-                .contains(existingAddress);
+        Optional<BitcoinAddress> bitcoinExistingAddress = getAddressRepository().findByAddress(existingAddress);
+        if (bitcoinExistingAddress.isPresent()) {
+            assertThat(bitcoinExistingAddress.get())
+                    .as("Address exists")
+                    .isNotNull()
+                    .as("Address value")
+                    .extracting("address")
+                    .contains(existingAddress);
+        } else {
+            fail(existingAddress + "not found");
+        }
 
         // Non existing address.
-        assertThat(getAddressRepository().findByAddress(nonExistingAddress).isPresent())
+        Optional<BitcoinAddress> bitcoinNonExistingAddress = getAddressRepository().findByAddress(nonExistingAddress);
+        assertThat(bitcoinNonExistingAddress.isPresent())
                 .as("Address does not exists")
                 .isFalse();
 
@@ -161,17 +183,20 @@ public class BitcoinImportTest extends BaseTest {
         // Test.
         // Transaction.
         Optional<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(transactionHash);
-        assertThat(transaction.isPresent()).as("Transaction").isTrue();
-        assertThat(transaction.get().getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
-        assertThat(transaction.get().getHex()).as("Hex").isEqualTo(expectedTransactionHex);
-        assertThat(transaction.get().getHash()).as("Hash").isEqualTo(expectedTransactionHash);
-        assertThat(transaction.get().getSize()).as("Size").isEqualTo(expectedTransactionSize);
-        assertThat(transaction.get().getvSize()).as("Vsize").isEqualTo(expectedTransactionVSize);
-        assertThat(transaction.get().getVersion()).as("Version").isEqualTo(expectedTransactionVersion);
-        assertThat(transaction.get().getLockTime()).as("Lock time").isEqualTo(expectedTransactionLockTime);
-        assertThat(transaction.get().getBlockHash()).as("Hash").isEqualTo(expectedBlockHash);
-        assertThat(transaction.get().getTime()).as("Time").isEqualTo(expectedTransactionTime);
-        assertThat(transaction.get().getBlockTime()).as("Block time").isEqualTo(expectedTransactionBlockTime);
+        if (transaction.isPresent()) {
+            assertThat(transaction.get().getTxId()).as("Txid").isEqualTo(expectedTransactionTxID);
+            assertThat(transaction.get().getHex()).as("Hex").isEqualTo(expectedTransactionHex);
+            assertThat(transaction.get().getHash()).as("Hash").isEqualTo(expectedTransactionHash);
+            assertThat(transaction.get().getSize()).as("Size").isEqualTo(expectedTransactionSize);
+            assertThat(transaction.get().getvSize()).as("Vsize").isEqualTo(expectedTransactionVSize);
+            assertThat(transaction.get().getVersion()).as("Version").isEqualTo(expectedTransactionVersion);
+            assertThat(transaction.get().getLockTime()).as("Lock time").isEqualTo(expectedTransactionLockTime);
+            assertThat(transaction.get().getBlockHash()).as("Hash").isEqualTo(expectedBlockHash);
+            assertThat(transaction.get().getTime()).as("Time").isEqualTo(expectedTransactionTime);
+            assertThat(transaction.get().getBlockTime()).as("Block time").isEqualTo(expectedTransactionBlockTime);
+        } else {
+            fail(transactionHash + " not found");
+        }
 
         // Vin 1.
         BitcoinTransactionInput vin1 = transaction.get().getInputs().iterator().next();
@@ -208,7 +233,9 @@ public class BitcoinImportTest extends BaseTest {
         // Data to test.
         final String address = "12cbQLTFMXRnSzktFkuoG3eHoMeFtpTu3S";
         final Optional<BitcoinAddress> bitcoinAddress = getAddressRepository().findByAddress(address);
-        assertThat(bitcoinAddress.isPresent()).as("Bitcoin address").isTrue();
+        if (!bitcoinAddress.isPresent()) {
+            fail(address + " not found");
+        }
         Optional<BitcoinTransactionInput> bti1;
         Optional<BitcoinTransactionOutput> bto1;
         Optional<BitcoinTransactionOutput> bto2;
@@ -468,16 +495,12 @@ public class BitcoinImportTest extends BaseTest {
      */
     private Optional<BitcoinTransactionInput> getFirstTransactionInput(final String txId) {
         final Optional<BitcoinTransaction> transaction = getTransactionRepository().findByTxId(txId);
-        int i = 0;
         if (transaction.isPresent()) {
-            for (BitcoinTransactionInput input : transaction.get().getInputs()) {
-                if (i == 0) {
-                    return getTransactionInputRepository().findById(input.getId());
-                }
-                i++;
-            }
+            long bitcoinTransactionInputId = transaction.get().getInputs().iterator().next().getId();
+            return getTransactionInputRepository().findById(bitcoinTransactionInputId);
+        } else {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     /**

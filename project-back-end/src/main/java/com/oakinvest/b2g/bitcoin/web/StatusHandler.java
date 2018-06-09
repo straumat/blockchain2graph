@@ -6,6 +6,7 @@ import com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -16,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Controller for the applicationStatus.
+ *
  * Created by straumat on 31/10/16.
  */
 @Component
@@ -47,13 +49,18 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
      */
     public StatusHandler(final ApplicationStatus newStatus) {
         this.applicationStatus = newStatus;
-        applicationStatus.addObserver(this);
+        this.applicationStatus.addObserver(this);
     }
 
     @Override
     public final void afterConnectionEstablished(final WebSocketSession newSession) throws JsonProcessingException {
         this.sessions.add(newSession);
         sendMessage(mapper.writeValueAsString(applicationStatus));
+    }
+
+    @Override
+    public final void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) {
+        this.sessions.remove(session);
     }
 
     /**

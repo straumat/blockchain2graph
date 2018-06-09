@@ -12,6 +12,7 @@ import java.util.Set;
 
 /**
  * Bitcoin block.
+ *
  * Created by straumat on 05/09/16.
  */
 @SuppressWarnings("unused")

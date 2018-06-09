@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Bitcoin data service buffer.
+ *
  * Created by straumat on 30/06/17.
  */
 @Component
@@ -30,7 +31,7 @@ public class BitcoinDataServiceBuffer {
      *
      * @param lastBlockProcessed last block height inserted in neo4j
      */
-    public final void purge(final int lastBlockProcessed) {
+    final void purge(final int lastBlockProcessed) {
         blocksBuffer.forEach((blockHeight, block) -> {
             // If the block is under the current block height, we remove everything
             if (blockHeight < lastBlockProcessed) {
