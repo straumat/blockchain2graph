@@ -126,11 +126,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Front end -->
-<!--        <dependency>
+        <dependency>
             <groupId>com.oakinvest.b2g</groupId>
-            <artifactId>project-front-end</artifactId>
+            <artifactId>blockchain2graph-bitcoin-front-end</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
     <!-- =========================================================================================================== -->
 
@@ -249,7 +249,7 @@
                             <version>${project.version}</version>
                             <type>jar</type>
                             <overWrite>yes</overWrite>
-                            <outputDirectory>../docker</outputDirectory>
+                            <outputDirectory>../container-docker</outputDirectory>
                             <destFileName>${project.build.finalName}.jar</destFileName>
                         </artifactItem>
                     </artifactItems>

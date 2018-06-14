@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.4.418 on 2018-06-14 11:20:19.
+// Generated using typescript-generator version 2.4.418 on 2018-06-14 22:47:24.
 
 export interface ApplicationStatus {
     blockCountInBitcoinCore: number;
