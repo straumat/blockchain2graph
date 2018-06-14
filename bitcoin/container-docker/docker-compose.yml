@@ -1,0 +1,44 @@
+version: '2'
+services:
+  # ====================================================================================================================
+  # https://hub.docker.com/r/ruimarinho/bitcoin-core/
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core:0.16.0
+    volumes:
+      - ./data/bitcoin-core:/home/bitcoin/.bitcoin
+    ports:
+      - 8332:8332
+    command:
+      -server=1
+      -rest=1
+      -rpcuser=bitcoinrpc
+      -rpcpassword=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      -txindex=1
+      -rpcallowip=0.0.0.0/0
+      -rpcallowip=::/0
+  # ====================================================================================================================
+  # https://hub.docker.com/_/neo4j/
+  neo4j:
+    image: neo4j:3.3.5
+    volumes:
+      - ./data/neo4j:/var/lib/neo4j/data
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - NEO4J_AUTH=neo4j/neo4j123
+  # ====================================================================================================================
+  # https://hub.docker.com/r/straumat/blockchain2graph/
+  blockchain2graph:
+    image: straumat/blockchain2graph:2.3-SNAPSHOT
+    ports:
+      - 8080:8080
+    links:
+      - bitcoin-core
+      - neo4j
+    environment:
+      - BLOCKCHAIN2GRAPH_ADDRESS=localhost
+      - BITCOIND_HOSTNAME=core # Public server : 5.196.65.205
+      - BITCOIND_USERNAME=bitcoinrpc
+      - BITCOIND_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      - SPRING_DATA_NEO4J_URI=bolt://neo4j:neo4j123@neo4j:7687

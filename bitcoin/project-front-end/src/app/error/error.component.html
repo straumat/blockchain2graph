@@ -1,0 +1,6 @@
+<div class="card-header [] bg-danger" *ngIf="viewError">
+  <h4 class="display-4"><i class="fa fa-exclamation-triangle fa-1x"></i>&nbsp;&nbsp;&nbsp;Last error message</h4>
+</div>
+<div class="card-body bg-danger" *ngIf="viewError">
+  <h5 class="display-5">{{ lastErrorMessage }}</h5>
+</div>

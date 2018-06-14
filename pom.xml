@@ -10,7 +10,7 @@
     <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Blockchain2graph parent</name>
-    <description>Extract blockchain data (bitcoin) into a graph database (neo4j)</description>
+    <description>Extract blockchain data into a graph database (neo4j)</description>
     <url>https://straumat.github.io/blockchain2graph</url>
     <licenses>
         <license>
@@ -70,26 +70,19 @@
     <!-- Project configuration -->
     <properties>
         <!-- Java project configuration -->
-        <project.finalName>blockchain2graph</project.finalName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <!-- JGit-Flow -->
         <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
         <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
-        <!-- Docker -->
-        <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
-        <dockerfile-maven-plugin.version>1.4.3</dockerfile-maven-plugin.version>
-        <docker.image.prefix>straumat</docker.image.prefix>
     </properties>
     <!-- =========================================================================================================== -->
 
     <!-- =========================================================================================================== -->
     <!-- Modules -->
     <modules>
-        <module>project-front-end</module>
-        <module>project-back-end</module>
-        <module>docker</module>
+        <module>bitcoin</module>
     </modules>
     <!-- =========================================================================================================== -->
 
@@ -133,7 +126,7 @@
                     <noDeploy>true</noDeploy>
                     <squash>true</squash>
                     <allowSnapshots>true</allowSnapshots>
-                    <scmCommentPrefix>[RELEASE]</scmCommentPrefix>
+                    <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
                 </configuration>
             </plugin>
         </plugins>
