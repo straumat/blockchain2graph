@@ -253,7 +253,7 @@
                             <destFileName>${project.build.finalName}.jar</destFileName>
                         </artifactItem>
                     </artifactItems>
-                    <outputDirectory>../docker</outputDirectory>
+                    <outputDirectory>../container-docker</outputDirectory>
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
                 </configuration>
