@@ -72,7 +72,8 @@ describe('AppComponent', () => {
    * Testing that server message update statistics blocks.
    */
   it('Should update statistics blocks', async(() => {
-    const mockServer = new Server('ws://localhost:8080/status/websocket');
+    const webSocketURL = 'ws://' + location.host + '/' + Blockchain2graphService.webSocketPath;
+    const mockServer = new Server(webSocketURL);
     const fixture = TestBed.createComponent(AppComponent);
     let message;
     fixture.detectChanges();
@@ -200,7 +201,8 @@ describe('AppComponent', () => {
    * Testing the statistic blocks update from the server.
    */
   it('Should update statistic blocks', async(() => {
-      const mockServer = new Server('ws://localhost:8080/status/websocket');
+    const webSocketURL = 'ws://' + location.host + '/' + Blockchain2graphService.webSocketPath;
+    const mockServer = new Server(webSocketURL);
       const fixture = TestBed.createComponent(AppComponent);
       let message;
       fixture.detectChanges();
@@ -372,7 +374,8 @@ describe('AppComponent', () => {
    * Testing the display of errors.
    */
   it('Should display errors', async(() => {
-    const mockServer = new Server('ws://localhost:8080/status/websocket');
+    const webSocketURL = 'ws://' + location.host + '/' + Blockchain2graphService.webSocketPath;
+    const mockServer = new Server(webSocketURL);
     const fixture = TestBed.createComponent(AppComponent);
     let message;
     fixture.detectChanges();

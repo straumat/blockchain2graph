@@ -10,8 +10,9 @@ export class Blockchain2graphService implements OnDestroy {
   static readonly nonAvailableValueNumber = -1;
   static readonly nonAvailableValueString = 'n/a';
 
+
   // Websocket connexion.
-  private static serverUrl = 'ws://localhost:8080/status/websocket';
+  static readonly webSocketPath = '/status/websocket';
   private webSocket: WebSocket;
 
   // Status values.
@@ -57,7 +58,8 @@ export class Blockchain2graphService implements OnDestroy {
     this.lastErrorMessage = this.lastErrorMessageSubject.asObservable();
 
     // Connecting and subscribing to the websocket.
-    this.webSocket = new WebSocket(Blockchain2graphService.serverUrl);
+    const webSocketURL = 'ws://' + location.host + '/' + Blockchain2graphService.webSocketPath;
+    this.webSocket = new WebSocket(webSocketURL);
     this.webSocket.addEventListener('message', message => {
       this.processMessage(JSON.parse(message.data));
     });

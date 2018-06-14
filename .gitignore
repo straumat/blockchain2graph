@@ -7,6 +7,8 @@ bitcoin/project-front-end/dist-server*
 bitcoin/project-front-end/tmp*
 bitcoin/project-front-end/out-tsc*
 bitcoin/project-front-end/node_modules*
+bitcoin/project-front-end/yarn.lock
+bitcoin/project-front-end/yarn-error.log
 
 # IDEs and editors
 target/
