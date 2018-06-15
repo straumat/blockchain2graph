@@ -13,14 +13,11 @@ export class StatisticComponent implements OnInit {
   static readonly nonAvailableDisplay = 'n/a';
 
   // Information type.
-  static readonly typeBlocksCountInBitcoinCore = 'blockCountInBitcoinCore';
-  static readonly typeBlocksCountInNeo4j = 'blockCountInNeo4j';
-  static readonly typeAverageBlockProcessDuration = 'lastBlockProcessDuration';
+  static readonly typeBlockCountInBitcoinCore = 'blockCountInBitcoinCore';
+  static readonly typeBlockCountInNeo4j = 'blockCountInNeo4j';
+  static readonly lastBlockProcessDuration = 'lastBlockProcessDuration';
 
-  // TODO Ask Cyrille about it.
-  @HostBinding('class') class = 'card mb-4 text-white';
-
-  // Compnents values.
+  // Components values.
   @Input() backgroundColor = 'bg-info';
   @Input() icon = 'fa-question';
   @Input() title = 'Component title';
@@ -32,8 +29,7 @@ export class StatisticComponent implements OnInit {
    * Constructor.
    * @param blockchain2graphService blockchain2graph service.
    */
-  constructor(private blockchain2graphService: Blockchain2graphService) {
-  }
+  constructor(private blockchain2graphService: Blockchain2graphService) {}
 
   /**
    * We subscribe to observable depending on component configuration.
@@ -41,36 +37,45 @@ export class StatisticComponent implements OnInit {
   ngOnInit() {
     switch (this.type) {
       // Number of blocks in bitcoin core.
-      case StatisticComponent.typeBlocksCountInBitcoinCore:
+      case StatisticComponent.typeBlockCountInBitcoinCore:
         this.blockchain2graphService.blockCountInBitcoinCore.subscribe((value: number) => {
-          this.receivedValue = value;
-          if (value !== StatisticComponent.nonAvailableValue) {
-            this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
-          } else {
-            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+          if (value != null) {
+            this.receivedValue = value;
+            if (value !== StatisticComponent.nonAvailableValue) {
+              this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+            } else {
+              this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+            }
           }
         });
         break;
       // Number of blocks in neo4j.
-      case StatisticComponent.typeBlocksCountInNeo4j:
+      case StatisticComponent.typeBlockCountInNeo4j:
         this.blockchain2graphService.blockCountInNeo4j.subscribe((value: number) => {
-          this.receivedValue = value;
-          if (value !== StatisticComponent.nonAvailableValue) {
-            this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
-          } else {
-            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+          if (value != null) {
+            this.receivedValue = value;
+            if (value !== StatisticComponent.nonAvailableValue) {
+              this.updateDisplayedValue(value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
+            } else {
+              this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+            }
           }
         });
         break;
-      // Average block import duration.
-      case StatisticComponent.typeAverageBlockProcessDuration:
+      // Last block import duration.
+      case StatisticComponent.lastBlockProcessDuration:
         this.blockchain2graphService.lastBlockProcessDuration.subscribe((value: number) => {
-          this.receivedValue = value;
-          if (value !== StatisticComponent.nonAvailableValue) {
-            const formatedValue = Intl.NumberFormat('en-us', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(value) + ' s';
-            this.updateDisplayedValue(formatedValue);
-          } else {
-            this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+          if (value != null) {
+            this.receivedValue = value;
+            if (value !== StatisticComponent.nonAvailableValue) {
+              const formatedValue = Intl.NumberFormat('en-us', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }).format(value / 1000) + ' s';
+              this.updateDisplayedValue(formatedValue);
+            } else {
+              this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
+            }
           }
         });
         break;

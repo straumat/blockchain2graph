@@ -11,9 +11,6 @@ export class ErrorComponent implements OnInit {
   // Static values.
   static readonly nonAvailableValuerString = 'n/a';
 
-  // TODO Ask Cyrille.
-  @HostBinding('class') class = 'card mb-4 text-white';
-
   /**
    * Constructor.
    * @param blockchain2graphService service

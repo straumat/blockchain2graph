@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../blockchain2graph.service';
 import {CurrentBlockStatus, CurrentBlockStatusProcessStep} from '../project-back-end';
 
@@ -19,9 +19,6 @@ export class CurrentBlockStatusComponent implements OnInit {
   static readonly savingBlockDescription = 'Saving block...';
   static readonly savedBlockDescription = 'Block saved';
 
-  // TODO Ask Cyrille.
-  @HostBinding('class') class = 'card mb-4 text-white';
-
   // Component details.
   blockHeight = CurrentBlockStatusComponent.noBlockToProcessDescription;
   viewDetails = false;
@@ -32,7 +29,7 @@ export class CurrentBlockStatusComponent implements OnInit {
    * Constructor.
    * @param {Blockchain2graphService} blockchain2graphService blockchain2graph service.
    */
-  constructor(private blockchain2graphService: Blockchain2graphService) { }
+  constructor(private blockchain2graphService: Blockchain2graphService) {}
 
   /**
    * Subscribe to block change status.

@@ -1,10 +1,10 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnInit, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {CurrentBlockStatus, CurrentBlockStatusProcessStep} from './project-back-end';
 
 @Injectable()
-export class Blockchain2graphService implements OnDestroy {
+export class Blockchain2graphService implements OnInit, OnDestroy {
 
   // Static values.
   static readonly nonAvailableValueNumber = -1;
@@ -63,6 +63,14 @@ export class Blockchain2graphService implements OnDestroy {
     this.webSocket.addEventListener('message', message => {
       this.processMessage(JSON.parse(message.data));
     });
+
+  }
+
+  /**
+   * Subscribe to websocket.
+   */
+  ngOnInit() {
+
   }
 
   /**
@@ -80,7 +88,7 @@ export class Blockchain2graphService implements OnDestroy {
       this.blockCountInNeo4jSubject.next(message.blockCountInNeo4j);
     }
 
-    // averageBlockProcessDuration.
+    // lastBlockProcessDuration.
     if (message.lastBlockProcessDuration !== this.lastBlockProcessDurationSubject.getValue()) {
       this.lastBlockProcessDurationSubject.next(message.lastBlockProcessDuration);
     }

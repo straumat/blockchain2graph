@@ -197,7 +197,7 @@ public class ImportBatch {
             status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.PROCESSING_ADDRESSES);
             final AtomicInteger addressesCounter = new AtomicInteger(0);
             final Map<String, BitcoinAddress> addressesCache = new ConcurrentHashMap<>();
-            log.info("Treating " + addressesCache.size() + " address(es)");
+            log.info("Treating " + blockData.get().getAddresses().size() + " address(es)");
             blockData.get().getAddresses()
                     .parallelStream() // In parallel.
                     .filter(Objects::nonNull) // If the address is not null.

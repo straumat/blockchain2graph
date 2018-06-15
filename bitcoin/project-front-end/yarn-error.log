@@ -1,5 +1,5 @@
 Arguments: 
-  /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node/node /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node/yarn/dist/bin/yarn.js lint
+  /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node/node /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node/yarn/dist/bin/yarn.js test --watch false
 
 PATH: 
   /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node:/home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end/node/yarn/dist/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:
@@ -7093,9 +7093,9 @@ Lockfile:
 
 Trace: 
   Error: Command failed.
-  Exit code: 2
+  Exit code: 1
   Command: sh
-  Arguments: -c ng lint
+  Arguments: -c ng test --watch false
   Directory: /home/straumat/IdeaProjects/blockchain2graph/bitcoin/project-front-end
   Output:
   

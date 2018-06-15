@@ -99,7 +99,7 @@ describe('AppComponent', () => {
             'processedTransactions': -1,
             'transactionCount': -1
           },
-        'lastBlockProcessDuration': 17.4545,
+        'lastBlockProcessDuration': 17454,
         'lastErrorMessage': 'n/a'
       };
 
@@ -163,7 +163,7 @@ describe('AppComponent', () => {
             'processedTransactions': -1,
             'transactionCount': -1
           },
-        'lastBlockProcessDuration': 2.3,
+        'lastBlockProcessDuration': 2300,
         'lastErrorMessage': 'n/a'
       };
     mockServer.send(JSON.stringify(message));
