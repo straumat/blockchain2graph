@@ -24,7 +24,7 @@ public class CurrentBlockStatus extends Observable {
     /**
      * Step in the process.
      */
-    private CurrentBlockStatusProcessStep processStep = CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
+    private CurrentBlockStatusProcessStep processStep = NO_BLOCK_TO_PROCESS;
 
     /**
      * Number of transactions in the current block (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).

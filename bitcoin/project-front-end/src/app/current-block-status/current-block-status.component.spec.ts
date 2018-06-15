@@ -41,7 +41,7 @@ describe('CurrentBlockStatusComponent', () => {
   });
 
   /**
-   * Testing visibiliy.
+   * Testing visibility.
    */
   it('should be visible / not visible depending on viewDetails', () => {
     const compiled = fixture.debugElement.nativeElement;

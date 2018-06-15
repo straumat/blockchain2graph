@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../blockchain2graph.service';
 
 @Component({

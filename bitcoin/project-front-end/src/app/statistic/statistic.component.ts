@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, HostBinding} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {Blockchain2graphService} from '../blockchain2graph.service';
 
 @Component({
@@ -68,11 +68,11 @@ export class StatisticComponent implements OnInit {
           if (value != null) {
             this.receivedValue = value;
             if (value !== StatisticComponent.nonAvailableValue) {
-              const formatedValue = Intl.NumberFormat('en-us', {
+              const formattedValue = Intl.NumberFormat('en-us', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
               }).format(value / 1000) + ' s';
-              this.updateDisplayedValue(formatedValue);
+              this.updateDisplayedValue(formattedValue);
             } else {
               this.updateDisplayedValue(StatisticComponent.nonAvailableDisplay);
             }

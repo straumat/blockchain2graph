@@ -1,7 +1,7 @@
 import {Injectable, OnInit, OnDestroy} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {CurrentBlockStatus, CurrentBlockStatusProcessStep} from './project-back-end';
+import {ApplicationStatus, CurrentBlockStatus, CurrentBlockStatusProcessStep} from './project-back-end';
 
 @Injectable()
 export class Blockchain2graphService implements OnInit, OnDestroy {
@@ -77,7 +77,7 @@ export class Blockchain2graphService implements OnInit, OnDestroy {
    * Triggered when a new message is coming from the server.
    * @param message blockchain2graph server message.
    */
-  public processMessage(message) {
+  public processMessage(message: ApplicationStatus) {
     // blockCountInBitcoinCoreSubject.
     if (message.blockCountInBitcoinCore !== this.blockCountInBitcoinCoreSubject.getValue()) {
       this.blockCountInBitcoinCoreSubject.next(message.blockCountInBitcoinCore);
