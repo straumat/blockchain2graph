@@ -9,7 +9,7 @@
     <artifactId>blockchain2graph</artifactId>
     <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Blockchain2graph parent</name>
+    <name>Blockchain2graph</name>
     <description>Extract blockchain data into a graph database (neo4j)</description>
     <url>https://straumat.github.io/blockchain2graph</url>
     <licenses>
@@ -92,7 +92,7 @@
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
+        <version>2.0.3.RELEASE</version>
         <relativePath/>
     </parent>
     <!-- =========================================================================================================== -->

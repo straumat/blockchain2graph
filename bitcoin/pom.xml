@@ -5,7 +5,6 @@
 
     <!-- =========================================================================================================== -->
     <!-- Project information -->
-    <groupId>com.oakinvest.b2g</groupId>
     <artifactId>blockchain2graph-bitcoin</artifactId>
     <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -17,17 +16,6 @@
     <!-- Project configuration -->
     <properties>
         <project.finalName>blockchain2graph-bitcoin</project.finalName>
-        <!-- Java project configuration -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <!-- JGit-Flow -->
-        <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
-        <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
-        <!-- Docker -->
-        <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
-        <dockerfile-maven-plugin.version>1.4.3</dockerfile-maven-plugin.version>
-        <docker.image.prefix>straumat</docker.image.prefix>
     </properties>
     <!-- =========================================================================================================== -->
 
@@ -42,50 +30,12 @@
     <!-- =========================================================================================================== -->
 
     <!-- =========================================================================================================== -->
-    <!-- Spring boot -->
+    <!-- Blockchain2graph -->
     <parent>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
-        <relativePath/>
+        <groupId>com.oakinvest.b2g</groupId>
+        <artifactId>blockchain2graph</artifactId>
+        <version>2.3-SNAPSHOT</version>
     </parent>
-    <!-- =========================================================================================================== -->
-
-    <!-- =========================================================================================================== -->
-    <!-- Build configuration -->
-    <build>
-        <!-- Plugins -->
-        <plugins>
-            <!-- Release plugin -->
-            <plugin>
-                <groupId>external.atlassian.jgitflow</groupId>
-                <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>${jgitflow-maven-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>0.1.54</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <flowInitContext>
-                        <masterBranchName>master</masterBranchName>
-                        <developBranchName>development</developBranchName>
-                        <featureBranchPrefix>feature-</featureBranchPrefix>
-                        <releaseBranchPrefix>release-</releaseBranchPrefix>
-                        <hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
-                        <versionTagPrefix>version-</versionTagPrefix>
-                    </flowInitContext>
-                    <noDeploy>true</noDeploy>
-                    <squash>true</squash>
-                    <allowSnapshots>true</allowSnapshots>
-                    <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <!-- =========================================================================================================== -->
 
 </project>
