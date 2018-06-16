@@ -19,7 +19,7 @@ services:
   # ====================================================================================================================
   # https://hub.docker.com/_/neo4j/
   neo4j:
-    image: neo4j:3.3.5
+    image: neo4j:3.4.1
     volumes:
       - ./data/neo4j:/var/lib/neo4j/data
     ports:
@@ -28,7 +28,7 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/neo4j123
   # ====================================================================================================================
-  # https://hub.docker.com/r/straumat/blockchain2graph/
+  # https://hub.docker.com/r/straumat/blockchain2graph-bitcoin/
   blockchain2graph:
     image: straumat/blockchain2graph:2.3-SNAPSHOT
     ports:
@@ -37,8 +37,7 @@ services:
       - bitcoin-core
       - neo4j
     environment:
-      - BLOCKCHAIN2GRAPH_ADDRESS=localhost
-      - BITCOIND_HOSTNAME=core # Public server : 5.196.65.205
-      - BITCOIND_USERNAME=bitcoinrpc
-      - BITCOIND_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
+      - BITCOINCORE_HOSTNAME=bitcoin-core # Public server : 5.196.65.205
+      - BITCOINCORE_USERNAME=bitcoinrpc
+      - BITCOINCORE_PASSWORD=JRkDy3tgCYdmCEqY1VdfdfhTswiRva
       - SPRING_DATA_NEO4J_URI=bolt://neo4j:neo4j123@neo4j:7687

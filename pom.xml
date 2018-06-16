@@ -73,9 +73,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <!-- JGit-Flow -->
-        <!-- https://mvnrepository.com/artifact/external.atlassian.jgitflow/jgit-flow-core -->
-        <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
+        <!-- gitflow -->
+        <!-- https://mvnrepository.com/artifact/com.amashchenko.maven.plugin/gitflow-maven-plugin -->
+        <gitflow-maven-plugin.version>1.9.0</gitflow-maven-plugin.version>
     </properties>
     <!-- =========================================================================================================== -->
 
@@ -104,16 +104,9 @@
         <plugins>
             <!-- Release plugin -->
             <plugin>
-                <groupId>external.atlassian.jgitflow</groupId>
-                <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>${jgitflow-maven-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.jcraft</groupId>
-                        <artifactId>jsch</artifactId>
-                        <version>0.1.54</version>
-                    </dependency>
-                </dependencies>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>${gitflow-maven-plugin.version}</version>
                 <configuration>
                     <flowInitContext>
                         <masterBranchName>master</masterBranchName>

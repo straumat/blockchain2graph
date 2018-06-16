@@ -5,7 +5,7 @@
 
     <!-- =========================================================================================================== -->
     <!-- Project information -->
-    <artifactId>blockchain2graph-bitcoin-docker</artifactId>
+    <artifactId>blockchain2graph-bitcoin-container-docker</artifactId>
     <version>2.3-SNAPSHOT</version>
     <name>Blockchain2graph-bitcoin docker image</name>
     <packaging>pom</packaging>
