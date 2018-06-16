@@ -9,6 +9,7 @@ Here are some use cases :
 * Query blockchain data with the [cypher query language](https://neo4j.com/developer/cypher-query-language/).
 * Build web sites like [Blockchain.info](https://blockchain.info/).
 * Add meta information to addresses and transactions.
+* We would love to add your use case here, contacts us !
 
 At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain and we needed to have a convenient way to access blockchain information. With blockchain2graph, we can analyse blockchain data as transactions between nodes and add meta information on them.
 
