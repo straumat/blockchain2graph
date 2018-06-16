@@ -1,6 +1,6 @@
 Blockchain2graph extracts blockchain data (bitcoin) and insert them into a graph database (neo4j).
 
-[[https://raw.githubusercontent.com/straumat/blockchain2graph/development/docs/images/b2g-console-screenshot.png|alt=Blockchain2graph console]]
+![Blockchain2graph console](https://raw.githubusercontent.com/straumat/blockchain2graph/development/docs/images/b2g-console-screenshot.png)
 
 Here are some use cases :  
 
