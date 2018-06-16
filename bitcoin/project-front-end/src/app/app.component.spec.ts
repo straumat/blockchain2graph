@@ -38,7 +38,7 @@ describe('AppComponent', () => {
   it(`should have as title 'Blockchain2graph'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Blockchain2graph');
+    expect(app.title).toEqual('Blockchain2graph - bitcoin');
   }));
 
   /**
