@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,12 +97,12 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
     /**
      * Bitcoin core URL.
      */
-    private final String url;
+    private String url;
 
     /**
      * Header to use with core.
      */
-    private final HttpHeaders headers;
+    private HttpHeaders headers;
 
     /**
      * Constructor.
@@ -109,6 +110,13 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
     public BitcoinCoreServiceImplementation() {
         restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new BitcoinCoreResponseErrorHandler());
+    }
+
+    /**
+     * Initialize URL and authentication.
+     */
+    @PostConstruct
+    private void initializeURLAndAuthentication() {
         // Generate url.
         url = "http://" + hostname + ":" + port;
         // Generate headers.

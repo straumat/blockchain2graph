@@ -24,7 +24,7 @@ script:
 after_success:
     - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r project-back-end/target/site/jacoco/jacoco.xml
     - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-    - docker push $DOCKER_USERNAME/blockchain2graph
+    - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin
 addons:
   artifacts:
     paths:
