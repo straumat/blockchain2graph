@@ -26,7 +26,7 @@ public class ApplicationStatus extends Observable implements Observer {
     /**
      * Number of blocks in Bitcoin core (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
      */
-    private int blockCountInBitcoinCore = NON_AVAILABLE_VALUE_NUMBER;
+    private int blockCountInBlockchain = NON_AVAILABLE_VALUE_NUMBER;
 
     /**
      * Number of blocks in neo4j (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
@@ -63,21 +63,21 @@ public class ApplicationStatus extends Observable implements Observer {
     }
 
     /**
-     * Gets blockCountInBitcoinCore.
+     * Gets blockCountInBlockchain.
      *
-     * @return value of blockCountInBitcoinCore
+     * @return value of blockCountInBlockchain
      */
-    public final int getBlockCountInBitcoinCore() {
-        return blockCountInBitcoinCore;
+    public final int getBlockCountInBlockchain() {
+        return blockCountInBlockchain;
     }
 
     /**
-     * Sets blockCountInBitcoinCore.
+     * Sets blockCountInBlockchain.
      *
-     * @param newBlocksCountInBitcoinCore blockCountInBitcoinCore
+     * @param newBlocksCountInBitcoinCore blockCountInBlockchain
      */
-    public final void setBlockCountInBitcoinCore(final int newBlocksCountInBitcoinCore) {
-        blockCountInBitcoinCore = newBlocksCountInBitcoinCore;
+    public final void setBlockCountInBlockchain(final int newBlocksCountInBitcoinCore) {
+        blockCountInBlockchain = newBlocksCountInBitcoinCore;
         setChanged();
         notifyObservers();
     }

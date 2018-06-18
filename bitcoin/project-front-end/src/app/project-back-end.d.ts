@@ -2,7 +2,7 @@
 // Generated using typescript-generator version 2.5.423 on 2018-06-16 22:01:28.
 
 export interface ApplicationStatus {
-    blockCountInBitcoinCore: number;
+    blockCountInBlockchain: number;
     blockCountInNeo4j: number;
     currentBlockStatus: CurrentBlockStatus;
     lastBlockProcessDuration: number;
@@ -22,7 +22,7 @@ export interface CurrentBlockStatus {
 export const enum CurrentBlockStatusProcessStep {
     NO_BLOCK_TO_PROCESS = "NO_BLOCK_TO_PROCESS",
     NEW_BLOCK_TO_PROCESS = "NEW_BLOCK_TO_PROCESS",
-    LOADING_TRANSACTIONS_FROM_BITCOIN_CORE = "LOADING_TRANSACTIONS_FROM_BITCOIN_CORE",
+    LOADING_TRANSACTIONS_FROM_BLOCKCHAIN = "LOADING_TRANSACTIONS_FROM_BLOCKCHAIN",
     PROCESSING_ADDRESSES = "PROCESSING_ADDRESSES",
     PROCESSING_TRANSACTIONS = "PROCESSING_TRANSACTIONS",
     SAVING_BLOCK = "SAVING_BLOCK",

@@ -13,7 +13,7 @@ export class StatisticComponent implements OnInit {
   static readonly nonAvailableDisplay = 'n/a';
 
   // Information type.
-  static readonly typeBlockCountInBitcoinCore = 'blockCountInBitcoinCore';
+  static readonly typeBlockCountInBlockchain = 'blockCountInBlockchain';
   static readonly typeBlockCountInNeo4j = 'blockCountInNeo4j';
   static readonly lastBlockProcessDuration = 'lastBlockProcessDuration';
 
@@ -37,8 +37,8 @@ export class StatisticComponent implements OnInit {
   ngOnInit() {
     switch (this.type) {
       // Number of blocks in bitcoin core.
-      case StatisticComponent.typeBlockCountInBitcoinCore:
-        this.blockchain2graphService.blockCountInBitcoinCore.subscribe((value: number) => {
+      case StatisticComponent.typeBlockCountInBlockchain:
+        this.blockchain2graphService.blockCountInBlockchain.subscribe((value: number) => {
           if (value != null) {
             this.receivedValue = value;
             if (value !== StatisticComponent.nonAvailableValue) {

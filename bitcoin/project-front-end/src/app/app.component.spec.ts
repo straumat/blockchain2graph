@@ -89,7 +89,7 @@ describe('AppComponent', () => {
 
     // Updating values.
     message = {
-        'blockCountInBitcoinCore': 2000,
+        'blockCountInBlockchain': 2000,
         'blockCountInNeo4j': 1000,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -111,7 +111,7 @@ describe('AppComponent', () => {
 
     // Sending a message with nothing to see that we still display nothing.
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -132,7 +132,7 @@ describe('AppComponent', () => {
 
     // Changing the blocks count in bitcoin core.
     message = {
-        'blockCountInBitcoinCore': 2,
+        'blockCountInBlockchain': 2,
         'blockCountInNeo4j': 3,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -153,7 +153,7 @@ describe('AppComponent', () => {
 
     // Changing the average block import duration.
     message = {
-        'blockCountInBitcoinCore': 2,
+        'blockCountInBlockchain': 2,
         'blockCountInNeo4j': 3,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -174,7 +174,7 @@ describe('AppComponent', () => {
 
     // We reset everything.
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -214,7 +214,7 @@ describe('AppComponent', () => {
 
       // Sending a message with nothing to see.
       message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': -1,
@@ -234,7 +234,7 @@ describe('AppComponent', () => {
 
       // Sending a message of a new block to process (NEW_BLOCK_TO_PROCESS).
       message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
@@ -253,13 +253,13 @@ describe('AppComponent', () => {
       expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
       expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
 
-      // Sending a message of loading block transactions (LOADING_TRANSACTIONS_FROM_BITCOIN_CORE).
+      // Sending a message of loading block transactions (LOADING_TRANSACTIONS_FROM_BLOCKCHAIN).
       message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
-            'processStep': 'LOADING_TRANSACTIONS_FROM_BITCOIN_CORE',
+            'processStep': 'LOADING_TRANSACTIONS_FROM_BLOCKCHAIN',
             'loadedTransactions': 200,
             'processedAddresses': -1,
             'addressCount': -1,
@@ -272,13 +272,13 @@ describe('AppComponent', () => {
       mockServer.send(JSON.stringify(message));
       fixture.detectChanges();
       expect(compiled.querySelectorAll('h4')[3].textContent).toContain('Block 00000010');
-      expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Loading transactions from bitcoin core...');
+      expect(compiled.querySelectorAll('h5')[3].textContent).toContain('Loading transactions from blockchain...');
       expect(compiled.querySelector('div.progress-bar')).not.toBeNull();
       expect(compiled.querySelector('div.progress-bar').textContent).toContain('20 %');
 
     // Sending a message of processing addresses (PROCESSING_ADDRESSES).
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
@@ -301,7 +301,7 @@ describe('AppComponent', () => {
 
     // Sending a message of processing transactions (PROCESSING_TRANSACTIONS).
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
@@ -324,7 +324,7 @@ describe('AppComponent', () => {
 
     // Sending a message of saving block (SAVING_BLOCK).
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
@@ -347,7 +347,7 @@ describe('AppComponent', () => {
 
     // Sending a message of block saved (BLOCK_SAVED).
     message = {
-        'blockCountInBitcoinCore': -1,
+        'blockCountInBlockchain': -1,
         'blockCountInNeo4j': -1,
           'currentBlockStatus': {
             'blockHeight': 10,
@@ -387,7 +387,7 @@ describe('AppComponent', () => {
 
     // Sending a message with nothing to see and check that there is no error.
     message = {
-      'blockCountInBitcoinCore': -1,
+      'blockCountInBlockchain': -1,
       'blockCountInNeo4j': -1,
       'currentBlockStatus': {
         'blockHeight': -1,
@@ -406,7 +406,7 @@ describe('AppComponent', () => {
 
     // Sending an error message.
     message = {
-      'blockCountInBitcoinCore': -1,
+      'blockCountInBlockchain': -1,
       'blockCountInNeo4j': -1,
       'currentBlockStatus': {
         'blockHeight': -1,

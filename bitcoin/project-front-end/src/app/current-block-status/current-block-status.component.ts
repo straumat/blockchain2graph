@@ -13,7 +13,7 @@ export class CurrentBlockStatusComponent implements OnInit {
   static readonly blockHeightNonAvailable = -1;
   static readonly noBlockToProcessDescription = 'No block to process';
   static readonly newBlockToProcessDescription = 'New block to process';
-  static readonly loadingTransactionsFromBitcoinCoreDescription = 'Loading transactions from bitcoin core...';
+  static readonly loadingTransactionsFromBlockchainDescription = 'Loading transactions from blockchain...';
   static readonly processingAddressesDescription = 'Processing addresses...';
   static readonly processingTransactionsDescription = 'Processing transactions...';
   static readonly savingBlockDescription = 'Saving block...';
@@ -62,8 +62,8 @@ export class CurrentBlockStatusComponent implements OnInit {
         break;
 
       // Loading transactions from bitcoin core.
-      case CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BITCOIN_CORE:
-        this.processStepDescription = CurrentBlockStatusComponent.loadingTransactionsFromBitcoinCoreDescription;
+      case CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BLOCKCHAIN:
+        this.processStepDescription = CurrentBlockStatusComponent.loadingTransactionsFromBlockchainDescription;
         this.viewDetails = true;
         this.setProgression(blockStatus.loadedTransactions, blockStatus.transactionCount);
         break;
@@ -106,7 +106,7 @@ export class CurrentBlockStatusComponent implements OnInit {
     if (height === CurrentBlockStatusComponent.blockHeightNonAvailable) {
       // Nothing.
       this.blockHeight = CurrentBlockStatusComponent.noBlockToProcessDescription;
-    } else {
+    } else {// if (height !== null) {
       // Format block height.
       this.blockHeight = 'Block ' + height.toString().padStart(8, '0');
     }

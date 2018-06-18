@@ -16,14 +16,14 @@ export class Blockchain2graphService implements OnInit, OnDestroy {
   private webSocket: WebSocket;
 
   // Status values.
-  private readonly blockCountInBitcoinCoreSubject: BehaviorSubject<Object>;
+  private readonly blockCountInBlockchainSubject: BehaviorSubject<Object>;
   private readonly blockCountInNeo4jSubject: BehaviorSubject<Object>;
   private readonly lastBlockProcessDurationSubject: BehaviorSubject<Object>;
   private readonly currentBlockStatusSubject: BehaviorSubject<CurrentBlockStatus>;
   private readonly lastErrorMessageSubject: BehaviorSubject<Object>;
 
   // Observable of status values.
-  public readonly blockCountInBitcoinCore: Observable<Object>;
+  public readonly blockCountInBlockchain: Observable<Object>;
   public readonly blockCountInNeo4j: Observable<Object>;
   public readonly lastBlockProcessDuration: Observable<Object>;
   public readonly currentBlockStatus: Observable<CurrentBlockStatus>;
@@ -44,14 +44,14 @@ export class Blockchain2graphService implements OnInit, OnDestroy {
     nonAvailableBlockStatusValue.processedTransactions = Blockchain2graphService.nonAvailableValueNumber;
 
     // Initiate subjects.
-    this.blockCountInBitcoinCoreSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValueNumber);
+    this.blockCountInBlockchainSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValueNumber);
     this.blockCountInNeo4jSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValueNumber);
     this.lastBlockProcessDurationSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValueNumber);
     this.currentBlockStatusSubject = new BehaviorSubject<CurrentBlockStatus>(nonAvailableBlockStatusValue);
     this.lastErrorMessageSubject = new BehaviorSubject<Object>(Blockchain2graphService.nonAvailableValueString);
 
     // Initiate observables.
-    this.blockCountInBitcoinCore = this.blockCountInBitcoinCoreSubject.asObservable();
+    this.blockCountInBlockchain = this.blockCountInBlockchainSubject.asObservable();
     this.blockCountInNeo4j = this.blockCountInNeo4jSubject.asObservable();
     this.lastBlockProcessDuration = this.lastBlockProcessDurationSubject.asObservable();
     this.currentBlockStatus = this.currentBlockStatusSubject.asObservable();
@@ -78,9 +78,9 @@ export class Blockchain2graphService implements OnInit, OnDestroy {
    * @param message blockchain2graph server message.
    */
   public processMessage(message: ApplicationStatus) {
-    // blockCountInBitcoinCoreSubject.
-    if (message.blockCountInBitcoinCore !== this.blockCountInBitcoinCoreSubject.getValue()) {
-      this.blockCountInBitcoinCoreSubject.next(message.blockCountInBitcoinCore);
+    // blockCountInBlockchainSubject.
+    if (message.blockCountInBlockchain !== this.blockCountInBlockchainSubject.getValue()) {
+      this.blockCountInBlockchainSubject.next(message.blockCountInBlockchain);
     }
 
     // blocksCountInNeo4j.

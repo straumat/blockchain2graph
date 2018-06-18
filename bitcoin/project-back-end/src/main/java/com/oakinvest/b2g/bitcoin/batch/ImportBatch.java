@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.LOG_SEPARATOR;
 import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.PAUSE_BEFORE_STARTING_APPLICATION;
 import static com.oakinvest.b2g.bitcoin.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
-import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BITCOIN_CORE;
+import static com.oakinvest.b2g.bitcoin.util.status.CurrentBlockStatusProcessStep.LOADING_TRANSACTIONS_FROM_BLOCKCHAIN;
 
 /**
  * Batch importing bitcoin blocks.
@@ -156,8 +156,8 @@ public class ImportBatch {
         // We check if that next block exists by retrieving the block count.
         if (totalBlockCount.isPresent()) {
             // We update the global status of blockcount (if needed).
-            if (totalBlockCount.get() != status.getBlockCountInBitcoinCore()) {
-                status.setBlockCountInBitcoinCore(totalBlockCount.get());
+            if (totalBlockCount.get() != status.getBlockCountInBlockchain()) {
+                status.setBlockCountInBlockchain(totalBlockCount.get());
             }
             // We return the block to process.
             if (blockToProcess <= totalBlockCount.get()) {
@@ -178,7 +178,7 @@ public class ImportBatch {
      * @return block processed
      */
     private Optional<BitcoinBlock> processBlock(final int blockHeight) {
-        status.getCurrentBlockStatus().setProcessStep(LOADING_TRANSACTIONS_FROM_BITCOIN_CORE);
+        status.getCurrentBlockStatus().setProcessStep(LOADING_TRANSACTIONS_FROM_BLOCKCHAIN);
         log.info("Loading block data from Bitcoin core");
         Optional<BitcoinCoreBlockData> blockData = services.getBitcoinDataService().getBlockData(blockHeight);
 
