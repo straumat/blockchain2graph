@@ -3,12 +3,15 @@ sudo: required
 addons:
   chrome: stable
   apt:
-    update: true
     packages:
     - jq
     - wget
     - curl
     - libssl1.0.0
+    - sshpass
+  artifacts:
+    paths:
+      - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e jar$ -e war$ | tr "\n" ":")
 services:
   - docker
 cache:
@@ -25,7 +28,5 @@ after_success:
     - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r project-back-end/target/site/jacoco/jacoco.xml
     - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
     - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin
-addons:
-  artifacts:
-    paths:
-    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e jar$ -e war$ | tr "\n" ":")
+    - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-benchmark
+    - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT

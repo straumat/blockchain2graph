@@ -108,18 +108,24 @@
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <version>${gitflow-maven-plugin.version}</version>
                 <configuration>
-                    <flowInitContext>
+                    <gitFlowConfig>
                         <masterBranchName>master</masterBranchName>
                         <developBranchName>development</developBranchName>
                         <featureBranchPrefix>feature-</featureBranchPrefix>
                         <releaseBranchPrefix>release-</releaseBranchPrefix>
                         <hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
                         <versionTagPrefix>version-</versionTagPrefix>
-                    </flowInitContext>
-                    <noDeploy>true</noDeploy>
-                    <squash>true</squash>
-                    <allowSnapshots>true</allowSnapshots>
-                    <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
+                    </gitFlowConfig>
+                    <commitMessages>
+                        <featureStartMessage>update versions for feature branch</featureStartMessage>
+                        <featureFinishMessage>update versions for development branch</featureFinishMessage>
+                        <hotfixStartMessage>update versions for hotfix</hotfixStartMessage>
+                        <hotfixFinishMessage>update for next development version</hotfixFinishMessage>
+                        <releaseStartMessage>update versions for release</releaseStartMessage>
+                        <releaseFinishMessage>update for next development version</releaseFinishMessage>
+                        <tagHotfixMessage>tag hotfix</tagHotfixMessage>
+                        <tagReleaseMessage>tag release</tagReleaseMessage>
+                    </commitMessages>
                 </configuration>
             </plugin>
         </plugins>

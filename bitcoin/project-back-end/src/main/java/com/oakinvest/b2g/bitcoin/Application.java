@@ -1,9 +1,16 @@
 package com.oakinvest.b2g.bitcoin;
 
+import com.oakinvest.b2g.bitcoin.util.benchmark.BenchmarkLauncher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Application launcher.
@@ -11,7 +18,23 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author straumat
  */
 @SpringBootApplication
-public class Application extends SpringBootServletInitializer {
+public class Application implements ApplicationRunner {
+
+    /**
+     * Logger.
+     */
+    private final Logger log = LoggerFactory.getLogger(Application.class);
+
+    /**
+     * Benchmark launcher parameter.
+     */
+    private static final String BENCHMARK_PARAMETER = "benchmark";
+
+    /**
+     * Benchmark launcher.
+     */
+    @Autowired
+    private final BenchmarkLauncher benchmarkLauncher = null;
 
     /**
      * Application launcher.
@@ -23,8 +46,12 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Override
-    protected final SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-        return application.sources(Application.class);
+    public final void run(final ApplicationArguments args) {
+        // If it's a benchmark.
+        if (args.containsOption(BENCHMARK_PARAMETER)) {
+            final ExecutorService service = Executors.newSingleThreadExecutor();
+            service.execute(benchmarkLauncher);
+        }
     }
 
 }

@@ -83,6 +83,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
@@ -141,6 +145,77 @@
         <finalName>${project.finalName}</finalName>
         <!-- Plugins -->
         <plugins>
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>**/mapper/**/*</excludes>
+                    <consoleOutput>true</consoleOutput>
+                    <configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
+                    <failOnViolation>true</failOnViolation>
+                    <violationSeverity>warning</violationSeverity>
+                </configuration>
+            </plugin>
+            <!-- Compilation (with mapstruct) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!-- Typescript generator -->
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>${typescript-generator-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classes>
+                        <class>com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus</class>
+                    </classes>
+                    <outputKind>module</outputKind>
+                    <mapEnum>asEnum</mapEnum>
+                    <excludeClasses>java.util.Observer,java.util.Observable</excludeClasses>
+                </configuration>
+            </plugin>
+            <!-- Spring boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
             <!-- Code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -180,132 +255,51 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Checkstyle -->
+            <!-- Copy blockchain2graph-bitcoin to docker & benchmark -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludes>**/mapper/**/*</excludes>
-                    <consoleOutput>true</consoleOutput>
-                    <configLocation>${project.basedir}/checkstyle_configuration.xml</configLocation>
-                    <failOnViolation>true</failOnViolation>
-                    <violationSeverity>warning</violationSeverity>
-                </configuration>
-            </plugin>
-            <!-- Compilation (with mapstruct) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <!-- Spring boot -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                    <addResources>true</addResources>
-                </configuration>
-            </plugin>
-            <!-- Copy blockchain2.jar for docker -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>com.oakinvest.b2g</groupId>
-                            <artifactId>blockchain2graph-bitcoin-back-end</artifactId>
-                            <version>${project.version}</version>
-                            <type>jar</type>
-                            <overWrite>yes</overWrite>
-                            <outputDirectory>../container-docker</outputDirectory>
-                            <destFileName>${project.build.finalName}.jar</destFileName>
-                        </artifactItem>
-                    </artifactItems>
-                    <outputDirectory>../container-docker</outputDirectory>
-                    <overWriteReleases>true</overWriteReleases>
-                    <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-            </plugin>
-           <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources-plugin.version}</version>
+                <!-- For BenchmarkLauncher -->
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
-                        <phase>compile</phase>
+                        <id>copy-resources-for-benchmark</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/typescript-generator/extra-resources</outputDirectory>
+                            <outputDirectory>../benchmark</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/non-packaged-resources</directory>
-                                    <filtering>true</filtering>
+                                    <directory>${basedir}/target/</directory>
+                                    <includes>
+                                        <include>${project.build.finalName}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- For Docker -->
+                    <execution>
+                        <id>copy-resources-for-docker</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../container-docker</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/</directory>
+                                    <includes>
+                                        <include>${project.build.finalName}.jar</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
-            <!-- Typescript generator -->
-            <plugin>
-                <groupId>cz.habarta.typescript-generator</groupId>
-                <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>${typescript-generator-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>process-classes</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jsonLibrary>jackson2</jsonLibrary>
-                    <classes>
-                        <class>com.oakinvest.b2g.bitcoin.util.status.ApplicationStatus</class>
-                    </classes>
-                    <outputKind>module</outputKind>
-                    <mapEnum>asEnum</mapEnum>
-                    <excludeClasses>java.util.Observer,java.util.Observable</excludeClasses>
-                </configuration>
             </plugin>
-
         </plugins>
     </build>
     <!-- =========================================================================================================== -->

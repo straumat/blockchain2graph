@@ -1,4 +1,6 @@
 # Bitcoin
+bitcoin/benchmark/blockchain2graph-bitcoin.jar
+bitcoin/benchmarktarget*
 bitcoin/container-docker/blockchain2graph-bitcoin.jar
 bitcoin/container-docker/target*
 bitcoin/project-back-end/target*
@@ -9,6 +11,8 @@ bitcoin/project-front-end/out-tsc*
 bitcoin/project-front-end/node_modules*
 bitcoin/project-front-end/yarn.lock
 bitcoin/project-front-end/yarn-error.log
+
+
 
 # IDEs and editors
 target/
