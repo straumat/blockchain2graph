@@ -25,8 +25,8 @@ before_install:
 script:
     - mvn package -Dlive=true
 after_success:
-    - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r project-back-end/target/site/jacoco/jacoco.xml
+    - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin/project-back-end/target/site/jacoco/jacoco.xml
     - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
     - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin
     - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-benchmark
-    - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT &
+    - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT > ~/logs &
