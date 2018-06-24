@@ -27,7 +27,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * BenchmarkLauncher duration (1 day).
      */
-    private static final long BENCHMARK_DURATION = TimeUnit.DAYS.toMillis(1);
+    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(3);
 
     /**
      * Repositories.
