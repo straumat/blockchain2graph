@@ -1,9 +1,6 @@
 package com.oakinvest.b2g.bitcoin;
 
 import com.oakinvest.b2g.bitcoin.util.benchmark.BenchmarkLauncher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,11 +18,6 @@ import java.util.concurrent.Executors;
 public class Application implements ApplicationRunner {
 
     /**
-     * Logger.
-     */
-    private final Logger log = LoggerFactory.getLogger(Application.class);
-
-    /**
      * Benchmark launcher parameter.
      */
     private static final String BENCHMARK_PARAMETER = "benchmark";
@@ -33,8 +25,15 @@ public class Application implements ApplicationRunner {
     /**
      * Benchmark launcher.
      */
-    @Autowired
-    private final BenchmarkLauncher benchmarkLauncher = null;
+    private final BenchmarkLauncher benchmarkLauncher;
+
+    /**
+     * Consructor.
+     * @param newBenchmarkLauncher benchmark launcher.
+     */
+    public Application(final BenchmarkLauncher newBenchmarkLauncher) {
+        this.benchmarkLauncher = newBenchmarkLauncher;
+    }
 
     /**
      * Application launcher.

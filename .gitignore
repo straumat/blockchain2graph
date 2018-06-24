@@ -1,6 +1,6 @@
 # Bitcoin
 bitcoin/benchmark/blockchain2graph-bitcoin.jar
-bitcoin/benchmarktarget*
+bitcoin/benchmark/target*
 bitcoin/container-docker/blockchain2graph-bitcoin.jar
 bitcoin/container-docker/target*
 bitcoin/project-back-end/target*

@@ -1,8 +1,10 @@
 package com.oakinvest.b2g.bitcoin.util.benchmark;
 
+import com.oakinvest.b2g.bitcoin.Application;
 import com.oakinvest.b2g.bitcoin.util.providers.RepositoriesProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -23,6 +25,26 @@ public class BenchmarkLauncher implements Runnable {
      * Logger.
      */
     private final Logger log = LoggerFactory.getLogger(BenchmarkLauncher.class);
+
+    /**
+     * Mail server host.
+     */
+    private static final String SPRING_MAIL_HOST_PARAMETER = "SPRING_MAIL_HOST";
+
+    /**
+     * Mail server port.
+     */
+    private static final String SPRING_MAIL_PORT_PARAMETER = "SPRING_MAIL_PORT";
+
+    /**
+     * Mail server username.
+     */
+    private static final String SPRING_MAIL_USERNAME_PARAMETER = "SPRING_MAIL_USERNAME";
+
+    /**
+     * Mail server password.
+     */
+    private static final String SPRING_MAIL_PASSWORD_PARAMETER = "SPRING_MAIL_PASSWORD";
 
     /**
      * BenchmarkLauncher duration (1 day).
@@ -65,7 +87,7 @@ public class BenchmarkLauncher implements Runnable {
 
         // We stop the application.
         log.info("Benchmark finished - {} blocks imported", blockCount);
-        System.exit(-1);
+        System.exit(SpringApplication.exit(SpringApplication.run(Application.class, null)));
     }
 
     /**
@@ -74,10 +96,10 @@ public class BenchmarkLauncher implements Runnable {
      */
     private JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(System.getenv("SPRING_MAIL_HOST"));
-        mailSender.setPort(Integer.parseInt(System.getenv("SPRING_MAIL_PORT")));
-        mailSender.setUsername(System.getenv("SPRING_MAIL_USERNAME"));
-        mailSender.setPassword(System.getenv("SPRING_MAIL_PASSWORD"));
+        mailSender.setHost(System.getenv(SPRING_MAIL_HOST_PARAMETER));
+        mailSender.setPort(Integer.parseInt(System.getenv(SPRING_MAIL_PORT_PARAMETER)));
+        mailSender.setUsername(System.getenv(SPRING_MAIL_USERNAME_PARAMETER));
+        mailSender.setPassword(System.getenv(SPRING_MAIL_PASSWORD_PARAMETER));
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
