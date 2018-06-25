@@ -1,10 +1,8 @@
 package com.oakinvest.b2g.bitcoin.util.benchmark;
 
-import com.oakinvest.b2g.bitcoin.Application;
 import com.oakinvest.b2g.bitcoin.util.providers.RepositoriesProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
