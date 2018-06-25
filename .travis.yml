@@ -8,7 +8,6 @@ addons:
     - wget
     - curl
     - libssl1.0.0
-    - openssh-client
     - sshpass
   artifacts:
     paths:
