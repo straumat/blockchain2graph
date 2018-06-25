@@ -45,6 +45,11 @@ public class BenchmarkLauncher implements Runnable {
     private static final String SPRING_MAIL_PASSWORD_PARAMETER = "SPRING_MAIL_PASSWORD";
 
     /**
+     * Build number from continuous integration.
+     */
+    private static final String BUILD_NUMBER_PARAMETER = "BUILD_NUMBER";
+
+    /**
      * BenchmarkLauncher duration (1 day).
      */
     private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(3);
@@ -79,7 +84,7 @@ public class BenchmarkLauncher implements Runnable {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("benchmark-blockchain2graph@scub.net");
         message.setTo("stephane.traumat@gmail.com");
-        message.setSubject("Blockchain2graph benchmark results");
+        message.setSubject("B2G benchmark results - build " + System.getenv(BUILD_NUMBER_PARAMETER));
         message.setText("Number of blocks imported : " + blockCount);
         getJavaMailSender().send(message);
 
