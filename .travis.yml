@@ -13,7 +13,7 @@ addons:
     paths:
       - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e jar$ -e war$ | tr "\n" ":")
 services:
-  - docker
+    - docker
 cache:
   directories:
     - $HOME/.m2
