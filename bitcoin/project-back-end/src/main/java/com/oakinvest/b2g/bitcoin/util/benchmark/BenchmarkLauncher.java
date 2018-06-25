@@ -87,7 +87,8 @@ public class BenchmarkLauncher implements Runnable {
 
         // We stop the application.
         log.info("Benchmark finished - {} blocks imported", blockCount);
-        System.exit(SpringApplication.exit(SpringApplication.run(Application.class, null)));
+        // TODO Exit in a more clean way.
+        System.exit(0);
     }
 
     /**
