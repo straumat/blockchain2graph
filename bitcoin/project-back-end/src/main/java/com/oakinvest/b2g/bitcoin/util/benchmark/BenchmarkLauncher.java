@@ -52,7 +52,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * BenchmarkLauncher duration (1 day).
      */
-    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(2);
+    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(5);
 
     /**
      * Repositories.
@@ -91,7 +91,7 @@ public class BenchmarkLauncher implements Runnable {
         // We stop the application.
         log.info("Benchmark finished - {} blocks imported", blockCount);
         // TODO Exit in a more clean way.
-        System.exit(0);
+        System.exit(-1);
     }
 
     /**
