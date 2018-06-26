@@ -52,7 +52,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * BenchmarkLauncher duration (1 day).
      */
-    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(5);
+    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(1);
 
     /**
      * Repositories.
@@ -88,7 +88,6 @@ public class BenchmarkLauncher implements Runnable {
         message.setSubject("B2G benchmark results - build " + System.getenv(BUILD_NUMBER_PARAMETER));
         message.setText("Number of blocks imported : " + blockCount);
         getJavaMailSender().send(message);
-
 
         // We stop the application.
         // TODO Exit in a more clean way.
