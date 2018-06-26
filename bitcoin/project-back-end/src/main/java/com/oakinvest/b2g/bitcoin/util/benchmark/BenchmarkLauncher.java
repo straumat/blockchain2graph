@@ -81,6 +81,7 @@ public class BenchmarkLauncher implements Runnable {
 
         // Get the number of blocks imported and sending report.
         long blockCount = repositories.getBlockRepository().count();
+        log.info("Benchmark finished - {} blocks imported", blockCount);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("benchmark-blockchain2graph@scub.net");
         message.setTo("stephane.traumat@gmail.com");
@@ -88,8 +89,8 @@ public class BenchmarkLauncher implements Runnable {
         message.setText("Number of blocks imported : " + blockCount);
         getJavaMailSender().send(message);
 
+
         // We stop the application.
-        log.info("Benchmark finished - {} blocks imported", blockCount);
         // TODO Exit in a more clean way.
         System.exit(-1);
     }
