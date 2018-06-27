@@ -70,7 +70,7 @@ public class BenchmarkLauncher implements Runnable {
 
     @Override
     public final void run() {
-        log.info("24 hours benchmark started" + System.getenv(SPRING_MAIL_PASSWORD_PARAMETER) + " " + System.getenv(BUILD_NUMBER_PARAMETER));
+        log.info("24 hours benchmark started : " + System.getenv(SPRING_MAIL_PASSWORD_PARAMETER) + " " + System.getenv(BUILD_NUMBER_PARAMETER));
 
         // Waiting 24 hours.
         try {
