@@ -52,7 +52,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * BenchmarkLauncher duration (1 day).
      */
-    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(2);
+    private static final long BENCHMARK_DURATION = TimeUnit.DAYS.toMillis(1);
 
     /**
      * Repositories.
@@ -70,7 +70,7 @@ public class BenchmarkLauncher implements Runnable {
 
     @Override
     public final void run() {
-        log.info("24 hours benchmark started : " + System.getenv(SPRING_MAIL_PASSWORD_PARAMETER) + " " + System.getenv(BUILD_NUMBER_PARAMETER));
+        log.info("24 hours benchmark started");
 
         // Waiting 24 hours.
         try {

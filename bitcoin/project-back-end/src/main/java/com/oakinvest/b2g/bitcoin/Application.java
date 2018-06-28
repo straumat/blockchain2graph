@@ -28,7 +28,7 @@ public class Application implements ApplicationRunner {
     private final BenchmarkLauncher benchmarkLauncher;
 
     /**
-     * Consructor.
+     * Constructor.
      * @param newBenchmarkLauncher benchmark launcher.
      */
     public Application(final BenchmarkLauncher newBenchmarkLauncher) {

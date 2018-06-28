@@ -3,6 +3,8 @@ package com.oakinvest.b2g.bitcoin.test.service;
 import com.oakinvest.b2g.bitcoin.test.util.junit.BaseTest;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -13,7 +15,7 @@ public class BitcoinCoreBufferTest extends BaseTest {
     /**
      * Time to wait to let the buffer finish its work.
      */
-    private static final int WAITING_TIME = 5000;
+    private static final long WAITING_TIME = TimeUnit.SECONDS.toMillis(10);
 
     /**
      * Buffer test.
