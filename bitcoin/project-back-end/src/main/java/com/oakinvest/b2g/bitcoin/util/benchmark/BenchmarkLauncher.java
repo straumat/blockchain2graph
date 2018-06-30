@@ -3,6 +3,8 @@ package com.oakinvest.b2g.bitcoin.util.benchmark;
 import com.oakinvest.b2g.bitcoin.util.providers.RepositoriesProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -52,7 +54,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * BenchmarkLauncher duration (1 day).
      */
-    private static final long BENCHMARK_DURATION = TimeUnit.DAYS.toMillis(1);
+    private static final long BENCHMARK_DURATION = TimeUnit.MINUTES.toMillis(1);
 
     /**
      * Repositories.
@@ -60,12 +62,19 @@ public class BenchmarkLauncher implements Runnable {
     private final RepositoriesProvider repositories;
 
     /**
+     * Application context.
+     */
+    private ApplicationContext context;
+
+    /**
      * Constructor.
      *
      * @param newRepositoriesProvider repositories provider.
+     * @param newContext context.
      */
-    public BenchmarkLauncher(final RepositoriesProvider newRepositoriesProvider) {
+    public BenchmarkLauncher(final RepositoriesProvider newRepositoriesProvider, final ApplicationContext newContext) {
         this.repositories = newRepositoriesProvider;
+        this.context = newContext;
     }
 
     @Override
@@ -79,19 +88,24 @@ public class BenchmarkLauncher implements Runnable {
             log.error("Benchmark interrupted " + e.getMessage(), e);
         }
 
+        // get build number
+        String buildNumber = "Not Available";
+        if (System.getenv(BUILD_NUMBER_PARAMETER) != null) {
+            buildNumber = System.getenv(BUILD_NUMBER_PARAMETER);
+        }
+
         // Get the number of blocks imported and sending report.
         long blockCount = repositories.getBlockRepository().count();
         log.info("Benchmark finished - {} blocks imported", blockCount);
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("benchmark-blockchain2graph@scub.net");
+        message.setFrom("benchmark-blockchain2graph@oak-invest.com");
         message.setTo("stephane.traumat@gmail.com");
-        message.setSubject("B2G benchmark results - build " + System.getenv(BUILD_NUMBER_PARAMETER));
+        message.setSubject("B2G benchmark results for build number : " + buildNumber);
         message.setText("Number of blocks imported : " + blockCount);
         getJavaMailSender().send(message);
 
         // We stop the application.
-        // TODO Exit in a more clean way.
-        System.exit(-1);
+        SpringApplication.exit(context, () -> 0);
     }
 
     /**

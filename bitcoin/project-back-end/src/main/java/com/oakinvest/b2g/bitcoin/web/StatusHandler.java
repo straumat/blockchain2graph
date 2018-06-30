@@ -85,7 +85,7 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
 
     @Override
     public final void update(final Observable o, final Object arg) {
-        if (sessions.size() > 0) {
+        if (!sessions.isEmpty()) {
             try {
                 sendMessage(mapper.writeValueAsString(applicationStatus));
             } catch (JsonProcessingException e) {
