@@ -30,7 +30,7 @@ services:
   # ====================================================================================================================
   # https://hub.docker.com/r/straumat/blockchain2graph-bitcoin/
   blockchain2graph:
-    image: straumat/blockchain2graph:2.3-SNAPSHOT
+    image: straumat/blockchain2graph-bitcoin:2.3-SNAPSHOT
     ports:
       - 8080:8080
     links:

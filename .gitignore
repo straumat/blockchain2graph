@@ -14,7 +14,7 @@ bitcoin/project-front-end/yarn-error.log
 # IDEs and editors
 target/
 
-docker/data*
+bitcoin/container-docker/data*
 
 # eclipse specific git ignore
 bin/**

@@ -15,9 +15,9 @@ public final class ApplicationConfiguration {
     public static final String LOG_SEPARATOR = "===================================";
 
     /**
-     * Pause before starting the import batch (10 seconds) - to let time for Bitcoin core docker to start.
+     * Pause before starting the import batch (2 minutes) - to let time for Bitcoin core docker to start.
      */
-    public static final long PAUSE_BEFORE_STARTING_APPLICATION = 10000;
+    public static final long PAUSE_BEFORE_STARTING_APPLICATION = 120000;
 
     /**
      * Number of blocks before the block count cache activate.
