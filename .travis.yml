@@ -31,8 +31,8 @@ after_success:
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin
 # Run benchmark.
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-benchmark
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -a -q)'
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm $(docker ps -a -q)'
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker stop $(docker ps -a -q)"
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker rm $(docker ps -a -q)"
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker system prune -a -f"
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT"
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT > /home/ci/logs-ci &"

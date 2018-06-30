@@ -105,8 +105,7 @@ public class BenchmarkLauncher implements Runnable {
         getJavaMailSender().send(message);
 
         // We stop the application.
-        System.exit(-1);
-//        SpringApplication.exit(context, () -> 0);
+        SpringApplication.exit(context, () -> 0);
     }
 
     /**
@@ -115,6 +114,7 @@ public class BenchmarkLauncher implements Runnable {
      */
     private JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
         mailSender.setHost(System.getenv(SPRING_MAIL_HOST_PARAMETER));
         mailSender.setPort(Integer.parseInt(System.getenv(SPRING_MAIL_PORT_PARAMETER)));
         mailSender.setUsername(System.getenv(SPRING_MAIL_USERNAME_PARAMETER));
