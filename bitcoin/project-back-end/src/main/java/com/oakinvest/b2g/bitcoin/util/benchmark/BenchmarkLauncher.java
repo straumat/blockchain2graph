@@ -105,7 +105,8 @@ public class BenchmarkLauncher implements Runnable {
         getJavaMailSender().send(message);
 
         // We stop the application.
-        SpringApplication.exit(context, () -> 0);
+        System.exit(-1);
+//        SpringApplication.exit(context, () -> 0);
     }
 
     /**
