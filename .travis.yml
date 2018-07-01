@@ -13,7 +13,7 @@ addons:
     - sshpass
   artifacts:
     paths:
-    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e blockchain2graph-bitcoin.jar$ | tr "\n" ":")
+    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e /bitcoin/project-back-end/target/blockchain2graph-bitcoin.jar$ | tr "\n" ":")
 services:
 - docker
 cache:
