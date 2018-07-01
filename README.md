@@ -1,4 +1,5 @@
-# blockchain2graph
+![Logo](docs/images/logo.png)
+
 [![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=development)](https://travis-ci.org/straumat/blockchain2graph) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Grade) [![Stories in Ready](https://badge.waffle.io/straumat/blockchain2graph.svg?label=ready&title=Ready)](http://waffle.io/straumat/blockchain2graph)
 
 Blockchain2graph extracts blockchain data (bitcoin) and insert them into a graph database (neo4j).
