@@ -13,7 +13,7 @@ addons:
     - sshpass
   artifacts:
     paths:
-    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e /bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
+    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
 services:
 - docker
 cache:
