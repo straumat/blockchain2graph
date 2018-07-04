@@ -13,7 +13,7 @@ addons:
     - sshpass
   artifacts:
     paths:
-    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e /bitcoin/project-back-end/target/blockchain2graph-bitcoin.jar$ | tr "\n" ":")
+    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e /bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
 services:
 - docker
 cache:
@@ -30,14 +30,14 @@ script:
 - mvn package -Dlive=true
 after_success:
   # Upload test coverage.
-- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin/project-back-end/target/site/jacoco/jacoco.xml
+- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
   # Update official blockchain2graph bitcoin image.
 - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin
+- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
   # Run benchmark.
-- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-benchmark
+- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq)'
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq)'
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rmi -f $(docker images -q)'
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT"
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-benchmark:2.3-SNAPSHOT > /home/ci/logs-ci &"
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:2.3-SNAPSHOT"
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:2.3-SNAPSHOT > /home/ci/logs-ci &"

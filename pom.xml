@@ -10,7 +10,7 @@
     <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Blockchain2graph</name>
-    <description>Extract blockchain data into a graph database (neo4j)</description>
+    <description>Extract blockchain data into a graph database</description>
     <url>https://straumat.github.io/blockchain2graph</url>
     <licenses>
         <license>
@@ -82,7 +82,7 @@
     <!-- =========================================================================================================== -->
     <!-- Modules -->
     <modules>
-        <module>bitcoin</module>
+        <module>bitcoin-neo4j</module>
     </modules>
     <!-- =========================================================================================================== -->
 
