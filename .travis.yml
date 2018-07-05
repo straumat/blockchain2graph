@@ -11,6 +11,9 @@ addons:
     - curl
     - libssl1.0.0
     - sshpass
+    - cat
+    - grep
+    - awk
   artifacts:
     paths:
     - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
@@ -36,8 +39,9 @@ after_success:
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
   # Run benchmark.
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
+- RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq)'
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq)'
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rmi -f $(docker images -q)'
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:2.3-SNAPSHOT"
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:2.3-SNAPSHOT > /home/ci/logs-ci &"
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE"
+- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE > /home/ci/logs-ci &"
