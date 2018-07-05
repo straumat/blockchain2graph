@@ -132,7 +132,7 @@
         <!-- Front end -->
         <dependency>
             <groupId>com.oakinvest.b2g</groupId>
-            <artifactId>blockchain2graph-bitcoin-front-end</artifactId>
+            <artifactId>blockchain2graph-bitcoin-neo4j-front-end</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
