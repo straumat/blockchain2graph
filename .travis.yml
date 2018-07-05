@@ -31,10 +31,10 @@ script:
 after_success:
   # Upload test coverage.
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
-  # Update official blockchain2graph bitcoin image.
+  # Update official "blockchain2graph bitcoin neo4j" image.
 - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
-  # Run benchmark.
+  # Run benchmark of "blockchain2graph bitcoin neo4j".
 - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
 - RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
 - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq)'

@@ -108,14 +108,6 @@
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <version>${gitflow-maven-plugin.version}</version>
                 <configuration>
-                    <gitFlowConfig>
-                        <masterBranchName>master</masterBranchName>
-                        <developBranchName>development</developBranchName>
-                        <featureBranchPrefix>feature-</featureBranchPrefix>
-                        <releaseBranchPrefix>release-</releaseBranchPrefix>
-                        <hotfixBranchPrefix>hot-fix-</hotfixBranchPrefix>
-                        <versionTagPrefix>version-</versionTagPrefix>
-                    </gitFlowConfig>
                     <commitMessages>
                         <featureStartMessage>update versions for feature branch</featureStartMessage>
                         <featureFinishMessage>update versions for development branch</featureFinishMessage>
