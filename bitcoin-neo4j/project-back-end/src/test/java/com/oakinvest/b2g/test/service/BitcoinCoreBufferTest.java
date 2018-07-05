@@ -1,7 +1,6 @@
 package com.oakinvest.b2g.test.service;
 
 import com.oakinvest.b2g.test.util.junit.BaseTest;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -59,144 +58,144 @@ public class BitcoinCoreBufferTest extends BaseTest {
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
 
         // -------------------------------------------------------------------------------------------------------------
         // We import the block 2.
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
 
         // -------------------------------------------------------------------------------------------------------------
         // We import the block 3.
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
 
         // -------------------------------------------------------------------------------------------------------------
         // We import the block 4.
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
 
         // -------------------------------------------------------------------------------------------------------------
         // We import the block 5.
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
 
         // -------------------------------------------------------------------------------------------------------------
         // We import the block 6.
         getBatchBlocks().execute();
         Thread.sleep(WAITING_TIME);
         // We check the data in getBuffer().
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
-        Assertions.assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock1).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock2).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock3).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock4).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock5).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock6).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock6).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock7).isPresent()).isTrue();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock7).isPresent()).isTrue();
+        assertThat(getBuffer().getBlockInBuffer(testBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock8).isPresent()).isFalse();
+        assertThat(getBuffer().getBlockInBuffer(testBlock9).isPresent()).isFalse();
+        assertThat(getBuffer().getTransactionInBuffer(transaction1InBlock9).isPresent()).isFalse();
     }
 
 }
