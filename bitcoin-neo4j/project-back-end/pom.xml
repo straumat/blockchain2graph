@@ -226,6 +226,8 @@
                         <exclude>**/*/com/oakinvest/b2g/configuration/**/*</exclude>
                         <exclude>**/*/com/oakinvest/b2g/domain/**/*</exclude>
                         <exclude>**/*/com/oakinvest/b2g/dto/**/*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/repository/**/*</exclude>
+                        <exclude>**/*/com/oakinvest/b2g/util/**/*</exclude>
                         <exclude>**/*/com/oakinvest/b2g/web/**/*</exclude>
                     </excludes>
                 </configuration>
