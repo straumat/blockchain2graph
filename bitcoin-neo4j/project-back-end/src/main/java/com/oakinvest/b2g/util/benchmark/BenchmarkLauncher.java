@@ -64,7 +64,7 @@ public class BenchmarkLauncher implements Runnable {
     /**
      * Application context.
      */
-    private ApplicationContext context;
+    private final ApplicationContext context;
 
     /**
      * Constructor.
