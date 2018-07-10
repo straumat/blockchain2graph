@@ -69,6 +69,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
                     <repository>${docker.image.prefix}/${project.finalName}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
