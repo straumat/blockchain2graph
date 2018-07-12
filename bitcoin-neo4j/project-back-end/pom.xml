@@ -39,6 +39,8 @@
         <typescript-generator-maven-plugin.version>2.5.423</typescript-generator-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+        <maven-jar-plugin>3.1.0</maven-jar-plugin>
 
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
@@ -214,6 +216,18 @@
                 <configuration>
                     <executable>true</executable>
                     <addResources>true</addResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin}</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
             <!-- Code coverage -->
