@@ -35,7 +35,7 @@ import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_GEN
 
 /**
  * Batch importing bitcoin blocks.
- *
+ * <p>
  * Created by straumat on 27/02/17.
  */
 @Component
@@ -73,9 +73,10 @@ public class ImportBatch {
 
     /**
      * Constructor.
-     * @param newSessionFactory session factory
-     * @param newRepositories repositories
-     * @param newServices services
+     *
+     * @param newSessionFactory    session factory
+     * @param newRepositories      repositories
+     * @param newServices          services
      * @param newApplicationStatus application status
      */
     public ImportBatch(final SessionFactory newSessionFactory, final RepositoriesProvider newRepositories, final ServicesProvider newServices, final ApplicationStatus newApplicationStatus) {
@@ -120,7 +121,7 @@ public class ImportBatch {
                     long secondsDuration = batchDuration.getSeconds();
                     // TODO Improve when there won't be anymore this error : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
                     long millisecondsDuration = TimeUnit.NANOSECONDS.toMillis(batchDuration.minusSeconds(secondsDuration).getNano());
-                    log.info("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + secondsDuration + "."  + millisecondsDuration + " secs");
+                    log.info("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + secondsDuration + "." + millisecondsDuration + " secs");
                     // TODO Improve when JDK8 won't have this error anymore : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
                     status.setLastBlockProcessDuration(TimeUnit.NANOSECONDS.toMillis(batchDuration.getNano()));
 
@@ -130,7 +131,7 @@ public class ImportBatch {
                 });
             } else {
                 // If there is nothing to process.
-                log.info("No block to process");
+                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(BLOCK_GENERATION_DELAY) + " minutes");
                 status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS);
                 Thread.sleep(BLOCK_GENERATION_DELAY);
             }
