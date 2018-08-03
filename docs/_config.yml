@@ -1,5 +1,5 @@
 title: Blockchain2graph
-description: Extract informations from the bitcoin blockchain and insert them into a neo4j graph database
+description: Blockchain2graph extracts blockchain data (bitcoin) and insert them into a graph database (neo4j)
 google_analytics: 
 show_downloads: true
 theme: jekyll-theme-cayman
