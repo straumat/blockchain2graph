@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_COUNT_CACHE_ACTIVATION_HEIGHT;
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 
 /**
@@ -41,9 +40,8 @@ public class BitcoinDataServiceCountCacheAspect {
     public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
         float elapsedMinutesSinceLastCall = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastBlockCountValueAccess);
 
-        // If getBlockcount has never been call or more than 10 minutes have passed since last call or we are under 10000 blocks.
-        // We retrieve the value from server.
-        if (elapsedMinutesSinceLastCall > BLOCK_GENERATION_DELAY || lastBlockCountValue < BLOCK_COUNT_CACHE_ACTIVATION_HEIGHT) {
+        // If getBlockcount has never been call or more than 10 minutes have passed since last call, we retrieve the value from server.
+        if (elapsedMinutesSinceLastCall > BLOCK_GENERATION_DELAY) {
             Optional<Integer> blockCount = ((Optional<Integer>) pjp.proceed(new Object[]{}));
             blockCount.ifPresent(count -> {
                 lastBlockCountValue = count;
