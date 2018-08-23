@@ -1,4 +1,5 @@
 language: java
+install: true
 sudo: required
 # Travis add-ons.
 addons:
