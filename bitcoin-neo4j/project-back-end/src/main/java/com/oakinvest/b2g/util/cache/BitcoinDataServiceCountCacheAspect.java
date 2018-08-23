@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 
@@ -38,7 +37,7 @@ public class BitcoinDataServiceCountCacheAspect {
     @SuppressWarnings("unchecked")
     @Around("execution(* com.oakinvest.b2g.service.BitcoinDataService.getBlockCount())")
     public final Optional<Integer> getBlockCount(final ProceedingJoinPoint pjp) throws Throwable {
-        float elapsedMinutesSinceLastCall = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - lastBlockCountValueAccess);
+        float elapsedMinutesSinceLastCall = System.currentTimeMillis() - lastBlockCountValueAccess;
 
         // If getBlockcount has never been call or more than 10 minutes have passed since last call, we retrieve the value from server.
         if (elapsedMinutesSinceLastCall > BLOCK_GENERATION_DELAY) {
