@@ -13,18 +13,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Default implementation of core call.
- *
+ * <p>
  * Created by straumat on 26/08/16.
  */
 @Service
@@ -107,9 +111,20 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
     /**
      * Constructor.
      */
+    @SuppressWarnings("WhitespaceAround")
     public BitcoinCoreServiceImplementation() {
         restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new BitcoinCoreResponseErrorHandler());
+
+        // Converters.
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        // Add the Jackson Message converter
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        // Note: here we are making this converter to process any kind of response,
+        // not only application/*json, which is the default behaviour
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+        messageConverters.add(converter);
+        restTemplate.setMessageConverters(messageConverters);
     }
 
     /**
