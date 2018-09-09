@@ -27,15 +27,15 @@
 
         <!-- Maven plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
-        <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-maven-plugin -->
-        <typescript-generator-maven-plugin.version>2.5.423</typescript-generator-maven-plugin.version>
+        <typescript-generator-maven-plugin.version>2.6.433</typescript-generator-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
@@ -43,13 +43,13 @@
 
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
-        <neo4j.version>3.4.1</neo4j.version>
+        <neo4j.version>3.4.7</neo4j.version>
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
-        <neo4j-driver.version>3.1.0</neo4j-driver.version>
+        <neo4j-driver.version>3.1.2</neo4j-driver.version>
         <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
-        <assertj.version>3.10.0</assertj.version>
+        <assertj.version>3.11.1</assertj.version>
     </properties>
     <!-- =========================================================================================================== -->
 
