@@ -7,7 +7,7 @@ import com.oakinvest.b2g.dto.bitcoin.core.getblockcount.GetBlockCountResponse;
 import com.oakinvest.b2g.dto.bitcoin.core.getblockhash.GetBlockHashResponse;
 import com.oakinvest.b2g.dto.bitcoin.core.getrawtransaction.GetRawTransactionResponse;
 import com.oakinvest.b2g.util.rest.BitcoinCoreResponseErrorHandler;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
