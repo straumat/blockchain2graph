@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Controller for the applicationStatus.
- *
+ * <p>
  * Created by straumat on 31/10/16.
  */
 @Component
@@ -45,6 +45,7 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
 
     /**
      * Constructor.
+     *
      * @param newStatus applicationStatus
      */
     public StatusHandler(final ApplicationStatus newStatus) {
@@ -73,7 +74,9 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
             // We send the messages to all opened sessions. We remove the one that are closed.
             for (WebSocketSession session : this.sessions) {
                 if (session.isOpen()) {
-                    session.sendMessage(new TextMessage(message));
+                    synchronized (session) {
+                        session.sendMessage(new TextMessage(message));
+                    }
                 } else {
                     sessions.remove(session);
                 }
