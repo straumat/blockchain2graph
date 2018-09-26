@@ -38,16 +38,16 @@
     "codelyzer": "^4.0.2",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
-    "karma": "~2.0.5",
+    "karma": "^3.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.1.2",
+    "mock-socket": "^7.1.0",
+    "protractor": "^5.4.1",
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
-    "typescript": "~2.5.3",
-    "mock-socket": "^7.1.0"
+    "typescript": "~2.5.3"
   },
   "optionalDependencies": {
     "bufferutil": "^3.0.5",
