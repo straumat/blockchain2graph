@@ -24,7 +24,7 @@
     <properties>
         <project.finalName>blockchain2graph-bitcoin-neo4j-benchmark</project.finalName>
         <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
-        <dockerfile-maven-plugin.version>1.4.5</dockerfile-maven-plugin.version>
+        <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
         <docker.image.prefix>straumat</docker.image.prefix>
     </properties>
     <!-- =========================================================================================================== -->
