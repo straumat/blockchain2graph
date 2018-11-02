@@ -33,25 +33,6 @@
     <build>
         <!-- Plugins -->
         <plugins>
-            <!-- Clean -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>${maven-clean-plugin.version}</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                    <filesets>
-                        <fileset>
-                            <directory>.</directory>
-                            <includes>
-                                <include>*.jar</include>
-                                <include>target/**</include>
-                            </includes>
-                            <followSymlinks>yes</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
             <!-- Docker plugin -->
             <plugin>
                 <groupId>com.spotify</groupId>
