@@ -23,7 +23,7 @@
     <!-- Project configuration -->
     <properties>
         <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
-        <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
+        <dockerfile-maven-plugin.version>1.4.9</dockerfile-maven-plugin.version>
         <docker.image.prefix>straumat</docker.image.prefix>
     </properties>
     <!-- =========================================================================================================== -->
