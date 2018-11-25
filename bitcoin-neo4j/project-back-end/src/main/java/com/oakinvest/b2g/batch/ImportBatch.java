@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.LOG_SEPARATOR;
+import static com.oakinvest.b2g.configuration.ApplicationConfiguration.PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK;
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.PAUSE_BEFORE_STARTING_APPLICATION;
 
 /**
@@ -131,9 +131,9 @@ public class ImportBatch {
                 });
             } else {
                 // If there is nothing to process.
-                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(BLOCK_GENERATION_DELAY) + " minutes");
+                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK) + " minutes");
                 status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS);
-                Thread.sleep(BLOCK_GENERATION_DELAY);
+                Thread.sleep(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK);
             }
         } catch (Exception e) {
             status.setLastErrorMessage("An error occurred while processing block : " + e.getMessage());
