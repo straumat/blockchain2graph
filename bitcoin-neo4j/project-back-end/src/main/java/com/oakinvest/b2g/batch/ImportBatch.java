@@ -131,7 +131,7 @@ public class ImportBatch {
                 });
             } else {
                 // If there is nothing to process.
-                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK) + " minutes");
+                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK) + " minute(s)");
                 status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS);
                 Thread.sleep(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK);
             }

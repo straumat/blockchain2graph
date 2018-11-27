@@ -19,7 +19,6 @@ public final class ApplicationConfiguration {
      */
     public static final long PAUSE_BEFORE_STARTING_APPLICATION = 120000;
 
-
     /**
      * Delay before trying to get a new block when no new block is available from bitcoin core.
      */
