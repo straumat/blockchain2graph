@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Parameters configuration.
- *
+ * <p>
  * Created by straumat on 20/05/17.
  */
 public final class ApplicationConfiguration {
@@ -20,9 +20,9 @@ public final class ApplicationConfiguration {
     public static final long PAUSE_BEFORE_STARTING_APPLICATION = 120000;
 
     /**
-     * Number of blocks before the block count cache activate.
+     * Delay before trying to get a new block when no new block is available from bitcoin core.
      */
-    public static final int BLOCK_COUNT_CACHE_ACTIVATION_HEIGHT = 100000;
+    public static final long PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK = TimeUnit.MINUTES.toMillis(1);
 
     /**
      * Delay between two block generation in milliseconds (10 minutes for bitcoin).

@@ -12,6 +12,7 @@ import com.oakinvest.b2g.util.status.ApplicationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Bitcoin data service implementation.
- *
+ * <p>
  * Created by straumat on 11/06/17.
  */
 @Service
@@ -245,7 +246,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
                     }
                     return Optional.empty();
                 }
-            } catch (Exception e) {
+            } catch (RestClientException e) {
                 log.error("Error getting the transaction " + txId + " : " + e.getMessage(), e);
                 status.setLastErrorMessage("Error getting the transaction " + txId + " : " + e.getMessage());
                 return Optional.empty();

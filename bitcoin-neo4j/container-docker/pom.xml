@@ -6,7 +6,6 @@
     <!-- =========================================================================================================== -->
     <!-- Project information -->
     <artifactId>blockchain2graph-bitcoin-neo4j-container-docker</artifactId>
-    <version>3.0</version>
     <name>Blockchain2graph - bitcoin and neo4j - docker image</name>
     <packaging>pom</packaging>
     <!-- =========================================================================================================== -->
@@ -16,7 +15,7 @@
     <parent>
         <groupId>com.oakinvest.b2g</groupId>
         <artifactId>blockchain2graph-bitcoin-neo4j</artifactId>
-        <version>3.0</version>
+        <version>3.1</version>
     </parent>
     <!-- =========================================================================================================== -->
 
@@ -24,7 +23,7 @@
     <!-- Project configuration -->
     <properties>
         <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
-        <dockerfile-maven-plugin.version>1.4.3</dockerfile-maven-plugin.version>
+        <dockerfile-maven-plugin.version>1.4.9</dockerfile-maven-plugin.version>
         <docker.image.prefix>straumat</docker.image.prefix>
     </properties>
     <!-- =========================================================================================================== -->
@@ -34,25 +33,6 @@
     <build>
         <!-- Plugins -->
         <plugins>
-            <!-- Clean -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>${maven-clean-plugin.version}</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                    <filesets>
-                        <fileset>
-                            <directory>.</directory>
-                            <includes>
-                                <include>*.jar</include>
-                                <include>target/**</include>
-                            </includes>
-                            <followSymlinks>yes</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
             <!-- Docker plugin -->
             <plugin>
                 <groupId>com.spotify</groupId>

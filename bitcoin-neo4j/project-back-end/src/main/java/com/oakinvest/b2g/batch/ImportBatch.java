@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.LOG_SEPARATOR;
+import static com.oakinvest.b2g.configuration.ApplicationConfiguration.PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK;
 import static com.oakinvest.b2g.configuration.ApplicationConfiguration.PAUSE_BEFORE_STARTING_APPLICATION;
-import static com.oakinvest.b2g.configuration.ApplicationConfiguration.BLOCK_GENERATION_DELAY;
 
 /**
  * Batch importing bitcoin blocks.
@@ -131,9 +131,9 @@ public class ImportBatch {
                 });
             } else {
                 // If there is nothing to process.
-                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(BLOCK_GENERATION_DELAY) + " minutes");
+                log.info("No block to process, Retrying in " + TimeUnit.MILLISECONDS.toMinutes(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK) + " minute(s)");
                 status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS);
-                Thread.sleep(BLOCK_GENERATION_DELAY);
+                Thread.sleep(PAUSE_BEFORE_SEARCHING_FOR_NEW_BLOCK);
             }
         } catch (Exception e) {
             status.setLastErrorMessage("An error occurred while processing block : " + e.getMessage());
@@ -155,10 +155,7 @@ public class ImportBatch {
 
         // We check if that next block exists by retrieving the block count.
         if (totalBlockCount.isPresent()) {
-            // We update the global status of blockcount (if needed).
-            if (totalBlockCount.get() != status.getBlockCountInBlockchain()) {
-                status.setBlockCountInBlockchain(totalBlockCount.get());
-            }
+            status.setBlockCountInBlockchain(totalBlockCount.get());
             // We return the block to process.
             if (blockToProcess <= totalBlockCount.get()) {
                 return Optional.of(blockToProcess);

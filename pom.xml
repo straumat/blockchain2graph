@@ -7,7 +7,7 @@
     <!-- Project information -->
     <groupId>com.oakinvest.b2g</groupId>
     <artifactId>blockchain2graph</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
     <packaging>pom</packaging>
     <name>Blockchain2graph</name>
     <description>Extract blockchain data into a graph database</description>
@@ -75,7 +75,7 @@
         <java.version>1.8</java.version>
         <!-- gitflow -->
         <!-- https://mvnrepository.com/artifact/com.amashchenko.maven.plugin/gitflow-maven-plugin -->
-        <gitflow-maven-plugin.version>1.9.0</gitflow-maven-plugin.version>
+        <gitflow-maven-plugin.version>1.10.0</gitflow-maven-plugin.version>
     </properties>
     <!-- =========================================================================================================== -->
 
@@ -92,7 +92,7 @@
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.3.RELEASE</version>
+        <version>2.1.0.RELEASE</version>
         <relativePath/>
     </parent>
     <!-- =========================================================================================================== -->
