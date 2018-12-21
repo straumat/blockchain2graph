@@ -15,7 +15,7 @@ public class BitcoinCoreBufferTest extends BaseTest {
     /**
      * Time to wait to let the buffer finish its work.
      */
-    private static final long WAITING_TIME = TimeUnit.SECONDS.toMillis(60);
+    private static final long WAITING_TIME = TimeUnit.SECONDS.toMillis(120);
 
     /**
      * Buffer test.
