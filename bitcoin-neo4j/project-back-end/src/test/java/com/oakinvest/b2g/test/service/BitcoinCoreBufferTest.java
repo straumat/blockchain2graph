@@ -27,7 +27,7 @@ public class BitcoinCoreBufferTest extends BaseTest {
      *
      * @return waiting time
      */
-    private final long getWaitingTime() {
+    private long getWaitingTime() {
         if (isLiveTest()) {
             return WAITING_TIME_FOR_LIVE_TEST;
         } else {
