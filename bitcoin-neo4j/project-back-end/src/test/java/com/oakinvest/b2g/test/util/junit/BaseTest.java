@@ -1,7 +1,7 @@
 package com.oakinvest.b2g.test.util.junit;
 
-import com.oakinvest.b2g.batch.ImportBatch;
 import com.oakinvest.b2g.Application;
+import com.oakinvest.b2g.batch.ImportBatch;
 import com.oakinvest.b2g.repository.AddressRepository;
 import com.oakinvest.b2g.repository.BlockRepository;
 import com.oakinvest.b2g.repository.TransactionInputRepository;
@@ -100,13 +100,30 @@ public abstract class BaseTest {
     private SessionFactory sessionFactory;
 
     /**
+     * Indicates that it's a test without cached data.
+     */
+    private boolean liveTest = false;
+
+    /**
      * If we have the profile "live" active, we delete the cached data from core.
      */
     @PostConstruct
     public void deleteCache() {
         if (LIVE_PARAMETER_VALUE.equalsIgnoreCase(System.getProperty(LIVE_PARAMETER))) {
+            liveTest = true;
             getBitcoinCoreMock().deleteCache();
+        } else {
+            liveTest = false;
         }
+    }
+
+    /**
+     * Getter of liveTest.
+     *
+     * @return liveTest
+     */
+    public final boolean isLiveTest() {
+        return liveTest;
     }
 
     /**
