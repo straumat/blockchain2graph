@@ -31,7 +31,7 @@
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <!-- https://mvnrepository.com/artifact/cz.habarta.typescript-generator/typescript-generator-maven-plugin -->
