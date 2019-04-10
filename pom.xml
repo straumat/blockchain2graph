@@ -75,7 +75,7 @@
         <java.version>1.8</java.version>
         <!-- gitflow -->
         <!-- https://mvnrepository.com/artifact/com.amashchenko.maven.plugin/gitflow-maven-plugin -->
-        <gitflow-maven-plugin.version>1.11.0</gitflow-maven-plugin.version>
+        <gitflow-maven-plugin.version>1.12.0</gitflow-maven-plugin.version>
     </properties>
     <!-- =========================================================================================================== -->
 
