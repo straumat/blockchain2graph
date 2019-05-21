@@ -28,7 +28,7 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 script:
-- mvn package -Dlive=true
+- mvn package -Dlive=true -q
 after_success:
 # Upload test coverage.
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
