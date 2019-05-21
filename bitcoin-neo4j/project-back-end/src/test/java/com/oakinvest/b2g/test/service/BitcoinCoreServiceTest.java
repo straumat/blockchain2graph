@@ -36,7 +36,7 @@ public class BitcoinCoreServiceTest extends BaseTest {
     /**
      * Number of blocks.
      */
-    private static final int NUMBER_OF_BLOCKS = 500;
+    private static final int NUMBER_OF_BLOCKS = 10000;
 
     /**
      * Block number used for getblockhash test.
