@@ -17,6 +17,9 @@ addons:
     - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
 services:
 - docker
+cache:
+  directories:
+    - $HOME/.m2
 before_install:
 # Install coverage tool.
 - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
