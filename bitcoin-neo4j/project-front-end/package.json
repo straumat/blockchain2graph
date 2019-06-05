@@ -46,7 +46,7 @@
     "mock-socket": "^7.1.0",
     "protractor": "^5.4.1",
     "ts-node": "~4.1.0",
-    "tslint": "~5.9.1",
+    "tslint": "~5.17.0",
     "typescript": "~2.8.1"
   },
   "optionalDependencies": {
