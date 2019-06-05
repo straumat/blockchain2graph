@@ -50,7 +50,7 @@
     "typescript": "~2.8.1"
   },
   "optionalDependencies": {
-    "bufferutil": "^3.0.5",
+    "bufferutil": "^4.0.1",
     "utf-8-validate": "^4.0.2"
   }
 }
