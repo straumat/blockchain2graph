@@ -45,7 +45,7 @@
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
         <neo4j.version>3.5.8</neo4j.version>
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
-        <neo4j-driver.version>3.1.11</neo4j-driver.version>
+        <neo4j-driver.version>3.1.12</neo4j-driver.version>
         <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
         <mapstruct.version>1.3.0.Final</mapstruct.version>
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
