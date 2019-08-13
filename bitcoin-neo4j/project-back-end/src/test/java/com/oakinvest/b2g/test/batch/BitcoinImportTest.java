@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 /**
  * Tests for bitcoin blockchain import.
@@ -130,10 +130,8 @@ public class BitcoinImportTest extends BaseTest {
         if (bitcoinExistingAddress.isPresent()) {
             assertThat(bitcoinExistingAddress.get())
                     .as("Address exists")
-                    .isNotNull()
-                    .as("Address value")
-                    .extracting("address")
-                    .contains(existingAddress);
+                    .isNotNull();
+            assertThat(bitcoinExistingAddress.get().getAddress()).as("Address").contains(existingAddress);
         } else {
             fail(existingAddress + "not found");
         }
