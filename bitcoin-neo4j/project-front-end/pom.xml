@@ -28,9 +28,9 @@
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <!-- Web development -->
     <!-- https://nodejs.org/en/download/releases/ -->
-    <node.version>v10.13.0</node.version>
+    <node.version>v12.8.0</node.version>
     <!-- https://github.com/yarnpkg/yarn/releases/ -->
-    <yarn.version>v1.10.1</yarn.version>
+    <yarn.version>v1.17.3</yarn.version>
   </properties>
   <!-- =========================================================================================================== -->
 
