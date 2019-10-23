@@ -7,38 +7,35 @@ addons:
   chrome: stable
   apt:
     packages:
-    - jq
-    - wget
-    - curl
-    - libssl1.0.0
-    - sshpass
+      - jq
+      - wget
+      - curl
+      - libssl1.0.0
+      - sshpass
   artifacts:
     paths:
-    - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
+      - $(git ls-files -o | grep -v lib | grep -v wrapper | grep -e bitcoin-neo4j/project-back-end/target/blockchain2graph-bitcoin-neo4j.jar$ | tr "\n" ":")
 services:
-- docker
+  - docker
+  - xvfb
 cache:
   directories:
     - $HOME/.m2
 before_install:
-# Install coverage tool.
-- wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
-# Configure for front end tests.
-- export CHROME_BIN=chromium-browser
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
+  # Install coverage tool.
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
 script:
-- mvn package -Dlive=true -q
+  - mvn package -Dlive=true -q
 after_success:
-# Upload test coverage.
-- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
-# Update official "blockchain2graph bitcoin neo4j" image.
-- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
-# Run benchmark of "blockchain2graph bitcoin neo4j".
-- docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
-- RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE"
-- sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -l blockchain2graph-bitcoin-neo4j-benchmark -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE > /home/ci/logs-ci &"
+  # Upload test coverage.
+  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
+  # Update official "blockchain2graph bitcoin neo4j" image.
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
+  # Run benchmark of "blockchain2graph bitcoin neo4j".
+  - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
+  - RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE"
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -l blockchain2graph-bitcoin-neo4j-benchmark -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE > /home/ci/logs-ci &"
