@@ -25,7 +25,7 @@ before_install:
 # Install coverage tool.
 - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
 script:
-- mvn package -Dlive=true -q -X
+- mvn package -Dlive=true -q
 after_success:
 # Upload test coverage.
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r bitcoin-neo4j/project-back-end/target/site/jacoco/jacoco.xml
