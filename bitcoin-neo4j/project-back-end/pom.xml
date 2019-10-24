@@ -43,7 +43,7 @@
 
         <!-- Java libraries -->
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
-        <neo4j.version>3.5.11</neo4j.version>
+        <neo4j.version>3.5.12</neo4j.version>
         <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-bolt-driver -->
         <neo4j-ogm.version>3.2.1</neo4j-ogm.version>
         <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
