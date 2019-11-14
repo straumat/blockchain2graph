@@ -73,9 +73,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <!-- gitflow -->
-        <!-- https://mvnrepository.com/artifact/com.amashchenko.maven.plugin/gitflow-maven-plugin -->
-        <gitflow-maven-plugin.version>1.13.0</gitflow-maven-plugin.version>
     </properties>
     <!-- =========================================================================================================== -->
 
@@ -106,7 +103,7 @@
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
-                <version>${gitflow-maven-plugin.version}</version>
+                <version>1.13.0</version>
                 <configuration>
                     <gitFlowConfig>
                         <developmentBranch>development</developmentBranch>
