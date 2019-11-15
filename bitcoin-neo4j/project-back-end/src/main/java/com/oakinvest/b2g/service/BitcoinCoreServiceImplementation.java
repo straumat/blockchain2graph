@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +122,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
         url = "http://" + hostname + ":" + port;
         // Generate headers.
         String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
         String authHeader = "Basic " + new String(encodedAuth);
         HttpHeaders h = new HttpHeaders();
         h.set("Authorization", authHeader);
@@ -200,7 +200,7 @@ public class BitcoinCoreServiceImplementation implements BitcoinCoreService {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("checkstyle:designforextension")
+    @SuppressWarnings({ "checkstyle:designforextension", "DuplicatedCode" })
     public GetRawTransactionResponse getRawTransaction(final String transactionHash) {
         // Setting parameters
         List<Object> params = new ArrayList<>();

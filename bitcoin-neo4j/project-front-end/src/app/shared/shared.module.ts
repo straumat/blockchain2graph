@@ -1,7 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ApplicationStatus} from './blockchain2graph-bitcoin-neo4j-back-end';
-
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
 
 @NgModule({

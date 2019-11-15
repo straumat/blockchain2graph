@@ -1,0 +1,24 @@
+{
+  "properties": [
+	{
+	  "name": "bitcoinCore.password",
+	  "type": "java.lang.String",
+	  "description": "Description for bitcoinCore.password."
+	},
+	{
+	  "name": "bitcoinCore.username",
+	  "type": "java.lang.String",
+	  "description": "Description for bitcoinCore.username."
+	},
+	{
+	  "name": "bitcoinCore.port",
+	  "type": "java.lang.String",
+	  "description": "Description for bitcoinCore.port."
+	},
+	{
+	  "name": "bitcoinCore.hostname",
+	  "type": "java.lang.String",
+	  "description": "Description for bitcoinCore.hostname."
+	}
+  ]
+}

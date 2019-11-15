@@ -166,27 +166,6 @@ describe('CoreComponent', () => {
             expect(compiled.querySelectorAll('h5')[1].textContent).toContain('3');
             expect(compiled.querySelectorAll('h5')[2].textContent).toContain('2.30 s');
 
-            // We reset everything.
-            message = {
-                blockCountInBlockchain: -1,
-                blockCountInNeo4j: -1,
-                currentBlockStatus: {
-                    blockHeight: -1,
-                    processStep: 'NOTHING_TO_PROCESS',
-                    processedAddresses: -1,
-                    addressCount: -1,
-                    processedTransactions: -1,
-                    transactionCount: -1
-                },
-                lastBlockProcessDuration: -1.0,
-                lastErrorMessage: 'n/a'
-            };
-            mockServer.emit('message', JSON.stringify(message));
-            fixture.detectChanges();
-            expect(compiled.querySelectorAll('h5')[0].textContent).toContain('n/a');
-            expect(compiled.querySelectorAll('h5')[1].textContent).toContain('n/a');
-            expect(compiled.querySelectorAll('h5')[2].textContent).toContain('n/a');
-
             mockServer.close();
         })
     );

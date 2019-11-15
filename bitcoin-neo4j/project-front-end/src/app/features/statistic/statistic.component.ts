@@ -35,6 +35,7 @@ export class StatisticComponent implements OnInit {
    * We subscribe to observable depending on component configuration.
    */
   ngOnInit() {
+    // noinspection DuplicatedCode
     switch (this.type) {
         // Number of blocks in bitcoin core.
       case StatisticComponent.typeBlockCountInBlockchain:

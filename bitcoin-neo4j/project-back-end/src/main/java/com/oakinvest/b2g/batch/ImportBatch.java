@@ -231,7 +231,7 @@ public class ImportBatch {
                                             Optional<BitcoinTransactionOutput> originTransactionOutput = repositories.getBitcoinTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                             // if we don't find in the database, this transaction must be in the block.
-                                            if (!originTransactionOutput.isPresent()) {
+                                            if (originTransactionOutput.isEmpty()) {
                                                 Optional<BitcoinTransaction> missingTransaction = block.getTransactions()
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))

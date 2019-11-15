@@ -155,7 +155,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     private Optional<GetBlockResult> getBlockResult(final int blockHeight) {
         Optional<GetBlockResult> result = buffer.getBlockInBuffer(blockHeight);
-        if (!result.isPresent()) {
+        if (result.isEmpty()) {
             result = getBlockResultFromBitcoinCore(blockHeight);
             // We add it so the buffer loader won't try to add it.
             result.ifPresent(getBlockResult -> buffer.addBlockInBuffer(blockHeight, getBlockResult));
@@ -171,7 +171,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
      */
     private Optional<GetRawTransactionResult> getRawTransactionResult(final String txId) {
         Optional<GetRawTransactionResult> result = buffer.getTransactionInBuffer(txId);
-        if (!result.isPresent()) {
+        if (result.isEmpty()) {
             result = getRawTransactionResultFromBitcoinCore(txId);
             // We add it so the buffer loader won't try to add it.
             result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
@@ -275,7 +275,7 @@ public class BitcoinDataServiceImplementation implements BitcoinDataService {
 
             // Add the transactions in buffer.
             transactions.parallelStream()
-                    .filter(txId -> !buffer.getTransactionInBuffer(txId).isPresent())
+                    .filter(txId -> buffer.getTransactionInBuffer(txId).isEmpty())
                     .forEach(txId -> {
                         Optional<GetRawTransactionResult> result = getRawTransactionResultFromBitcoinCore(txId);
                         result.ifPresent(getRawTransactionResult -> buffer.addTransactionInBuffer(txId, getRawTransactionResult));
