@@ -1,0 +1,62 @@
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!-- Title -->
+<app-header></app-header>
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!-- Statistics -->
+<div class="container">
+	<div class="card-deck mb-3 text-center">
+
+		<!-- Number of blocks in bitcoin core -->
+		<app-statistic backgroundColor="bg-info"
+					   icon="fa-server"
+					   title="Blocks in bitcoin core"
+					   type="blockCountInBlockchain"
+					   class="card mb-4 text-white">
+		</app-statistic>
+
+		<!-- Number of blocks in neo4j -->
+		<app-statistic backgroundColor="bg-success"
+					   icon="fa-database"
+					   title="Blocks in neo4j"
+					   type="blockCountInNeo4j"
+					   class="card mb-4 text-white">
+		</app-statistic>
+
+		<!-- Block import duration (average) -->
+		<app-statistic backgroundColor="bg-secondary"
+					   icon="fa-hourglass-half"
+					   title="Block import duration"
+					   type="lastBlockProcessDuration"
+					   class="card mb-4 text-white">
+		</app-statistic>
+		<!-- ----------------------------------------------------------------------------------------------------------- -->
+
+	</div>
+</div>
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!-- Current block status -->
+<div class="container">
+	<div class="card-deck mb-3 text-center">
+
+		<app-current-block-status class="card mb-4 text-white">
+		</app-current-block-status>
+
+	</div>
+</div>
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!-- Last error message -->
+<div class="container">
+	<div class="card-deck mb-3 text-center">
+
+		<app-error class="card mb-4 text-white">
+		</app-error>
+
+	</div>
+</div>
+<!-- --------------------------------------------------------------------------------------------------------------- -->
