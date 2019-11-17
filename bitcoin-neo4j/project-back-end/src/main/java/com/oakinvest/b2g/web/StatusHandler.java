@@ -1,6 +1,5 @@
 package com.oakinvest.b2g.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oakinvest.b2g.util.status.ApplicationStatus;
 import org.slf4j.Logger;
@@ -11,8 +10,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -21,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by straumat on 31/10/16.
  */
 @Component
-public class StatusHandler extends TextWebSocketHandler implements Observer {
+public class StatusHandler extends TextWebSocketHandler {
 
     /**
      * Logger.
@@ -43,6 +40,11 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
      */
     private final ApplicationStatus applicationStatus;
 
+    @Override
+    public final void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) {
+        this.sessions.remove(session);
+    }
+
     /**
      * Constructor.
      *
@@ -50,32 +52,24 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
      */
     public StatusHandler(final ApplicationStatus newStatus) {
         this.applicationStatus = newStatus;
-        this.applicationStatus.addObserver(this);
     }
 
     @Override
-    public final void afterConnectionEstablished(final WebSocketSession newSession) throws JsonProcessingException {
+    public final void afterConnectionEstablished(final WebSocketSession newSession) {
         this.sessions.add(newSession);
-        sendMessage(mapper.writeValueAsString(applicationStatus));
-    }
-
-    @Override
-    public final void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) {
-        this.sessions.remove(session);
+        sendApplicationStatus();
     }
 
     /**
      * Send a message message to all sessions.
-     *
-     * @param message message
      */
-    private void sendMessage(final String message) {
+    public void sendApplicationStatus() {
         try {
             // We send the messages to all opened sessions. We remove the one that are closed.
             for (WebSocketSession session : this.sessions) {
                 if (session.isOpen()) {
                     synchronized (session) {
-                        session.sendMessage(new TextMessage(message));
+                        session.sendMessage(new TextMessage(mapper.writeValueAsString(applicationStatus)));
                     }
                 } else {
                     sessions.remove(session);
@@ -83,17 +77,6 @@ public class StatusHandler extends TextWebSocketHandler implements Observer {
             }
         } catch (Exception e) {
             log.warn("Error sending message : " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public final void update(final Observable o, final Object arg) {
-        if (!sessions.isEmpty()) {
-            try {
-                sendMessage(mapper.writeValueAsString(applicationStatus));
-            } catch (JsonProcessingException e) {
-                log.error("Error parsing message : " + e.getMessage(), e);
-            }
         }
     }
 

@@ -1,17 +1,16 @@
 package com.oakinvest.b2g.util.status;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * Application status DTO.
  */
-@Component
 @SuppressWarnings("unused")
-public class ApplicationStatus extends Observable implements Observer {
+@Component
+@JsonSerialize(as = ApplicationStatus.class)
+public class ApplicationStatus {
 
     /**
      * Non available value.
@@ -36,7 +35,8 @@ public class ApplicationStatus extends Observable implements Observer {
     /**
      * Status of the block being processed.
      */
-    private CurrentBlockStatus currentBlockStatus = new CurrentBlockStatus();
+    @Autowired
+    private CurrentBlockStatus currentBlockStatus;
 
     /**
      * Last block process duration (NON_AVAILABLE_VALUE_NUMBER means no value has been set yet).
@@ -49,25 +49,11 @@ public class ApplicationStatus extends Observable implements Observer {
     private String lastErrorMessage = NON_AVAILABLE_VALUE_STRING;
 
     /**
-     * Configuration.
-     */
-    @PostConstruct
-    public final void configure() {
-        currentBlockStatus.addObserver(this);
-    }
-
-    @Override
-    public final void update(final Observable o, final Object arg) {
-        setChanged();
-        notifyObservers();
-    }
-
-    /**
      * Gets blockCountInBlockchain.
      *
      * @return value of blockCountInBlockchain
      */
-    public final int getBlockCountInBlockchain() {
+    public int getBlockCountInBlockchain() {
         return blockCountInBlockchain;
     }
 
@@ -76,10 +62,8 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @param newBlocksCountInBitcoinCore blockCountInBlockchain
      */
-    public final void setBlockCountInBlockchain(final int newBlocksCountInBitcoinCore) {
+    public void setBlockCountInBlockchain(final int newBlocksCountInBitcoinCore) {
         blockCountInBlockchain = newBlocksCountInBitcoinCore;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -87,7 +71,7 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @return value of blockCountInNeo4j
      */
-    public final int getBlockCountInNeo4j() {
+    public int getBlockCountInNeo4j() {
         return blockCountInNeo4j;
     }
 
@@ -96,10 +80,8 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @param newBlocksCountInNeo4j blockCountInNeo4j
      */
-    public final void setBlockCountInNeo4j(final int newBlocksCountInNeo4j) {
+    public void setBlockCountInNeo4j(final int newBlocksCountInNeo4j) {
         blockCountInNeo4j = newBlocksCountInNeo4j;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -107,7 +89,7 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @return value of currentBlockStatus
      */
-    public final CurrentBlockStatus getCurrentBlockStatus() {
+    public CurrentBlockStatus getCurrentBlockStatus() {
         return currentBlockStatus;
     }
 
@@ -116,10 +98,8 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @param newCurrentBlockStatus currentBlockStatus
      */
-    public final void setCurrentBlockStatus(final CurrentBlockStatus newCurrentBlockStatus) {
+    public void setCurrentBlockStatus(final CurrentBlockStatus newCurrentBlockStatus) {
         currentBlockStatus = newCurrentBlockStatus;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -127,7 +107,7 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @return value of lastBlockProcessDuration
      */
-    public final float getLastBlockProcessDuration() {
+    public float getLastBlockProcessDuration() {
         return lastBlockProcessDuration;
     }
 
@@ -136,10 +116,8 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @param newAverageBlockProcessDuration lastBlockProcessDuration
      */
-    public final void setLastBlockProcessDuration(final float newAverageBlockProcessDuration) {
+    public void setLastBlockProcessDuration(final float newAverageBlockProcessDuration) {
         lastBlockProcessDuration = newAverageBlockProcessDuration;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -147,7 +125,7 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @return value of lastErrorMessage
      */
-    public final String getLastErrorMessage() {
+    public String getLastErrorMessage() {
         return lastErrorMessage;
     }
 
@@ -156,10 +134,8 @@ public class ApplicationStatus extends Observable implements Observer {
      *
      * @param newLastErrorMessage lastErrorMessage
      */
-    public final void setLastErrorMessage(final String newLastErrorMessage) {
+    public void setLastErrorMessage(final String newLastErrorMessage) {
         lastErrorMessage = newLastErrorMessage;
-        setChanged();
-        notifyObservers();
     }
 
 }
