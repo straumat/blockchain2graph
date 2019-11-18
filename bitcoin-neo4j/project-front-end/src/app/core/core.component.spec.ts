@@ -1,4 +1,4 @@
-import {async, TestBed} from '@angular/core/testing';
+import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {CoreComponent} from './core.component';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -9,6 +9,9 @@ import {StatisticComponent} from '../features/statistic/statistic.component';
 import {Blockchain2graphService} from './services/blockchain2graph-service.service';
 import {Server} from 'mock-socket';
 import {HeaderComponent} from './components/header/header.component';
+import {RemainingTimeComponent} from '../features/remaining-time/remaining-time.component';
+import {browser} from 'protractor';
+import {delay} from 'rxjs/operators';
 
 describe('CoreComponent', () => {
 
@@ -20,7 +23,8 @@ describe('CoreComponent', () => {
                 AppComponent,
                 StatisticComponent,
                 CurrentBlockStatusComponent,
-                ErrorComponent],
+                ErrorComponent,
+                RemainingTimeComponent],
             providers: [Blockchain2graphService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
@@ -396,7 +400,128 @@ describe('CoreComponent', () => {
         fixture.detectChanges();
         expect(compiled.querySelector('div.bg-danger')[0]).not.toBeNull();
         expect(compiled.querySelector('div.bg-danger')[1]).not.toBeNull();
-        expect(compiled.querySelectorAll('h5')[3].textContent).toContain('This is an error message');
+        expect(compiled.querySelectorAll('h5')[4].textContent).toContain('This is an error message');
+
+        mockServer.close();
+    }));
+
+
+    /**
+     * Testing the display of errors.
+     */
+    it('Should display remaining time', fakeAsync(() => {
+        const webSocketURL = 'ws://' + location.host + '/' + Blockchain2graphService.webSocketPath;
+        const mockServer = new Server(webSocketURL);
+        const fixture = TestBed.createComponent(CoreComponent);
+        let message;
+        fixture.detectChanges();
+        const compiled = fixture.debugElement.nativeElement;
+
+        // Sending a message with no information.
+        message = {
+            blockCountInBlockchain: -1,
+            blockCountInNeo4j: -1,
+            currentBlockStatus: {
+                blockHeight: 10,
+                processStep: 'BLOCK_SAVED',
+                loadedTransactions: 200,
+                processedAddresses: 25,
+                addressCount: 100,
+                processedTransactions: 351,
+                transactionCount: 1000
+            },
+            averageBlockProcessDuration: -1.0,
+            lastErrorMessage: 'n/a'
+        };
+        mockServer.emit('message', JSON.stringify(message));
+        fixture.detectChanges();
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Not available for the moment');
+
+        // Sending a message saying 100 000 blocks are missing and it takes 865 to treat a block. Takes a bit more than one day.
+        message = {
+            blockCountInBlockchain: 500000,
+            blockCountInNeo4j: 400000,
+            currentBlockStatus: {
+                blockHeight: 10,
+                processStep: 'BLOCK_SAVED',
+                loadedTransactions: 200,
+                processedAddresses: 25,
+                addressCount: 100,
+                processedTransactions: 351,
+                transactionCount: 1000
+            },
+            lastBlockProcessDuration: 865,
+            lastErrorMessage: 'n/a'
+        };
+        mockServer.emit('message', JSON.stringify(message));
+        fixture.detectChanges();
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('2 day(s) remaining');
+
+        // Sending new information just after should not update the statistics.
+        message = {
+            blockCountInBlockchain: 500000,
+            blockCountInNeo4j: 400000,
+            currentBlockStatus: {
+                blockHeight: 10,
+                processStep: 'BLOCK_SAVED',
+                loadedTransactions: 200,
+                processedAddresses: 25,
+                addressCount: 100,
+                processedTransactions: 351,
+                transactionCount: 1000
+            },
+            lastBlockProcessDuration: 60000,
+            lastErrorMessage: 'n/a'
+        };
+        mockServer.emit('message', JSON.stringify(message));
+        fixture.detectChanges();
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('2 day(s) remaining');
+
+        // Waiting for one minute.
+        tick(61 * 1000);
+
+        // Sending a message saying 100 000 blocks are missing and it takes 865 to treat a block. Takes a bit more than one day.
+        message = {
+            blockCountInBlockchain: 500000,
+            blockCountInNeo4j: 400000,
+            currentBlockStatus: {
+                blockHeight: 10,
+                processStep: 'BLOCK_SAVED',
+                loadedTransactions: 200,
+                processedAddresses: 25,
+                addressCount: 100,
+                processedTransactions: 351,
+                transactionCount: 1000
+            },
+            lastBlockProcessDuration: 10000,
+            lastErrorMessage: 'n/a'
+        };
+        mockServer.emit('message', JSON.stringify(message));
+        fixture.detectChanges();
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('12 day(s) remaining');
+
+        // Waiting for one minute.
+        tick(61 * 1000);
+
+        // Sending a message saying that all is synchronized.
+        message = {
+            blockCountInBlockchain: 500000,
+            blockCountInNeo4j: 499999,
+            currentBlockStatus: {
+                blockHeight: 10,
+                processStep: 'BLOCK_SAVED',
+                loadedTransactions: 200,
+                processedAddresses: 25,
+                addressCount: 100,
+                processedTransactions: 351,
+                transactionCount: 1000
+            },
+            lastBlockProcessDuration: 10000,
+            lastErrorMessage: 'n/a'
+        };
+        mockServer.emit('message', JSON.stringify(message));
+        fixture.detectChanges();
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Synchronized');
 
         mockServer.close();
     }));
