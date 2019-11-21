@@ -108,7 +108,6 @@ public class BenchmarkLauncher implements Runnable {
         // We stop the application.
         log.info("Application exit");
         SpringApplication.exit(context, () -> 0);
-        System.exit(0);
     }
 
     /**
