@@ -3,22 +3,22 @@
 	{
 	  "name": "bitcoinCore.password",
 	  "type": "java.lang.String",
-	  "description": "Description for bitcoinCore.password."
+	  "description": "Bitcoin core password."
 	},
 	{
 	  "name": "bitcoinCore.username",
 	  "type": "java.lang.String",
-	  "description": "Description for bitcoinCore.username."
+	  "description": "Bitcoin core username."
 	},
 	{
 	  "name": "bitcoinCore.port",
 	  "type": "java.lang.String",
-	  "description": "Description for bitcoinCore.port."
+	  "description": "Bitcoin core port."
 	},
 	{
 	  "name": "bitcoinCore.hostname",
 	  "type": "java.lang.String",
-	  "description": "Description for bitcoinCore.hostname."
+	  "description": "Bitcoin core hostname."
 	}
   ]
 }
