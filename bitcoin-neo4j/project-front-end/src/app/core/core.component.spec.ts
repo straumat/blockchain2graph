@@ -10,8 +10,6 @@ import {Blockchain2graphService} from './services/blockchain2graph-service.servi
 import {Server} from 'mock-socket';
 import {HeaderComponent} from './components/header/header.component';
 import {RemainingTimeComponent} from '../features/remaining-time/remaining-time.component';
-import {browser} from 'protractor';
-import {delay} from 'rxjs/operators';
 
 describe('CoreComponent', () => {
 
