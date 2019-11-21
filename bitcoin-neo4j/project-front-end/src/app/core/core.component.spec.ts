@@ -435,7 +435,7 @@ describe('CoreComponent', () => {
         };
         mockServer.emit('message', JSON.stringify(message));
         fixture.detectChanges();
-        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Not available for the moment');
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Remaining time not available for the moment');
 
         // Sending a message saying 100 000 blocks are missing and it takes 865 to treat a block. Takes a bit more than one day.
         message = {

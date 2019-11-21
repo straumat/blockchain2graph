@@ -28,7 +28,7 @@ describe('RemainingTimeComponent', () => {
    */
   it('should be initialized', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h4').textContent).toContain('Not available for the moment');
+    expect(compiled.querySelector('h4').textContent).toContain('Remaining time not available for the moment');
     expect(compiled.querySelector('h5').textContent).toContain('Refreshed every minute');
   });
 

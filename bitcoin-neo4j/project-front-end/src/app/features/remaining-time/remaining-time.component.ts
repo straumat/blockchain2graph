@@ -10,7 +10,7 @@ import * as moment from 'moment';
 })
 export class RemainingTimeComponent implements OnInit {
 
-    remainingTime = 'Not available for the moment';
+    remainingTime = 'Remaining time not available for the moment';
     lastUpdate;
 
     /**
