@@ -68,6 +68,7 @@ public class StatusHandler extends TextWebSocketHandler {
             // We send the messages to all opened sessions. We remove the one that are closed.
             for (WebSocketSession session : this.sessions) {
                 if (session.isOpen()) {
+                    //noinspection SynchronizationOnLocalVariableOrMethodParameter
                     synchronized (session) {
                         session.sendMessage(new TextMessage(mapper.writeValueAsString(applicationStatus)));
                     }

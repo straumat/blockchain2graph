@@ -35,6 +35,7 @@ public class ApplicationStatus {
     /**
      * Status of the block being processed.
      */
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
     @Autowired
     private CurrentBlockStatus currentBlockStatus;
 
