@@ -373,13 +373,4 @@ public class BitcoinCoreServiceTest extends BaseTest {
 				.contains(expectedErrorCode, expectedErrorMessage);
 	}
 
-	/**
-	 * Test for issue 223.
-	 * https://github.com/straumat/blockchain2graph/issues/223
-	 */
-	@Test
-	public final void testIssue223() {
-		getBitcoinCoreService().getBlock("0000000000000000527c25e7f16faa35c683bf8db709389c28388def54e34685");
-	}
-
 }
