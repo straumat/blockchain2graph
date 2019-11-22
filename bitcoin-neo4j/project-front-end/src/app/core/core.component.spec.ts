@@ -10,8 +10,6 @@ import {Blockchain2graphService} from './services/blockchain2graph-service.servi
 import {Server} from 'mock-socket';
 import {HeaderComponent} from './components/header/header.component';
 import {RemainingTimeComponent} from '../features/remaining-time/remaining-time.component';
-import {browser} from 'protractor';
-import {delay} from 'rxjs/operators';
 
 describe('CoreComponent', () => {
 
@@ -435,7 +433,7 @@ describe('CoreComponent', () => {
         };
         mockServer.emit('message', JSON.stringify(message));
         fixture.detectChanges();
-        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Not available for the moment');
+        expect(compiled.querySelectorAll('h4')[4].textContent).toContain('Remaining time not available for the moment');
 
         // Sending a message saying 100 000 blocks are missing and it takes 865 to treat a block. Takes a bit more than one day.
         message = {

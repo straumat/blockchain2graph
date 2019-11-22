@@ -1,6 +1,8 @@
 package com.oakinvest.b2g;
 
 import com.oakinvest.b2g.util.benchmark.BenchmarkLauncher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,11 @@ import java.util.concurrent.Executors;
  */
 @SpringBootApplication
 public class Application implements ApplicationRunner {
+
+    /**
+     * Logger.
+     */
+    private final Logger log = LoggerFactory.getLogger(Application.class);
 
     /**
      * Benchmark launcher parameter.
@@ -50,6 +57,8 @@ public class Application implements ApplicationRunner {
         if (args.containsOption(BENCHMARK_PARAMETER)) {
             final ExecutorService service = Executors.newSingleThreadExecutor();
             service.execute(benchmarkLauncher);
+        } else {
+            log.info("Application will start importing data in few minutes");
         }
     }
 
