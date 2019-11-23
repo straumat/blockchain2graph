@@ -61,8 +61,8 @@
         <version>1.8.0</version>
         <configuration>
           <installDirectory>target</installDirectory>
-          <nodeVersion>v13.1.0</nodeVersion>
-          <yarnVersion>v1.19.1</yarnVersion>
+          <nodeVersion>v13.2.0</nodeVersion>
+          <yarnVersion>v1.19.2</yarnVersion>
         </configuration>
         <executions>
           <execution>
