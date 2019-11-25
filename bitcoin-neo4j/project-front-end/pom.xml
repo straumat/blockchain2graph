@@ -61,7 +61,9 @@
         <version>1.8.0</version>
         <configuration>
           <installDirectory>target</installDirectory>
+          <!-- https://github.com/nodejs/node/releases -->
           <nodeVersion>v13.2.0</nodeVersion>
+          <!-- https://github.com/yarnpkg/yarn/releases -->
           <yarnVersion>v1.19.2</yarnVersion>
         </configuration>
         <executions>

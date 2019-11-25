@@ -21,7 +21,7 @@ export class RemainingTimeComponent implements OnInit {
 
     ngOnInit() {
         this.blockchain2graphService.applicationStatus.subscribe((value: ApplicationStatus) => {
-            if (value != null && value.blockCountInBlockchain !== -1) {
+            if (value != null && value.blockCountInBlockchain !== -1 && value.blockCountInBlockchain !== 0) {
                 // If there was no update and or 1 minute has passed.
                 if ((this.lastUpdate == null) || (moment().subtract(1, 'minutes') > this.lastUpdate)) {
                     if (value.blockCountInBlockchain - value.blockCountInNeo4j > 2) {
