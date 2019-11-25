@@ -23,7 +23,7 @@ cache:
     - $HOME/.m2
 before_install:
   # Install coverage tool.
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/6.1.2/codacy-coverage-reporter-assembly-6.1.2.jar
 script:
   - mvn package -Dlive=true -q
 after_success:
