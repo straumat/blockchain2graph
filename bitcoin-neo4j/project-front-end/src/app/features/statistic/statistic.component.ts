@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
+import {faDatabase, faHourglass, faQuestion, faServer} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-statistic',
@@ -19,11 +20,11 @@ export class StatisticComponent implements OnInit {
 
     // Components values.
     @Input() backgroundColor = 'bg-info';
-    @Input() icon = 'fa-question';
     @Input() title = 'Component title';
     @Input() type: string;
     receivedValue = StatisticComponent.nonAvailableValue;
     displayedValue = StatisticComponent.nonAvailableDisplay;
+    faDisplayedIcon = faQuestion;
 
     /**
      * Constructor.
@@ -40,6 +41,7 @@ export class StatisticComponent implements OnInit {
         switch (this.type) {
             // Number of blocks in bitcoin core.
             case StatisticComponent.typeBlockCountInBlockchain:
+                this.faDisplayedIcon = faServer;
                 this.blockchain2graphService.blockCountInBlockchain.subscribe((value: number) => {
                     if (value != null) {
                         this.receivedValue = value;
@@ -53,6 +55,7 @@ export class StatisticComponent implements OnInit {
                 break;
             // Number of blocks in neo4j.
             case StatisticComponent.typeBlockCountInNeo4j:
+                this.faDisplayedIcon = faDatabase;
                 this.blockchain2graphService.blockCountInNeo4j.subscribe((value: number) => {
                     if (value != null) {
                         this.receivedValue = value;
@@ -66,6 +69,7 @@ export class StatisticComponent implements OnInit {
                 break;
             // Last block import duration.
             case StatisticComponent.lastBlockProcessDuration:
+                this.faDisplayedIcon = faHourglass;
                 this.blockchain2graphService.lastBlockProcessDuration.subscribe((value: number) => {
                     if (value != null) {
                         this.receivedValue = value;

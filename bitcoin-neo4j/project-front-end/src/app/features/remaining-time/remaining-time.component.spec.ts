@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RemainingTimeComponent } from './remaining-time.component';
+import {RemainingTimeComponent} from './remaining-time.component';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 describe('RemainingTimeComponent', () => {
   let component: RemainingTimeComponent;
@@ -8,7 +9,8 @@ describe('RemainingTimeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RemainingTimeComponent ]
+      declarations: [ RemainingTimeComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));

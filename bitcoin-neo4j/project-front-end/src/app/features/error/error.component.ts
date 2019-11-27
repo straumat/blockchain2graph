@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
+import {faExclamationTriangle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-error',
@@ -10,6 +11,8 @@ export class ErrorComponent implements OnInit {
 
   // Static values.
   static readonly nonAvailableValuerString = 'n/a';
+
+  faExclamationTriangle = faExclamationTriangle;
 
   /**
    * Constructor.

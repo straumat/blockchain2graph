@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { StatisticComponent } from './statistic.component';
+import {StatisticComponent} from './statistic.component';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 describe('StatisticComponent', () => {
   let component: StatisticComponent;
@@ -8,7 +9,8 @@ describe('StatisticComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StatisticComponent ]
+      declarations: [ StatisticComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
@@ -24,7 +26,6 @@ describe('StatisticComponent', () => {
    */
   it('Should be initialized', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.fa.fa-question')).not.toBeNull();
     expect(compiled.querySelector('h4').textContent).toContain('Component title');
     expect(compiled.querySelector('h5').textContent).toContain('n/a');
   });

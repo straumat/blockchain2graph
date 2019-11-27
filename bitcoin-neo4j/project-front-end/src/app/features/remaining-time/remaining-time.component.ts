@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
 import {ApplicationStatus} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end';
+import {faCalendarCheck} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 
 @Component({
@@ -9,6 +10,8 @@ import * as moment from 'moment';
     styleUrls: ['./remaining-time.component.css']
 })
 export class RemainingTimeComponent implements OnInit {
+
+    faCalendarCheck = faCalendarCheck;
 
     remainingTime = 'Remaining time not available for the moment';
     lastUpdate;
@@ -21,7 +24,7 @@ export class RemainingTimeComponent implements OnInit {
 
     ngOnInit() {
         this.blockchain2graphService.applicationStatus.subscribe((value: ApplicationStatus) => {
-            if (value != null && value.blockCountInBlockchain !== -1 && value.blockCountInBlockchain !== 0) {
+            if (value != null && value.blockCountInBlockchain > 0) {
                 // If there was no update and or 1 minute has passed.
                 if ((this.lastUpdate == null) || (moment().subtract(1, 'minutes') > this.lastUpdate)) {
                     if (value.blockCountInBlockchain - value.blockCountInNeo4j > 2) {

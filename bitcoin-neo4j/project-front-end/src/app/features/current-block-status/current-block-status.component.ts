@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
 import {CurrentBlockStatus, CurrentBlockStatusProcessStep} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end';
+import {faBolt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-current-block-status',
@@ -20,6 +21,7 @@ export class CurrentBlockStatusComponent implements OnInit {
     static readonly savedBlockDescription = 'Block saved';
 
     // Component details.
+    faBolt = faBolt;
     blockHeight = CurrentBlockStatusComponent.noBlockToProcessDescription;
     viewDetails = false;
     processStepDescription = CurrentBlockStatusComponent.noBlockToProcessDescription;
