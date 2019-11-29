@@ -24,6 +24,8 @@ cache:
 before_install:
   # Install coverage tool.
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/6.1.2/codacy-coverage-reporter-assembly-6.1.2.jar
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
+  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
 script:
   - mvn package -Dlive=true -q
 after_success:
@@ -35,7 +37,5 @@ after_success:
   # Run benchmark of "blockchain2graph bitcoin neo4j".
   - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
   - RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
-  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker stop $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
-  - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 'docker rm -f $(docker ps -aq --filter "label=blockchain2graph-bitcoin-neo4j-benchmark")'
   - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "docker pull straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE"
   - sshpass -p $SSH_PASSWORD ssh ci@5.196.65.205 "nohup docker run -l blockchain2graph-bitcoin-neo4j-benchmark -e SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD -e SPRING_DATA_NEO4J_URI=file:///graph.db -e BUILD_NUMBER=$TRAVIS_BUILD_NUMBER straumat/blockchain2graph-bitcoin-neo4j-benchmark:$RELEASE > /home/ci/logs-ci &"
