@@ -23,7 +23,7 @@
     "@fortawesome/angular-fontawesome": "^0.6.0-alpha.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "bootstrap": "^4.4.0",
+    "bootstrap": "^4.4.1",
     "bootstrap-material-design": "^4.1.1",
     "font-awesome": "^4.7.0",
     "mock-socket": "^9.0.2",
@@ -34,10 +34,10 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.900.0-rc.3",
-    "@angular/cli": "~9.0.0-rc.3",
+    "@angular-devkit/build-angular": "~0.900.0-rc.4",
+    "@angular/cli": "~9.0.0-rc.4",
     "@angular/compiler-cli": "~9.0.0-rc.2",
-    "@angular/language-service": "~9.0.0-rc.3",
+    "@angular/language-service": "~9.0.0-rc.4",
     "@types/node": "^12.12.14",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
@@ -50,7 +50,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "protractor": "~5.4.2",
-    "ts-node": "~8.5.2",
+    "ts-node": "~8.5.4",
     "tslint": "~5.20.1",
     "typescript": "~3.6.4"
   }
