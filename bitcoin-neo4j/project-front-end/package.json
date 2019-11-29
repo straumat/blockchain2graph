@@ -23,7 +23,7 @@
     "@fortawesome/angular-fontawesome": "^0.6.0-alpha.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "bootstrap": "^4.4.0",
+    "bootstrap": "^4.4.1",
     "bootstrap-material-design": "^4.1.1",
     "font-awesome": "^4.7.0",
     "mock-socket": "^9.0.2",
