@@ -26,7 +26,7 @@
     "bootstrap": "^4.4.1",
     "bootstrap-material-design": "^4.1.1",
     "font-awesome": "^4.7.0",
-    "mock-socket": "^9.0.2",
+    "mock-socket": "^9.0.3",
     "moment": "^2.24.0",
     "roboto-fontface": "^0.10.0",
     "rxjs": "~6.5.4",
