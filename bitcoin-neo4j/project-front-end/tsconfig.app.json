@@ -1,15 +1,16 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/app",
-    "types": []
+	"outDir": "./out-tsc/app",
+	"types": []
   },
   "files": [
-    "src/main.ts",
-    "src/polyfills.ts",
-    "src/app/shared/blockchain2graph-bitcoin-neo4j-back-end.d.ts"
+	"src/main.ts",
+	"src/polyfills.ts",
+	"src/app/shared/blockchain2graph-bitcoin-neo4j-back-end.d.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+	".",
+	"./src/**/*.d.ts"
   ]
 }
