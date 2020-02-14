@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
-import {CurrentBlockStatus, CurrentBlockStatusProcessStep} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end';
+import {
+    CurrentBlockStatus,
+    CurrentBlockStatusProcessStep
+} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end.d';
 import {faBolt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
