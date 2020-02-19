@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Blockchain2graphService} from '../../core/services/blockchain2graph-service.service';
-import {ApplicationStatus} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end';
+import {ApplicationStatus} from './../../shared/blockchain2graph-bitcoin-neo4j-back-end';
 import {faCalendarCheck} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 

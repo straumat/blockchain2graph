@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.18.565 on 2019-11-14 11:37:04.
+// Generated using typescript-generator version 2.19.577 on 2020-02-14 13:23:41.
 
 export interface ApplicationStatus {
     blockCountInBlockchain: number;

@@ -4,7 +4,7 @@ import {
     ApplicationStatus,
     CurrentBlockStatus,
     CurrentBlockStatusProcessStep
-} from '../../shared/blockchain2graph-bitcoin-neo4j-back-end';
+} from './../../shared/blockchain2graph-bitcoin-neo4j-back-end';
 
 @Injectable({
     providedIn: 'root'
