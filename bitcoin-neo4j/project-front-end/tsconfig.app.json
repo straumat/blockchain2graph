@@ -10,6 +10,7 @@
     "src/app/shared/blockchain2graph-bitcoin-neo4j-back-end.d.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/app/shared/blockchain2graph-bitcoin-neo4j-back-end.d.ts"
   ]
 }
