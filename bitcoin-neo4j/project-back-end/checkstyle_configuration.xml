@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
-		"http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!DOCTYPE module PUBLIC
+		"-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+		"https://checkstyle.org/dtds/configuration_1_3.dtd">
 
-<!--
-    This configuration file was written by the eclipse-cs plugin configuration editor
--->
-<!--
-    Checkstyle-Configuration: bsp
-    Description: none
--->
 <module name="Checker">
 	<property name="severity" value="warning"/>
+	<module name="LineLength">
+		<property name="severity" value="ignore"/>
+		<metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+	</module>
 	<module name="SuppressWarningsFilter"/>
 	<module name="TreeWalker">
 		<module name="SuppressWarningsHolder"/>
 		<property name="tabWidth" value="4"/>
-		<module name="JavadocMethod">
-			<property name="suppressLoadErrors" value="true"/>
-		</module>
+		<module name="JavadocMethod"/>
 		<module name="JavadocType"/>
 		<module name="JavadocVariable"/>
 		<module name="JavadocStyle"/>
@@ -34,10 +30,6 @@
 		<module name="IllegalImport"/>
 		<module name="RedundantImport"/>
 		<module name="UnusedImports"/>
-		<module name="LineLength">
-			<property name="severity" value="ignore"/>
-			<metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
-		</module>
 		<module name="MethodLength"/>
 		<module name="ParameterNumber"/>
 		<module name="EmptyForIteratorPad"/>
