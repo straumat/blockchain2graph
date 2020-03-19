@@ -1,5 +1,5 @@
 # Blockchain2graph container.                                                                                                                                                                                     # Blockchain2graph container.
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim
 MAINTAINER Stéphane Traumat, stephane.traumat@gmail.com
 
 # Install and configure blockchain2graph.

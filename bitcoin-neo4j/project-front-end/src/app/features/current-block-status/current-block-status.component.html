@@ -1,0 +1,9 @@
+<div class="card-header [] bg-primary">
+	<h4 class="display-4"><fa-icon [icon]="faBolt"></fa-icon>&nbsp;&nbsp;&nbsp;{{ blockHeight }}</h4>
+</div>
+<div class="card-body bg-primary" *ngIf="viewDetails">
+	<h5 class="display-4">{{ processStepDescription }}</h5>
+	<div class="progress" style="height: 20px;">
+		<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" [ngStyle]="{'width.%':progression}" aria-valuenow=0 aria-valuemin="0" aria-valuemax="100">{{ progression }} %</div>
+	</div>
+</div>

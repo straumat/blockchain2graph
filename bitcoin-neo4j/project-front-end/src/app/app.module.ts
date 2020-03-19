@@ -1,25 +1,26 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+
+import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {Blockchain2graphService} from './blockchain2graph.service';
-import {StatisticComponent} from './statistic/statistic.component';
-import {CurrentBlockStatusComponent} from './current-block-status/current-block-status.component';
-import {ErrorComponent} from './error/error.component';
+import {FeaturesModule} from './features/features.module';
+import {SharedModule} from './shared/shared.module';
+import {CoreModule} from './core/core.module';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
-  imports: [
-    BrowserModule
-  ],
   declarations: [
-    AppComponent,
-    CurrentBlockStatusComponent,
-    StatisticComponent,
-    ErrorComponent
+    AppComponent
   ],
-  providers: [
-    Blockchain2graphService
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    CoreModule,
+    FeaturesModule,
+    SharedModule,
+    FontAwesomeModule
   ],
+  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }

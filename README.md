@@ -1,6 +1,4 @@
-![Logo](docs/images/logo.png)
-
-[![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=development)](https://travis-ci.org/straumat/blockchain2graph) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Grade) [![Stories in Ready](https://badge.waffle.io/straumat/blockchain2graph.svg?label=ready&title=Ready)](http://waffle.io/straumat/blockchain2graph)
+[![Build Status](https://travis-ci.org/straumat/blockchain2graph.svg?branch=development)](https://travis-ci.org/straumat/blockchain2graph) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/99d74d003bbc4f56abed38301003c0b0)](https://www.codacy.com/app/stephane-traumat/blockchain2graph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=straumat/blockchain2graph&amp;utm_campaign=Badge_Grade)
 
 Blockchain2graph extracts blockchain data (bitcoin) and insert them into a graph database (neo4j).
 
@@ -15,5 +13,7 @@ Here are some use cases :
 At [Blockchain Inspector](http://www.blockchaininspector.com/), we are using Artificial Intelligence to fight fraud in the Blockchain and we needed to have a convenient way to access blockchain information. With blockchain2graph, we can analyse blockchain data as transactions between nodes and add meta information on them.
 
 The documentation can be found [here](https://github.com/straumat/blockchain2graph/wiki).
+
+Developped by [Stéphane Traumat](https://about.me/straumat) from [Scub](https://www.scub.net).
 
 Blockchain2graph is released under version 3.0 of the [GNU General Public Licence](https://github.com/straumat/blockchain2graph/blob/master/LICENSE).

@@ -14,23 +14,14 @@
   <parent>
     <groupId>com.oakinvest.b2g</groupId>
     <artifactId>blockchain2graph-bitcoin-neo4j</artifactId>
-    <version>3.1</version>
+    <version>3.2</version>
   </parent>
   <!-- =========================================================================================================== -->
 
   <!-- =========================================================================================================== -->
   <!-- Project configuration -->
   <properties>
-    <!-- Maven plugins -->
-    <!-- https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin -->
-    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
-    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-clean-plugin -->
-    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <!-- Web development -->
-    <!-- https://nodejs.org/en/download/releases/ -->
-    <node.version>v10.13.0</node.version>
-    <!-- https://github.com/yarnpkg/yarn/releases/ -->
-    <yarn.version>v1.10.1</yarn.version>
+
   </properties>
   <!-- =========================================================================================================== -->
 
@@ -67,11 +58,13 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>${frontend-maven-plugin.version}</version>
+        <version>1.9.1</version>
         <configuration>
           <installDirectory>target</installDirectory>
-          <nodeVersion>${node.version}</nodeVersion>
-          <yarnVersion>${yarn.version}</yarnVersion>
+          <!-- https://github.com/nodejs/node/releases -->
+          <nodeVersion>v13.8.0 </nodeVersion>
+          <!-- https://github.com/yarnpkg/yarn/releases -->
+          <yarnVersion>v1.22.0</yarnVersion>
         </configuration>
         <executions>
           <execution>

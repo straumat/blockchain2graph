@@ -12,7 +12,6 @@ import java.io.IOException;
  * Response handler to deal with 500 error code from core.
  * Created by straumat on 01/09/16.
  */
-@SuppressWarnings("NullableProblems")
 public class BitcoinCoreResponseErrorHandler implements ResponseErrorHandler {
 
 	/**

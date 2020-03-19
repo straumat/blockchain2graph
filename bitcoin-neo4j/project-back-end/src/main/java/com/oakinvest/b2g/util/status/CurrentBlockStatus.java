@@ -1,6 +1,7 @@
 package com.oakinvest.b2g.util.status;
 
-import java.util.Observable;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.stereotype.Component;
 
 import static com.oakinvest.b2g.util.status.CurrentBlockStatusProcessStep.NEW_BLOCK_TO_PROCESS;
 import static com.oakinvest.b2g.util.status.CurrentBlockStatusProcessStep.NO_BLOCK_TO_PROCESS;
@@ -9,7 +10,9 @@ import static com.oakinvest.b2g.util.status.CurrentBlockStatusProcessStep.NO_BLO
  * Status of the current block being processed.
  */
 @SuppressWarnings("unused")
-public class CurrentBlockStatus extends Observable {
+@Component
+@JsonSerialize(as = CurrentBlockStatus.class)
+public class CurrentBlockStatus {
 
     /**
      * Non available value.
@@ -57,7 +60,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of blockHeight
      */
-    public final int getBlockHeight() {
+    public int getBlockHeight() {
         return blockHeight;
     }
 
@@ -66,7 +69,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newBlockHeight blockHeight
      */
-    public final void setBlockHeight(final int newBlockHeight) {
+    public void setBlockHeight(final int newBlockHeight) {
         blockHeight = newBlockHeight;
         processStep = NEW_BLOCK_TO_PROCESS;
         transactionCount = NON_AVAILABLE_VALUE_NUMBER;
@@ -74,8 +77,6 @@ public class CurrentBlockStatus extends Observable {
         loadedTransactions = NON_AVAILABLE_VALUE_NUMBER;
         processedAddresses = NON_AVAILABLE_VALUE_NUMBER;
         processedTransactions = NON_AVAILABLE_VALUE_NUMBER;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -83,7 +84,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of processStep
      */
-    public final CurrentBlockStatusProcessStep getProcessStep() {
+    public CurrentBlockStatusProcessStep getProcessStep() {
         return processStep;
     }
 
@@ -92,7 +93,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newProcessStep processStep
      */
-    public final void setProcessStep(final CurrentBlockStatusProcessStep newProcessStep) {
+    public void setProcessStep(final CurrentBlockStatusProcessStep newProcessStep) {
         processStep = newProcessStep;
         // If there there is nothing to process, we change the other values to non available.
         if (newProcessStep.equals(NO_BLOCK_TO_PROCESS)) {
@@ -110,8 +111,6 @@ public class CurrentBlockStatus extends Observable {
             processedAddresses = 0;
             processedTransactions = 0;
         }
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -119,7 +118,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of loadedTransactions
      */
-    public final int getLoadedTransactions() {
+    public int getLoadedTransactions() {
         return loadedTransactions;
     }
 
@@ -128,10 +127,8 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newLoadedTransactions loadedTransactions
      */
-    public final void setLoadedTransactions(final int newLoadedTransactions) {
+    public void setLoadedTransactions(final int newLoadedTransactions) {
         loadedTransactions = newLoadedTransactions;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -139,7 +136,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of processedAddresses
      */
-    public final int getProcessedAddresses() {
+    public int getProcessedAddresses() {
         return processedAddresses;
     }
 
@@ -148,10 +145,8 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newProcessedAddresses processedAddresses
      */
-    public final void setProcessedAddresses(final int newProcessedAddresses) {
+    public void setProcessedAddresses(final int newProcessedAddresses) {
         processedAddresses = newProcessedAddresses;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -159,7 +154,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of addressCount
      */
-    public final int getAddressCount() {
+    public int getAddressCount() {
         return addressCount;
     }
 
@@ -168,10 +163,8 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newAddressesCount addressCount
      */
-    public final void setAddressCount(final int newAddressesCount) {
+    public void setAddressCount(final int newAddressesCount) {
         addressCount = newAddressesCount;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -179,7 +172,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of processedTransactions
      */
-    public final int getProcessedTransactions() {
+    public int getProcessedTransactions() {
         return processedTransactions;
     }
 
@@ -188,10 +181,8 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newProcessedTransactions processedTransactions
      */
-    public final void setProcessedTransactions(final int newProcessedTransactions) {
+    public void setProcessedTransactions(final int newProcessedTransactions) {
         processedTransactions = newProcessedTransactions;
-        setChanged();
-        notifyObservers();
     }
 
     /**
@@ -199,7 +190,7 @@ public class CurrentBlockStatus extends Observable {
      *
      * @return value of transactionCount
      */
-    public final int getTransactionCount() {
+    public int getTransactionCount() {
         return transactionCount;
     }
 
@@ -208,10 +199,8 @@ public class CurrentBlockStatus extends Observable {
      *
      * @param newTransactionsCount transactionCount
      */
-    public final void setTransactionCount(final int newTransactionsCount) {
+    public void setTransactionCount(final int newTransactionsCount) {
         transactionCount = newTransactionsCount;
-        setChanged();
-        notifyObservers();
     }
 
 }

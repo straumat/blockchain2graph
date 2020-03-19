@@ -70,7 +70,7 @@ public class BenchmarkLauncher implements Runnable {
      * Constructor.
      *
      * @param newRepositoriesProvider repositories provider.
-     * @param newContext context.
+     * @param newContext              context.
      */
     public BenchmarkLauncher(final RepositoriesProvider newRepositoriesProvider, final ApplicationContext newContext) {
         this.repositories = newRepositoriesProvider;
@@ -103,13 +103,16 @@ public class BenchmarkLauncher implements Runnable {
         message.setSubject("B2G benchmark results for build number : " + buildNumber);
         message.setText("Number of blocks imported : " + blockCount);
         getJavaMailSender().send(message);
+        log.info("Benchmark maid sent");
 
         // We stop the application.
+        log.info("Application exit");
         SpringApplication.exit(context, () -> 0);
     }
 
     /**
      * Returns mail send.
+     *
      * @return mail sender.
      */
     private JavaMailSender getJavaMailSender() {

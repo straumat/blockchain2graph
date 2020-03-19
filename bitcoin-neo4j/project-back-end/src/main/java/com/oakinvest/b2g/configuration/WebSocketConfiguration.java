@@ -11,7 +11,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  *
  * Created by straumat on 31/10/16.
  */
-@SuppressWarnings("NullableProblems")
 @Configuration
 @EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {

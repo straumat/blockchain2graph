@@ -8,6 +8,7 @@ bitcoin-neo4j/project-front-end/out-tsc*
 bitcoin-neo4j/project-front-end/node_modules*
 bitcoin-neo4j/project-front-end/yarn.lock
 bitcoin-neo4j/project-front-end/yarn-error.log
+/bitcoin-neo4j/project-back-end/src/test/resources/cache/
 
 # IDEs and editors
 target/

@@ -118,12 +118,10 @@ public class ImportBatch {
 
                     // We calculate time.
                     Duration batchDuration = Duration.between(batchStartTime, Instant.now());
-                    long secondsDuration = batchDuration.getSeconds();
-                    // TODO Improve when there won't be anymore this error : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
-                    long millisecondsDuration = TimeUnit.NANOSECONDS.toMillis(batchDuration.minusSeconds(secondsDuration).getNano());
+                    long secondsDuration = batchDuration.toSecondsPart();
+                    long millisecondsDuration = batchDuration.toMillisPart();
                     log.info("Block " + bitcoinBlock.getFormattedHeight() + " processed in " + secondsDuration + "." + millisecondsDuration + " secs");
-                    // TODO Improve when JDK8 won't have this error anymore : java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Millis
-                    status.setLastBlockProcessDuration(TimeUnit.NANOSECONDS.toMillis(batchDuration.getNano()));
+                    status.setLastBlockProcessDuration(batchDuration.toMillis());
 
                     // We set status.
                     status.getCurrentBlockStatus().setProcessStep(CurrentBlockStatusProcessStep.BLOCK_SAVED);
@@ -231,7 +229,7 @@ public class ImportBatch {
                                             Optional<BitcoinTransactionOutput> originTransactionOutput = repositories.getBitcoinTransactionOutputRepository().findByTxIdAndN(vin.getTxId(), vin.getvOut());
 
                                             // if we don't find in the database, this transaction must be in the block.
-                                            if (!originTransactionOutput.isPresent()) {
+                                            if (originTransactionOutput.isEmpty()) {
                                                 Optional<BitcoinTransaction> missingTransaction = block.getTransactions()
                                                         .stream()
                                                         .filter(o -> o.getTxId().equals(vin.getTxId()))
