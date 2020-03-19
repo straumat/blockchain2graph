@@ -7,7 +7,7 @@
     <!-- Project information -->
     <groupId>com.oakinvest.b2g</groupId>
     <artifactId>blockchain2graph</artifactId>
-    <version>3.2</version>
+    <version>3.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Blockchain2graph</name>
     <description>Extract blockchain data into a graph database</description>
