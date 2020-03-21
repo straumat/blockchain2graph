@@ -193,8 +193,8 @@
                     <classes>
                         <class>com.oakinvest.b2g.util.status.ApplicationStatus</class>
                     </classes>
-                    <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>
+                    <outputKind>module</outputKind>
                     <mapEnum>asEnum</mapEnum>
                 </configuration>
             </plugin>
