@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>3.5.16</version>
+            <version>4.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
@@ -178,7 +178,7 @@
             <plugin>
                 <groupId>cz.habarta.typescript-generator</groupId>
                 <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>2.20.583</version>
+                <version>2.21.588</version>
                 <executions>
                     <execution>
                         <id>generate</id>
