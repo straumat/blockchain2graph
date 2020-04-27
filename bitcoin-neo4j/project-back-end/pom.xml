@@ -178,7 +178,7 @@
             <plugin>
                 <groupId>cz.habarta.typescript-generator</groupId>
                 <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>2.21.588</version>
+                <version>2.22.595</version>
                 <executions>
                     <execution>
                         <id>generate</id>
