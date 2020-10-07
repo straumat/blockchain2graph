@@ -24,7 +24,6 @@
         <module>project-front-end</module>
         <module>project-back-end</module>
         <module>container-docker</module>
-        <module>benchmark</module>
     </modules>
     <!-- =========================================================================================================== -->
 
