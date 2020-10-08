@@ -29,7 +29,7 @@ public interface AddressRepository extends Neo4jRepository<BitcoinAddress, Long>
      * @param address address
      * @return bitcoin address
      */
-    @Query("MATCH (a:BitcoinAddress) USING INDEX a:BitcoinAddress(address) WHERE a.address = {0} return a")
+    @Query("MATCH (a:BitcoinAddress) USING INDEX a:BitcoinAddress(address) WHERE a.address = $0 return a")
     Optional<BitcoinAddress> findByAddressWithoutDepth(String address);
 
 }

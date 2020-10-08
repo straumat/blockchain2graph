@@ -29,7 +29,7 @@ public interface BlockRepository extends Neo4jRepository<BitcoinBlock, Long> {
      * @param height height
      * @return block
      */
-    @Query("MATCH (b:BitcoinBlock) WHERE b.height= {0} return b")
+    @Query("MATCH (b:BitcoinBlock) WHERE b.height= $0 return b")
     Optional<BitcoinBlock> findByHeightWithoutDepth(int height);
 
     /**
