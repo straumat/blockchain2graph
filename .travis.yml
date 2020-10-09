@@ -19,7 +19,7 @@ services:
   - docker
   - xvfb
 script:
-  - mvn package -Dlive=true -q
+  - mvn package -q
 after_success:
   # Update official "blockchain2graph bitcoin neo4j" image.
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
