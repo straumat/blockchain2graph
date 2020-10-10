@@ -17,7 +17,7 @@ public final class ApplicationConfiguration {
     /**
      * Pause before starting the import batch (2 minutes) - to let time for Bitcoin core docker to start.
      */
-    public static final long PAUSE_BEFORE_STARTING_APPLICATION = 12000;
+    public static final long PAUSE_BEFORE_STARTING_APPLICATION = 120000;
 
     /**
      * Delay before trying to get a new block when no new block is available from bitcoin core.
