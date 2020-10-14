@@ -19,8 +19,8 @@ script:
   - mvn package -q
 after_success:
   # Update official "blockchain2graph bitcoin neo4j" image.
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+  - docker push straumat/blockchain2graph-bitcoin-neo4j
   # Run benchmark of "blockchain2graph bitcoin neo4j".
   # - docker push $DOCKER_USERNAME/blockchain2graph-bitcoin-neo4j-benchmark
   # - RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
