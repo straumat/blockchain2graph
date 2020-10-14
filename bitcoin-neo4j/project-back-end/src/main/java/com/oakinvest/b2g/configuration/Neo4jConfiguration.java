@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PostConstruct;
 import java.util.Collections;
 
+import static com.oakinvest.b2g.configuration.ApplicationConfiguration.PAUSE_BEFORE_STARTING_APPLICATION;
+
 /**
  * Neo4j configuration class.
  *
@@ -42,6 +44,11 @@ public class Neo4jConfiguration {
      */
     @PostConstruct
     public final void createConstraintsAndIndexes() {
+        try {
+            Thread.sleep(PAUSE_BEFORE_STARTING_APPLICATION);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Logger log = LoggerFactory.getLogger(Neo4jConfiguration.class);
         try {
             log.info("Creating constraints and indexes...");
