@@ -29,7 +29,7 @@
     "mock-socket": "^9.0.3",
     "moment": "^2.26.0",
     "roboto-fontface": "^0.10.0",
-    "rxjs": "~6.5.5",
+    "rxjs": "~6.6.6",
     "tslib": "^1.13.0",
     "zone.js": "~0.10.3"
   },
