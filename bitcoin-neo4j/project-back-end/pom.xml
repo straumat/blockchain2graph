@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.neo4j.driver</groupId>
             <artifactId>neo4j-java-driver-spring-boot-starter</artifactId>
-            <version>4.1.1.1</version>
+            <version>4.2.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j.test</groupId>
