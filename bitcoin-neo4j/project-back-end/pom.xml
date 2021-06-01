@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.neo4j.driver</groupId>
             <artifactId>neo4j-java-driver-test-harness-spring-boot-autoconfigure</artifactId>
-            <version>4.1.1.1</version>
+            <version>4.2.4.0</version>
             <scope>test</scope>
         </dependency>
         <!-- Front end -->
