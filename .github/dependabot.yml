@@ -1,0 +1,59 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "02:00"
+    timezone: Europe/Paris
+  open-pull-requests-limit: 99
+  target-branch: development
+  assignees:
+  - straumat
+  ignore:
+  - dependency-name: org.neo4j:neo4j
+    versions:
+    - ">= 4.0.a, < 4.1"
+  - dependency-name: org.springframework.boot:spring-boot-starter-parent
+    versions:
+    - 2.4.1
+    - 2.4.2
+  - dependency-name: cz.habarta.typescript-generator:typescript-generator-maven-plugin
+    versions:
+    - 2.28.785
+  - dependency-name: org.neo4j:neo4j
+    versions:
+    - 4.2.1
+  - dependency-name: org.neo4j.test:neo4j-harness
+    versions:
+    - 4.2.1
+- package-ecosystem: npm
+  directory: "/bitcoin-neo4j/project-front-end"
+  schedule:
+    interval: monthly
+    time: "02:00"
+    timezone: Europe/Paris
+  open-pull-requests-limit: 99
+  target-branch: development
+  assignees:
+  - straumat
+  versioning-strategy: widen
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+  - dependency-name: "@angular/cli"
+    versions:
+    - 11.0.5
+    - 11.1.2
+  - dependency-name: karma
+    versions:
+    - 6.0.3
+  - dependency-name: "@angular/language-service"
+    versions:
+    - 11.0.5
+    - 11.1.1
+  - dependency-name: "@types/jasmine"
+    versions:
+    - 3.6.2
+    - 3.6.3
